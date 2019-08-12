@@ -466,6 +466,8 @@ namespace FarmsApi.Services
                 var ExpensesList = Context.Expenses.Where(u => u.UserId == Id).ToList();
 
                 return ExpensesList;
+
+                ///asasasas
             }
         }
 
