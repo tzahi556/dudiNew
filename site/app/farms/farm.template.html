@@ -1,0 +1,58 @@
+﻿<form name="farmForm" ng-submit="$ctrl.submit()" novalidate>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            חווה
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label>מזהה</label>
+                <input type="number" disabled class="form-control" ng-model="$ctrl.farm.Id" />
+            </div>
+            <div class="form-group">
+                <label>שם</label>
+                <input type="text" name="name" class="form-control" ng-model="$ctrl.farm.Name" required />
+            </div>
+            <div class="form-group">
+                <label>ezcount api key</label>
+                <input type="text" name="name" class="form-control" ng-model="$ctrl.farm.Meta.api_key" required />
+            </div>
+            <div class="form-group">
+                <label>ezcount api email</label>
+                <input type="text" name="name" class="form-control" ng-model="$ctrl.farm.Meta.api_email" required />
+            </div>
+            <div class="form-group">
+                <label>תאריך תחילת מנוי</label>
+                <input type="date" name="name" class="form-control" ng-model="$ctrl.farm.Meta.StartDate" required />
+            </div>
+            <div class="form-group">
+                <label>תאריך סוף מנוי</label>
+                <input type="date" name="name" class="form-control" ng-model="$ctrl.farm.Meta.EndDate" required />
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" ng-model="$ctrl.farm.Meta.IsAshrai" /> סליקת אשראי </label>
+            
+            </div>
+            <div class="form-group">
+              
+                <label><input type="checkbox"  ng-model="$ctrl.farm.Meta.IsToken" /> חיוב בטוקן  </label>
+                
+            </div>
+
+            <div class="form-group">
+
+                <label><input type="checkbox" ng-model="$ctrl.farm.Meta.IsDateInKabala" /> הצגת תאריכים בחשבונית  </label>
+                 <label>&nbsp;&nbsp;</label>
+                <label><input type="checkbox" ng-model="$ctrl.farm.Meta.IsRekivaTipulitInKabala" /> הצגת רכיבה טיפולית בחשבונית  </label>
+            </div>
+            <div class="form-group">
+                <label>מס/קבלה אחרון</label>
+                <input type="number" disabled class="form-control" ng-model="$ctrl.farm.Meta.LastInvoiceId" />
+            </div>
+
+        </div>
+        <div class="panel-footer">
+            <button type="submit" class="btn btn-success" ng-disabled="farmForm.$invalid">עדכון</button>
+            <button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,79 @@
+﻿<div class="event-background" ng-if="$ctrl.event != null" ng-click="$ctrl.hide($event)">
+
+
+    <comments studentid="$ctrl.selectedStudent"   close-callback="$ctrl.commentClose"></comments>
+    <newstudent studentid="$ctrl.createStudent" farmId="$ctrl.f" close-callback="$ctrl.createStudentClose"></newstudent>
+
+    <div class="event">
+
+        <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
+        <div class="form-group">
+            <label>הוספת תלמיד</label>
+            <input class="form-control" type="text" ng-model="$ctrl.studentFilter" />
+            <div class="student-list">
+                <ul ng-show="$ctrl.studentFilter != '' && $ctrl.studentFilter ">
+                    <li ng-click="$ctrl.addStudentToEvent(student)" ng-if="student.Meta.Active == 'active'" ng-repeat="student in $ctrl.students | filterStudents: $ctrl.studentFilter ">{{student.FirstName}} {{student.LastName}} <span ng-if="student.Meta.Active == 'notActive'">(לא פעיל)</span></li>
+                </ul>
+            </div>
+            <!--<select class="form-control" ng-change="$ctrl.addStudentToEvent()" ng-options="student.Id as student.FirstName + ' ' + student.LastName for student in $ctrl.students | filterDeletedStudents" ng-model="$ctrl.selectedStudent">
+                <option value="">בחר תלמיד</option>
+            </select>-->
+        </div>
+
+        <div class="form-group">
+            <label>הערות</label>
+            <textarea class="form-control" ng-model="$ctrl.event.details">
+            </textarea>
+        </div>
+
+        <div class="form-group">
+            <label> תלמידים  </label><a class="btn btn-primary btn-xs" style="float:left" ng-click="$ctrl.createNewStudent(1)" href="">תלמיד חדש</a>
+            <table class="table small-padding">
+                <tr ng-repeat-start="studentId in $ctrl.event.students track by $index">
+                    <td colspan="3">
+                        <a href="" ui-sref="student({id:studentId})">{{$ctrl.studentDataById(studentId).FirstName}} {{$ctrl.studentDataById(studentId).LastName}}</a>
+                        <a href="tel:{{$ctrl.studentDataById(studentId).Meta.PhoneNumber}}">{{$ctrl.studentDataById(studentId).Meta.PhoneNumber}}</a>
+
+                        <a class="pull-left close" ng-click="$ctrl.removeStudentFromEvent(studentId)" href="">&times;</a>
+                    </td>
+                </tr>
+                <tr ng-repeat-end class="status-row">
+                    <td>
+                        <div class="form-group">
+                            <select class="form-control" ng-change="$ctrl.changeStudentstatus(studentId)" ng-model="$ctrl.statuses[studentId]" ng-options="status.id as status.name for status in $ctrl.sharedValues.lessonStatuses | filter:{hide:false}">
+                                <option value="">סטטוס</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+
+                            <textarea rows="1" class="form-control" placeholder="הערות סטטוס"   ng-model="$ctrl.statusDetails[studentId]">
+                            </textarea>
+                            <!--<input type="text" class="form-control" placeholder="הערות סטטוס" ng-model="$ctrl.statusDetails[studentId]">-->
+
+
+
+                        </div>
+                    </td>
+                    <td valign="bottom" style="padding-top:9px;">
+
+                        <a class="btn btn-success btn-xs" ng-click="$ctrl.openComments(studentId)" href="">...</a>
+
+                    </td>
+
+
+                </tr>
+            </table>
+        </div>
+
+        <div class="form-group">
+            <label>כמות יצירת שיעורים נוספים</label>
+            <input class="form-control" type="number" ng-model="$ctrl.lessonsQty" ng-disabled="$ctrl.event.prevId != 0" />
+        </div>
+
+        <a class="btn btn-success" ng-click="$ctrl.close()" href="">שמור</a>
+        <a class="btn btn-default" ng-click="$ctrl.delete()" href="">מחק</a>
+        <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.affectChildren">כולל אירועים עתידיים</label></div>
+    </div>
+</div>

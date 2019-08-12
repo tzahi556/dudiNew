@@ -1,0 +1,25 @@
+{
+    "short_name": "GiddyUp",
+    "name": "GiddyUp מערכת ניהול חוות",
+    "display": "standalone",
+    "background_color": "#2196F3",
+    "gcm_sender_id": "103953800507",
+    "icons": [
+        {
+            "src": "favicon-48.png",
+            "type": "image/png",
+            "sizes": "48x48"
+        },
+        {
+            "src": "favicon-96.png",
+            "type": "image/png",
+            "sizes": "96x96"
+        },
+        {
+            "src": "favicon-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        }
+    ],
+    "start_url": "/"
+}

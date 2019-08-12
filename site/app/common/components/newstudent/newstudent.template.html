@@ -1,0 +1,135 @@
+﻿<div class="event-background" ng-if="$ctrl.studentid != null">
+    <div class="event" style="border: 1px gray!important;width:200px;">
+        <form name="studentForm" ng-submit="$ctrl.submit()" novalidate>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    תלמיד חדש
+                    <!--<button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="studentForm.$invalid">עדכון</button>-->
+                </div>
+                <div class="panel-body">
+                    <!--<div class="form-group hidden">
+                        <label>מזהה</label>
+                        <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />
+                    </div>
+                    <div class="form-group">
+                        <imagepicker model="$ctrl.user.Meta.Image" image-label="תמונת תלמיד" />
+                    </div>
+                    <div class="form-group">
+                        <label>פעיל</label>
+                        <select class="form-control" ng-model="$ctrl.user.Meta.Active" required>
+                            <option value="active">פעיל</option>
+                            <option value="notActive">לא פעיל</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>מספר לקוח</label>
+                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.Meta.ClientNumber" />
+                    </div>-->
+                    <div class="form-group">
+                        <label>שם פרטי </label>
+                        <input type="text" name="firstName" class="form-control" ng-model="$ctrl.scope.studentTemplate.FirstName" required />
+                    </div>
+                    <div class="form-group">
+                        <label>שם משפחה</label>
+                        <input type="text" name="lastName" class="form-control" ng-model="$ctrl.scope.studentTemplate.LastName" required />
+                    </div>
+                    <div class="form-group">
+                        <label>ת.ז.</label>
+                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.IdNumber" required />
+                    </div>
+                    <!--<div class="form-group">
+                        <label>תאריך לידה</label>
+                        <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.Meta.BirthDate" />
+                    </div> -->
+                    <div class="form-group">
+                        <label>שם אם</label>
+                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.ParentName2" />
+                    </div>
+                    <div class="form-group">
+                        <label>שם אב</label>
+                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.ParentName" />
+                    </div>
+                    <div class="form-group">
+                        <label>כתובת</label>
+                        <input type="text" name="address" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.Address" />
+                    </div>
+                    <div class="form-group">
+                        <label>טלפון</label>
+                        <input type="tel" name="phoneNumber" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.PhoneNumber" />
+                    </div>
+                    <!--<div class="form-group">
+                        <label>טלפון 2</label>
+                        <input type="tel" name="phoneNumber2" class="form-control" ng-model="$ctrl.user.Meta.PhoneNumber2" />
+                    </div>-->
+                    <div class="form-group">
+                        <label>אימייל</label>
+                        <input type="email" name="email" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.AnotherEmail" />
+                    </div>
+                   
+                    <!--<div class="form-group" ng-if="$ctrl.farms.length > 1">
+                        <label>חווה</label>
+                        <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.user.Farm_Id" required>
+                            <option value="">בחר חווה</option>
+                        </select>
+                    </div>-->
+                    <div class="form-group">
+                        <label>סגנון רכיבה</label>
+                        <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles" ng-model="$ctrl.scope.studentTemplate.Meta.Style"
+                                required>
+                            <option value="">בחר סגנון רכיבה</option>
+                        </select>
+                    </div>
+                    <div class="form-group" ng-if="$ctrl.scope.studentTemplate.Meta.Style.indexOf('treatment')!=-1">
+                        <label>קופ"ח</label>
+                        <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs" ng-model="$ctrl.scope.studentTemplate.Meta.HMO" required>
+                            <option value="">בחר קופת חולים</option>
+                        </select>
+                    </div>
+                    <!--<div class="form-group">
+                        <label>חבר נבחרת</label>
+                        <select class="form-control" ng-model="$ctrl.user.Meta.TeamMember">
+                            <option value="">בחר אפשרות</option>
+                            <option value="yes">כן</option>
+                            <option value="no">לא</option>
+                        </select>
+                    </div>-->
+                    <div class="form-group">
+                        <label>עלות</label>
+                        <input type="number" name="cost" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.Cost" required />
+                    </div>
+                    <div class="form-group">
+                        <label>סוג תשלום</label>
+                        <select class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.PayType" required>
+                            <option value="">בחר אפשרות</option>
+                            <option value="lessonCost">עלות שיעור</option>
+                            <option value="monthCost">עלות חודשית</option>
+                        </select>
+                    </div>
+                    <!--<div class="form-group">
+                        <label>הערות</label>
+                        <textarea class="form-control" ng-model="$ctrl.user.Meta.Details"></textarea>
+                    </div>-->
+
+                       
+                </div>
+                <div class="panel-footer">
+                    <button type="submit" class="btn btn-success" ng-click="$ctrl.close()" ng-disabled="studentForm.$invalid">שמור</button>
+                    <button type="button" class="btn btn-default" ng-click="$ctrl.hide()">סגור</button>
+                </div>
+            </div>
+        </form>
+      
+            <!--<hr />
+
+            <a class="btn btn-success" ng-click="$ctrl.close(messages)" href="">שמור</a>
+            <a class="btn btn-default" ng-click="$ctrl.hide()" href="">סגור</a>-->
+
+      
+
+
+
+
+
+
+    </div>
+</div>

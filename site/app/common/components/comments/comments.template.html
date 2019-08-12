@@ -1,0 +1,40 @@
+﻿<div class="event-background" ng-if="$ctrl.studentid != null">
+    <div class="event" style="border: 1px gray!important;width:400px;">
+
+        <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
+
+
+        <div class="form-group">
+            <label>
+                לחץ על על הודעות רצויות
+            </label>
+            <hr />
+            <!--<span ng-repeat="message in messages">
+
+                <input type='checkbox' name="allMessages" value="{{$index}}"> {{message}}<br />
+            </span>-->
+
+            <div style="height:300px;overflow:auto">
+                <div ng-repeat="message in messages">
+                    <input type="checkbox" ng-model="message.selected"
+                           ng-true-value="'{{message.Desc}}'" ng-false-value="''"
+                           id="'{{message.Desc}}'" />
+
+                    {{ message.Desc }}
+                </div>
+
+            </div>
+            <hr />
+
+            <a class="btn btn-success" ng-click="$ctrl.close(messages)" href="">שמור</a>
+            <a class="btn btn-default" ng-click="$ctrl.hide()" href="">סגור</a>
+
+        </div>
+
+
+
+
+
+
+    </div>
+</div>

@@ -1,0 +1,347 @@
+﻿<div class="row">
+    <div class="col-md-4">
+        <!--horse data form-->
+        <form name="horseForm" ng-submit="$ctrl.submit()" novalidate>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    סוס
+                    <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="horseForm.$invalid">עדכון</button>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label>מזהה</label>
+                        <input type="number" disabled class="form-control" ng-model="$ctrl.horse.Id" />
+                    </div>
+                    <div class="form-group">
+                        <label>פעיל</label>
+                        <select class="form-control" ng-model="$ctrl.horse.Meta.Active" required>
+                            <option value="active">פעיל</option>
+                            <option value="notActive">לא פעיל</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <imagepicker model="$ctrl.horse.Meta.Image" image-label="תמונת סוס" />
+                    </div>
+                    <div class="form-group">
+                        <label>שם</label>
+                        <input type="text" class="form-control" ng-model="$ctrl.horse.Name" required />
+                    </div>
+                    <div class="form-group">
+                        <label>גזע</label>
+                        <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Race" />
+                    </div>
+                    <div class="form-group">
+                        <label>מין</label>
+                        <select class="form-control" ng-model="$ctrl.horse.Meta.Gender" required>
+                            <option value="">בחר מין</option>
+                            <option value="male">זכר</option>
+                            <option value="female">נקבה</option>
+                            <option value="castrated">מסורס</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>בעלים</label>
+                        <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Owner" />
+                    </div>
+                    <div class="form-group">
+                        <label>אב סוס</label>
+                        <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Father" />
+                    </div>
+                    <div class="form-group">
+                        <label>אם סוס</label>
+                        <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Mother" />
+                    </div>
+                    <div class="form-group">
+                        <label>שיוך הסוס</label>
+                        <select class="form-control" ng-model="$ctrl.horse.Meta.Ownage">
+                            <option value="">בחר שיוך הסוס</option>
+                            <option value="pension">פנסיון</option>
+                            <option value="school">בית ספר</option>
+                            <option value="farm">חווה</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>הערות</label>
+                        <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Details" />
+                    </div>
+                    <div class="form-group">
+                        <label>תאריך לידה</label>
+                        <input type="date" class="form-control" ng-model="$ctrl.horse.Meta.BirthDate" required />
+                    </div>
+                    <div class="form-group" ng-if="$ctrl.farms.length > 1">
+                        <label>חווה</label>
+                        <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.horse.Farm_Id">
+                            <option value="">בחר חווה</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button type="submit" class="btn btn-success" ng-disabled="horseForm.$invalid">עדכון</button>
+                    <button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-8">
+        <uib-tabset active="active" class="tab-form-demo">
+            <uib-tab index="0" heading="כללי">
+
+                <!--feeding-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        אוכל
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label>בוקר</label>
+                            <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Food.Morning1" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Food.Morning2" />
+                        </div>
+                        <div class="form-group">
+                            <label>צהריים</label>
+                            <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Food.Lunch1" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Food.Lunch2" />
+                        </div>
+                        <div class="form-group">
+                            <label>ערב</label>
+                            <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Food.Dinner1" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" ng-model="$ctrl.horse.Meta.Food.Dinner2" />
+                        </div>
+                    </div>
+                </div>
+
+                <!--horse files-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        קבצים
+                    </div>
+                    <table class="table">
+                        <tbody>
+                            <tr ng-repeat="file in $ctrl.horse.Meta.Files">
+                                <td><a ng-href="{{$ctrl.uploadsUri + file}}" target="_blank">{{file}}</a></td>
+                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeFile(file)">הסר</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <input type="file" filename="$ctrl.newFile" filename-callback="$ctrl.uploadFile" />
+                    </div>
+                </div>
+
+            </uib-tab>
+            <uib-tab index="1" heading="טיפולים">
+
+                <!--treatments-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        טיפולים
+                    </div>
+                    <table class="table" expandable>
+                        <thead>
+                            <tr>
+                                <th>תאריך</th>
+                                <th>הערות</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="treatment in $ctrl.horse.Meta.Treatments | orderByDateDesc track by $index">
+                                <td>{{treatment.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{treatment.Details}}</td>
+                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeTreatment(treatment)">הסר</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <form name="treatmentForm">
+                            <div class="form-group">
+                                <input type="date" class="form-control" ng-model="$ctrl.newTreatment.Date" placeholder="תאריך" required />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="$ctrl.newTreatment.Details" placeholder="הערות" />
+                            </div>
+                            <button type="submit" class="btn btn-success" ng-disabled="treatmentForm.$invalid" ng-click="$ctrl.addTreatment()">הוספה</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!--vaccinations-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        חיסונים
+                    </div>
+                    <table class="table" expandable>
+                        <thead>
+                            <tr>
+                                <th>תאריך</th>
+                                <th>סוג</th>
+                                <th>הערות</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="vaccination in $ctrl.horse.Meta.Vaccinations | orderByDateDesc track by $index">
+                                <td>{{vaccination.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{vaccination.Type}}</td>
+                                <td>{{vaccination.Details}}</td>
+                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeVaccination(vaccination)">הסר</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <form name="vaccinationForm">
+                            <div class="form-group">
+                                <input type="date" class="form-control" ng-model="$ctrl.newVaccination.Date" placeholder="תאריך" required />
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" ng-model="$ctrl.newVaccination.Type" required ng-options="vaccination.id as vaccination.name for vaccination in $ctrl.vaccinations">
+                                    <option value="">בחר חיסון</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="$ctrl.newVaccination.Details" placeholder="הערות" />
+                            </div>
+                            <button type="submit" class="btn btn-success" ng-disabled="vaccinationForm.$invalid" ng-click="$ctrl.addVaccination()">הוספה</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!--shoeing-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        פירזול
+                    </div>
+                    <table class="table" expandable>
+                        <thead>
+                            <tr>
+                                <th>תאריך</th>
+                                <th>הערות</th>
+                                <th>שולם</th>
+                                <th>שם המפרזל</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="shoeing in $ctrl.horse.Meta.Shoeings | orderByDateDesc track by $index">
+                                <td>{{shoeing.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{shoeing.Details}}</td>
+                                <td><input type="checkbox" ng-model="shoeing.Paid"></td>
+                                <td><input style="width:100%" type="text" ng-model="shoeing.ShoerName"></td>
+                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeShoeing(shoeing)">הסר</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <form name="shoeingForm">
+                            <div class="form-group">
+                                <input type="date" class="form-control" ng-model="$ctrl.newShoeing.Date" placeholder="תאריך" required />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="$ctrl.newShoeing.Details" placeholder="הערות" />
+                            </div>
+                            <button type="submit" class="btn btn-success" ng-disabled="shoeingForm.$invalid" ng-click="$ctrl.addShoeing()">הוספה</button>
+                        </form>
+                    </div>
+                </div>
+
+            </uib-tab>
+            <uib-tab index="2" heading="הריונות" ng-if="$ctrl.horse.Meta.Gender == 'female'">
+
+                <!--pregnancies-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        הריונות
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>תאריך התחלה</th>
+                                <th>שלב אחרון</th>
+                                <th>אב</th>
+                                <th>אם/אומנת</th>
+                                <th>הערות</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-class="$ctrl.pregnancyStatus(pregnancy)" ng-repeat="pregnancy in $ctrl.horse.Meta.Pregnancies track by $index">
+                                <td>{{pregnancy.States[0].Date | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{pregnancy.States[pregnancy.States.length-1].Date | ildate: 'DD/MM/YYYY'}}: {{pregnancy.States[pregnancy.States.length-1].State.name}}</td>
+                                <td>{{pregnancy.Father}}</td>
+                                <td><a ui-sref="horse({id:pregnancy.Surrogate.Id})" ng-if="pregnancy.Surrogate">אומנת: {{pregnancy.Surrogate.Name}}</a>
+                                    <a ui-sref="horse({id:pregnancy.Mother.Id})" ng-if="pregnancy.Mother">אם: {{pregnancy.Mother.Name}}</a>
+                                </td>
+                                <td><input type="text" ng-model="pregnancy.Details"></td>
+                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removePregnancy(pregnancy)">הסר</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <form name="pregnancyForm">
+                            <div class="form-group">
+                                <input type="date" class="form-control" ng-model="$ctrl.newPregnancy.Date" placeholder="תאריך" required />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="$ctrl.newPregnancy.Father" placeholder="סוס אב" />
+                            </div>
+                            <div class="form-group">
+                                <label><input type="checkbox" ng-model="$ctrl.newPregnancy.IsSurrogate"> הריון אומנת</label>
+                            </div>
+                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addPregnancy()" ng-disabled="pregnancyForm.$invalid">הוספת הריון</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!--current pregnancy-->
+                <div class="panel panel-default" ng-if="$ctrl.horse.Meta.Pregnancies.length > 0 && !$ctrl.horse.Meta.Pregnancies[$ctrl.horse.Meta.Pregnancies.length-1].Finished">
+                    <div class="panel-heading">
+                        הריון נוכחי
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>תאריך</th>
+                                <th>שלב</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="state in $ctrl.horse.Meta.Pregnancies[$ctrl.horse.Meta.Pregnancies.length-1].States track by $index">
+                                <td>{{state.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{state.State.name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <form name="pregnancyStateForm">
+                            <div class="form-group">
+                                <input type="date" class="form-control" ng-model="$ctrl.newPregnancyState.Date" placeholder="תאריך" required />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="$ctrl.newPregnancyState.State.name" placeholder="שלב" disabled required
+                                />
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" ng-if="$ctrl.newPregnancyState.State.id == 'surrogatePregnancy'" ng-model="$ctrl.horse.Meta.Pregnancies[$ctrl.horse.Meta.Pregnancies.length-1].Surrogate"
+                                    ng-options="{Id:horse.Id,Name:horse.Name} as horse.Name for horse in $ctrl.horses | surrogateHorse: $ctrl.horse"
+                                    required>
+                                    <option value="">בחר אם פונדקאית</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addPregnancyState()" ng-disabled="pregnancyStateForm.$invalid">עבור שלב</button>
+                            <button type="button" class="btn btn-default" ng-click="$ctrl.stopPregnancy()">סיום הריון</button>
+                            <button type="button" class="btn btn-default" ng-click="$ctrl.removePregnancyState()" ng-disabled="$ctrl.horse.Meta.Pregnancies[$ctrl.horse.Meta.Pregnancies.length-1].States.length <= 1">מחיקת שלב</button>
+                        </form>
+                    </div>
+                </div>
+
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

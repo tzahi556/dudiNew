@@ -1,0 +1,25 @@
+﻿<div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav">
+   
+        <li data-ui-sref-active="active" ng-if="$ctrl.lessons"><a ui-sref="lessons">שיבוץ שיעורים</a></li>
+        <li data-ui-sref-active="active" ng-if="$ctrl.farms"><a ui-sref="farms">חוות</a></li>
+        <li data-ui-sref-active="active" ng-if="$ctrl.users"><a ui-sref="users">משתמשים</a></li>
+        <li data-ui-sref-active="active" ng-if="$ctrl.instructors"><a ui-sref="instructors">מדריכים</a></li>
+        <li data-ui-sref-active="active" ng-if="$ctrl.students"><a ui-sref="students">תלמידים</a></li>
+        <li data-ui-sref-active="active" ng-if="$ctrl.reports"><a ui-sref="reports">דוחות</a></li>
+        <li data-ui-sref-active="active" ng-if="$ctrl.horses"><a ui-sref="horses">סוסים</a></li>
+        <li><a target="_blank" ng-if="$ctrl.accounting" href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a></li>
+        <li><a target="_blank" ng-if="$ctrl.files" href="//drive.google.com">Google Drive</a></li>
+        <li><a target="_blank" ng-if="$ctrl.files" href="//www.dropbox.com">DropBox</a></li>
+    </ul>
+    <ul ng-if="$ctrl.username" class="nav navbar-nav navbar-left">
+        <li data-ui-sref-active="active"><a ui-sref="contact">יצירת קשר</a></li>
+        <li data-ui-sref-active="active" class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{$ctrl.username}} <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a ui-sref="logout">התנתק</a></li>
+            </ul>
+        </li>
+    </ul>
+    <notifications-nav ng-if="$ctrl.username"></notifications-nav>
+</div>

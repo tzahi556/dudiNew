@@ -1,0 +1,131 @@
+﻿<div class="panel panel-default">
+    <div class="panel-heading">
+        לו"ז
+        <input class='form-control addedCalender' style='width:150px;' ng-model="$ctrl.searchDate" ng-change='$ctrl.customDate()'  placeholder='לפי תאריך' type='date' />
+      
+            <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'"  style="margin-right:50px;text-decoration:underline"> פעילים - </span>
+            <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'"  style="font-weight:bold;font-size:15px">{{$ctrl.getCounter('active')}} </span>
+            <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'"  style="margin-right:50px;text-decoration:underline"> לא פעילים - </span>
+            <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'"  style="font-weight:bold;font-size:15px">{{$ctrl.getCounter('notActive')}}</span>
+       
+      <div style="float:left">
+            <div id="mainController"></div>
+
+            <div ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="cursor:pointer;text-align:center;" 
+                 ng-click="showDiv = !showDiv"><span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span> &nbsp;ממתינים לשיעור השלמה </div>
+            <div ng-show="showDiv" class="dvContainer">
+                <div class="fc-draggable dvDragElement"
+                      ondragstart="dragStart(event)"
+                      ondragover="allowDrop(event)"
+                      draggable="true" id="{{les.Id}}" ng-repeat="les in $ctrl.lessonsComplete">{{les.FullName}}  ({{les.completionReq}}) - {{les.InstructorName}} </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+        .dvContainer {
+            position: absolute;
+            background-color: white;
+            border: solid 1px gray;
+            border-radius: 10px;
+            font-weight: bold;
+            overflow: auto;
+            z-index: 5000;
+            left: 20px;
+        }
+
+        .dvDragElement {
+            border-bottom: solid 1px gray;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+            .dvDragElement:hover {
+                background: #fcf8e3;
+            }
+    </style>
+
+    <script>
+
+
+        var currentStudentId = "";
+        function dragStart(event) {
+            $(".hadPeami").hide();
+            currentStudentId = event.target.id;
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            
+            $(".hadPeami").show();
+            angular.element(document.getElementById('mainController')).scope().makeDrop(event, currentStudentId);
+            currentStudentId = "";
+
+        }
+
+     
+
+    </script>
+
+
+    <div class="panel-body">
+
+
+        <event event="$ctrl.selectedLesson" delete-callback="$ctrl.eventDelete" close-callback="$ctrl.eventClose" students="$ctrl.students"></event>
+
+        <pay studentid="$ctrl.selectedStudent" selectedpayvalue="$ctrl.selectedPayValue" delete-callback="$ctrl.eventDelete" close-callback="$ctrl.eventClose" students="$ctrl.students"></pay>
+
+        <div class="form-group">
+            <label>מדריכים</label>
+
+            (<div class="checkbox-inline">
+
+
+                <label style="color:blue"><input type="checkbox" ng-model="selectAll" ng-click="$ctrl.reloadCheckUnCheck()" /> סמן הכל</label>
+            </div>)
+
+            <div class="checkbox-inline" ng-repeat="instructor in $ctrl.instructors">
+                <label style="color:{{instructor.Meta.EventsColor}}"><input type="checkbox" name="selectedInstructors[]" ng-model="instructor.Show" ng-click="$ctrl.reloadCalendarData()" /> {{instructor.FirstName}} {{instructor.LastName}}</label>
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <calendar events="$ctrl.filteredLessons"
+                      background-events="$ctrl.backgroundEvents"
+                      resources="$ctrl.resources"
+                      event-change="$ctrl.eventChange"
+                      event-click="$ctrl.eventClick"
+                      event-create="$ctrl.eventCreate"
+                      past-edit="true"
+                      view="agendaDay"
+                      start-date="$ctrl.startDate"
+                      end-date="$ctrl.endDate">
+            </calendar>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-click="$ctrl.modalClick(false)">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">האם לשנות גם אירועים עתידיים?</h4>
+            </div>
+            <div class="modal-body">
+                <button type="button" class="btn btn-primary" ng-click="$ctrl.modalClick(false)" data-dismiss="modal">שנה אירוע נוכחי בלבד</button>
+                <button type="button" class="btn btn-default" ng-click="$ctrl.modalClick(true)" data-dismiss="modal">שנה אירועים עתידיים</button>
+            </div>
+        </div>
+    </div>
+</div>

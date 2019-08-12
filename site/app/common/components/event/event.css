@@ -1,0 +1,113 @@
+.event-background {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 9999;
+    overflow: auto;
+    text-align: center;
+}
+
+    .event-background::before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-left: -4px;
+    }
+
+.event {
+    text-align: initial;
+    border: solid 1px #aaa;
+    padding: 20px;
+    margin-bottom: 10px;
+    background: #fff;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+    min-width: 320px;
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+    .event table.small-padding td {
+        padding: 4px 2px;
+    }
+
+    .event .status-row td {
+        border-top: none;
+    }
+
+        .event .status-row td .form-group {
+            margin-bottom: 5px;
+        }
+
+    .event input:not(input[type="checkbox"]) {
+        border: solid 1px #aaa;
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .event .student-list {
+        position: relative;
+    }
+
+    .event .student-list ul {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        background-color: #fff;
+        border: solid 1px #e1e1e1;
+        box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .event .student-list ul li:hover {
+        background-color: #eaeaea;
+    }
+
+    .event ul {
+        list-style: none;
+        padding: 0px;
+        margin: 0px;
+        margin-bottom: 10px;
+    }
+
+        .event ul.results {
+            position: absolute;
+            right: 30px;
+            left: 30px;
+            margin-top: -10px;
+        }
+
+            .event ul.results li {
+                background-color: #F8F8F8;
+                padding: 10px;
+                border: solid 1px #e1e1e1;
+                border-bottom: none;
+                cursor: pointer;
+            }
+
+                .event ul.results li:last-child {
+                    border-bottom: solid 2px #e1e1e1;
+                }
+
+        .event ul li {
+            padding: 10px;
+            border-top: solid 1px #e1e1e1;
+        }
+
+            .event ul li:last-child {
+                border-bottom: solid 1px #e1e1e1;
+            }
+
+            .event ul li a.left {
+                float: left;
+            }
+
+    .event p {
+        margin-top: 10px;
+        font-weight: bold;
+    }

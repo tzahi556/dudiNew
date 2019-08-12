@@ -1,0 +1,28 @@
+﻿<div class="panel panel-default">
+    <div class="panel-heading">
+        התראות
+    </div>
+    <div class="panel-body" ng-if="$ctrl.isSysAdmin">
+        <a class="btn btn-success btn-xs" ui-sref="notification({id:0})">התראה חדשה</a>
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>מס</th>
+                <th>תאריך</th>
+                <th>התראה</th>
+                <th>הערות</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="notification in $ctrl.notifications | orderBy: 'Date'">
+                <td>{{$index + 1}}</td>
+                <td>{{notification.Date | date:'dd/MM/yyyy'}}</td>
+                <td><a href="" ng-click="$ctrl.redirect(notification)">{{notification.Text}}</a></td>
+                <td><input style="width:100%;" type="text" ng-model="notification.Details" ng-change="$ctrl.update(notification)" ng-model-options="{updateOn: 'blur'}"></td>
+                <td><button class="btn btn-danger btn-xs pull-left" ng-if="notification.Deletable" ng-click="$ctrl.delete(notification.Id)">מחק</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

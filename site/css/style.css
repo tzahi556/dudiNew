@@ -1,0 +1,94 @@
+﻿.ng-invalid {
+    border-color: red;
+}
+
+.green {
+    color: #449d44;
+}
+
+.set-status {
+    background-color: #ffeeee;
+}
+
+.tab-pane {
+    margin-top: 20px;
+}
+
+.warning-icon {
+    background-image: url(../images/warning-icon.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+
+}
+
+
+
+.approve-icon {
+    background-image: url(../images/approve-icon.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+}
+
+.returnred-icon {
+    background-image: url(../images/returnred.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    
+}
+
+
+
+.returngreen-icon {
+  
+    background: url(../images/returngreen.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+}
+
+
+
+.returnred-iconfloat {
+    background: url(../images/returnred.png) ,url(../images/warning-icon.png);
+    background-position: top left 20px,top left ;
+    background-repeat: no-repeat;
+    background-size: 20px 20px,auto;
+    
+}
+
+
+.returngreen-iconfloat {
+    background: url(../images/returngreen.png) ,url(../images/approve-icon.png);
+    background-position: top left 20px,top left ;
+    background-repeat: no-repeat;
+    background-size: 20px 20px,auto;
+    
+}
+
+
+
+.redvi-icon {
+    background-image: url(../images/approve-iconred.png),url(../images/currency.png);
+    background-position: top left 20px,top left ;
+    background-repeat: no-repeat;
+    background-size: 20px 20px,30px 30px;
+
+}
+
+.redvi2-icon {
+     background-image: url(../images/approve-iconred.png),url(../images/currencyred.png);
+    background-position: top left 20px,top left ;
+    background-repeat: no-repeat;
+    background-size: 20px 20px,30px 30px;
+
+
+}
+
+.expandable-collapsed tr:nth-child(n+3){
+    display: none;
+}
+
+.table-control {
+    width: 100%;
+}
