@@ -30,7 +30,7 @@ namespace FarmsApi.Services
                     {
 
 
-                        // User Userf = Context.Users.Where(x => x.Id == 50).FirstOrDefault();
+                        // User Userf = Context.Users.Where(x => x.Id == 50).FirstOrDefault();yyy
 
                         var Meta = JObject.Parse(Userf.Meta);
 
