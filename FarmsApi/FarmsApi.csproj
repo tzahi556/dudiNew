@@ -136,6 +136,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Controllers\InvoiceController_Prod.cs" />
     <Compile Include="Controllers\InvoiceController_Test.cs" />
