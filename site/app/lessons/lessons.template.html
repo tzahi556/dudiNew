@@ -90,7 +90,7 @@
             </div>)
 
             <div class="checkbox-inline" ng-repeat="instructor in $ctrl.instructors">
-                <label style="color:{{instructor.Meta.EventsColor}}"><input type="checkbox" name="selectedInstructors[]" ng-model="instructor.Show" ng-click="$ctrl.reloadCalendarData()" /> {{instructor.FirstName}} {{instructor.LastName}}</label>
+                <label style="color:{{instructor.EventsColor}}"><input type="checkbox" name="selectedInstructors[]" ng-model="instructor.Show" ng-click="$ctrl.reloadCalendarData()" /> {{instructor.FirstName}} {{instructor.LastName}}</label>
             </div>
         </div>
 

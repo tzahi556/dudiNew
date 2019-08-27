@@ -136,7 +136,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Controllers\InvoiceController_Prod.cs" />
     <Compile Include="Controllers\InvoiceController_Test.cs" />
@@ -147,6 +146,7 @@
     <Compile Include="Controllers\HorsesController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="DataModels\AvailableHours.cs" />
     <Compile Include="DataModels\UserHorses.cs" />
     <Compile Include="DataModels\Files.cs" />
     <Compile Include="DataModels\Messages.cs" />

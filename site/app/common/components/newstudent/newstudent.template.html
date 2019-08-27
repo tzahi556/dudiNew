@@ -12,18 +12,18 @@
                         <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />
                     </div>
                     <div class="form-group">
-                        <imagepicker model="$ctrl.user.Meta.Image" image-label="תמונת תלמיד" />
+                        <imagepicker model="$ctrl.user.Image" image-label="תמונת תלמיד" />
                     </div>
                     <div class="form-group">
                         <label>פעיל</label>
-                        <select class="form-control" ng-model="$ctrl.user.Meta.Active" required>
+                        <select class="form-control" ng-model="$ctrl.user.Active" required>
                             <option value="active">פעיל</option>
                             <option value="notActive">לא פעיל</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>מספר לקוח</label>
-                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.Meta.ClientNumber" />
+                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
                     </div>-->
                     <div class="form-group">
                         <label>שם פרטי </label>
@@ -35,35 +35,35 @@
                     </div>
                     <div class="form-group">
                         <label>ת.ז.</label>
-                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.IdNumber" required />
+                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.scope.studentTemplate.IdNumber" required />
                     </div>
                     <!--<div class="form-group">
                         <label>תאריך לידה</label>
-                        <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.Meta.BirthDate" />
+                        <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" />
                     </div> -->
                     <div class="form-group">
                         <label>שם אם</label>
-                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.ParentName2" />
+                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.scope.studentTemplate.ParentName2" />
                     </div>
                     <div class="form-group">
                         <label>שם אב</label>
-                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.ParentName" />
+                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.scope.studentTemplate.ParentName" />
                     </div>
                     <div class="form-group">
                         <label>כתובת</label>
-                        <input type="text" name="address" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.Address" />
+                        <input type="text" name="address" class="form-control" ng-model="$ctrl.scope.studentTemplate.Address" />
                     </div>
                     <div class="form-group">
                         <label>טלפון</label>
-                        <input type="tel" name="phoneNumber" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.PhoneNumber" />
+                        <input type="text" name="phoneNumber" class="form-control" ng-model="$ctrl.scope.studentTemplate.PhoneNumber" />
                     </div>
                     <!--<div class="form-group">
                         <label>טלפון 2</label>
-                        <input type="tel" name="phoneNumber2" class="form-control" ng-model="$ctrl.user.Meta.PhoneNumber2" />
+                        <input type="tel" name="phoneNumber2" class="form-control" ng-model="$ctrl.user.PhoneNumber2" />
                     </div>-->
                     <div class="form-group">
                         <label>אימייל</label>
-                        <input type="email" name="email" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.AnotherEmail" />
+                        <input type="email" name="email" class="form-control" ng-model="$ctrl.scope.studentTemplate.AnotherEmail" />
                     </div>
                    
                     <!--<div class="form-group" ng-if="$ctrl.farms.length > 1">
@@ -74,20 +74,20 @@
                     </div>-->
                     <div class="form-group">
                         <label>סגנון רכיבה</label>
-                        <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles" ng-model="$ctrl.scope.studentTemplate.Meta.Style"
+                        <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles" ng-model="$ctrl.scope.studentTemplate.Style"
                                 required>
                             <option value="">בחר סגנון רכיבה</option>
                         </select>
                     </div>
-                    <div class="form-group" ng-if="$ctrl.scope.studentTemplate.Meta.Style.indexOf('treatment')!=-1">
+                    <div class="form-group" ng-if="$ctrl.scope.studentTemplate.Style.indexOf('treatment')!=-1">
                         <label>קופ"ח</label>
-                        <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs" ng-model="$ctrl.scope.studentTemplate.Meta.HMO" required>
+                        <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs" ng-model="$ctrl.scope.studentTemplate.HMO" required>
                             <option value="">בחר קופת חולים</option>
                         </select>
                     </div>
                     <!--<div class="form-group">
                         <label>חבר נבחרת</label>
-                        <select class="form-control" ng-model="$ctrl.user.Meta.TeamMember">
+                        <select class="form-control" ng-model="$ctrl.user.TeamMember">
                             <option value="">בחר אפשרות</option>
                             <option value="yes">כן</option>
                             <option value="no">לא</option>
@@ -95,11 +95,11 @@
                     </div>-->
                     <div class="form-group">
                         <label>עלות</label>
-                        <input type="number" name="cost" class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.Cost" required />
+                        <input type="number" name="cost" class="form-control" ng-model="$ctrl.scope.studentTemplate.Cost" required />
                     </div>
                     <div class="form-group">
                         <label>סוג תשלום</label>
-                        <select class="form-control" ng-model="$ctrl.scope.studentTemplate.Meta.PayType" required>
+                        <select class="form-control" ng-model="$ctrl.scope.studentTemplate.PayType" required>
                             <option value="">בחר אפשרות</option>
                             <option value="lessonCost">עלות שיעור</option>
                             <option value="monthCost">עלות חודשית</option>
@@ -107,7 +107,7 @@
                     </div>
                     <!--<div class="form-group">
                         <label>הערות</label>
-                        <textarea class="form-control" ng-model="$ctrl.user.Meta.Details"></textarea>
+                        <textarea class="form-control" ng-model="$ctrl.user.Details"></textarea>
                     </div>-->
 
                        

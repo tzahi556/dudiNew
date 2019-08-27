@@ -58,28 +58,7 @@
             }
         });
 
-        $stateProvider.state('lessons', {
-            url: '/lessons/',
-            views: {
-                'main': {
-                    template: '<lessons instructors="$ctrl.instructors" students="$ctrl.students"></lessons>',
-                    controller: function (instructors, students) {
-                        this.instructors = instructors;
-                        this.students = students;
-                    },
-                    controllerAs: '$ctrl',
-                    resolve: {
-                        instructors: function (usersService) {
-                            return usersService.getUsers(['instructor', 'profAdmin']);
-                        },
-                        students: function (usersService) {
-                            return usersService.getUsers('student', true);
-                        }
-                    }
-                }
-            }
-        });
-
+       
         $stateProvider.state('notifications', {
             url: '/notifications/',
             views: {
@@ -257,21 +236,51 @@
                 }
             }
         });
+        $stateProvider.state('lessons', {
+            url: '/lessons/',
+            views: {
+                'main': {
+                    template: '<lessons instructors="$ctrl.instructors" students="$ctrl.students" availablehours="$ctrl.availablehours"></lessons>',
+                    controller: function (instructors, students, availablehours) {
+                        this.instructors = instructors;
+                        this.students = students;
+                        this.availablehours = availablehours;
+                    },
+                    controllerAs: '$ctrl',
+                    resolve: {
+                        instructors: function (usersService) {
+                            return usersService.getUsers(['instructor', 'profAdmin']);
+                        },
+                        availablehours: function (usersService, $stateParams) {
+                            return usersService.getAvailablehours();
+                        },
+                        students: function (usersService) {
+                            return usersService.getUsers('student', true);
+                        }
+                    }
+                }
+            }
+        });
 
         $stateProvider.state('instructor', {
             url: '/instructor/{id}/',
             views: {
                 'main': {
-                    template: '<instructor user="$ctrl.user" farms="$ctrl.farms"></instructor>',
-                    controller: function (user, farms) {
+                    template: '<instructor user="$ctrl.user" farms="$ctrl.farms" availablehours="$ctrl.availablehours"></instructor>',
+                    controller: function (user, farms, availablehours) {
                         this.user = user;
                         this.farms = farms;
+                        this.availablehours = availablehours;
                     },
                     controllerAs: '$ctrl',
                     resolve: {
                         user: function (usersService, $stateParams) {
                             return usersService.getUser($stateParams.id);
                         },
+                        availablehours: function (usersService, $stateParams) {
+                            return usersService.getAvailablehours($stateParams.id);
+                        },
+
                         farms: function (farmsService) {
                             return farmsService.getFarms();
                         }

@@ -43,13 +43,13 @@
     function _changeStudentstatus(studentId) {
 
 
-        for (var i in this.changeLessonsStudent) {
+        //for (var i in this.changeLessonsStudent) {
 
-            if (this.changeLessonsStudent[i].StudentId == studentId) {
+        //    if (this.changeLessonsStudent[i].StudentId == studentId) {
 
-                this.changeLessonsStudent[i].ChangeStatus = this.statuses[studentId];
-            }
-        }
+        //        this.changeLessonsStudent[i].ChangeStatus = this.statuses[studentId];
+        //    }
+        //}
 
 
     }
@@ -119,12 +119,12 @@
         this.lessonsQty = 0;
         this.affectChildren = false;
 
-        this.changeLessonsStudent = [];
-        for (var i in selectedLesson.statuses) {
+        //this.changeLessonsStudent = [];
+        //for (var i in selectedLesson.statuses) {
 
-            this.changeLessonsStudent.push({ StudentId: selectedLesson.statuses[i].StudentId, SourceStatus: selectedLesson.statuses[i].Status, ChangeStatus: selectedLesson.statuses[i].Status });
+        //    this.changeLessonsStudent.push({ StudentId: selectedLesson.statuses[i].StudentId, SourceStatus: selectedLesson.statuses[i].Status, ChangeStatus: selectedLesson.statuses[i].Status });
 
-        }
+        //}
     }
 
     function _delete() {
@@ -205,63 +205,65 @@
     function _close() {
       
         // כל זה בשביל לעדכן את הסטטוס בעת שינוי של הגעה
-        for (var i in this.changeLessonsStudent) {
+        //for (var i in this.changeLessonsStudent) {
            
-            var currentUserId = this.changeLessonsStudent[i].StudentId;
-            var ChangeStatus = this.changeLessonsStudent[i].ChangeStatus;
-            var SourceStatus = this.changeLessonsStudent[i].SourceStatus;
-            if (SourceStatus != ChangeStatus) {
-                this.usersService.getUser(currentUserId).then(function (user) {
-                    this.user = user;
+        //    var currentUserId = this.changeLessonsStudent[i].StudentId;
+        //    var ChangeStatus = this.changeLessonsStudent[i].ChangeStatus;
+        //    var SourceStatus = this.changeLessonsStudent[i].SourceStatus;
+        //    if (SourceStatus != ChangeStatus) {
+        //        this.usersService.getUser(currentUserId).then(function (user) {
+        //            this.user = user;
 
-                    //רק אם מדובר בשיעור
-                    if (this.user.Meta.PayType == 'lessonCost') {
-                        if ((SourceStatus == null || SourceStatus == "notAttended") && ChangeStatus == "attended") {
-                            this.user.AccountStatus -= user.Meta.Cost;
-                        }
+        //            //רק אם מדובר בשיעור
+        //            if (this.user.Meta.PayType == 'lessonCost') {
+        //                if ((SourceStatus == null || SourceStatus == "notAttended") && ChangeStatus == "attended") {
+        //                    this.user.AccountStatus -= user.Meta.Cost;
+        //                }
 
-                        if (SourceStatus == "attended") {
-                            this.user.AccountStatus += user.Meta.Cost;
-                        }
-                    }
+        //                if (SourceStatus == "attended") {
+        //                    this.user.AccountStatus += user.Meta.Cost;
+        //                }
+        //            }
 
-                    this.usersService.updateUser(this.user).then(function (user) {
-
-
-                        this.copyStatuses(true);
-                        this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
-                        this.event = null;
+        //            this.usersService.updateUser(this.user).then(function (user) {
 
 
-
-                    }.bind(this));
-
-
-                }.bind(this));
-
-
-            }
-            else
-            {
-                this.copyStatuses(true);
-                this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
-                this.event = null;
-
-
-            }
+        //                this.copyStatuses(true);
+        //                this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
+        //                this.event = null;
 
 
 
-        }
-
-        if (this.changeLessonsStudent.length == 0) {
-            this.copyStatuses(true);
-            this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
-            this.event = null;
-        }
+        //            }.bind(this));
 
 
+        //        }.bind(this));
 
+
+        //    }
+        //    else
+        //    {
+        //        this.copyStatuses(true);
+        //        this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
+        //        this.event = null;
+
+
+        //    }
+
+
+
+        //}
+
+        //if (this.changeLessonsStudent.length == 0) {
+        //    this.copyStatuses(true);
+        //    this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
+        //    this.event = null;
+        //}
+
+
+        this.copyStatuses(true);
+        this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
+        this.event = null;
 
 
 
@@ -281,7 +283,7 @@
         this.event.students.push(studentId);
         //for (var i in selectedLesson.statuses) {
 
-        this.changeLessonsStudent.push({ StudentId: studentId, SourceStatus: null, ChangeStatus: null});
+      //  this.changeLessonsStudent.push({ StudentId: studentId, SourceStatus: null, ChangeStatus: null});
 
         //}
 

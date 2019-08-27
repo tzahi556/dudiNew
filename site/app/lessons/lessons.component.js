@@ -7,7 +7,8 @@
         controller: LessonsController,
         bindings: {
             instructors: '<',
-            students: '<'
+            students: '<',
+            availablehours:'<'
         }
     });
 
@@ -150,9 +151,10 @@
         
         function _getCounter(type) {
             var Count = 0;
+          
             for (var i in this.students) {
 
-                if (!this.students[i].Deleted && this.students[i].Meta.Active == type) {
+                if (!this.students[i].Deleted && this.students[i].Active == type) {
                     Count++;
                 }
             }
@@ -304,11 +306,20 @@
                     this.resources.push({
                         id: this.instructors[i].Id,
                         title: this.instructors[i].FirstName + ' ' + this.instructors[i].LastName,
-                        eventColor: this.instructors[i].Meta.EventsColor,
+                        eventColor: this.instructors[i].EventsColor,
                         eventTextColor: '#000'
                     });
 
-                    this.backgroundEvents = this.backgroundEvents.concat(this.instructors[i].Meta.AvailableHours);
+
+                    var avArray = [];
+                 
+                    for (var j in this.availablehours) {
+                        if (this.availablehours[j].UserId == this.instructors[i].Id)
+                            avArray.push(this.availablehours[j]);
+                    }
+
+                    
+                    this.backgroundEvents = this.backgroundEvents.concat(avArray);
 
                     for (var e in this.backgroundEvents) {
                         if (!this.backgroundEvents[e]) {
@@ -419,8 +430,10 @@
 
 
                 //  var payValue = $("#" + elemId).text().replace(")", "").replace("(", "").replace("-", "");//.repalce("&#x200E;","");
-                this.selectedPayValue = $("#" + elemId).text();
+                this.selectedPayValue = -80; //$("#" + elemId).text();
                 this.selectedStudent = elemId.replace("dvPaid_", "");//this.getLessonById(event.id);
+
+             
                 this.scope.$broadcast('pay.show', this.selectedStudent, this.selectedPayValue);
             }
             else {

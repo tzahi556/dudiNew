@@ -26,7 +26,7 @@ namespace FarmsApi.DataModels
         public DbSet<Files> Files { get; set; }
         public DbSet<Payments> Payments { get; set; }
         public DbSet<UserHorses> UserHorses { get; set; }
-
+        public DbSet<AvailableHours> AvailableHours { get; set; }
         public Context() : base("Farms") { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

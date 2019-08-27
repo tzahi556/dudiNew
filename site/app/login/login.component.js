@@ -13,11 +13,11 @@
     function LoginController(authenticationService, $state) {
         this.login = _login;
        
-        //this.email = "sysadmin@gmail.com";
-        //this.password = "123";
+        this.email = "sysadmin@gmail.com";
+        this.password = "123";
         function _login() {
            
-         
+        
             authenticationService.login({ userName: this.email, password: this.password }).then(function (res) {
                 location.href = './';
             },

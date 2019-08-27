@@ -13,12 +13,13 @@
         this.deleteUser = _deleteUser;
         this.getUserIdByEmail = _getUserIdByEmail;
         this.roles = _roles();
+        this.getUserExpensesByUserId = _getUserExpensesByUserId;
 
         this.getPaymentsByUserId = _getPaymentsByUserId;
         this.getUserUserhorsesByUserId = _getUserUserhorsesByUserId;
         this.getUserFilesByUserId = _getUserFilesByUserId;
         this.getUserCommitmentsByUserId = _getUserCommitmentsByUserId;
-        this.getUserExpensesByUserId = _getUserExpensesByUserId;
+        this.getAvailablehours = _getAvailablehours;
 
         function _getUsers(role, includeDeleted) {
             var deferred = $q.defer();
@@ -55,6 +56,12 @@
                 $http.get(sharedValues.apiUrl + 'users/getuser/' + (id || '')).then(function (res) {
                     var user = res.data;
                    
+                    // הישן
+                    //var user = res.data;
+                    //user.Meta = angular.fromJson(user.Meta);
+
+
+
                     deferred.resolve(user);
                 });
             }
@@ -71,6 +78,23 @@
             });
             return deferred.promise;
         }
+
+
+
+
+        function _getAvailablehours(id) {
+
+          
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'users/getAvailablehours/' + (id || '')).then(function (res) {
+                var user = res.data;
+
+                deferred.resolve(user);
+            });
+            return deferred.promise;
+        }
+
+        
 
         function _getUserUserhorsesByUserId(id) {
             var deferred = $q.defer();
@@ -117,23 +141,23 @@
         function _updateUser(user) {
            
             var deferred = $q.defer();
-            user.Meta = angular.toJson(user.Meta);
+         //   user.Meta = angular.toJson(user.Meta);
            
             $http.post(sharedValues.apiUrl + 'users/updateuser', user).then(function (res) {
              
                 var user = res.data;
-                user.Meta = angular.fromJson(user.Meta);
+              //  user.Meta = angular.fromJson(user.Meta);
                 deferred.resolve(user);
             });
             return deferred.promise;
         }
 
-        function _updateUserMultiTables(user, userhorses) {
-           
-           
-            var dataobj = [user, userhorses];
+        function _updateUserMultiTables(user, payments, files, commitments, expenses, userhorses, availablehours) {
+          
+          
+            var dataobj = [user, payments, files, commitments, expenses, userhorses, availablehours];
             var deferred = $q.defer();
-            user.Meta = "";//angular.toJson(user.Meta);
+           // user.Meta = "";//angular.toJson(user.Meta);
 
           
 

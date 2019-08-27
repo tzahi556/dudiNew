@@ -25,7 +25,16 @@ namespace FarmsApi.Services
         }
 
 
-       
+
+
+        [Route("getAvailablehours/{id?}")]
+        [HttpGet]
+        public IHttpActionResult getAvailablehours(int? id = null)
+        {
+            return Ok(UsersService.getAvailablehours(id));
+        }
+
+
         [Route("getpaymentsbyuserid/{id?}")]
         [HttpGet]
         public IHttpActionResult getpaymentsbyuserid(int? id = null)

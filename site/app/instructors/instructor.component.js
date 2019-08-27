@@ -7,7 +7,8 @@
         controller: InstructorController,
         bindings: {
             user: '<',
-            farms: '<'
+            farms: '<',
+            availablehours:'<'
         }
     });
 
@@ -15,13 +16,14 @@
         this.scope = $scope;
         this.submit = _submit.bind(this);
         this.delete = _delete.bind(this);
-        this.user.Meta.AvailableHours = this.user.Meta.AvailableHours || [];
+        this.availablehours = this.availablehours || [];
         this.eventClick = _eventClick.bind(this);
         this.eventChange = _eventChange.bind(this);
         this.eventCreate = _eventCreate.bind(this);
         this.getLastEventId = _getLastEventId.bind(this);
 
         this.initInstructor = function () {
+           // alert(this.availablehours.length);
             this.resources = [{ id: this.user.Id, title: 'שעות עבודה' }];
             this.selfEdit = angular.fromJson(localStorage.getItem('authorizationData')).userName == this.user.Email;
         }.bind(this);
@@ -30,7 +32,7 @@
         function _submit() {
             if (this.scope.instructorForm.$valid) {
                 this.user.Role = this.user.Role || 'instructor';
-                usersService.updateUser(this.user).then(function (user) {
+                usersService.updateUserMultiTables(this.user, [], [], [], [], [], this.availablehours).then(function (user) {
                     this.user = user;
                     this.initInstructor();
                     alert('נשמר בהצלחה');
@@ -48,36 +50,40 @@
         }
 
         function _eventChange(event) {
-            for (var i in this.user.Meta.AvailableHours) {
-                if (this.user.Meta.AvailableHours[i].id == event.id) {
-                    this.user.Meta.AvailableHours[i].start = event.start.format('HH:mm');
-                    this.user.Meta.AvailableHours[i].end = event.end.format('HH:mm');
-                    this.user.Meta.AvailableHours[i].dow = [event.start.format('e')];
+         
+            for (var i in this.availablehours) {
+               
+                if (this.availablehours[i].Id == event.Id) {
+                    this.availablehours[i].start = event.start.format('HH:mm');
+                    this.availablehours[i].end = event.end.format('HH:mm');
+                    this.availablehours[i].dow = event.start.format('e');//[event.start.format('e')];
                 }
             }
         }
 
         function _eventClick(event) {
-            for (var i in this.user.Meta.AvailableHours) {
-                if (this.user.Meta.AvailableHours[i].id == event.id) {
-                    this.user.Meta.AvailableHours.splice(i, 1);
+            for (var i in this.availablehours) {
+                if (this.availablehours[i].Id == event.Id) {
+                    this.availablehours.splice(i, 1);
                 }
             }
         }
 
         function _eventCreate(start, end, jsEvent, view, resource) {
-            var eventId = this.getLastEventId(this.user.Meta.AvailableHours) + 1;
+            var eventId = this.getLastEventId(this.availablehours) + 1;
             var event = {
-                id: eventId,
+                Id: 0,
                 start: start.format('HH:mm'),
                 end: end.format('HH:mm'),
-                dow: [start.format('e')],
+                dow: start.format('e'),
+                UserId: this.user.Id,
                 resourceId: resource.id
             };
-            this.user.Meta.AvailableHours.push(event);
+            this.availablehours.push(event);
         }
 
         function _getLastEventId(events) {
+            
             var max = 0;
             for (var i in events) {
                 if (events[i].id >= max) {

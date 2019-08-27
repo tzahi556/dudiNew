@@ -19,7 +19,7 @@
         var self = this;
         this.scope = $scope;
        // this.user = [];
-      //  this.user.Meta = "";
+      //  this.user = "";
         this.hide = _hide.bind(this);
         this.close = _close.bind(this);
         this.HMOs = sharedValues.HMOs;
@@ -32,7 +32,7 @@
         function _onShow(event, studentTemplateClone) {
            
             this.scope.studentTemplate = angular.copy(studentTemplateClone);
-            this.scope.studentTemplate.Meta = "";
+            this.scope.studentTemplate = "";
             this.scope.studentTemplate.FirstName = "";
             this.scope.studentTemplate.LastName = "";
           
@@ -50,11 +50,11 @@
 
            
             this.scope.studentTemplate.Id = 0;
-            this.scope.studentTemplate.Email = this.scope.studentTemplate.Meta.IdNumber;
-            this.scope.studentTemplate.Password = this.scope.studentTemplate.Meta.IdNumber;
-            this.scope.studentTemplate.Meta.Active = 'active';
+            this.scope.studentTemplate.Email = this.scope.studentTemplate.IdNumber;
+            this.scope.studentTemplate.Password = this.scope.studentTemplate.IdNumber;
+            this.scope.studentTemplate.Active = 'active';
             this.scope.studentTemplate.Role = 'student';
-            this.scope.studentTemplate.AccountStatus = 0;
+          //  this.scope.studentTemplate.AccountStatus = 0;
 
 
          //   this.user.Farm_Id = this.scope.Farm_Id;

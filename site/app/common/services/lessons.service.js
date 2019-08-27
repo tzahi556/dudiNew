@@ -104,6 +104,7 @@
         }
 
         function _updateStudentLessonsStatuses(statuses) {
+          
             var deferred = $q.defer();
             $http.post(sharedValues.apiUrl + 'lessons/updateStudentLessonsStatuses/', statuses).then(function (res) {
                 deferred.resolve(res.data);

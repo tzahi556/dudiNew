@@ -35,6 +35,8 @@
 
         this.initUser = function () {
             // set default farm
+
+           
             if (this.farms.length == 1 && this.user.Role != 'sysAdmin') {
                 this.user.Farm_Id = this.user.Farm_Id || this.farms[0].Id;
             }

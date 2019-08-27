@@ -12,7 +12,7 @@
             <input class="form-control" type="text" ng-model="$ctrl.studentFilter" />
             <div class="student-list">
                 <ul ng-show="$ctrl.studentFilter != '' && $ctrl.studentFilter ">
-                    <li ng-click="$ctrl.addStudentToEvent(student)" ng-if="student.Meta.Active == 'active'" ng-repeat="student in $ctrl.students | filterStudents: $ctrl.studentFilter ">{{student.FirstName}} {{student.LastName}} <span ng-if="student.Meta.Active == 'notActive'">(לא פעיל)</span></li>
+                    <li ng-click="$ctrl.addStudentToEvent(student)" ng-if="student.Active == 'active'" ng-repeat="student in $ctrl.students | filterStudents: $ctrl.studentFilter ">{{student.FirstName}} {{student.LastName}} <span ng-if="student.Active == 'notActive'">(לא פעיל)</span></li>
                 </ul>
             </div>
             <!--<select class="form-control" ng-change="$ctrl.addStudentToEvent()" ng-options="student.Id as student.FirstName + ' ' + student.LastName for student in $ctrl.students | filterDeletedStudents" ng-model="$ctrl.selectedStudent">
@@ -32,7 +32,7 @@
                 <tr ng-repeat-start="studentId in $ctrl.event.students track by $index">
                     <td colspan="3">
                         <a href="" ui-sref="student({id:studentId})">{{$ctrl.studentDataById(studentId).FirstName}} {{$ctrl.studentDataById(studentId).LastName}}</a>
-                        <a href="tel:{{$ctrl.studentDataById(studentId).Meta.PhoneNumber}}">{{$ctrl.studentDataById(studentId).Meta.PhoneNumber}}</a>
+                        <a href="tel:{{$ctrl.studentDataById(studentId).PhoneNumber}}">{{$ctrl.studentDataById(studentId).PhoneNumber}}</a>
 
                         <a class="pull-left close" ng-click="$ctrl.removeStudentFromEvent(studentId)" href="">&times;</a>
                     </td>

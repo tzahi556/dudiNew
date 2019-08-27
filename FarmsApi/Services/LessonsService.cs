@@ -83,7 +83,8 @@ namespace FarmsApi.Services
                         status = studentLesson != null ? studentLesson.Status : null,
                         statusDetails = studentLesson != null ? studentLesson.Details : null,
                         isComplete = studentLesson != null ? studentLesson.IsComplete : 0,
-                        studentName = student.FirstName 
+                        lessprice = studentLesson.Price,
+                        studentName = student.FirstName + " " + student.LastName + ((IsPrice) ? "<a id=dvPaid_" + studentLesson.User_Id.ToString() + " style='color:" + ((student.Id < 0) ? "red" : "blue") + ";font-weight:bold'> &#x200E;(" + student.Id + ")&#x200E; </a> " : "")
                     };
 
             // var lessons = q.OrderBy(l => l.id).Distinct().ToList();
@@ -106,6 +107,7 @@ namespace FarmsApi.Services
                             end = Lesson.end,
                             editable = true,
                             resourceId = Lesson.resourceId,
+                            lessprice = Lesson.lessprice,
                             details = Lesson.details,
                             students = students.Select(s => s.StudentId).ToArray(),
                             statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete }).ToArray(),
@@ -193,16 +195,34 @@ namespace FarmsApi.Services
                         var StudentLesson = Context.StudentLessons.SingleOrDefault(sl => sl.User_Id == StudentId && sl.Lesson_Id == LessonId);
                         if (StudentLesson != null)
                         {
-                            StudentLesson.Status = Status["status"].Value<string>();
-                            StudentLesson.Details = Status["details"].Value<string>();
-                            StudentLesson.IsComplete = Status["isComplete"].Value<int>();
+                            // אם שלחתי לעדכון מחיר שיעור
+                            if (Status["lessPrice"] != null)
+                            {
+                                StudentLesson.Price = Status["lessPrice"].Value<double>();
+                            }
 
+
+
+                            if (Status["status"] != null)
+                            {
+                                
+                                StudentLesson.Status = Status["status"].Value<string>();
+                                StudentLesson.Details = Status["details"].Value<string>();
+                                StudentLesson.IsComplete = Status["isComplete"].Value<int>();
+                            }
                             Context.Entry(StudentLesson).State = System.Data.Entity.EntityState.Modified;
                         }
                     }
                     Context.SaveChanges();
                 }
             }
+
+
+
+           
+
+
+
         }
 
         public static JObject UpdateLesson(JObject Lesson, bool changeChildren, int? lessonsQty)

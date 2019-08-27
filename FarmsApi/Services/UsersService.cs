@@ -7,6 +7,7 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -20,15 +21,16 @@ namespace FarmsApi.Services
 
         public static void UpdateUsers()
         {
-            try
-            {
-                using (var Context = new Context())
-                {
-                    // var Users = Context.Users.Where(x=>x.Id==55).ToList();
-                    var Users = Context.Users.ToList();
-                    foreach (User Userf in Users)
-                    {
 
+            using (var Context = new Context())
+            {
+                var Users = Context.Users.Where(x=>x.Id==46 || x.Id == 57).ToList();
+                //var Users = Context.Users.ToList();
+                foreach (User Userf in Users)
+                {
+
+                    try
+                    {
 
                         // User Userf = Context.Users.Where(x => x.Id == 50).FirstOrDefault();yyy
 
@@ -258,6 +260,30 @@ namespace FarmsApi.Services
 
                         //#endregion
 
+                        #region AvailableHours
+                        if (Meta["AvailableHours"] != null)
+                        {
+                            foreach (var Item in Meta["AvailableHours"])
+                            {
+                                AvailableHours Exp = new AvailableHours();
+                                Exp.UserId = Userf.Id;
+                                Exp.resourceId = CheckifExistInt(Item["resourceId"]);
+                                Exp.start = CheckifExistStr(Item["start"]);
+                                Exp.end = CheckifExistStr(Item["end"]);
+
+                                string res = (Item["dow"].ToString()).Replace("[", "").Replace("]", "").Replace("\"", "").Trim();
+
+                              //  string res = Regex.Replace(Item["dow"].ToString(), "\"[^\"]*\"", string.Empty);
+                                Exp.dow = res;//CheckifExistStr(CheckifExistInt(res));
+                             
+                                Context.AvailableHours.Add(Exp);
+                                //   Context.SaveChanges();
+                                // Item["resourceId"] = Userf.Id;
+                            }
+                        }
+
+                        #endregion
+
                         //#region Commitments
                         //if (Meta["Commitments"] != null)
                         //{
@@ -321,41 +347,40 @@ namespace FarmsApi.Services
 
                         //#endregion
 
-
+                        Context.SaveChanges();
                     }
-
-                    Context.SaveChanges();
-
-                }
-            }
-            catch (DbEntityValidationException e)
-            {
-                foreach (var eve in e.EntityValidationErrors)
-                {
-                    //Debug.WriteLine(@"Entity of type ""{0}"" in state ""{1}"" 
-                    // has the following validation errors:",
-                    //eve.Entry.Entity.GetType().Name,
-                    // eve.Entry.State);
-                    foreach (var ve in eve.ValidationErrors)
+                    catch (DbEntityValidationException e)
                     {
-                        // Debug.WriteLine(@"- Property: ""{0}"", Error: ""{1}""",
-                        //  ve.PropertyName, ve.ErrorMessage);
+                        foreach (var eve in e.EntityValidationErrors)
+                        {
+                            //Debug.WriteLine(@"Entity of type ""{0}"" in state ""{1}"" 
+                            // has the following validation errors:",
+                            //eve.Entry.Entity.GetType().Name,
+                            // eve.Entry.State);
+                            foreach (var ve in eve.ValidationErrors)
+                            {
+                                // Debug.WriteLine(@"- Property: ""{0}"", Error: ""{1}""",
+                                //  ve.PropertyName, ve.ErrorMessage);
+                            }
+                        }
+                        throw;
+                    }
+                    catch (DbUpdateException e)
+                    {
+                        //Add your code to inspect the inner exception and/or
+                        //e.Entries here.
+                        //Or just use the debugger.
+                        //Added this catch (after the comments below) to make it more obvious 
+                        //how this code might help this specific problem
+                    }
+                    catch (Exception e)
+                    {
+
                     }
                 }
-                throw;
-            }
-            catch (DbUpdateException e)
-            {
-                //Add your code to inspect the inner exception and/or
-                //e.Entries here.
-                //Or just use the debugger.
-                //Added this catch (after the comments below) to make it more obvious 
-                //how this code might help this specific problem
-            }
-            catch (Exception e)
-            {
 
             }
+
 
         }
 
@@ -410,13 +435,24 @@ namespace FarmsApi.Services
 
         }
 
+
+        public static List<AvailableHours> getAvailablehours(int? Id)
+        {
+            using (var Context = new Context())
+            {
+
+                var AvailableHoursList = Context.AvailableHours.Where(u => u.UserId == Id || Id==null).ToList();
+
+                return AvailableHoursList;
+            }
+        }
+
         public static List<Payments> getpaymentsbyuserid(int? Id)
         {
             using (var Context = new Context())
             {
 
                 var PaymentsList = Context.Payments.Where(u => u.UserId == Id).ToList();
-
 
                 return PaymentsList;
             }
@@ -588,14 +624,319 @@ namespace FarmsApi.Services
 
 
             User u = UpdateUser(dataObj[0].ToObject<User>());
-            List<UserHorses> uhs = dataObj[1].ToObject<List<UserHorses>>();
+
+            List<Payments> p = dataObj[1].ToObject<List<Payments>>();
+            UpdatePaymentsObject(p, u);
+
+            List<Files> f = dataObj[2].ToObject<List<Files>>();
+            UpdateFilesObject(f, u);
+
+            List<Commitments> c = dataObj[3].ToObject<List<Commitments>>();
+            UpdateCommitmentsObject(c, u);
+
+            List<Expenses> e = dataObj[4].ToObject<List<Expenses>>();
+            UpdateExpensesObject(e, u);
+
+            List<UserHorses> uhs = dataObj[5].ToObject<List<UserHorses>>();
             UpdateUserHorsesObject(uhs, u);
 
+            try
+            {
+                List<AvailableHours> uav = dataObj[6].ToObject<List<AvailableHours>>();
+                UpdateAvailableHoursObject(uav, u);
 
+            }
+            catch (Exception ex)
+            {
+
+
+            }
 
 
 
             return u;
+        }
+
+
+        private static void UpdateAvailableHoursObject(List<AvailableHours> objList, User u)
+        {
+            using (var Context = new Context())
+            {
+
+                foreach (AvailableHours item in objList)
+                {
+
+                    item.UserId = u.Id;
+
+                    if (item.Id == 0)
+                    {
+                        Context.AvailableHours.Add(item);
+                        //  Context.SaveChanges();
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    var result = Context.AvailableHours.Where(p => p.UserId == u.Id).ToList();
+                    IEnumerable<AvailableHours> differenceQuery = result.Except(objList);
+
+                    foreach (AvailableHours item in differenceQuery)
+                    {
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                        // Context.SaveChanges();
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+                // 
+
+                // Context.UserHorses.AddRange(uhs);
+                //User u = UpdateUser(User);
+                Context.SaveChanges();
+
+
+            }
+        }
+
+
+        private static void UpdatePaymentsObject(List<Payments> objList, User u)
+        {
+            using (var Context = new Context())
+            {
+
+                foreach (Payments item in objList)
+                {
+
+                    item.UserId = u.Id;
+
+                    if (item.Id == 0)
+                    {
+                        Context.Payments.Add(item);
+                        //  Context.SaveChanges();
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    var result = Context.Payments.Where(p => p.UserId == u.Id).ToList();
+                    IEnumerable<Payments> differenceQuery = result.Except(objList);
+
+                    foreach (Payments item in differenceQuery)
+                    {
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                        // Context.SaveChanges();
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+                // 
+
+                // Context.UserHorses.AddRange(uhs);
+                //User u = UpdateUser(User);
+                Context.SaveChanges();
+
+
+            }
+        }
+
+        private static void UpdateFilesObject(List<Files> objList, User u)
+        {
+            using (var Context = new Context())
+            {
+
+                foreach (Files item in objList)
+                {
+
+                    item.UserId = u.Id;
+
+                    if (item.Id == 0)
+                    {
+                        Context.Files.Add(item);
+                        //  Context.SaveChanges();
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    var result = Context.Files.Where(p => p.UserId == u.Id).ToList();
+                    IEnumerable<Files> differenceQuery = result.Except(objList);
+
+                    foreach (Files item in differenceQuery)
+                    {
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                        // Context.SaveChanges();
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+                // 
+
+                // Context.UserHorses.AddRange(uhs);
+                //User u = UpdateUser(User);
+                Context.SaveChanges();
+
+
+            }
+        }
+
+        private static void UpdateCommitmentsObject(List<Commitments> objList, User u)
+        {
+            using (var Context = new Context())
+            {
+
+                foreach (Commitments item in objList)
+                {
+
+                    item.UserId = u.Id;
+
+                    if (item.Id == 0)
+                    {
+                        Context.Commitments.Add(item);
+                        //  Context.SaveChanges();
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    var result = Context.Commitments.Where(p => p.UserId == u.Id).ToList();
+                    IEnumerable<Commitments> differenceQuery = result.Except(objList);
+
+                    foreach (Commitments item in differenceQuery)
+                    {
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                        // Context.SaveChanges();
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+                // 
+
+                // Context.UserHorses.AddRange(uhs);
+                //User u = UpdateUser(User);
+                Context.SaveChanges();
+
+
+            }
+        }
+
+        private static void UpdateExpensesObject(List<Expenses> objList, User u)
+        {
+            using (var Context = new Context())
+            {
+
+                foreach (Expenses item in objList)
+                {
+
+                    item.UserId = u.Id;
+
+                    if (item.Id == 0)
+                    {
+                        Context.Expenses.Add(item);
+                        //  Context.SaveChanges();
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    var result = Context.Expenses.Where(p => p.UserId == u.Id).ToList();
+                    IEnumerable<Expenses> differenceQuery = result.Except(objList);
+
+                    foreach (Expenses item in differenceQuery)
+                    {
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                        // Context.SaveChanges();
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+                // 
+
+                // Context.UserHorses.AddRange(uhs);
+                //User u = UpdateUser(User);
+                Context.SaveChanges();
+
+
+            }
         }
 
         private static void UpdateUserHorsesObject(List<UserHorses> uhs, User u)
