@@ -122,10 +122,12 @@
 
         function _updateLesson(lesson, changeChildren, lessonsQty) {
          
+           
          
             changeChildren = changeChildren || false;
             var deferred = $q.defer();
             $http.post(sharedValues.apiUrl + 'lessons/updateLesson/' + changeChildren + "/" + lessonsQty, lesson).then(function (res) {
+               
                 this.createNotifications(res.data);
                 deferred.resolve(res.data);
             }.bind(this));

@@ -19,7 +19,7 @@
         this.changeStatus = _changeStatus.bind(this);
         this.getCounter = _getCounter.bind(this);
 
-
+      //  alert(this.users.length);
       
         function _changeStatus(type) {
 
@@ -29,7 +29,7 @@
                    
                     if (this.users[i].IsSelected) {
                        
-                        this.users[i].Active = "0";
+                        this.users[i].Active = "notActive";
                         this.users[i].IsSelected = false;
                         delete this.users[i].IsSelected;
                         var userClone = angular.copy(this.users[i]);
@@ -48,7 +48,7 @@
                 for (var i in this.users) {
 
                     if (this.users[i].IsSelected2) {
-                        this.users[i].Active = "1";
+                        this.users[i].Active = "active";
                         this.users[i].IsSelected2 = false;
                         delete this.users[i].IsSelected2;
                         var userClone = angular.copy(this.users[i]);

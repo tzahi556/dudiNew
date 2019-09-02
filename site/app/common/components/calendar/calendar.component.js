@@ -324,8 +324,10 @@
         $(this.calendar).fullCalendar('refetchEvents');
 
         $(".fc-title").each(function () {
+
             var currentElement = $(this).text();
 
+            //alert(currentElement);
             $(this).html(currentElement);
 
         });

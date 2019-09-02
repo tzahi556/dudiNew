@@ -41,23 +41,23 @@
                 ]);
                 students.forEach(function (student) {
                     data.push([
-                        student.Meta.ClientNumber,
-                        student.Meta.Active,
-                        student.Meta.IdNumber,
+                        student.ClientNumber,
+                        student.Active,
+                        student.IdNumber,
                         student.FirstName,
                         student.LastName,
-                        student.Meta.Address,
-                        student.Meta.PhoneNumber,
-                        student.Meta.PhoneNumber2,
-                        student.Meta.AnotherEmail,
-                        student.Meta.ParentName,
-                        student.Meta.ParentName2,
-                        student.Meta.BirthDate ? new Date(student.Meta.BirthDate) : null,
-                        student.Meta.Style,
-                        student.Meta.TeamMember,
-                        student.Meta.HMO,
-                        student.Meta.PayType,
-                        student.Meta.Cost,
+                        student.Address,
+                        student.PhoneNumber,
+                        student.PhoneNumber2,
+                        student.AnotherEmail,
+                        student.ParentName,
+                        student.ParentName2,
+                        student.BirthDate ? new Date(student.BirthDate) : null,
+                        student.Style,
+                        student.TeamMember,
+                        student.HMO,
+                        student.PayType,
+                        student.Cost,
                     ]);
                 });
                 _getReport(data);

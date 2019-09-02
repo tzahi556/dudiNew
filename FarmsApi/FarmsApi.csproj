@@ -147,6 +147,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DataModels\AvailableHours.cs" />
+    <Compile Include="DataModels\LessonsResult.cs" />
     <Compile Include="DataModels\UserHorses.cs" />
     <Compile Include="DataModels\Files.cs" />
     <Compile Include="DataModels\Messages.cs" />

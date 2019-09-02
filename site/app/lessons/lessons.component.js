@@ -424,13 +424,15 @@
         }
 
         function _eventClick(event, jsEvent) {
-
+          
             var elemId = jsEvent.target.id;
             if (elemId) {
 
-
-                //  var payValue = $("#" + elemId).text().replace(")", "").replace("(", "").replace("-", "");//.repalce("&#x200E;","");
-                this.selectedPayValue = -80; //$("#" + elemId).text();
+               //debugger
+               //var payValue = $("#" + elemId).html().replace(")", "").replace("(", "").replace("&#x200E;", "");
+               // //var t = $.trim($("#" + elemId).html().replace("(", '').replace(")", ''));
+               //alert(eval(payValue));
+                this.selectedPayValue =$("#" + elemId).text();
                 this.selectedStudent = elemId.replace("dvPaid_", "");//this.getLessonById(event.id);
 
              
@@ -446,7 +448,7 @@
         }
 
         function _eventCreate(start, end, jsEvent, view, resource) {
-
+          
             if ($rootScope.students && $rootScope.students.length > 0) {
 
                 for (var i in this.lessons) {
@@ -471,6 +473,7 @@
             }
 
 
+          
             var event = {
                 id: 0,
                 start: start,
@@ -496,14 +499,17 @@
             //    $rootScope.statuses = null;
 
             //}
+
+           
             this.createNotifications(event, 'create');
 
             this.updateLesson(event);
         }
 
         function _updateLesson(event) {
-
+           
             this.lessonsService.updateLesson(event).then(function (res) {
+             
                 this.reloadLessons();
             }.bind(this));
         }

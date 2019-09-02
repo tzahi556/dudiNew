@@ -4,11 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity.Core;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
 namespace FarmsApi.Services
 {
+
+
+
+
+
+
     public class LessonsService
     {
         public static JArray GetLessons(int? StudentId, string startDate = null, string endDate = null, bool IsFromCompletion = false)
@@ -41,85 +48,148 @@ namespace FarmsApi.Services
             DateTime StartDate = startDate != null ? DateTime.Parse(startDate) : DateTime.Now.Date;
             DateTime EndDate = endDate != null ? DateTime.Parse(endDate).AddDays(1) : DateTime.Now.Date.AddDays(1);
 
-            IQueryable<Lesson> Lessons = Context.Lessons;
+            //IQueryable<Lesson> Lessons = Context.Lessons;
 
-            var q = from lesson in Lessons
-                    join studentin in Context.Users on lesson.Instructor_Id equals studentin.Id into joinedInstructor
-                    from studentin in joinedInstructor.DefaultIfEmpty()
-                    join studentLesson in Context.StudentLessons on lesson.Id equals studentLesson.Lesson_Id into joinedStudentLessons
-                    from studentLesson in joinedStudentLessons.DefaultIfEmpty()
-                    join student in Context.Users on studentLesson.User_Id equals student.Id into joinedStudents
-                    from student in joinedStudents.DefaultIfEmpty()
+            //var q = from lesson in Lessons
+            //        join studentin in Context.Users on lesson.Instructor_Id equals studentin.Id into joinedInstructor
+            //        from studentin in joinedInstructor.DefaultIfEmpty()
+            //        join studentLesson in Context.StudentLessons on lesson.Id equals studentLesson.Lesson_Id into joinedStudentLessons
+            //        from studentLesson in joinedStudentLessons.DefaultIfEmpty()
+            //        join student in Context.Users on studentLesson.User_Id equals student.Id into joinedStudents
+            //        from student in joinedStudents.DefaultIfEmpty()
 
-                    where
-                        // filter student
-                        (studentLesson.User_Id == StudentId || StudentId == null) &&
-                        // filter instructor צחי הוריד פילטור 
-                        // (lesson.Instructor_Id == CurrentUser.Id || (CurrentUser.Role != "profAdmin" && CurrentUser.Role != "instructor")) &&
+            //        where
+            //            // filter student
+            //            (studentLesson.User_Id == StudentId || StudentId == null) &&
+            //            // filter instructor צחי הוריד פילטור 
+            //            // (lesson.Instructor_Id == CurrentUser.Id || (CurrentUser.Role != "profAdmin" && CurrentUser.Role != "instructor")) &&
 
-                        (studentin.Farm_Id == CurrentUser.Farm_Id || CurrentUser.Farm_Id == 0) &&
-                        // (resources==null || resources.Contains(lesson.Instructor_Id.ToString())) &&
-                        // filter by date
-                        (StudentId != null || lesson.Start >= StartDate && lesson.End <= EndDate) &&
+            //            (studentin.Farm_Id == CurrentUser.Farm_Id || CurrentUser.Farm_Id == 0) &&
+            //            // (resources==null || resources.Contains(lesson.Instructor_Id.ToString())) &&
+            //            // filter by date
+            //            (StudentId != null || lesson.Start >= StartDate && lesson.End <= EndDate) &&
+            //            (
+            //              ((CurrentUser.Role == "profAdmin" || CurrentUser.Role == "instructor") && studentLesson.Status != "completionReq")
+            //               ||
+            //              (CurrentUser.Role != "profAdmin" && CurrentUser.Role != "instructor")
 
-                        (
-                          ((CurrentUser.Role == "profAdmin" || CurrentUser.Role == "instructor") && studentLesson.Status != "completionReq")
-                           ||
-                          (CurrentUser.Role != "profAdmin" && CurrentUser.Role != "instructor")
+            //            )
 
-                        )
+            //        select new
+            //        {
 
-                    select new
-                    {
+            //            id = lesson.Id,
+            //            prevId = lesson.ParentId,
+            //            start = lesson.Start,
+            //            end = lesson.End,
+            //            details = lesson.Details,
+            //            editable = true,
+            //            resourceId = lesson.Instructor_Id,
+            //            student = studentLesson != null ? (int?)studentLesson.User_Id : null,
+            //            status = studentLesson != null ? studentLesson.Status : null,
+            //            statusDetails = studentLesson != null ? studentLesson.Details : null,
+            //            isComplete = studentLesson != null ? studentLesson.IsComplete : 0,
+            //            lessprice = studentLesson.Price,
+            //            //studentName = student.FirstName + " " + student.LastName + ((IsPrice) ? "<a  style='color:" + ((student.Id < 0) ? "red" : "blue") + ";font-weight:bold;padding-right:2px;padding-left:2px;'>(<span id=dvPaid_" + studentLesson.User_Id.ToString() + ">" + -348 + "</span>)</a>" : "")
 
-                        id = lesson.Id,
-                        prevId = lesson.ParentId,
-                        start = lesson.Start,
-                        end = lesson.End,
-                        details = lesson.Details,
-                        editable = true,
-                        resourceId = lesson.Instructor_Id,
-                        student = studentLesson != null ? (int?)studentLesson.User_Id : null,
-                        status = studentLesson != null ? studentLesson.Status : null,
-                        statusDetails = studentLesson != null ? studentLesson.Details : null,
-                        isComplete = studentLesson != null ? studentLesson.IsComplete : 0,
-                        lessprice = studentLesson.Price,
-                        studentName = student.FirstName + " " + student.LastName + ((IsPrice) ? "<a id=dvPaid_" + studentLesson.User_Id.ToString() + " style='color:" + ((student.Id < 0) ? "red" : "blue") + ";font-weight:bold'> &#x200E;(" + student.Id + ")&#x200E; </a> " : "")
-                    };
+            //            studentName = student.FirstName + " " + student.LastName + ((IsPrice) ? "<a style='color:" + ((student.Id < 0) ? "red" : "blue") + ";font-weight:bold'> &#x200E;(<span id=dvPaid_" + studentLesson.User_Id.ToString() + ">" + -300 + "</span>)&#x200E; </a> " : "")
 
-            // var lessons = q.OrderBy(l => l.id).Distinct().ToList();
-            q = q.Distinct().OrderBy(l => l.start);
-            var lessons = q.ToList();
+            //        };
+
+
+
+
+            //q = q.Distinct().OrderBy(l => l.start);
+            //var lessons = q.ToList();
+            //int lastId = 0;
+            //foreach (var Lesson in lessons)
+            //{
+            //    try
+            //    {
+            //        if (Lesson.id != lastId)
+            //        {
+            //            var students = lessons.Where(l => l.id == Lesson.id && l.student != null).Select(l => new { StudentId = l.student, Status = l.status, StudentName = l.studentName, Details = l.statusDetails, IsComplete = l.isComplete }).Distinct().ToArray();
+            //            var studentsArray = students.Select(s => s.StudentName).ToArray();
+            //            ReturnLessons.Add(JObject.FromObject(new
+            //            {
+            //                id = Lesson.id,
+            //                prevId = Lesson.prevId,
+            //                start = Lesson.start,
+            //                end = Lesson.end,
+            //                editable = true,
+            //                resourceId = Lesson.resourceId,
+            //                lessprice = Lesson.lessprice,
+            //                details = Lesson.details,
+            //                students = students.Select(s => s.StudentId).ToArray(),
+            //                statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete }).ToArray(),
+            //                title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.details : "")
+            //            }));
+            //        }
+            //        lastId = Lesson.id;
+            //    }
+            //    catch (Exception)
+            //    {
+
+            //    }
+            //}
+
+            SqlParameter StudentIdPara = new SqlParameter("StudentId", (StudentId==null)?-1: StudentId);
+            SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
+            SqlParameter RolePara = new SqlParameter("Role", CurrentUser.Role);
+            SqlParameter StartDatePara = new SqlParameter("StartDate", StartDate);
+            SqlParameter EndDatePara = new SqlParameter("EndDate", EndDate);
+
+            var query = Context.Database.SqlQuery<LessonsResult>
+            ("GetStudentsLessonsList @StudentId,@Farm_Id,@Role,@StartDate,@EndDate",
+            StudentIdPara, Farm_IdPara, RolePara, StartDatePara, EndDatePara);
+
+            //try
+            //{
+            //    var lessons3 = query.ToList();
+            //}
+            //catch(Exception ex)
+            //{
+
+
+            //}
+            var lessons = query.ToList();
             int lastId = 0;
             foreach (var Lesson in lessons)
             {
                 try
                 {
-                    if (Lesson.id != lastId)
+                    if (Lesson.Id != lastId)
                     {
-                        var students = lessons.Where(l => l.id == Lesson.id && l.student != null).Select(l => new { StudentId = l.student, Status = l.status, StudentName = l.studentName, Details = l.statusDetails, IsComplete = l.isComplete }).Distinct().ToArray();
+                        var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, IsComplete = l.IsComplete }).Distinct().ToArray();
                         var studentsArray = students.Select(s => s.StudentName).ToArray();
                         ReturnLessons.Add(JObject.FromObject(new
                         {
-                            id = Lesson.id,
-                            prevId = Lesson.prevId,
-                            start = Lesson.start,
-                            end = Lesson.end,
+                            id = Lesson.Id,
+                            prevId = Lesson.ParentId,
+                            start = Lesson.Start,
+                            end = Lesson.End,
                             editable = true,
-                            resourceId = Lesson.resourceId,
-                            lessprice = Lesson.lessprice,
-                            details = Lesson.details,
+                            resourceId = Lesson.Instructor_Id,
+                            lessprice = Lesson.Price,
+                            lessonpaytype = Lesson.LessonPayType,
+                            details = Lesson.Details,
                             students = students.Select(s => s.StudentId).ToArray(),
                             statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete }).ToArray(),
-                            title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.details : "")
+                            title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : "")
                         }));
                     }
-                    lastId = Lesson.id;
+                    lastId = Lesson.Id;
                 }
                 catch (Exception)
                 {
+
                 }
             }
+
+
+
+
+
         }
 
         private static void PopulateReturnLessonsToComplete(JArray ReturnLessons, DataModels.Context Context, User CurrentUser, int? StudentId, string startDate, string endDate, bool IsFromCompletion)
@@ -469,6 +539,8 @@ namespace FarmsApi.Services
 
         private static void CreateNewLesson(JObject Lesson, DataModels.Context Context)
         {
+           
+            
             var newLesson = new Lesson();
             AssignValuesFromJson(Lesson, Context, newLesson);
             Context.Lessons.Add(newLesson);
@@ -483,6 +555,7 @@ namespace FarmsApi.Services
 
         private static void AssignValuesFromJson(JObject Lesson, DataModels.Context Context, DataModels.Lesson newLesson)
         {
+           
             newLesson.ParentId = Lesson["prevId"] != null ? Lesson["prevId"].Value<int>() : 0;
             newLesson.Start = Lesson["start"].Value<DateTime>();
             newLesson.End = Lesson["end"].Value<DateTime>();
