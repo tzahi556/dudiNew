@@ -138,10 +138,10 @@ namespace FarmsApi.Services
             SqlParameter RolePara = new SqlParameter("Role", CurrentUser.Role);
             SqlParameter StartDatePara = new SqlParameter("StartDate", StartDate);
             SqlParameter EndDatePara = new SqlParameter("EndDate", EndDate);
-
+            SqlParameter IsPricePara = new SqlParameter("IsPrice", IsPrice);
             var query = Context.Database.SqlQuery<LessonsResult>
-            ("GetStudentsLessonsList @StudentId,@Farm_Id,@Role,@StartDate,@EndDate",
-            StudentIdPara, Farm_IdPara, RolePara, StartDatePara, EndDatePara);
+            ("GetStudentsLessonsList @StudentId,@Farm_Id,@Role,@StartDate,@EndDate,@IsPrice",
+            StudentIdPara, Farm_IdPara, RolePara, StartDatePara, EndDatePara, IsPricePara);
 
             //try
             //{
@@ -152,6 +152,8 @@ namespace FarmsApi.Services
 
 
             //}
+
+
             var lessons = query.ToList();
             int lastId = 0;
             foreach (var Lesson in lessons)
@@ -266,11 +268,16 @@ namespace FarmsApi.Services
                         if (StudentLesson != null)
                         {
                             // אם שלחתי לעדכון מחיר שיעור
-                            if (Status["lessPrice"] != null)
+                            if (Status["lessprice"] != null)
                             {
-                                StudentLesson.Price = Status["lessPrice"].Value<double>();
+                                StudentLesson.Price = Status["lessprice"].Value<double>();
                             }
 
+                            // אם שלחתי לעדכון מחיר שיעור
+                            if (Status["lessonpaytype"] != null)
+                            {
+                                StudentLesson.LessonPayType = Status["lessonpaytype"].Value<int>();
+                            }
 
 
                             if (Status["status"] != null)

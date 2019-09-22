@@ -19,370 +19,370 @@ namespace FarmsApi.Services
     {
 
 
-        public static void UpdateUsers()
-        {
+        //public static void UpdateUsers()
+        //{
 
-            using (var Context = new Context())
-            {
-               // var Users = Context.Users.Where(x=>x.Id==62).ToList();
-                var Users = Context.Users.ToList();
-                foreach (User Userf in Users)
-                {
+        //    using (var Context = new Context())
+        //    {
+        //       // var Users = Context.Users.Where(x=>x.Id==-1).ToList();
+        //        var Users = Context.Users.ToList();
+        //        foreach (User Userf in Users)
+        //        {
 
-                    try
-                    {
+        //            try
+        //            {
 
-                        // User Userf = Context.Users.Where(x => x.Id == 50).FirstOrDefault();yyy
+        //                // User Userf = Context.Users.Where(x => x.Id == 50).FirstOrDefault();yyy
 
-                        var Meta = JObject.Parse(Userf.Meta);
+        //                var Meta = JObject.Parse(Userf.Meta);
 
-                        #region User
-                        if (Meta["Active"] != null)
-                        {
-                            if (Meta["Active"].ToString() == "1")
-                            {
-                                Userf.Active = "active";
-                            }
-                            else
-                            {
-                                Userf.Active = Meta["Active"].ToString();
-                            }
+        //                #region User
+        //                if (Meta["Active"] != null)
+        //                {
+        //                    if (Meta["Active"].ToString() == "1")
+        //                    {
+        //                        Userf.Active = "active";
+        //                    }
+        //                    else
+        //                    {
+        //                        Userf.Active = Meta["Active"].ToString();
+        //                    }
 
-                        }
-                        else
-                        {
-                            Userf.Active = "active";
-                        }
+        //                }
+        //                else
+        //                {
+        //                    Userf.Active = "active";
+        //                }
 
-                        if (Meta["Image"] != null)
-                        {
-                            Userf.Image = Meta["Image"].ToString();
+        //                if (Meta["Image"] != null)
+        //                {
+        //                    Userf.Image = Meta["Image"].ToString();
 
-                        }
-                        if (Meta["ClientNumber"] != null)
-                        {
-                            Userf.ClientNumber = Meta["ClientNumber"].ToString();
+        //                }
+        //                if (Meta["ClientNumber"] != null)
+        //                {
+        //                    Userf.ClientNumber = Meta["ClientNumber"].ToString();
 
-                        }
+        //                }
 
-                        if (Meta["IdNumber"] != null)
-                        {
-                            Userf.IdNumber = Meta["IdNumber"].ToString();
+        //                if (Meta["IdNumber"] != null)
+        //                {
+        //                    Userf.IdNumber = Meta["IdNumber"].ToString();
 
-                        }
-                        if (Meta["BirthDate"] != null)
-                        {
-                            Userf.BirthDate = CheckifExistDate(Meta["BirthDate"]);
+        //                }
+        //                if (Meta["BirthDate"] != null)
+        //                {
+        //                    Userf.BirthDate = CheckifExistDate(Meta["BirthDate"]);
 
-                        }
+        //                }
 
 
 
-                        if (Meta["ParentName2"] != null)
-                        {
-                            Userf.ParentName2 = Meta["ParentName2"].ToString();
+        //                if (Meta["ParentName2"] != null)
+        //                {
+        //                    Userf.ParentName2 = Meta["ParentName2"].ToString();
 
-                        }
-                        if (Meta["ParentName"] != null)
-                        {
-                            Userf.ParentName = Meta["ParentName"].ToString();
+        //                }
+        //                if (Meta["ParentName"] != null)
+        //                {
+        //                    Userf.ParentName = Meta["ParentName"].ToString();
 
-                        }
-
-                        if (Meta["Address"] != null)
-                        {
-                            Userf.Address = Meta["Address"].ToString();
+        //                }
+
+        //                if (Meta["Address"] != null)
+        //                {
+        //                    Userf.Address = Meta["Address"].ToString();
 
-                        }
-                        if (Meta["PhoneNumber"] != null)
-                        {
-                            Userf.PhoneNumber = Meta["PhoneNumber"].ToString();
+        //                }
+        //                if (Meta["PhoneNumber"] != null)
+        //                {
+        //                    Userf.PhoneNumber = Meta["PhoneNumber"].ToString();
 
-                        }
+        //                }
 
-                        if (Meta["PhoneNumber2"] != null)
-                        {
-                            Userf.PhoneNumber2 = Meta["PhoneNumber2"].ToString();
+        //                if (Meta["PhoneNumber2"] != null)
+        //                {
+        //                    Userf.PhoneNumber2 = Meta["PhoneNumber2"].ToString();
 
-                        }
-                        if (Meta["AnotherEmail"] != null)
-                        {
-                            Userf.AnotherEmail = Meta["AnotherEmail"].ToString();
+        //                }
+        //                if (Meta["AnotherEmail"] != null)
+        //                {
+        //                    Userf.AnotherEmail = Meta["AnotherEmail"].ToString();
 
-                        }
+        //                }
 
-                        if (Meta["Style"] != null)
-                        {
-                            Userf.Style = Meta["Style"].ToString();
+        //                if (Meta["Style"] != null)
+        //                {
+        //                    Userf.Style = Meta["Style"].ToString();
 
-                        }
+        //                }
 
 
-                        if (Meta["TeamMember"] != null)
-                        {
-                            Userf.TeamMember = Meta["TeamMember"].ToString();
+        //                if (Meta["TeamMember"] != null)
+        //                {
+        //                    Userf.TeamMember = Meta["TeamMember"].ToString();
 
-                        }
-                        if (Meta["Cost"] != null)
-                        {
-                            Userf.Cost = CheckifExistDouble(Meta["Cost"]);
+        //                }
+        //                if (Meta["Cost"] != null)
+        //                {
+        //                    Userf.Cost = CheckifExistDouble(Meta["Cost"]);
 
-                        }
-                        if (Meta["PayType"] != null)
-                        {
-                            Userf.PayType = Meta["PayType"].ToString();
+        //                }
+        //                if (Meta["PayType"] != null)
+        //                {
+        //                    Userf.PayType = Meta["PayType"].ToString();
 
-                        }
-                        if (Meta["Details"] != null)
-                        {
-                            Userf.Details = Meta["Details"].ToString();
+        //                }
+        //                if (Meta["Details"] != null)
+        //                {
+        //                    Userf.Details = Meta["Details"].ToString();
 
-                        }
-                        if (Meta["HMO"] != null)
-                        {
-                            Userf.HMO = Meta["HMO"].ToString();
+        //                }
+        //                if (Meta["HMO"] != null)
+        //                {
+        //                    Userf.HMO = Meta["HMO"].ToString();
 
-                        }
-                        if (Meta["BalanceDetails"] != null)
-                        {
-                            Userf.BalanceDetails = Meta["BalanceDetails"].ToString();
+        //                }
+        //                if (Meta["BalanceDetails"] != null)
+        //                {
+        //                    Userf.BalanceDetails = Meta["BalanceDetails"].ToString();
 
-                        }
+        //                }
 
 
-                        if (Meta["cc_4_digits"] != null)
-                        {
-                            Userf.cc_4_digits = Meta["cc_4_digits"].ToString();
+        //                if (Meta["cc_4_digits"] != null)
+        //                {
+        //                    Userf.cc_4_digits = Meta["cc_4_digits"].ToString();
 
-                        }
-                        if (Meta["cc_expire_month"] != null)
-                        {
-                            Userf.cc_expire_month = Meta["cc_expire_month"].ToString();
+        //                }
+        //                if (Meta["cc_expire_month"] != null)
+        //                {
+        //                    Userf.cc_expire_month = Meta["cc_expire_month"].ToString();
 
-                        }
-                        if (Meta["cc_expire_year"] != null)
-                        {
-                            Userf.cc_expire_year = Meta["cc_expire_year"].ToString();
+        //                }
+        //                if (Meta["cc_expire_year"] != null)
+        //                {
+        //                    Userf.cc_expire_year = Meta["cc_expire_year"].ToString();
 
-                        }
-                        if (Meta["cc_payer_id"] != null)
-                        {
-                            Userf.cc_payer_id = Meta["cc_payer_id"].ToString();
-
-                        }
-                        if (Meta["cc_payer_name"] != null)
-                        {
-                            Userf.cc_payer_name = Meta["cc_payer_name"].ToString();
+        //                }
+        //                if (Meta["cc_payer_id"] != null)
+        //                {
+        //                    Userf.cc_payer_id = Meta["cc_payer_id"].ToString();
+
+        //                }
+        //                if (Meta["cc_payer_name"] != null)
+        //                {
+        //                    Userf.cc_payer_name = Meta["cc_payer_name"].ToString();
 
-                        }
-                        if (Meta["cc_token"] != null)
-                        {
-                            Userf.cc_token = Meta["cc_token"].ToString();
+        //                }
+        //                if (Meta["cc_token"] != null)
+        //                {
+        //                    Userf.cc_token = Meta["cc_token"].ToString();
 
-                        }
-                        if (Meta["cc_type_id"] != null)
-                        {
-                            Userf.cc_type_id = Meta["cc_type_id"].ToString();
+        //                }
+        //                if (Meta["cc_type_id"] != null)
+        //                {
+        //                    Userf.cc_type_id = Meta["cc_type_id"].ToString();
 
-                        }
-                        if (Meta["cc_type_name"] != null)
-                        {
-                            Userf.cc_type_name = Meta["cc_type_name"].ToString();
-
-                        }
-
-                        if (Meta["EventsColor"] != null)
-                        {
-                            Userf.EventsColor = Meta["EventsColor"].ToString();
-
-                        }
-
-
-
-                        Context.Entry(Userf).State = System.Data.Entity.EntityState.Modified;
-
-
-                        #endregion
-
-                        //**************************************************************************
-
-                        #region Payments
-                        if (Meta["Payments"] != null)
-                        {
-                            foreach (var Item in Meta["Payments"])
-                            {
-
-                                Payments pay = new Payments();
-
-                                pay.UserId = Userf.Id;
-                                pay.Date = CheckifExistDate(Item["Date"]);
-                                pay.InvoicePdf = CheckifExistStr(Item["InvoicePdf"]);
-                                pay.InvoiceNum = CheckifExistStr(Item["InvoiceNum"]);
-                                pay.InvoiceDetails = CheckifExistStr(Item["InvoiceDetails"]);
-
-                                pay.canceled = CheckifExistStr(Item["canceled"]);
-                                pay.Price = CheckifExistDouble(Item["Price"]);
-                                pay.InvoiceSum = CheckifExistDouble(Item["InvoiceSum"]);
-
-                                pay.payment_type = CheckifExistStr(Item["payment_type"]);
-                                pay.lessons = CheckifExistInt(Item["lessons"]);
-                                pay.month = CheckifExistDate(Item["month"]);
-                                pay.untilmonth = CheckifExistDate(Item["untilmonth"]);
-
-
-                                Context.Payments.Add(pay);
-                                // Context.Entry(pay).State = System.Data.Entity.EntityState.Added;
-                                // Context.SaveChanges();
-
-                                // Item["resourceId"] = Userf.Id;
-                            }
-                        }
-
-                        #endregion
-
-                        #region Expenses
-                        if (Meta["Expenses"] != null)
-                        {
-                            foreach (var Item in Meta["Expenses"])
-                            {
-                                Expenses Exp = new Expenses();
-                                Exp.UserId = Userf.Id;
-                                Exp.Date = CheckifExistDate(Item["Date"]);
-                                Exp.Price = CheckifExistDouble(Item["Price"]);
-                                Exp.Details = CheckifExistStr(Item["Details"]);
-                                Exp.Paid = CheckifExistStr(Item["Paid"]);
-
-                                Context.Expenses.Add(Exp);
-                                //   Context.SaveChanges();
-                                // Item["resourceId"] = Userf.Id;
-                            }
-                        }
-
-                        #endregion
-
-                        #region AvailableHours
-                        if (Meta["AvailableHours"] != null)
-                        {
-                            foreach (var Item in Meta["AvailableHours"])
-                            {
-                                AvailableHours Exp = new AvailableHours();
-                                Exp.UserId = Userf.Id;
-                                Exp.resourceId = CheckifExistInt(Item["resourceId"]);
-                                Exp.start = CheckifExistStr(Item["start"]);
-                                Exp.end = CheckifExistStr(Item["end"]);
-
-                                string res = (Item["dow"].ToString()).Replace("[", "").Replace("]", "").Replace("\"", "").Trim();
-
-                                //  string res = Regex.Replace(Item["dow"].ToString(), "\"[^\"]*\"", string.Empty);
-                                Exp.dow = res;//CheckifExistStr(CheckifExistInt(res));
-
-                                Context.AvailableHours.Add(Exp);
-                                //   Context.SaveChanges();
-                                // Item["resourceId"] = Userf.Id;
-                            }
-                        }
-
-                        #endregion
-
-                        #region Commitments
-                        if (Meta["Commitments"] != null)
-                        {
-                            foreach (var Item in Meta["Commitments"])
-                            {
-                                Commitments Com = new Commitments();
-                                Com.UserId = Userf.Id;
-                                Com.Date = (CheckifExistDate(Item["Date"]) == null) ? new DateTime(2016, 01, 01) : CheckifExistDate(Item["Date"]);
-                                Com.Price = CheckifExistStr(Item["Price"]);
-
-                                Com.HMO = CheckifExistStr(Item["HMO"]);
-                                Com.Qty = CheckifExistDouble(Item["Qty"]);
-                                Com.Number = CheckifExistStr(Item["Number"]);
-                                Com.canceled = CheckifExistStr(Item["canceled"]);
-                                Com.InvoiceSum = CheckifExistStr(Item["InvoiceSum"]);
-
-                                Context.Commitments.Add(Com);
-                              //  Context.SaveChanges();
-                                Item["resourceId"] = Userf.Id;
-                            }
-                        }
-
-                        #endregion
-
-                        #region Horses
-                        if (Meta["Horses"] != null)
-                        {
-                            foreach (var Item in Meta["Horses"])
-                            {
-                                UserHorses Uh = new UserHorses();
-                                Uh.UserId = Userf.Id;
-                                Uh.Name = CheckifExistStr(Item["Name"]);
-                                Uh.Owner = CheckifExistBool(Item["Owner"]);
-
-                                Uh.PensionPrice = CheckifExistInt(Item["PensionPrice"]);
-                                Uh.TrainingCost = CheckifExistInt(Item["TrainingCost"]);
-
-
-                                Context.UserHorses.Add(Uh);
-                                //         Context.SaveChanges();
-                                // Item["resourceId"] = Userf.Id;
-                            }
-                        }
-
-                        #endregion
-
-                        #region Files
-                        if (Meta["Files"] != null)
-                        {
-                            foreach (var Item in Meta["Files"])
-                            {
-                                Files Fi = new Files();
-                                Fi.UserId = Userf.Id;
-                                Fi.Link = CheckifExistStr(Item);
-
-                                Context.Files.Add(Fi);
-                                //    Context.SaveChanges();
-                                // Item["resourceId"] = Userf.Id;
-                            }
-                        }
-
-                        #endregion
-
-                        Context.SaveChanges();
-                    }
-                    catch (DbEntityValidationException e)
-                    {
-                        foreach (var eve in e.EntityValidationErrors)
-                        {
-                            //Debug.WriteLine(@"Entity of type ""{0}"" in state ""{1}"" 
-                            // has the following validation errors:",
-                            //eve.Entry.Entity.GetType().Name,
-                            // eve.Entry.State);
-                            foreach (var ve in eve.ValidationErrors)
-                            {
-                                // Debug.WriteLine(@"- Property: ""{0}"", Error: ""{1}""",
-                                //  ve.PropertyName, ve.ErrorMessage);
-                            }
-                        }
-                        throw;
-                    }
-                    catch (DbUpdateException e)
-                    {
-                        //Add your code to inspect the inner exception and/or
-                        //e.Entries here.
-                        //Or just use the debugger.
-                        //Added this catch (after the comments below) to make it more obvious 
-                        //how this code might help this specific problem
-                    }
-                    catch (Exception e)
-                    {
-
-                    }
-                }
-
-            }
-
-
-        }
+        //                }
+        //                if (Meta["cc_type_name"] != null)
+        //                {
+        //                    Userf.cc_type_name = Meta["cc_type_name"].ToString();
+
+        //                }
+
+        //                if (Meta["EventsColor"] != null)
+        //                {
+        //                    Userf.EventsColor = Meta["EventsColor"].ToString();
+
+        //                }
+
+
+
+        //                Context.Entry(Userf).State = System.Data.Entity.EntityState.Modified;
+
+
+        //                #endregion
+
+        //                //**************************************************************************
+
+        //                #region Payments
+        //                if (Meta["Payments"] != null)
+        //                {
+        //                    foreach (var Item in Meta["Payments"])
+        //                    {
+
+        //                        Payments pay = new Payments();
+
+        //                        pay.UserId = Userf.Id;
+        //                        pay.Date = CheckifExistDate(Item["Date"]);
+        //                        pay.InvoicePdf = CheckifExistStr(Item["InvoicePdf"]);
+        //                        pay.InvoiceNum = CheckifExistStr(Item["InvoiceNum"]);
+        //                        pay.InvoiceDetails = CheckifExistStr(Item["InvoiceDetails"]);
+
+        //                        pay.canceled = CheckifExistStr(Item["canceled"]);
+        //                        pay.Price = CheckifExistDouble(Item["Price"]);
+        //                        pay.InvoiceSum = CheckifExistDouble(Item["InvoiceSum"]);
+
+        //                        pay.payment_type = CheckifExistStr(Item["payment_type"]);
+        //                        pay.lessons = CheckifExistInt(Item["lessons"]);
+        //                        pay.month = CheckifExistDate(Item["month"]);
+        //                        pay.untilmonth = CheckifExistDate(Item["untilmonth"]);
+
+
+        //                        Context.Payments.Add(pay);
+        //                        // Context.Entry(pay).State = System.Data.Entity.EntityState.Added;
+        //                   //    Context.SaveChanges();
+
+        //                        // Item["resourceId"] = Userf.Id;
+        //                    }
+        //                }
+
+        //                #endregion
+
+        //                #region Expenses
+        //                if (Meta["Expenses"] != null)
+        //                {
+        //                    foreach (var Item in Meta["Expenses"])
+        //                    {
+        //                        Expenses Exp = new Expenses();
+        //                        Exp.UserId = Userf.Id;
+        //                        Exp.Date = CheckifExistDate(Item["Date"]);
+        //                        Exp.Price = CheckifExistDouble(Item["Price"]);
+        //                        Exp.Details = CheckifExistStr(Item["Details"]);
+        //                        Exp.Paid = CheckifExistStr(Item["Paid"]);
+
+        //                        Context.Expenses.Add(Exp);
+        //                        //   Context.SaveChanges();
+        //                        // Item["resourceId"] = Userf.Id;
+        //                    }
+        //                }
+
+        //                #endregion
+
+        //                #region AvailableHours
+        //                if (Meta["AvailableHours"] != null)
+        //                {
+        //                    foreach (var Item in Meta["AvailableHours"])
+        //                    {
+        //                        AvailableHours Exp = new AvailableHours();
+        //                        Exp.UserId = Userf.Id;
+        //                        Exp.resourceId = CheckifExistInt(Item["resourceId"]);
+        //                        Exp.start = CheckifExistStr(Item["start"]);
+        //                        Exp.end = CheckifExistStr(Item["end"]);
+
+        //                        string res = (Item["dow"].ToString()).Replace("[", "").Replace("]", "").Replace("\"", "").Trim();
+
+        //                        //  string res = Regex.Replace(Item["dow"].ToString(), "\"[^\"]*\"", string.Empty);
+        //                        Exp.dow = res;//CheckifExistStr(CheckifExistInt(res));
+
+        //                        Context.AvailableHours.Add(Exp);
+        //                        //   Context.SaveChanges();
+        //                        // Item["resourceId"] = Userf.Id;
+        //                    }
+        //                }
+
+        //                #endregion
+
+        //                #region Commitments
+        //                if (Meta["Commitments"] != null)
+        //                {
+        //                    foreach (var Item in Meta["Commitments"])
+        //                    {
+        //                        Commitments Com = new Commitments();
+        //                        Com.UserId = Userf.Id;
+        //                        Com.Date = (CheckifExistDate(Item["Date"]) == null) ? new DateTime(2016, 01, 01) : CheckifExistDate(Item["Date"]);
+        //                        Com.Price = CheckifExistStr(Item["Price"]);
+
+        //                        Com.HMO = CheckifExistStr(Item["HMO"]);
+        //                        Com.Qty = CheckifExistDouble(Item["Qty"]);
+        //                        Com.Number = CheckifExistStr(Item["Number"]);
+        //                        Com.canceled = CheckifExistStr(Item["canceled"]);
+        //                        Com.InvoiceSum = CheckifExistStr(Item["InvoiceSum"]);
+
+        //                        Context.Commitments.Add(Com);
+        //                      //  Context.SaveChanges();
+        //                        Item["resourceId"] = Userf.Id;
+        //                    }
+        //                }
+
+        //                #endregion
+
+        //                #region Horses
+        //                if (Meta["Horses"] != null)
+        //                {
+        //                    foreach (var Item in Meta["Horses"])
+        //                    {
+        //                        UserHorses Uh = new UserHorses();
+        //                        Uh.UserId = Userf.Id;
+        //                        Uh.Name = CheckifExistStr(Item["Name"]);
+        //                        Uh.Owner = CheckifExistBool(Item["Owner"]);
+
+        //                        Uh.PensionPrice = CheckifExistInt(Item["PensionPrice"]);
+        //                        Uh.TrainingCost = CheckifExistInt(Item["TrainingCost"]);
+
+
+        //                        Context.UserHorses.Add(Uh);
+        //                        //         Context.SaveChanges();
+        //                        // Item["resourceId"] = Userf.Id;
+        //                    }
+        //                }
+
+        //                #endregion
+
+        //                #region Files
+        //                if (Meta["Files"] != null)
+        //                {
+        //                    foreach (var Item in Meta["Files"])
+        //                    {
+        //                        Files Fi = new Files();
+        //                        Fi.UserId = Userf.Id;
+        //                        Fi.Link = CheckifExistStr(Item);
+
+        //                        Context.Files.Add(Fi);
+        //                        //    Context.SaveChanges();
+        //                        // Item["resourceId"] = Userf.Id;
+        //                    }
+        //                }
+
+        //                #endregion
+
+        //                Context.SaveChanges();
+        //            }
+        //            catch (DbEntityValidationException e)
+        //            {
+        //                foreach (var eve in e.EntityValidationErrors)
+        //                {
+        //                    //Debug.WriteLine(@"Entity of type ""{0}"" in state ""{1}"" 
+        //                    // has the following validation errors:",
+        //                    //eve.Entry.Entity.GetType().Name,
+        //                    // eve.Entry.State);
+        //                    foreach (var ve in eve.ValidationErrors)
+        //                    {
+        //                        // Debug.WriteLine(@"- Property: ""{0}"", Error: ""{1}""",
+        //                        //  ve.PropertyName, ve.ErrorMessage);
+        //                    }
+        //                }
+        //                throw;
+        //            }
+        //            catch (DbUpdateException e)
+        //            {
+        //                //Add your code to inspect the inner exception and/or
+        //                //e.Entries here.
+        //                //Or just use the debugger.
+        //                //Added this catch (after the comments below) to make it more obvious 
+        //                //how this code might help this specific problem
+        //            }
+        //            catch (Exception e)
+        //            {
+
+        //            }
+        //        }
+
+        //    }
+
+
+        //}
 
         private static double? CheckifExistDouble(JToken jToken)
         {
@@ -624,6 +624,7 @@ namespace FarmsApi.Services
 
 
             User u = UpdateUser(dataObj[0].ToObject<User>());
+            if (u.Id == 0) return u;
 
             List<Payments> p = dataObj[1].ToObject<List<Payments>>();
             UpdatePaymentsObject(p, u);
@@ -888,6 +889,9 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
+
+                List<Expenses> Diff = new List<Expenses>();
+
                 foreach (Expenses item in objList)
                 {
 
@@ -896,15 +900,10 @@ namespace FarmsApi.Services
                     if (item.Id == 0)
                     {
                         Context.Expenses.Add(item);
-                        //  Context.SaveChanges();
-
                     }
                     else
                     {
-
                         Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
-                        //  Context.SaveChanges();
-
                     }
 
                 }
@@ -918,7 +917,7 @@ namespace FarmsApi.Services
                     foreach (Expenses item in differenceQuery)
                     {
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
-                        // Context.SaveChanges();
+
                     }
 
 
@@ -929,6 +928,22 @@ namespace FarmsApi.Services
 
 
                 }
+
+
+
+                //foreach (Expenses item in Diff)
+                //{
+                //    Context.SaveChanges();
+                //    var SumDiff = item.Price - item.Sum;
+                //    Expenses newExe = item;
+                //    newExe.Paid = null;
+                //   // newExe.Price = SumDiff;
+                //    newExe.Sum = item.Price;
+                //    Context.Expenses.Add(newExe);
+                //}
+
+
+
                 // 
 
                 // Context.UserHorses.AddRange(uhs);

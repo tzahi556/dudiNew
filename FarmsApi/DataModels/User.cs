@@ -51,7 +51,7 @@ namespace FarmsApi.DataModels
         public string cc_expire_month { get; set; }
         public string cc_expire_year { get; set; }
 
-        public string Meta { get; set; }
+        //public string Meta { get; set; }
 
         public string EventsColor { get; set; }
         

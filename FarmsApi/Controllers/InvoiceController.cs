@@ -267,7 +267,8 @@ namespace FarmsApi.Controllers
                         break;
                 }
 
-                int DocType = 405;
+                // קבלה כדיפולט בגלל בית השאנטי שמס קבלה הוא נל
+                int DocType = 400;
                 try
                 {
                     DocType = ((bool)Params.isMasKabala) ? 320 : ((bool)Params.isKabala ? 400 : 405);
@@ -275,6 +276,7 @@ namespace FarmsApi.Controllers
                 catch (Exception ex)
                 {
                     Params.isMasKabala = false;
+                   
                 }
 
                 //
@@ -282,6 +284,8 @@ namespace FarmsApi.Controllers
                 {
                     api_key = (string)Params.api_key,
                     api_email = (string)Params.api_email,
+                    ua_uuid = (string)Params.ua_uuid,
+
                     developer_email = "tzahi556@gmail.com",
                     developer_phone = "0505913817",
                     type = DocType,

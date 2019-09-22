@@ -13,7 +13,7 @@
 
             <div ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="cursor:pointer;text-align:center;" 
                  ng-click="showDiv = !showDiv"><span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span> &nbsp;ממתינים לשיעור השלמה </div>
-            <div ng-show="showDiv" class="dvContainer">
+            <div ng-show="showDiv" class="dvContainer" style="height:550px;overflow:auto">
                 <div class="fc-draggable dvDragElement"
                       ondragstart="dragStart(event)"
                       ondragover="allowDrop(event)"

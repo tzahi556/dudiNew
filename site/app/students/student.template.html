@@ -109,11 +109,11 @@
                     </div>
                     <div class="form-group">
                         <label>עלות</label>
-                        <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" required />
+                        <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
                     </div>
                     <div class="form-group">
                         <label>סוג תשלום</label>
-                        <select class="form-control" ng-model="$ctrl.user.PayType" required>
+                        <select class="form-control" ng-model="$ctrl.user.PayType" ng-change="$ctrl.changeLessonsData()" required>
                             <option value="">בחר אפשרות</option>
                             <option value="lessonCost">עלות שיעור</option>
                             <option value="monthCost">עלות חודשית</option>
@@ -213,7 +213,7 @@
                                 <th>תאריך</th>
                                 <th>חשבונית מס/קבלה</th>
                                 <th style="width:50%">פירוט עיסקה</th>
-                                <!--<th>מחיר</th>-->
+                                <!--<th>שיעורים</th>-->
                                 <th>סכום</th>
                                 <th></th>
                             </tr>
@@ -228,6 +228,7 @@
                                     {{payment.InvoiceDetails}}
                                     <span ng-if="payment.canceled">(מזוכת: {{payment.canceled}})</span>
                                 </td>
+                                <!--<td>{{payment.lessons}}</td>-->
                                 <!--<td>{{payment.Price}}</td>-->
                                 <td>{{payment.InvoiceSum}}</td>
                                 <td>
@@ -244,8 +245,8 @@
                         <form ng-if="$ctrl.showNewPayment" name="paymentForm">
                             <div class="form-group">
                                 <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isMasKabala" />חשבונית מס קבלה</label>
-                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isKabala" /> קבלה</label>
-                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabala=false" ng-model="$ctrl.newPayment.isKabalaTroma" /> קבלה על תרומה</label>
+                                <label ><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isKabala" /> קבלה</label>
+                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabala=false" ng-model="$ctrl.newPayment.isKabalaTroma" /> קבלה על תרומה</label>
                             </div>
                             <div class="form-group">
                                 <input class="form-control" type="date" ng-model="$ctrl.newPayment.Date" required />
@@ -300,10 +301,12 @@
                                             <td style="width: 10%">הוספה</td>
                                             <td>פריט</td>
                                             <td>מחיר</td>
+                                            <td>לתשלום</td>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc | filter: {Paid:'!'} track by $index">
+                                        <!--filter: {Paid:'!'} track by $index-->
+                                        <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc " ng-if="expense.Price!=expense.Sum">
                                             <td>
                                                 <input type="checkbox" ng-init="expense.Checked=false" ng-click="$ctrl.countTotal()"
                                                        ng-model="expense.Checked">
@@ -312,6 +315,7 @@
                                                 {{expense.Details}}</span>
                                             </td>
                                             <td>{{expense.Price}}</td>
+                                            <td>{{expense.Price - expense.Sum}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -418,7 +422,7 @@
                             <!-- #payment type -->
                             <!--<button ng-click="$ctrl.addPayment()" ng-disabled="paymentForm.$invalid || $ctrl.user.Meta.Cost==0" type="submit" class="btn btn-success">הוספה</button>-->
                             <button ng-click="$ctrl.addPayment()" ng-disabled="$ctrl.disablBtn || (paymentForm.$invalid && $ctrl.getIfanyCheckValid())" type="submit" class="btn btn-success">הוספה</button>
-                            <button ng-click="$ctrl.cancelToken()" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.Meta.cc_token" type="button" class="btn btn-default">איפוס טוקן</button>
+                            <button ng-click="$ctrl.cancelToken()" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default">איפוס טוקן</button>
 
                             <span ng-if="$ctrl.user.Cost==0">עלות השיעור הינה 0, לא ניתן להוסיף תשלום</span>
                         </form>
@@ -476,6 +480,7 @@
                             <tr>
                                 <th>תאריך</th>
                                 <th>תיאור</th>
+                                <th>מחיר</th>
                                 <th>סכום</th>
                                 <th></th>
                             </tr>
@@ -488,6 +493,7 @@
                                     <span ng-if="expense.Paid">(שולם: {{expense.Paid}})</span>
                                 </td>
                                 <td>{{expense.Price}}</td>
+                                <td>{{expense.Sum}}</td>
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeExpense(expense)">הסר</button></td>
                             </tr>
                         </tbody>
@@ -557,12 +563,16 @@
                                 <td>{{lesson.start | ildate: 'DD/MM/YYYY HH:mm'}}</td>
                                 <!--<td>{{lesson.lessPrice}}</td>-->
                                 <td>
+
+
+                                   
+
                                     <select ng-options="status.id as status.name for status in $ctrl.lessonStatuses" ng-init="statusIndex = $ctrl.getStatusIndex(lesson)"
                                             ng-model="lesson.statuses[statusIndex].Status" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,false)">
                                         <option value=""></option>
                                     </select>
 
-
+                                    <img ng-if="lesson.statuses[statusIndex].IsComplete>2" src="../../images/replace.jpg" width="24px" />
 
 
                                 </td>
@@ -578,7 +588,7 @@
                                 </td>
                                 <td>
 
-                                    <input style="width:100px" min="0" type="number" ng-model="lesson.lessprice" ng-disabled="lesson.disable" ng-change="$ctrl.setLessPrice(lesson,$index)">
+                                    <input style="width:100px"  type="text" ng-model="lesson.lessprice" ng-disabled="lesson.disable" ng-change="$ctrl.setLessPrice(lesson,$index)">
 
                                 </td>
                                 <td><i class="fa fa-check-circle-o green" ng-show="lesson.paid" aria-hidden="true"></i></td>

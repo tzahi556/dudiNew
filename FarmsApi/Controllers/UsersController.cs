@@ -16,13 +16,13 @@ namespace FarmsApi.Services
 
 
       
-        [Route("UpdateUsers")]
-        [HttpGet]
-        public string UpdateUsers()
-        {
-            UsersService.UpdateUsers();
-            return "sdsdsdsd";
-        }
+        //[Route("UpdateUsers")]
+        //[HttpGet]
+        //public string UpdateUsers()
+        //{
+        //    UsersService.UpdateUsers();
+        //    return "sdsdsdsd";
+        //}
 
 
 

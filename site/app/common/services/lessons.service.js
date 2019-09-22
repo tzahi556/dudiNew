@@ -16,7 +16,7 @@
         function _createNotifications(lesson) {
             for (var i in lesson.statuses) {
                 usersService.getUser(lesson.statuses[i].StudentId).then(function (user) {
-                    this.checkLowCredit(user);
+                  //  this.checkLowCredit(user);
                 }.bind(this));
             }
         }
@@ -92,7 +92,7 @@
 
         function _getLessons(studentId, startDate, endDate, isFromCompletion) {
 
-           
+          
             studentId = !angular.isUndefined(studentId) ? studentId : '';
             var deferred = $q.defer();
             $http.get(sharedValues.apiUrl + 'lessons/getLessons/', { params: { studentId: studentId, startDate: startDate, endDate: endDate, isFromCompletion: isFromCompletion } }).then(function (res) {

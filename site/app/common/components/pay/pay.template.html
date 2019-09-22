@@ -11,9 +11,9 @@
 
             <form name="paymentForm">
                 <div class="form-group">
-                    <label><input type="checkbox" ng-click="$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isMasKabala" />חשבונית מס קבלה</label>
+                    <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isMasKabala" />חשבונית מס קבלה</label>
                     <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isKabala" /> קבלה</label>
-                    <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabala=false" ng-model="$ctrl.newPayment.isKabalaTroma" /> קבלה על תרומה</label>
+                    <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabala=false" ng-model="$ctrl.newPayment.isKabalaTroma" /> קבלה על תרומה</label>
                 </div>
                 <div class="form-group">
                     <input class="form-control" type="date" ng-model="$ctrl.newPayment.Date" required />
@@ -67,10 +67,11 @@
                                 <td>הוספה</td>
                                 <td>פריט</td>
                                 <td>מחיר</td>
+                                <td>לתשלום</td>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc | filter: {Paid:'!'} track by $index">
+                            <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc" ng-if="expense.Price!=expense.Sum">
                                 <td>
                                     <input type="checkbox" ng-init="expense.Checked=false" ng-click="$ctrl.countTotal()"
                                            ng-model="expense.Checked">
@@ -79,6 +80,7 @@
                                     {{expense.Details}}
                                 </td>
                                 <td>{{expense.Price}}</td>
+                                <td>{{expense.Price - expense.Sum}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -91,7 +93,10 @@
                 </div>
                 <!-- cash -->
                 <div class="form-group">
-                    <input class="form-control" placeholder="סכום החשבונית" type="number" ng-model="$ctrl.newPayment.InvoiceSum" ng-change="$ctrl.countTotalByInvoiceSum()" required />
+                    <input class="form-control" placeholder="סכום החשבונית" type="number" ng-model="$ctrl.newPayment.InvoiceSum" 
+                           required />
+
+                    <!--ng-change="$ctrl.countTotalByInvoiceSum()"--> 
                 </div>
                 <!-- payment type -->
                 <div class="form-group" ng-if="$ctrl.newPayment.isMasKabala || $ctrl.newPayment.isKabala || $ctrl.newPayment.isKabalaTroma">

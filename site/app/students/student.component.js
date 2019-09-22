@@ -107,9 +107,27 @@
         this.getLessonsDateNoPaid = _getLessonsDateNoPaid.bind(this);
         this.getIfanyCheckValid = _getIfanyCheckValid.bind(this);
         this.setLessPrice = _setLessPrice.bind(this);
+        this.changeLessonsData = _changeLessonsData.bind(this);
 
 
         this.newPrice = 0;
+
+        function _changeLessonsData() {
+
+
+
+            for (var i in this.lessons) {
+
+                if (moment(this.lessons[i].start).format('YYYY-MM-DD') >= moment().format('YYYY-MM-DD')) {
+                    this.lessons[i].lessprice = this.user.Cost;
+                    this.lessons[i].lessonpaytype = (this.user.PayType == "lessonCost") ? 1 : 2;
+                    this.setLessPrice(this.lessons[i]);
+
+                }
+
+            }
+         
+        }
 
         function _openComments(statusIndex, lesson) {
 
@@ -196,9 +214,9 @@
             this.countAllCredits();
             this.monthlyReport();
 
-          
-         
-            this.user.BirthDate =  moment(this.user.BirthDate).startOf('day').toDate();
+
+
+            this.user.BirthDate = moment(this.user.BirthDate).startOf('day').toDate();
             this.user.Active = this.user.Active || 'active';
 
             // set default farm
@@ -465,7 +483,7 @@
         }
 
         function _getLessonsDateNoPaid(LessonsPaidCounter) {
-
+          
             if (!LessonsPaidCounter || LessonsPaidCounter == 0) return "";
             var results = "תאריכי שיעורים- ";
             var TotalPAID = this.creditPaidLessons;
@@ -475,10 +493,11 @@
                 if (!this.lessons[i].paid) {
 
                     var CurrentStatus = this.lessons[i].statuses[this.getStatusIndex(this.lessons[i])].Status;
+                    if (CurrentStatus == 'completionReq') continue;
                     var IsPast = parseInt(moment(this.lessons[i].start).format('YYYYMMDD')) < parseInt(moment().format('YYYYMMDD'));
 
 
-                    if (LessonsPaidCounter > 0 && (!IsPast || ['attended', 'notAttendedCharge', 'completionReq'].indexOf(CurrentStatus) != -1)) {
+                    if (LessonsPaidCounter > 0 && (!IsPast || ['attended', 'notAttendedCharge'].indexOf(CurrentStatus) != -1)) {
                         if (TotalPAID > 0) {
                             TotalPAID--;
 
@@ -503,19 +522,21 @@
 
         function _setLessPrice(lesson, index) {
 
+         
+
             this.lessonStatusesToUpdate = this.lessonStatusesToUpdate || [];
             var found = false;
             for (var i in this.lessonStatusesToUpdate) {
                 if (this.lessonStatusesToUpdate[i].studentId == this.user.Id && this.lessonStatusesToUpdate[i].lessonId == lesson.id) {
 
-                    this.lessonStatusesToUpdate[i].lessPrice = lesson.lessprice;
-
+                    this.lessonStatusesToUpdate[i].lessprice = eval(lesson.lessprice);
+                    this.lessonStatusesToUpdate[i].lessonpaytype = lesson.lessonpaytype;
                     found = true;
                 }
             }
             if (!found) {
 
-                this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: lesson.id, lessPrice: lesson.lessprice });
+                this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: lesson.id, lessprice: eval(lesson.lessprice), lessonpaytype: lesson.lessonpaytype });
             }
 
 
@@ -523,7 +544,6 @@
             // this.changeLessonsStatus(lesson.statuses[statusIndex].Status, lesson.statuses[statusIndex].Details, lesson.statuses[statusIndex].StudentId, lesson.id, lesson.statuses[statusIndex].IsComplete, lesson, false);
 
         }
-
 
         function _initLessons() {
 
@@ -537,12 +557,7 @@
                 return 0;
             });
 
-            // הוספתי למקרה שהשארית יותר גדולה ממחיר שיעור אז תחשיב שיעור
-            //if (this.Sherit >= this.user.Cost && this.user.Cost > 0) {
-            //    this.paidLessons++;
-            //    this.Sherit = this.Sherit - this.user.Cost;
-            //}
-
+          
 
             this.creditPaidLessons = this.paidLessons + this.commitmentLessons;
 
@@ -555,6 +570,7 @@
 
                 // שיעור השלמה
                 if (this.lessons[i].statuses[0].IsComplete == "4") {
+                   
                     this.lessons[i].statuses[0].Status = "attended";
                 }
                 if (this.lessons[i].statuses[0].IsComplete == "3") {
@@ -562,18 +578,18 @@
                 }
 
 
-                if (this.lessons[i].statuses[0].IsComplete < 3) {
+                if (this.lessons[i].statuses[0].IsComplete < 6) {
 
 
                     var res = this.setPaid(this.lessons[i]);
                     this.lessons[i].paid = res[0];
                     //  this.lessons[i].disable = (this.lessons[i].lessonpaytype == 1) ? false : true;
-                    this.lessons[i].lessprice = res[1];
+                    this.lessons[i].lessprice = eval(res[1]);
 
                     // אם השיעור התלמיד הגיע
                     if (res[2]) {
 
-                        this.newPrice += res[1];
+                        this.newPrice += eval(res[1]);
 
                     }
 
@@ -655,37 +671,43 @@
             //}
 
 
-
-            if (['attended', 'notAttendedCharge', 'completionReq'].indexOf(lesson.statuses[this.getStatusIndex(lesson)].Status) != -1) {
+            //completionReq
+         
+            var studentsStatus = lesson.statuses[this.getStatusIndex(lesson)].Status;  //|| (['completion'].indexOf(studentsStatus) != -1 && lesson.IsComplete==4)
+            if (['attended', 'notAttendedCharge'].indexOf(studentsStatus) != -1 ) {
 
                 this.attendedLessons = this.attendedLessons || 0;
                 this.attendedLessons++;
 
                 if (lesson.lessonpaytype == 1) {
 
+                   
                     if (this.creditPaidLessons-- > 0) {
-                        return [true, (lesson.lessprice) ? lesson.lessprice : Price, true];
+                       
+                        return [true, (lesson.lessprice || lesson.lessprice==0) ? lesson.lessprice : Price, true];
                     }
                     else {
-                        return [false, (lesson.lessprice) ? lesson.lessprice : Price, true];
+                        return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, true];
                     }
+
 
                 }
                 else {
 
-
+                  
                     var monthOnly = moment(lesson.start).format("YYYYMM");
                     if (this.results.indexOf(monthOnly) == -1) {
                         this.results.push(monthOnly);
 
                         if (this.creditPaidMonth-- > 0) {
-                            return [true, (lesson.lessprice) ? lesson.lessprice : Price, true];
+                            return [true, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, true];
                         }
                         else {
-                            return [false, (lesson.lessprice) ? lesson.lessprice : Price, true];
+                            return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, true];
                         }
-                    } else if (this.creditPaidMonth>=0) {
-                        return [true, (lesson.lessprice) ? lesson.lessprice : Price, false];
+                    } else
+                        if (this.creditPaidMonth >= 0) {
+                            return [true, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
 
                     }
 
@@ -693,7 +715,7 @@
 
             }
 
-            return [false, (lesson.lessprice) ? lesson.lessprice : Price, false];
+            return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
         }
 
         function _initPaymentForm() {
@@ -706,12 +728,13 @@
                 this.showNewPayment = false;
                 this.newPayment = {};
                 this.newPayment.api_key = this.farm.Meta.api_key;
+                this.newPayment.ua_uuid = this.farm.Meta.ua_uuid;
                 this.newPayment.api_email = this.farm.Meta.api_email;
                 if (this.user.Farm_Id != 46) {
                     this.newPayment.isMasKabala = true;
                 } else {
 
-                    this.newPayment.isKabalaTroma = true;
+                    this.newPayment.isKabala = true;
                 }
                 //let current_datetime = new Date()
                 //let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes() + ":" + current_datetime.getSeconds()
@@ -733,6 +756,9 @@
         }
 
         function _countTotal() {
+
+
+           
             self.newPayment.InvoiceSum = 0;
             self.newPayment.InvoiceDetails = '';
             if (self.newPayment.lessons || self.newPayment.month) {
@@ -765,9 +791,9 @@
                 }
             }
             if (this.expenses !== undefined) {
-                for (var expense of this.expenses.filter(function (expense) { return !expense.Paid && expense.Checked })) {
+                for (var expense of this.expenses.filter(function (expense) { return  expense.Checked })) {
 
-                    self.newPayment.InvoiceSum += expense.Price;
+                    self.newPayment.InvoiceSum += expense.Price - ((!expense.Sum) ? 0 : expense.Sum);
                     self.newPayment.InvoiceDetails += ', ' + expense.Details;
                 }
             }
@@ -775,7 +801,7 @@
         }
 
         function _cancelToken() {
-
+            
             this.user.cc_token = "";
 
         }
@@ -864,12 +890,12 @@
         }
 
         function _changeLessonsStatus(status, details, studentId, lessonId, isComplete, lesson, isText) {
-
-
-            if (!isText && (isComplete == 3 || isComplete == 4)) {
+         
+       
+            if (!isText && (isComplete >2)) {
                 //var ind = this.getStatusIndex(lesson);
 
-                if (status != "attended" && status != "notAttended") {
+                if (status && status != "attended" && status != "notAttended") {
 
                     alert("בשיעור השלמה ניתן להזין רק אם הגיע \ לא הגיע");
                     //lesson.statuses[0].IsComplete = isComplete;
@@ -878,16 +904,22 @@
                     return;
                 }
 
-                if (isComplete == 3 && status == "attended") {
+                if (status == "attended") {
 
                     isComplete = 4;
                 }
 
-                if (isComplete == 4 && status == "notAttended") {
+                if (status == "notAttended") {
 
                     isComplete = 3;
                 }
 
+                if (!status) {
+
+                    isComplete = 5;
+                }
+
+               
                 status = "completion";
 
                 lesson.statuses[0].Status = "completion";
@@ -927,12 +959,12 @@
             this.countSherit();
             // unpaid lessons
             //חוב על שיעורים
-        //    if (this.user.PayType == 'lessonCost') {
+            //    if (this.user.PayType == 'lessonCost') {
 
             this.unpaidLessons = this.Sherit;// (this.Sherit -this.totalExpensesShulam - this.user.Meta.Cost);
 
 
-          //  }
+            //  }
 
 
 
@@ -946,24 +978,25 @@
 
             var total = 0;
             this.totalExpensesShulam = 0;
-
+        
             for (var i in this.expenses) {
                 var exp = this.expenses[i];
-                if (!exp.Paid) {
-                    total += exp.Price;
-                }
-                else {
 
-                    // if (this.getIfExpensiveInMas(exp.Paid))
-                    this.totalExpensesShulam += exp.Price;
+                if (!exp.Paid)
+                {
+                 
+                       total += exp.Price;
+                    
+                }
+                else
+                {
+                 
+                    this.totalExpensesShulam += exp.Price;// שונה Price
 
                 }
             }
 
-
-            //  alert(this.totalExpensesShulam);
-
-
+          
             this.totalExpensesNoShulam = total;
 
         }
@@ -1037,7 +1070,8 @@
             //alert(this.unpaidLessons);
             // var totalOnlyMonth = (this.user.PayType == 'lessonCost') ? 0 : (this.totalExpensesShulam - totalExpenOut);
             this.paidMonths = results.length;
-           // this.monthlyBalance = paid - this.totalExpensesShulam - sum;
+
+            // this.monthlyBalance = paid - this.totalExpensesShulam - sum;
 
 
         }
@@ -1068,11 +1102,25 @@
             }
 
 
-
+          
 
             //this.newPrice כמה היה צריך לשלם לפי החישוב של הגעה  
-
+           
             this.Sherit = (total - this.totalExpensesShulam) - this.newPrice;
+
+
+           //  הוספתי למקרה שהשארית יותר גדולה ממחיר שיעור אז תחשיב שיעור
+            //if (this.Sherit > 0 && this.Sherit >= this.user.Cost && this.user.Cost > 0) {
+            //    this.paidLessons++;
+            //    this.Sherit = this.Sherit - this.user.Cost;
+            //}
+
+            //  הוספתי למקרה שהשארית יותר גדולה ממחיר שיעור אז תחשיב שיעור
+            //if (this.Sherit < 0 && this.Sherit <= this.user.Cost && this.user.Cost > 0) {
+            //    this.creditPaidLessons--;
+            //  //  this.Sherit = this.Sherit + this.user.Cost;
+            //}
+
 
 
         }
@@ -1272,7 +1320,7 @@
 
             var newPayment = angular.copy(this.newPayment);
             newPayment.cc_type_name = this.getccTypeName(this.newPayment.cc_type);
-
+            var TempSum = newPayment.InvoiceSum;
             if (newPayment.isMasKabala || newPayment.isKabala || newPayment.isKabalaTroma) {
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
@@ -1341,8 +1389,22 @@
                     newPayment.InvoicePdf = response.data.pdf_link;
 
                     this.expenses.map(function (expense) {
-                        if (expense.Checked && !expense.Paid) {
+                        if (expense.Checked) { //&& !expense.Paid !צחי הוריד בינתיים
+                           
                             expense.Paid = newPayment.InvoiceNum;
+                            expense.Sum = (!expense.Sum) ? 0 : expense.Sum;
+
+                            var Diff = expense.Price - expense.Sum;
+
+                            if (TempSum >= Diff) {
+
+                                expense.Sum = expense.Sum + Diff;
+                                TempSum = TempSum - Diff;
+                            } else {
+                                expense.Sum = expense.Sum + TempSum;
+                                TempSum = 0;
+
+                            }
 
                         }
                     });
@@ -1354,22 +1416,34 @@
                     this.submit();
 
                 }.bind(this));
-            } else {
+            }
 
+            else {
 
+              
                 this.payments = this.payments || [];
-                //  newPayment.ExpenseSum = 0;
+              
+              
                 this.expenses.map(function (expense) {
-                    if (expense.Checked && !expense.Paid) {
+                    if (expense.Checked ) { //&& !expense.Paid !צחי הוריד בינתיים
                         expense.Paid = newPayment.InvoiceNum;
+                        expense.Sum = (!expense.Sum) ? 0 : expense.Sum;
+                        var Diff = expense.Price - expense.Sum;
 
+                        if (TempSum >= Diff) {
+
+                            expense.Sum = expense.Sum + Diff;
+                            TempSum = TempSum - Diff;
+                        } else {
+                            expense.Sum = expense.Sum + TempSum;
+                            TempSum = 0;
+
+                        }
+                        
                     }
                 });
 
-                //  newPayment.Date = '2019-11-10T15:25:32';
-
                 this.payments.push(newPayment);
-
                 this.initPaymentForm();
                 this.countAllCredits();
                 this.submit();
@@ -1401,6 +1475,8 @@
         }
 
         function _getIfanyCheckValid() {
+
+           
             if (this.newPayment.payment_type == 'check') {
 
                 for (var i in this.newPayment.Checks) {
@@ -1429,14 +1505,19 @@
                 this.user.Role = 'student';
                 this.user.Email = this.user.IdNumber;
                 this.user.Password = this.user.IdNumber;
-
-             
+          
                 if (this.user.BirthDate)
-                     this.user.BirthDate.setHours(this.user.BirthDate.getHours() + 3);
+                    this.user.BirthDate.setHours(this.user.BirthDate.getHours() + 3);
 
 
                 usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses).then(function (user) {
-
+                    
+                    if (user.FirstName == "Error") {
+                        alert('שגיאה בעת הכנסת תלמיד חדש , בדוק אם קיימת תעודת זהות במערכת');
+                        //user.FirstName = "";
+                        return;
+                    }
+                   
                     lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate);
                     this.user = user;
 

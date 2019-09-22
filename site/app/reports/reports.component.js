@@ -124,6 +124,7 @@
         }
 
         function _lessonsReport() {
+
             function getUser(id) {
                 var student = {};
                 for (var user of self.users) {
@@ -142,11 +143,16 @@
 
             var deferred = $q.defer();
             var tasks = [];
+
             tasks.push(usersService.getUsers('student'));
             tasks.push(usersService.getUsers('instructor'));
             tasks.push(usersService.getUsers('profAdmin'));
+         
+
             $q.all(tasks).then(function (users) {
+
                 self.users = users.reduce(function (acc, value) { return acc.concat(value); });
+
                 lessonsService.getLessons(null, self.fromDate, self.toDate).then(function (lessons) {
                     var data = [];
                     data.push([
@@ -160,16 +166,23 @@
                         'קופת חולים',
                         'עלות'
                     ]);
+
+
+
+                    //alert(lessons[0].resourceId);
+                    //alert(getName(lessons[0].resourceId));
+
                     for (var lesson of lessons) {
+                    
                         for (var status of lesson.statuses) {
                             var instructorName = getName(lesson.resourceId);
                             var student = getUser(status.StudentId);
-                            if (student && student.Meta) {
+                            if (student) {
                                 var studentName = student.FirstName + " " + student.LastName;
-                                var studentClientNumber = student.Meta.ClientNumber || "";
-                                var studentIdNumber = student.Meta.IdNumber;
-                                var studentHMO = student.Meta.HMO;
-                                var studentCost = student.Meta.Cost;
+                                var studentClientNumber = student.ClientNumber || "";
+                                var studentIdNumber = student.IdNumber;
+                                var studentHMO = student.HMO;
+                                var studentCost = student.Cost;
 
                                 if (instructorName && studentName) {
                                     data.push([

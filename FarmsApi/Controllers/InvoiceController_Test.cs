@@ -282,6 +282,8 @@
 //                {
 //                    api_key = (string)Params.api_key,
 //                    api_email = (string)Params.api_email,
+//                    ua_uuid = (string)Params.ua_uuid,
+
 //                    developer_email = "tzahi556@gmail.com",
 //                    developer_phone = "0505913817",
 //                    type = DocType,
