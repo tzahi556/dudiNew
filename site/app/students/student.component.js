@@ -108,7 +108,8 @@
         this.getIfanyCheckValid = _getIfanyCheckValid.bind(this);
         this.setLessPrice = _setLessPrice.bind(this);
         this.changeLessonsData = _changeLessonsData.bind(this);
-
+      
+        
 
         this.newPrice = 0;
 
@@ -545,9 +546,15 @@
 
         }
 
+
+
+      
+
         function _initLessons() {
 
-
+            // הגדרות בשביל הדוח
+            this.lessReport = [];
+            this.getStatusLengthFrom1 = 0, this.getStatusLengthFrom2 = 0, this.getStatusLengthFrom3 = 0, this.getStatusLengthFrom4 = 0, this.getStatusLengthFrom5 = 0;
 
             this.lessons = this.lessons.sort(function (a, b) {
                 if (a.start > b.start)
@@ -567,23 +574,29 @@
             this.newPrice = 0;
             for (var i in this.lessons) {
 
-
+                var ststIndex = this.getStatusIndex(this.lessons[i]);
                 // שיעור השלמה
-                if (this.lessons[i].statuses[0].IsComplete == "4") {
+                if (this.lessons[i].statuses[ststIndex].IsComplete == "4") {
                    
-                    this.lessons[i].statuses[0].Status = "attended";
+                    this.lessons[i].statuses[ststIndex].Status = "attended";
                 }
-                if (this.lessons[i].statuses[0].IsComplete == "3") {
-                    this.lessons[i].statuses[0].Status = "notAttended";
+                if (this.lessons[i].statuses[ststIndex].IsComplete == "3") {
+                    this.lessons[i].statuses[ststIndex].Status = "notAttended";
                 }
 
+               // this.calcLessonsReport();
+                if (this.lessons[i].statuses[ststIndex].Status == "attended") this.getStatusLengthFrom1 += 1;
+                if (this.lessons[i].statuses[ststIndex].Status == "notAttendedCharge") this.getStatusLengthFrom2 += 1;
+                if (this.lessons[i].statuses[ststIndex].Status == "notAttended") this.getStatusLengthFrom3 += 1;
+                if (this.lessons[i].statuses[ststIndex].Status == "notAttendedDontCharge") this.getStatusLengthFrom4 += 1;
+                if (this.lessons[i].statuses[ststIndex].Status == "completionReq") this.getStatusLengthFrom5 += 1;
 
-                if (this.lessons[i].statuses[0].IsComplete < 6) {
+
+                if (this.lessons[i].statuses[ststIndex].IsComplete < 6) {
 
 
                     var res = this.setPaid(this.lessons[i]);
                     this.lessons[i].paid = res[0];
-                    //  this.lessons[i].disable = (this.lessons[i].lessonpaytype == 1) ? false : true;
                     this.lessons[i].lessprice = eval(res[1]);
 
                     // אם השיעור התלמיד הגיע
@@ -591,9 +604,29 @@
 
                         this.newPrice += eval(res[1]);
 
+                        //*******************************************
+                        var lprice = [];
+                        lprice.price = this.lessons[i].lessprice;
+                        lprice.type = this.lessons[i].lessonpaytype;
+                        //1 שיעור    
+                        //2 חודשים
+                        lprice.count = 1;
+                      
+                        var isExist = false;
+                        for (var i = 0; i < this.lessReport.length; i++) {
+                            if (this.lessReport[i]["price"] === lprice.price && this.lessReport[i]["type"] === lprice.type) {
+
+                                this.lessReport[i]["count"]+= 1;
+                                isExist = true;
+                            }
+                        }
+
+                        if (!isExist) this.lessReport.push(lprice);
+                        //**************************************
                     }
 
 
+                    
                     // אם השיעור מוגדר חודשי
                     //if (this.lessons[i].lessonpaytype == 2) {
 
@@ -1078,7 +1111,7 @@
 
         function _countSherit() {
 
-
+            this.totalPay = 0;
             var total = 0;
             var totalLessons = 0;
             this.Sherit = 0;
@@ -1103,9 +1136,9 @@
 
 
           
-
+            this.totalPay = total;
             //this.newPrice כמה היה צריך לשלם לפי החישוב של הגעה  
-           
+         
             this.Sherit = (total - this.totalExpensesShulam) - this.newPrice;
 
 

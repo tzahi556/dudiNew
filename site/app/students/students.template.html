@@ -34,7 +34,7 @@
                             <!--</div>-->
                         </td>
                     </tr>
-                    <tr ng-if="user.Active == 'active'" ng-repeat="user in $ctrl.users | filter:$ctrl.filter | limitTo : 1000   ">
+                    <tr ng-if="user.Active == 'active'" ng-repeat="user in $ctrl.users | filter:$ctrl.filter | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
                         <td width="5%"><input type="checkbox" ng-model="user.IsSelected" /></td>
                         <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}} <span ng-if="user.Active == 'notActive'">(לא פעיל)</span></td>
                         <td>{{user.Email}}</td>
@@ -68,7 +68,7 @@
                             <!--</div>-->
                         </td>
                     </tr>
-                    <tr ng-if="user.Active == 'notActive'" ng-repeat="user in $ctrl.users  | filter:$ctrl.filter  | limitTo : 1000 ">
+                    <tr ng-if="user.Active == 'notActive'" ng-repeat="user in $ctrl.users  | filter:$ctrl.filter  | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
                         <td width="5%"><input type="checkbox" ng-model="user.IsSelected2" /></td>
                         <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}} <span ng-if="user.Active == 'notActive'">(לא פעיל)</span></td>
                         <td>{{user.Email}}</td>

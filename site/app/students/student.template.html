@@ -144,13 +144,14 @@
                     </div>
                     <table class="table">
                         <tbody>
-                            <tr style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
-                                <td>כמות שיעורים ששולמו בשנה הנוכחית</td>
-                                <td>{{$ctrl.paidLessonsThisYear}}</td>
-                            </tr>
+                           
                             <tr style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>כמות שיעורים ששולמו סה״כ</td>
                                 <td>{{$ctrl.paidLessons}}</td>
+                            </tr>
+                            <tr style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
+                                <td>כמות שיעורים ששולמו בשנה הנוכחית</td>
+                                <td>{{$ctrl.paidLessonsThisYear}}</td>
                             </tr>
                             <tr style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost' && $ctrl.user.HMO.indexOf('maccabi')!=-1">
                                 <td>כמות שיעורים בהתחייבות מכבי בשנה הנוכחית</td>
@@ -187,7 +188,139 @@
 
                             <tr>
                                 <td>סה"כ מצב חשבון</td>
-                                <td><span style="display:inline-block;direction:ltr;text-align:right;" id="dvAccountStatus">{{$ctrl.totalExpensesNoShulam*-1 + $ctrl.unpaidLessons + $ctrl.monthlyBalance}}</span>                                    ש"ח</td>
+                                <td>
+                                    <span style="display:inline-block;direction:ltr;text-align:right;" id="dvAccountStatus">{{$ctrl.totalExpensesNoShulam*-1 + $ctrl.unpaidLessons + $ctrl.monthlyBalance}}</span>                                    ש"ח
+
+                                    <button class="btn btn-success btn-xs" style="float:left" ng-click="showDiv = !showDiv">פירוט  </button>
+
+                                </td>
+
+                            </tr>
+                            <tr ng-show="showDiv">
+                                <td colspan="2" style="border:double 4px gray">
+                                    <form name="paymentDetails" style="">
+                                       
+                                        <div class="col-md-12">
+                                            <label>שיעורים</label>
+                                            <table class="table" border="1" style="font-weight:bold">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th>הגיע</th>
+                                                        <th>לא הגיע, לחייב</th>
+                                                        <th>לא הגיע</th>
+                                                        <th>לא הגיע, לא לחייב</th>
+                                                        <th>דרוש שיעור השלמה</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{$ctrl.getStatusLengthFrom1}}</td>
+                                                        <td>{{$ctrl.getStatusLengthFrom2}}</td>
+                                                        <td>{{$ctrl.getStatusLengthFrom3}}</td>
+                                                        <td>{{$ctrl.getStatusLengthFrom4}}</td>
+                                                        <td>{{$ctrl.getStatusLengthFrom5}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            </div>
+
+                                        <div class="col-md-4">
+                                                <label>מחירי שיעורים</label>
+                                                <table class="table" border="1">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>סוג</th>
+                                                            <th>כמות</th>
+                                                            <th>מחיר</th>
+                                                            <th>סה"כ</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+
+                                                        <tr ng-repeat="lprice in $ctrl.lessReport">
+                                                            <td>{{lprice.type==1 ? 'שיעורים' : 'חודשים'}}</td>
+                                                            <td>{{lprice.count}}</td>
+                                                            <td>{{lprice.price}}</td>
+                                                            <td>{{lprice.count * lprice.price}}</td>
+                                                        </tr>
+
+                                                        <!--<tr>
+                                                            <td>22</td>
+                                                            <td>33</td>
+                                                            <td>2235</td>
+                                                        </tr>-->
+                                                        <tr>
+                                                            <td></td>
+                                                            <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid">{{$ctrl.getStatusLengthFrom1 + $ctrl.getStatusLengthFrom2}}</td>
+                                                            <td  style="border:0;font-weight:bold;text-align:left">סה"כ עבור שיעורים</td>
+                                                            <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid" >{{$ctrl.newPrice}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+
+                                        <div class="col-md-4">
+                                            <label>חיוב הוצאות אחרות</label>
+                                            <table class="table" border="1">
+                                                    <tr>
+
+                                                        <td style="border:0;font-weight:bold;text-align:left" colspan="2">סך חיוב עבור הוצאות</td>
+                                                        <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid">{{$ctrl.totalExpensesShulam + $ctrl.totalExpensesNoShulam}}</td>
+                                                    </tr>
+                                                
+                                            </table>
+
+
+
+                                            <div style="padding:5px;background-color:antiquewhite;font-weight:bold;border:solid 1px gray;border-radius:6px">
+                                                <div style="text-align:center;font-weight:bold;font-size:20px;text-decoration:underline">חישוב סופי</div>
+                                               
+                                                <div  style="text-align:center;font-weight:bold;font-size:18px;direction:ltr"><span style="color:blue">{{$ctrl.totalPay}}</span> - <span style="color:red">({{$ctrl.totalExpensesShulam + $ctrl.totalExpensesNoShulam}} + {{$ctrl.newPrice}})</span> = <u style="border:solid 1px gray;font-size:24px">{{$ctrl.totalPay - ($ctrl.totalExpensesShulam + $ctrl.totalExpensesNoShulam) - $ctrl.newPrice}}</u></div>
+                                                
+                                                <div style="text-align:center;font-weight:bold;font-size:16px;direction:rtl">
+                                                    <span>מצב חשבון</span> =
+                                                     <span style="color:red">כמה אני חייב</span> - 
+                                                     <span style="color:blue">כמה שילמתי</span>       
+                                                  
+                                                 </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label> כסף ששולם (סה"כ חשבוניות)</label>
+                                            <table class="table" border="1">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th> שיעורים </th>
+                                                        <th> חודשים </th>
+                                                        <th>סה"כ</th>
+                                                      
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                 
+                                                    <tr>
+                                                       
+                                                        <td style="font-weight:bold;" >{{$ctrl.paidLessons}}</td>
+                                                        <td style="font-weight:bold;">{{$ctrl.paidMonths}}</td>
+                                                        <td style="font-weight:bold;background-color:aquamarine;border:solid 1px black">{{$ctrl.totalPay}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </form>
+                                </td>
+
                             </tr>
                         </tbody>
                     </table>
