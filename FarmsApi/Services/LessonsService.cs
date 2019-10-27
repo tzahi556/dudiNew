@@ -133,7 +133,7 @@ namespace FarmsApi.Services
             //    }
             //}
 
-            SqlParameter StudentIdPara = new SqlParameter("StudentId", (StudentId==null)?-1: StudentId);
+            SqlParameter StudentIdPara = new SqlParameter("StudentId", (StudentId == null) ? -1 : StudentId);
             SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
             SqlParameter RolePara = new SqlParameter("Role", CurrentUser.Role);
             SqlParameter StartDatePara = new SqlParameter("StartDate", StartDate);
@@ -162,7 +162,7 @@ namespace FarmsApi.Services
                 {
                     if (Lesson.Id != lastId)
                     {
-                        var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, IsComplete = l.IsComplete }).Distinct().ToArray();
+                        var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, IsComplete = l.IsComplete, HorseId = l.HorseId }).Distinct().ToArray();
                         var studentsArray = students.Select(s => s.StudentName).ToArray();
                         ReturnLessons.Add(JObject.FromObject(new
                         {
@@ -176,7 +176,7 @@ namespace FarmsApi.Services
                             lessonpaytype = Lesson.LessonPayType,
                             details = Lesson.Details,
                             students = students.Select(s => s.StudentId).ToArray(),
-                            statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete }).ToArray(),
+                            statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId }).ToArray(),
                             title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : "")
                         }));
                     }
@@ -224,7 +224,7 @@ namespace FarmsApi.Services
                             inner join Lessons l on l.Id = t4.Lesson_Id
                             inner join Users ui on ui.Id = l.Instructor_Id
 
-                            where t3.completionReq > 0 and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0="+ CurrentUser.Farm_Id + ")";
+                            where t3.completionReq > 0 and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")";
 
 
                 using (var reader = cmd.ExecuteReader())
@@ -282,7 +282,7 @@ namespace FarmsApi.Services
 
                             if (Status["status"] != null)
                             {
-                                
+
                                 StudentLesson.Status = Status["status"].Value<string>();
                                 StudentLesson.Details = Status["details"].Value<string>();
                                 StudentLesson.IsComplete = Status["isComplete"].Value<int>();
@@ -296,7 +296,7 @@ namespace FarmsApi.Services
 
 
 
-           
+
 
 
 
@@ -426,7 +426,7 @@ namespace FarmsApi.Services
                         StatusData[2] = "1";
                     }
 
-                    if (StatusData[0] == "completionReq" && (StatusData[2] == "3" || StatusData[2] == "4"))
+                    if (StatusData[0] == "completionReq" && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "6"))
                     {
                         //StatusData[0] = "completion";
                         StatusData[2] = "1";
@@ -494,7 +494,7 @@ namespace FarmsApi.Services
 
                     //}
 
-                    if ((StatusData[0] == "" || StatusData[0] == null || StatusData[0] == "completion") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5"))
+                    if ((StatusData[0] == "" || StatusData[0] == null || StatusData[0] == "completion") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
                     {
                         StatusData[0] = "completion";
                         StatusData[2] = "5";
@@ -502,19 +502,24 @@ namespace FarmsApi.Services
                     }
 
 
-                    if ((StatusData[0] == "notAttended") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5"))
+                    if ((StatusData[0] == "notAttended") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
                     {
                         StatusData[0] = "completion";
                         StatusData[2] = "3";
 
                     }
 
-                    if ((StatusData[0] == "attended") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5"))
+                    if ((StatusData[0] == "attended") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
                     {
                         StatusData[0] = "completion";
                         StatusData[2] = "4";
                     }
 
+                    if ((StatusData[0] == "notAttendedCharge") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
+                    {
+                        StatusData[0] = "completion";
+                        StatusData[2] = "6";
+                    }
 
                     if ((StatusData[0] != "completion") && (StatusData[0] != "completionReq"))
                     {
@@ -522,9 +527,15 @@ namespace FarmsApi.Services
 
                     }
 
+                    Context.StudentLessons.Add(new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]), HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]) });
 
-                    Context.StudentLessons.Add(new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]) });
+                    //try
+                    //{
+                    //}
+                    //catch (Exception ex)
+                    //{
 
+                    //}
                 }
                 Context.SaveChanges();
             }
@@ -537,17 +548,17 @@ namespace FarmsApi.Services
                 var Status = Lesson["statuses"].SingleOrDefault(s => s["StudentId"].Value<int>() == StudentId);
                 if (Status != null)
                 {
-                    return new string[] { Status["Status"].Value<string>(), Status["Details"] != null ? Status["Details"].Value<string>() : null, Status["IsComplete"] != null ? Status["IsComplete"].Value<string>() : null };
+                    return new string[] { Status["Status"].Value<string>(), Status["Details"] != null ? Status["Details"].Value<string>() : null, Status["IsComplete"] != null ? Status["IsComplete"].Value<string>() : null, Status["HorseId"] != null ? Status["HorseId"].Value<string>() : null };
                 }
             }
-            return new string[] { null, null, null };
+            return new string[] { null, null, null, null };
 
         }
 
         private static void CreateNewLesson(JObject Lesson, DataModels.Context Context)
         {
-           
-            
+
+
             var newLesson = new Lesson();
             AssignValuesFromJson(Lesson, Context, newLesson);
             Context.Lessons.Add(newLesson);
@@ -562,7 +573,7 @@ namespace FarmsApi.Services
 
         private static void AssignValuesFromJson(JObject Lesson, DataModels.Context Context, DataModels.Lesson newLesson)
         {
-           
+
             newLesson.ParentId = Lesson["prevId"] != null ? Lesson["prevId"].Value<int>() : 0;
             newLesson.Start = Lesson["start"].Value<DateTime>();
             newLesson.End = Lesson["end"].Value<DateTime>();

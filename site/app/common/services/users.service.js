@@ -20,6 +20,8 @@
         this.getUserFilesByUserId = _getUserFilesByUserId;
         this.getUserCommitmentsByUserId = _getUserCommitmentsByUserId;
         this.getAvailablehours = _getAvailablehours;
+        this.report = _report;
+
 
         function _getUsers(role, includeDeleted) {
             var deferred = $q.defer();
@@ -197,6 +199,18 @@
         function _roles() {
             return sharedValues.roles;
         }
+
+        function _report(type, date) {
+         
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'users/getReport/' + type + "/" + date).then(function (res) {
+                var data = res.data;
+
+                deferred.resolve(data);
+            });
+            return deferred.promise;
+        }
+
     }
 
 })();

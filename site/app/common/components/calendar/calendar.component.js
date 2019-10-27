@@ -189,7 +189,7 @@
                             $(element).addClass('returnred-iconfloat');
                         }
 
-                        else if (event.statuses[i].Status == 'completion' && event.statuses[i].IsComplete == 4) {
+                        else if (event.statuses[i].Status == 'completion' && (event.statuses[i].IsComplete == 4 || event.statuses[i].IsComplete == 6)) {
                             $(element).addClass('returngreen-iconfloat');
                         }
 

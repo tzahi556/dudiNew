@@ -7,7 +7,7 @@
         template: '{{$ctrl.farmName}}'
     });
 
-    function FarmName(usersService, farmsService) {
+    function FarmName(usersService, farmsService, $rootScope) {
         var DEFAULT_NAME = 'מערכת ניהול חוות';
         var self = this;
         var authData = angular.fromJson(localStorage.getItem('authorizationData'));
@@ -26,6 +26,10 @@
         else {
             self.farmName = DEFAULT_NAME;
         }
+
+
+        $rootScope.farmName = self.farmName;
+        //alert(self.farmName);
     }
 
 })();

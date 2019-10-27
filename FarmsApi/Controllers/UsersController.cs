@@ -158,5 +158,18 @@ namespace FarmsApi.Services
             }
             return Ok();
         }
+
+
+        [Authorize]
+        [Route("getReport/{type}/{date}")]
+        [HttpGet]
+        public IHttpActionResult getReport([FromUri] string type, [FromUri] string date)
+        {
+            //foreach (var user in users)
+            //{
+            //    UsersService.UpdateUser(user);
+            //}
+            return Ok(UsersService.ManagerReport(type,date));
+        }
     }
 }

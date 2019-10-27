@@ -6,16 +6,249 @@
         controller: ReportsController,
     });
 
-    function ReportsController(usersService, lessonsService, horsesService, sharedValues, $q) {
+    function ReportsController(usersService, lessonsService, horsesService, sharedValues, $q,$rootScope) {
         var self = this;
         self.studentsReport = _studentsReport;
         self.lessonsReport = _lessonsReport;
         self.horsesReport = _horsesReport;
+        self.ReportManger = _ReportManger;
+        self.getInstructorCounter = _getInstructorCounter;
         self.reports = [
             { name: 'רשימת תלמידים כולל פרטים', callback: self.studentsReport },
             { name: 'רשימת שיעורים', callback: self.lessonsReport },
             { name: 'רשימת סוסים + טיפולים עתידיים', callback: self.horsesReport }
         ]
+
+       
+
+        function _ReportManger() {
+        
+           
+
+
+            $.get('app/reports/Report.html?sdsdsd=' + new Date(), function (text) {
+              
+                var CurrentDate = self.fromDate;
+                if (!CurrentDate) CurrentDate = new Date();
+
+
+                var Month = CurrentDate.getMonth() + 1;
+                var Year = CurrentDate.getFullYear();
+
+                if (Month < 10) Month = "0" + Month;
+
+
+                text = text.replace("@ReportDate", Month + "/" + Year);
+                text = text.replace("@NameHava", $rootScope.farmName);
+
+                usersService.report("1", Month + "_" + Year).then(function (res) {
+                   
+                   
+                    text = text.replace("@ActiveUser", res[0].ActiveUser);
+                    text = text.replace("@notActiveUser", res[0].notActiveUser);
+                    text = text.replace("@instructorUser", res[0].instructorUser);
+
+
+                    usersService.report("2", Month + "_" + Year).then(function (res) {
+
+                        var HtmlTable="";
+                        var ExistInstructor = [];
+
+                        for (var i = 0; i < res.length; i++)
+                        {
+                         
+                            if (ExistInstructor.indexOf(res[i].Id) == "-1") {
+                                ExistInstructor.push(res[i].Id);
+
+                                HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName + "</td><td >" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
+                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "HourNumber")
+                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "Attend")
+                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttend")
+                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttendCharge")
+                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NoStatus") + "</td></tr>";
+
+
+                            }
+                         
+                        }
+
+
+                        text = text.replace("@TableInstructor", HtmlTable);
+
+
+
+
+                        var blob = new Blob([text], {
+                            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                        });
+
+
+                        saveAs(blob, "Leads " + new Date() + ".xls");
+
+                    });
+
+
+
+
+                  
+
+                });
+
+
+               
+              
+
+             
+            });
+
+        
+            
+        }
+
+
+        function _getInstructorCounter(Id,res,type) {
+
+            if (type == "DayInMonth") {
+                var DateExist = [];
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (DateExist.indexOf(res[i].OnlyDate) == "-1" && Id == res[i].Id ) {
+
+                        if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
+                           (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
+                            )
+                        {
+                            DateExist.push(res[i].OnlyDate);
+                            counter++;
+                        }
+
+                    }
+
+
+                }
+
+                
+                return (counter == 0) ? "" : counter.toString();
+
+            }
+
+            if (type == "HourNumber") {
+                var DateExist = [];
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
+
+                        if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
+                           (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
+                            )
+                        {
+                            DateExist.push(res[i].Start);
+                            counter += res[i].Diff;
+                        }
+
+                    }
+
+
+                }
+
+               
+                return (counter == 0) ? "" : (counter / 60).toString();
+
+            }
+
+            if (type == "Attend") {
+               
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (Id == res[i].Id) {
+
+                        if (res[i].Status == "attended" || (res[i].Status == "completion" && res[i].IsComplete == 4))
+                        {
+                         
+                            counter ++;
+                        }
+
+                    }
+
+
+                }
+
+
+                return (counter == 0) ? "" : counter.toString();
+
+            }
+
+            if (type == "NotAttend") {
+
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (Id == res[i].Id) {
+
+                        if (res[i].Status == "notAttended" || res[i].Status == "notAttendedDontCharge" || (res[i].Status == "completion" && res[i].IsComplete == 3)) {
+
+                            counter++;
+                        }
+
+                    }
+
+
+                }
+
+
+                return (counter == 0) ? "" : counter.toString();
+
+            }
+
+            if (type == "NotAttendCharge") {
+
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (Id == res[i].Id) {
+
+                        if (res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && res[i].IsComplete == 6)) {
+
+                            counter++;
+                        }
+
+                    }
+
+
+                }
+
+
+                return (counter == 0) ? "" : counter.toString();
+
+            }
+
+            if (type == "NoStatus") {
+             
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (Id == res[i].Id) {
+
+                        if ((res[i].IsComplete == 0 && !res[i].Status) || (res[i].Status == "completion" && res[i].IsComplete == 5)) {
+
+                            counter++;
+                        }
+
+                    }
+
+
+                }
+
+               // if (counter > 0) alert(counter);
+                return (counter == 0) ? "" : counter.toString();
+
+            }
+
+        }
+
 
         function _studentsReport() {
             usersService.getUsers('student').then(function (students) {

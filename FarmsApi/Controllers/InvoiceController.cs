@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using Newtonsoft.Json.Linq;
 
+
 namespace FarmsApi.Controllers
 {
     [RoutePrefix("invoices")]
@@ -26,7 +27,6 @@ namespace FarmsApi.Controllers
             Params.payment = Params.InvoiceSum;
             Params.payment_date = Params.Date.ToString("dd/MM/yyyy");
 
-
             if ((string)Params.payment_type == "validate")
             {
 
@@ -40,7 +40,7 @@ namespace FarmsApi.Controllers
 
                 string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjValidate);
 
-                var SlikaUrl = "https://demo.ezcount.co.il/api/payment/validate/" + Params.ksys_token;
+                var SlikaUrl = "https://api.ezcount.co.il/api/payment/validate/" + Params.ksys_token;
                 var client = new HttpClient();
                 HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                 HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -64,7 +64,7 @@ namespace FarmsApi.Controllers
                 var reqObjAshrai = new
                 {
                     api_key = (string)Params.api_key,
-                    //   api_email = (string)Params.api_email,
+                    //  api_email = (string)Params.api_email,
                     developer_email = "tzahi556@gmail.com",
                     sum = (decimal)Params.payment,
                     successUrl = "http://giddyup.co.il/close.html"
@@ -75,7 +75,7 @@ namespace FarmsApi.Controllers
 
                 string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
 
-                var SlikaUrl = "https://demo.ezcount.co.il/api/payment/prepareSafeUrl/clearingFormForMerchant";
+                var SlikaUrl = "https://api.ezcount.co.il/api/payment/prepareSafeUrl/clearingFormForMerchant";
                 var client = new HttpClient();
                 HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                 HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -87,9 +87,10 @@ namespace FarmsApi.Controllers
 
                 }
 
+
+                // dynamic response = doc.execute(, );
                 return Ok(response);
             }
-
             else if ((string)Params.payment_type == "token")
             {
 
@@ -99,14 +100,14 @@ namespace FarmsApi.Controllers
 
                     developer_email = "tzahi556@gmail.com",
 
-                    successUrl = "https://www.giddyup.co.il"///#/closetoken?aaa=5454545&UserId=" + (string)Params.UserId
+                    successUrl = "https://www.giddyup.co.il/#/closetoken?aaa=5454545&UserId=" + (string)Params.UserId
 
                 };
 
 
                 string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
 
-                var SlikaUrl = "https://demo.ezcount.co.il/api/payment/prepareSafeUrl/token";
+                var SlikaUrl = "https://api.ezcount.co.il/api/payment/prepareSafeUrl/token";
                 var client = new HttpClient();
                 HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                 HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -141,7 +142,7 @@ namespace FarmsApi.Controllers
                 };
 
                 string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
-                var SlikaUrl = "https://demo.ezcount.co.il/api/payment/chargeToken";
+                var SlikaUrl = "https://api.ezcount.co.il/api/payment/chargeToken";
                 var client = new HttpClient();
                 HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                 HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -171,32 +172,23 @@ namespace FarmsApi.Controllers
                 responseToken = "false";
                 return Ok(responseToken);
 
+
             }
             else
             {
-
-                //try
-                //{
 
                 List<dynamic> Payment = new List<dynamic>();
                 switch ((string)Params.payment_type)
                 {
                     case "cash":
-
-                        Payment.Add(
-                        new
+                        Payment.Add(new
                         {
                             payment_type = 1,
                             date = (string)Params.payment_date,
                             payment = (decimal)Params.payment
-                        }
-
-                        );
-
-
+                        });
                         break;
                     case "check":
-
                         JObject Checks = JObject.Parse((Newtonsoft.Json.JsonConvert.SerializeObject(Params.Checks)));
                         for (int i = 0; i < Checks.Count; i++)
                         {
@@ -211,8 +203,6 @@ namespace FarmsApi.Controllers
 
                             });
                         }
-
-
 
                         break;
                     case "credit card":
@@ -231,28 +221,6 @@ namespace FarmsApi.Controllers
 
                         });
                         break;
-
-                    //case "tokenBuy":
-
-
-
-                    //    Payment.Add(new
-                    //    {
-                    //        payment_type = 3,
-                    //        date = (string)Params.payment_date,
-                    //        payment = (decimal)Params.payment,
-
-                    //        cc_type = (int)Params.cc_type,
-                    //        cc_type_name = (string)Params.cc_type_name,
-                    //        cc_number = (string)Params.cc_number,
-                    //        cc_deal_type = (int)Params.cc_deal_type,
-                    //        cc_num_of_payments = (int)Params.cc_num_of_payments,
-                    //        cc_payment_num = (int)Params.cc_payment_num,
-
-                    //    });
-                    //    break;
-
-
                     case "bank transfer":
                         Payment.Add(new
                         {
@@ -266,7 +234,6 @@ namespace FarmsApi.Controllers
                         });
                         break;
                 }
-
                 // קבלה כדיפולט בגלל בית השאנטי שמס קבלה הוא נל
                 int DocType = 400;
                 try
@@ -276,10 +243,7 @@ namespace FarmsApi.Controllers
                 catch (Exception ex)
                 {
                     Params.isMasKabala = false;
-                   
                 }
-
-                //
                 var reqObj = new
                 {
                     api_key = (string)Params.api_key,
@@ -301,26 +265,23 @@ namespace FarmsApi.Controllers
                         amount = 1,
                         price = (decimal)Params.payment,
                         price_inc_vat = true
-                       }
-
-
-                    },
-
+                    }
+                },
                     payment = Payment,
                     //  details = Params.checks_date != null ? "תאריך פרעון צ'ק: " + ((DateTime)Params.checks_date).ToLocalTime().ToShortDateString() : "",
                     price_total = (decimal)Params.payment,
                 };
 
 
-                dynamic response = doc.execute(Constants.ENV_TEST, reqObj);
+
+
+
+                dynamic response = doc.execute(Constants.ENV_PRODUCTION, reqObj);
+
+
+
 
                 return Ok(response);
-
-                //}catch(Exception ex)
-                //{
-                //    dynamic response="";
-                //    return Ok(response);
-                //}
             }
         }
     }

@@ -9,12 +9,14 @@
             event: '=',
             students: '<',
             closeCallback: '<',
-            deleteCallback: '<'
+            deleteCallback: '<',
+            horses: '<'
         }
     });
 
-    function EventController($scope, lessonsService, sharedValues, usersService) {
+    function EventController($scope, lessonsService, sharedValues, usersService, horsesService) {
         this.usersService = usersService;
+        this.horsesService = horsesService;
         this.scope = $scope;
         this.lessonsService = lessonsService;
         this.sharedValues = sharedValues;
@@ -89,7 +91,7 @@
 
     function _onShow(event, selectedLesson, studentTemplate) {
 
-      
+        //alert(this.horses.length);
         this.studentTemplate = studentTemplate;
         this.copyStatuses(false, selectedLesson.statuses);
 
@@ -100,12 +102,13 @@
           
             for (var i in this.sharedValues.lessonStatuses) {
              
+               
                 this.sharedValues.lessonStatuses[i].hide = false;
 
                 if (selectedLesson.students.length==0)
                     this.sharedValues.lessonStatuses[i].hide = false;
 
-                else if (this.isComplete[selectedLesson.statuses[0].StudentId] > 2 && i > 1)
+                else if (this.isComplete[selectedLesson.statuses[0].StudentId] > 2 && i > 1 && i != 2)
                     this.sharedValues.lessonStatuses[i].hide = true;
 
             }
@@ -119,6 +122,14 @@
         this.lessonsQty = 0;
         this.affectChildren = false;
 
+
+        
+        
+    
+
+
+
+        //alert(this.horses.length);
         //this.changeLessonsStudent = [];
         //for (var i in selectedLesson.statuses) {
 
@@ -133,24 +144,30 @@
     }
 
     function _copyStatuses(onExit, statuses) {
-       
+    
+      
         if (onExit) {
            
             this.event.statuses = [];
+
+           
             for (var i in this.statuses) {
-                this.event.statuses.push({ StudentId: i, Status: this.statuses[i], Details: this.statusDetails[i], IsComplete: this.isComplete[i] });
+                this.event.statuses.push({ StudentId: i, Status: this.statuses[i], Details: this.statusDetails[i], IsComplete: this.isComplete[i], HorseId: this.horsesarray[i] });
             }
         }
         else {
             this.statuses = [];
             this.statusDetails = [];
             this.isComplete = [];
+            this.horsesarray = [];
             for (var i in statuses) {
                
              
                 this.statuses[statuses[i].StudentId] = getRightStatus(statuses[i]);
                 this.statusDetails[statuses[i].StudentId] = statuses[i].Details;
                 this.isComplete[statuses[i].StudentId] = statuses[i].IsComplete;
+                this.horsesarray[statuses[i].StudentId] = statuses[i].HorseId;
+                
             }
         }
     }
@@ -159,8 +176,21 @@
 
         var res = statuses.Status;
 
-        if (statuses.IsComplete == 4)
-            res = "attended";
+        if (statuses.IsComplete == 4) {
+           
+         //   if (res == "attended")
+                res = "attended";
+            //else
+            //    res = "notAttendedCharge";
+        }
+        if (statuses.IsComplete == 6) {
+
+            //   if (res == "attended")
+            res = "notAttendedCharge";
+            //else
+            //    res = "notAttendedCharge";
+        }
+
 
         if (statuses.IsComplete == 3)
             res = "notAttended";
@@ -203,7 +233,8 @@
     }
 
     function _close() {
-      
+       // alert(this.event.statuses[0].Status + "  ------ " + this.event.statuses[0].IsComplete);
+     
         // כל זה בשביל לעדכן את הסטטוס בעת שינוי של הגעה
         //for (var i in this.changeLessonsStudent) {
            

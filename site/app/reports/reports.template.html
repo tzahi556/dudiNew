@@ -9,6 +9,11 @@
         <tbody>
             <tr ng-repeat="report in $ctrl.reports">
                 <td ng-click="report.callback()">{{report.name}}</td>
+               
+            </tr>
+            <tr>
+                <td style="background:#66ccff;font-weight:bold;" ng-click="$ctrl.ReportManger()">דו"ח מנהלים חודשי</td>
+
             </tr>
         </tbody>
     </table>

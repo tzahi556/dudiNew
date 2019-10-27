@@ -11,6 +11,21 @@
                     <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="studentForm.$invalid">עדכון</button>
                 </div>
                 <div class="panel-body">
+
+                    <div class="form-group" >
+                        <input type="text" name="search" class="form-control" placeholder="חיפוש תלמיד אחר" ng-model="searchInput" autocomplete="off" />
+                        <div  ng-show="searchInput"  style="border:solid 1px #ddd">
+
+                            <div ng-repeat="s in $ctrl.students  | filter:search | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
+
+                                <div style="cursor:pointer;border-top:1px solid #ddd;padding:5px" ui-sref="student({id:s.Id})">{{s.FirstName}} {{s.LastName}} <span style="color:red" ng-if="s.Active == 'notActive'">(לא פעיל)</span> </div>
+
+                            </div>
+                        </div>
+                    
+                     </div>
+
+
                     <div class="form-group hidden">
                         <label>מזהה</label>
                         <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />

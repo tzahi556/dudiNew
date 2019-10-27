@@ -8,7 +8,8 @@
         bindings: {
             instructors: '<',
             students: '<',
-            availablehours:'<'
+            availablehours: '<',
+            horses: '<'
         }
     });
 
@@ -335,6 +336,7 @@
         function _eventClose(event, lessonsQty) {
 
             if (event) {
+               
                 this.updateLesson(event);
                 this.createChildEvent(event, lessonsQty);
             } else {

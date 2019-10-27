@@ -240,11 +240,12 @@
             url: '/lessons/',
             views: {
                 'main': {
-                    template: '<lessons instructors="$ctrl.instructors" students="$ctrl.students" availablehours="$ctrl.availablehours"></lessons>',
-                    controller: function (instructors, students, availablehours) {
+                    template: '<lessons instructors="$ctrl.instructors" students="$ctrl.students" availablehours="$ctrl.availablehours" horses="$ctrl.horses"></lessons>',
+                    controller: function (instructors, students, availablehours, horses) {
                         this.instructors = instructors;
                         this.students = students;
                         this.availablehours = availablehours;
+                        this.horses = horses;
                     },
                     controllerAs: '$ctrl',
                     resolve: {
@@ -256,6 +257,9 @@
                         },
                         students: function (usersService) {
                             return usersService.getUsers('student', true);
+                        },
+                        horses: function (horsesService) {
+                            return horsesService.getHorses();
                         }
                     }
                 }
@@ -312,8 +316,8 @@
             views: {
                 'main': {
                     template: '<student user="$ctrl.user" lessons="$ctrl.lessons" instructors="$ctrl.instructors" farms="$ctrl.farms" horses="$ctrl.horses"' 
-                             + 'horses="$ctrl.horses" payments="$ctrl.payments" files="$ctrl.files" commitments="$ctrl.commitments" expenses="$ctrl.expenses" userhorses="$ctrl.userhorses" ></student>',
-                    controller: function (user, lessons, instructors, farms, horses, payments, files, commitments, expenses, userhorses) {
+                             + 'horses="$ctrl.horses" payments="$ctrl.payments" files="$ctrl.files" commitments="$ctrl.commitments" expenses="$ctrl.expenses" userhorses="$ctrl.userhorses" students="$ctrl.students" ></student>',
+                    controller: function (user, lessons, instructors, farms, horses, payments, files, commitments, expenses, userhorses,students) {
                         this.user = user;
                         this.lessons = lessons;
                         this.instructors = instructors;
@@ -325,6 +329,8 @@
                         this.commitments = commitments;
                         this.expenses = expenses;
                         this.userhorses = userhorses;
+                        this.students = students;
+
                     },
                     controllerAs: '$ctrl',
                     resolve: {
@@ -359,7 +365,13 @@
                         },
                         userhorses: function (usersService, $stateParams) {
                             return usersService.getUserUserhorsesByUserId($stateParams.id);
+                        },
+                      
+                        students: function (usersService) {
+                         
+                                return usersService.getUsers('student');
                         }
+                       
 
 
                     }

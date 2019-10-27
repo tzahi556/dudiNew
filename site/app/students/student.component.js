@@ -15,7 +15,8 @@
             files: '<',
             commitments: '<',
             expenses: '<',
-            userhorses: '<'
+            userhorses: '<',
+            students:'<'
 
         }
     });
@@ -109,7 +110,7 @@
         this.setLessPrice = _setLessPrice.bind(this);
         this.changeLessonsData = _changeLessonsData.bind(this);
       
-        
+       
 
         this.newPrice = 0;
 
@@ -194,9 +195,10 @@
         }
 
         $scope.$on('submit', function (event, args) {
-            if (confirm('האם לשמור שינוים')) {
-                this.submit();
-            }
+           
+          //  if (confirm('האם לשמור שינוים')) {
+                this.submit(true);
+           // }
         }.bind(this));
 
         this.dateFrom = moment().add(-1, 'months').toDate();
@@ -205,8 +207,7 @@
         // init student
         this.initStudent = function () {
 
-
-
+         
             //  this.migration();
             this.initPaymentForm();
             this.initCommitmentForm();
@@ -577,8 +578,19 @@
                 var ststIndex = this.getStatusIndex(this.lessons[i]);
                 // שיעור השלמה
                 if (this.lessons[i].statuses[ststIndex].IsComplete == "4") {
-                   
-                    this.lessons[i].statuses[ststIndex].Status = "attended";
+                    //var CurrentStatus = this.lessons[i].statuses[ststIndex].Status;
+                    //if (CurrentStatus == "attended")
+                        this.lessons[i].statuses[ststIndex].Status = "attended";
+                    //else
+                    //    this.lessons[i].statuses[ststIndex].Status = "notAttendedCharge";
+                }
+
+                if (this.lessons[i].statuses[ststIndex].IsComplete == "6") {
+                    //var CurrentStatus = this.lessons[i].statuses[ststIndex].Status;
+                    //if (CurrentStatus == "attended")
+                    this.lessons[i].statuses[ststIndex].Status = "notAttendedCharge";
+                    //else
+                    //    this.lessons[i].statuses[ststIndex].Status = "notAttendedCharge";
                 }
                 if (this.lessons[i].statuses[ststIndex].IsComplete == "3") {
                     this.lessons[i].statuses[ststIndex].Status = "notAttended";
@@ -592,7 +604,7 @@
                 if (this.lessons[i].statuses[ststIndex].Status == "completionReq") this.getStatusLengthFrom5 += 1;
 
 
-                if (this.lessons[i].statuses[ststIndex].IsComplete < 6) {
+                if (this.lessons[i].statuses[ststIndex].IsComplete < 7) {
 
 
                     var res = this.setPaid(this.lessons[i]);
@@ -928,7 +940,7 @@
             if (!isText && (isComplete >2)) {
                 //var ind = this.getStatusIndex(lesson);
 
-                if (status && status != "attended" && status != "notAttended") {
+                if (status && status != "attended" && status != "notAttended" && status != "notAttendedCharge") {
 
                     alert("בשיעור השלמה ניתן להזין רק אם הגיע \ לא הגיע");
                     //lesson.statuses[0].IsComplete = isComplete;
@@ -941,6 +953,12 @@
 
                     isComplete = 4;
                 }
+
+                if (status == "notAttendedCharge") {
+
+                    isComplete = 6;
+                }
+
 
                 if (status == "notAttended") {
 
@@ -1530,9 +1548,10 @@
             return true;
         }
 
-        function _submit() {
+        function _submit(isalert) {
 
-
+          
+         
             if ($scope.studentForm.$valid) {
 
                 this.user.Role = 'student';
@@ -1556,7 +1575,7 @@
 
                     this.createNotifications();
                     this.initStudent();
-                    alert('נשמר בהצלחה');
+                    if (!isalert) alert('נשמר בהצלחה');
                 }.bind(this));
             }
         }
@@ -1571,6 +1590,7 @@
 
         function _delete() {
             if (confirm('האם למחוק את התלמיד?')) {
+              
                 usersService.deleteUser(this.user.Id).then(function (res) {
                     $state.go('students');
                 });
@@ -1586,6 +1606,23 @@
                 return false;
             }
         }
+
+
+
+        $scope.search = function (s) {
+             
+
+            if ($scope.searchInput){
+            var query = $scope.searchInput.toLowerCase(),
+
+            fullname = s.FirstName.toLowerCase() + ' ' + s.LastName.toLowerCase();
+
+            if (fullname.indexOf(query) != -1) {
+                return true;
+            }
+            }
+            return false;
+        };
     }
 
 })();

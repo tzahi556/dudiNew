@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <style>
+        td {
+           text-align:center;
+           font-weight:bold;
+        }
+
+        .dvtitle {
+
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .dvSubtitle {
+            padding: 10px;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .dvTable {
+            padding: 10px;
+        }
+
+        th {
+         
+            background: #42ecf5;
+        }
+
+        .dvSubSubTitle {
+            border-bottom: solid 1px black;
+        }
+
+        span{
+
+            color:blue;
+        }
+    </style>
+</head>
+<body>
+
+   <div class="dvtitle">
+        דו"ח מנהלים לחודש @ReportDate  שם חווה - @NameHava
+    </div>
+   <div class="dvSubtitle">
+        מספר תלמידים פעילים: <span>@ActiveUser</span><br />
+        מספר תלמידים לא פעילים:<span>@notActiveUser</span><br />
+        מספר מדריכים:<span>@instructorUser</span><br /><br />
+
+
+       <span style="text-decoration:underline">מדריכים</span><br />
+
+    </div>
+   <div class="dvTable">
+     
+        <table width="100%" border="1"  dir="rtl" style="border-collapse: collapse;">
+            <tr>
+                <th style="background:#42ecf5;">שם המדריך</th>
+                <th style="background:#42ecf5;">מס' ימי עבודה <br /> בחודש</th>
+                <th style="background:#42ecf5;">מס' שעות</th>
+                <th style="background:#42ecf5;">מס' שיעורים בפועל <br />(התלמיד היה בשיעור)</th>
+                <th style="background:#42ecf5;">מס' שיעורים שלא נכחו</th>
+                <th style="background:#42ecf5;">מס' שיעורים שלא נכחו,לחייב</th>
+                <th style="background:#42ecf5;">מס' שיעורים שלא צויין כלום</th>
+
+
+            </tr>
+
+            @TableInstructor
+
+        </table>
+      
+    </div>
+
+   <div class="dvTable">
+
+
+        <div class="dvSubtitle">
+            <br /><br />
+            <span style="text-decoration:underline">סוסים</span><br />
+            כמות סוסים: <span>44</span><br />
+            סה"כ סוסי בית ספר:<span>44</span><br />
+            סה"כ סוסים בפנסיון:<span>44</span><br />
+            סה"כ סוסות בהריון:<span>44</span><br />
+            אחוזי ניצול סוסי בית ספר :<span>44</span><br />
+        </div>
+       </div>
+    
+
+    
+   <div class="dvTable" >
+
+       <div><br /></div>
+    
+         <table width="100%" border="1"  dir="rtl" style="border-collapse: collapse;">
+                <tr>
+                    <th style="background:#42ecf5;">שם הסוס</th>
+                    <th style="background:#42ecf5;">% ניצול חודשי ב</th>
+                    
+                </tr>
+
+                <tr>
+                    <td>דוד אלקסלסי</td>
+                    <td>44</td>
+
+                </tr>
+                <tr>
+                    <td>דוד צנעני אטון</td>
+                    <td>44</td>
+                </tr>
+            </table>
+     </div>
+
+   <div class="dvTable">
+       <div><br /></div>
+        <div class="dvSubtitle">
+            <span style="text-decoration:underline">סיכום</span><br />
+            סה"כ חייבים: <span>44</span>     סה"כ כסף:<span>44</span><br /><br />
+            <span style="text-decoration:underline">סה"כ כמות שעורים בחתכים השונים</span><br />
+            סה"כ טיפולים של מכבי: <span>44</span><br />
+            <!--סה"כ להגיש בדרישה לתשלום ממכבי:<span>44</span><br />-->
+            סה"כ טיפולים של הכללית:<span>44</span><br />
+            סה"כ טיפולים של לאומית:<span>44</span><br />
+            סה"כ טיפולים של מאוחדת:<span>44</span><br />
+            <!--סה"כ להגיש בדרישה לתשלום מהכללית:<span>44</span><br />-->
+            סה"כ שעורים אחר:<span>44</span><br />
+            <!--סה"כ שעורים ( כל היתר):<span>44</span><br />-->
+        </div>
+    </div>
+
+
+        <!--
+
+
+
+
+        </div>
+        <div style="clear:both"></div>
+        <div class="dvTable">
+            <div class="dvSubtitle">
+                 <span style="text-decoration:underline">סיכום</span><br /><br />
+            </div>
+        </div>-->
+</body>
+</html>

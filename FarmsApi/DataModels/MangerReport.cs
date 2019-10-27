@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Web;
+
+namespace FarmsApi.DataModels
+{
+    public class ManagerReport
+    {
+        public int? ActiveUser { get; set; }
+        public int? notActiveUser { get; set; }
+        public int? instructorUser { get; set; }
+        
+        //  public int Id { get; set; }
+        //  public int? ParentId { get; set; }
+        //  public DateTime? Start { get; set; }
+        //  public DateTime? End { get; set; }
+
+        //  public string Details { get; set; }
+        ////  public bool editable { get; set; }
+        //  public int? Instructor_Id { get; set; }
+
+        //  public int? User_Id { get; set; }
+        //  public string Status { get; set; }
+        //  public string StatusDetails { get; set; }
+        //  public int? IsComplete { get; set; }
+        //  public int? HorseId { get; set; }
+        //  public double? Price { get; set; }
+        //  public string StudentName { get; set; }
+        //  public int? LessonPayType { get; set; }
+
+
+
+
+    }
+
+    public class ManagerReportInstructorTable
+    {
+        public int? Id { get; set; }
+        public string FullName { get; set; }
+        public string Status { get; set; }
+        public int? IsComplete { get; set; }
+
+        public int? Counter { get; set; }
+        public DateTime? Start { get; set; }
+        public DateTime? End { get; set; }
+        public DateTime? OnlyDate { get; set; }
+        public int? Diff { get; set; }
+
+    }
+
+
+ }

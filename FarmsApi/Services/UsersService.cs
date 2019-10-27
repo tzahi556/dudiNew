@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
@@ -441,7 +442,7 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
-                var AvailableHoursList = Context.AvailableHours.Where(u => u.UserId == Id || Id==null).ToList();
+                var AvailableHoursList = Context.AvailableHours.Where(u => u.UserId == Id || Id == null).ToList();
 
                 return AvailableHoursList;
             }
@@ -1150,6 +1151,52 @@ namespace FarmsApi.Services
             }
         }
 
+        public static object ManagerReport(string type, string date)
+        {
+            using (var Context = new Context())
+            {
+                var CurrentUser = GetCurrentUser();
+
+                SqlParameter Type = new SqlParameter("Type", type);
+                SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
+                SqlParameter StartDatePara = new SqlParameter("StartDate", "2019/10/10");
+
+
+
+                if (type == "1")
+                {
+                    var query = Context.Database.SqlQuery<ManagerReport>
+                    ("GetReport @Type,@Farm_Id,@StartDate",
+                    Type, Farm_IdPara, StartDatePara);
+                    var res = query.ToList();
+                    return res;
+                }
+
+                if (type == "2")
+                {
+                    var query = Context.Database.SqlQuery<ManagerReportInstructorTable>
+                    ("GetReport @Type,@Farm_Id,@StartDate",
+                    Type, Farm_IdPara, StartDatePara);
+                    try
+                    {
+                        var res = query.ToList();
+                        return res;
+                    }
+                    catch (Exception ex)
+                    {
+
+
+                    }
+
+                }
+
+
+                return null;
+
+            }
+        }
+
+
         #region
 
 
@@ -1173,6 +1220,7 @@ namespace FarmsApi.Services
             User.Password = null;
             return User;
         }
+
 
         #endregion
     }

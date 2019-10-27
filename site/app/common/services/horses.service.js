@@ -22,6 +22,8 @@
                 for (var i in horses) {
                     horses[i].Meta = JSON.parse(horses[i].Meta);
                 }
+
+            
                 deferred.resolve(horses);
             });
             return deferred.promise;
