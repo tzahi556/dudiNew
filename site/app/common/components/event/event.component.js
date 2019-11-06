@@ -63,11 +63,18 @@
 
            // alert(this.event.start);
 
-            var res = this.horsesService.getIfHorseWork(HorseId, this.event.start, this.event.end);
-            if (!res.$$state.value) {
-                alert("סוס זה כבר עובד בשעה זו... בחר סוס אחר");
-                this.horsesarray[studentId] = null;
-            }
+            var res = this.horsesService.getIfHorseWork(HorseId, this.event.start, this.event.end).then(function (res) {
+
+             
+                if (res > 0) {
+                    alert("סוס זה כבר עובד בשעה זו... בחר סוס אחר");
+                    this.horsesarray[studentId] = null;
+                }
+
+            }.bind(this));
+
+          
+           
         }
 
 

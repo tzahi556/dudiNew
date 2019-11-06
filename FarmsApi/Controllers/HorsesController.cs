@@ -51,5 +51,17 @@ namespace FarmsApi.Services
         {
             return Ok(HorsesService.UpdateHorse(horse));
         }
+
+
+        [Authorize]
+        [Route("checkifhorsework")]
+        [HttpGet]
+        public IHttpActionResult Checkifhorsework(int? id = null, string start = null, string end = null)
+        {
+          
+            return Ok(HorsesService.CheckIfHorseWork(id,start,end));
+        }
+
+
     }
 }

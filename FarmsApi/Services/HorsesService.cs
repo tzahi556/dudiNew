@@ -57,6 +57,42 @@ namespace FarmsApi.Services
             }
         }
 
+        public static int CheckIfHorseWork(int? id, string start, string end)
+        {
+            using (var Context = new Context())
+            {
+                try {
+
+                    DateTime dtStart = Convert.ToDateTime(start);
+                    DateTime dtSEnd = Convert.ToDateTime(end);
+
+                    var isExist = (from l in Context.Lessons
+                              join s in Context.StudentLessons
+                              on l.Id equals s.Lesson_Id
+                              where s.HorseId == id && 
+                              ((l.Start >= dtStart && l.Start < dtSEnd) || (dtStart >= l.Start && dtStart < l.End))
+                                   select new
+                              {
+                                  ID = s.HorseId
+                                 
+                              }).ToList();
+
+
+                    return isExist.Count();
+
+
+                }
+                catch(Exception ex)
+                {
+
+
+                }
+
+
+            }
+
+            return 0;
+        }
         public static void DeleteHorse(int Id)
         {
             using (var Context = new Context())

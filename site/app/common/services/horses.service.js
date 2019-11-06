@@ -63,12 +63,14 @@
             return deferred.promise;
         }
 
-        function _getIfHorseWork(id,start,end) {
+        function _getIfHorseWork(id, start, end) {
+           
             var deferred = $q.defer();
-            //$http.get(sharedValues.apiUrl + 'horses/deleteHorse/' + id).then(function (res) {
-            //    deferred.resolve();
-            //});
-            deferred.resolve(false);
+            $http.get(sharedValues.apiUrl + 'horses/checkifhorsework/', { params: { id: id, start: start, end: end } }).then(function (res) {
+                
+                deferred.resolve(res.data);
+            });
+          
 
             return deferred.promise;
         }
