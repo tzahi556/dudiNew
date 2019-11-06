@@ -35,6 +35,7 @@
         this.hide = _hide.bind(this);
         this.commentClose = _commentClose.bind(this);
         this.createStudentClose = _createStudentClose.bind(this);
+        this.changeHorseValidation = _changeHorseValidation.bind(this);
         
         this.changeStudentstatus = _changeStudentstatus.bind(this);
 
@@ -55,6 +56,23 @@
 
 
     }
+
+    function _changeHorseValidation(studentId) {
+        var HorseId = this.horsesarray[studentId];
+        if (HorseId) {
+
+           // alert(this.event.start);
+
+            var res = this.horsesService.getIfHorseWork(HorseId, this.event.start, this.event.end);
+            if (!res.$$state.value) {
+                alert("סוס זה כבר עובד בשעה זו... בחר סוס אחר");
+                this.horsesarray[studentId] = null;
+            }
+        }
+
+
+    }
+
 
     function _createStudentClose(returnStudent) {
 

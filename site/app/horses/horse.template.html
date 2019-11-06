@@ -250,6 +250,43 @@
                         </form>
                     </div>
                 </div>
+                <!--tilufeing-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        טילוף
+                    </div>
+                    <table class="table" expandable>
+                        <thead>
+                            <tr>
+                                <th>תאריך</th>
+                                <th>הערות</th>
+                                <th>שולם</th>
+                                <th>שם המטלף</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="tiluf in $ctrl.horse.Meta.Tilufings | orderByDateDesc track by $index">
+                                <td>{{tiluf.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{tiluf.Details}}</td>
+                                <td><input type="checkbox" ng-model="tiluf.Paid"></td>
+                                <td><input style="width:100%" type="text" ng-model="tiluf.ShoerName"></td>
+                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeTiluf(tiluf)">הסר</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <form name="tilufForm">
+                            <div class="form-group">
+                                <input type="date" class="form-control" ng-model="$ctrl.newTiluf.Date" placeholder="תאריך" required />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-model="$ctrl.newTiluf.Details" placeholder="הערות" />
+                            </div>
+                            <button type="submit" class="btn btn-success" ng-disabled="tilufForm.$invalid" ng-click="$ctrl.addTiluf()">הוספה</button>
+                        </form>
+                    </div>
+                </div>
 
             </uib-tab>
             <uib-tab index="2" heading="הריונות" ng-if="$ctrl.horse.Meta.Gender == 'female'">

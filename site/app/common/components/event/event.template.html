@@ -36,7 +36,8 @@
 
                         <a class="pull-left close" ng-click="$ctrl.removeStudentFromEvent(studentId)" href="">&times;</a>
                    
-                        <select class="pull-left " style="margin-left:15px;" ng-model="$ctrl.horsesarray[studentId]" ng-options="hors.Id as hors.Name for hors in $ctrl.horses">
+                        <select class="pull-left " style="margin-left:15px;" ng-change="$ctrl.changeHorseValidation(studentId)" 
+                                ng-model="$ctrl.horsesarray[studentId]" ng-options="hors.Id as hors.Name for hors in $ctrl.horses">
                             <option value="">-- בחר סוס --</option>
                         </select>
                     

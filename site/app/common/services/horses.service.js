@@ -8,9 +8,12 @@
 
        
         this.getHorses = _getHorses;
+        this.getHorsesForLessons = _getHorsesForLessons;
+        this.getIfHorseWork = _getIfHorseWork;
         this.getHorse = _getHorse;
         this.updateHorse = _updateHorse;
         this.deleteHorse = _deleteHorse;
+
 
         function _getHorses(includeDeleted) {
          
@@ -28,6 +31,49 @@
             });
             return deferred.promise;
         }
+
+        
+
+
+
+        function _getHorsesForLessons(includeDeleted) {
+
+            var deferred = $q.defer();
+
+            $http.get(sharedValues.apiUrl + 'horses/gethorses' + (includeDeleted ? '/' + includeDeleted : '')).then(function (res) {
+
+                var horses = res.data;
+                var reshorses = [];
+                for (var i in horses) {
+                    horses[i].Meta = JSON.parse(horses[i].Meta);
+
+                    if (horses[i].Meta.Active != "active" || horses[i].Meta.Ownage != "school") {
+
+                        continue;
+                    }
+                    reshorses.push(horses[i]);
+
+                }
+
+
+                
+
+                deferred.resolve(reshorses);
+            });
+            return deferred.promise;
+        }
+
+        function _getIfHorseWork(id,start,end) {
+            var deferred = $q.defer();
+            //$http.get(sharedValues.apiUrl + 'horses/deleteHorse/' + id).then(function (res) {
+            //    deferred.resolve();
+            //});
+            deferred.resolve(false);
+
+            return deferred.promise;
+        }
+
+        
 
         function _getHorse(id) {
           

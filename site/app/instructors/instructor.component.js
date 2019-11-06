@@ -62,7 +62,10 @@
         }
 
         function _eventClick(event) {
+
+          
             for (var i in this.availablehours) {
+                
                 if (this.availablehours[i].Id == event.Id) {
                     this.availablehours.splice(i, 1);
                 }

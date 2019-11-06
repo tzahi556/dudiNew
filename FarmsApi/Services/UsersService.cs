@@ -1159,7 +1159,7 @@ namespace FarmsApi.Services
 
                 SqlParameter Type = new SqlParameter("Type", type);
                 SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
-                SqlParameter StartDatePara = new SqlParameter("StartDate", "2019/10/10");
+                SqlParameter StartDatePara = new SqlParameter("StartDate", date.Replace("_","/"));
 
 
 

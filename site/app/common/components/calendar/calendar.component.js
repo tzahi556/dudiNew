@@ -161,8 +161,8 @@
 
 
             eventRender: function (event, element) {
-
-                var IsFuture = event.end.format('YYYYMMDD') <= moment().format('YYYYMMDD');
+              
+                var IsFuture = (event.end) ? (event.end.format('YYYYMMDD') <= moment().format('YYYYMMDD')) : false;
 
                 if (event.rendering != "background" && event.statuses && event.statuses.length > 0) {
 
@@ -235,6 +235,17 @@
                 if (event.title == "ניתן להכניס חד פעמי") {
                     $(element).css("color", "white").css("background", "gray").css("border-color", "Silver");
                     $(element).addClass("hadPeami");
+                } else if (event.horsenames && event.horsenames.length > 0) {
+                 
+                    var horsenames = "";
+                    var prefix = "";
+                    for (var i = 0; i < event.horsenames.length; i++) {
+                        if (i != 0) prefix = ",";
+                        horsenames =horsenames + prefix + event.horsenames[i];
+                    }
+                 
+
+                    $(element).find(".fc-time span").before(" <span class='spHorse'> (" + horsenames + ")  <span>");
                 }
 
 
@@ -294,7 +305,7 @@
     }
 
     function _eventClick(event, jsEvent) {
-
+       
         //if (!jsEvent.target.id) {
         this.eventClickCallback(event, jsEvent);
         this.reloadEvents();

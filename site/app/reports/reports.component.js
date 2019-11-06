@@ -6,32 +6,33 @@
         controller: ReportsController,
     });
 
-    function ReportsController(usersService, lessonsService, horsesService, sharedValues, $q,$rootScope) {
+    function ReportsController(usersService, lessonsService, horsesService, sharedValues, $q, $rootScope) {
         var self = this;
         self.studentsReport = _studentsReport;
         self.lessonsReport = _lessonsReport;
         self.horsesReport = _horsesReport;
         self.ReportManger = _ReportManger;
         self.getInstructorCounter = _getInstructorCounter;
+        self.getRound = _getRound;
         self.reports = [
             { name: 'רשימת תלמידים כולל פרטים', callback: self.studentsReport },
             { name: 'רשימת שיעורים', callback: self.lessonsReport },
             { name: 'רשימת סוסים + טיפולים עתידיים', callback: self.horsesReport }
         ]
 
-       
+
 
         function _ReportManger() {
-        
-           
+
+
 
 
             $.get('app/reports/Report.html?sdsdsd=' + new Date(), function (text) {
-              
+
                 var CurrentDate = self.fromDate;
                 if (!CurrentDate) CurrentDate = new Date();
-
-
+                var daysInMonth = moment(CurrentDate).daysInMonth();
+               
                 var Month = CurrentDate.getMonth() + 1;
                 var Year = CurrentDate.getFullYear();
 
@@ -41,84 +42,237 @@
                 text = text.replace("@ReportDate", Month + "/" + Year);
                 text = text.replace("@NameHava", $rootScope.farmName);
 
-                usersService.report("1", Month + "_" + Year).then(function (res) {
-                   
-                   
+              //  alert((Year + "/" + Month + "/01"));
+                usersService.report("1", (Year + "_" + Month + "_01" )).then(function (res) {
+
+
                     text = text.replace("@ActiveUser", res[0].ActiveUser);
                     text = text.replace("@notActiveUser", res[0].notActiveUser);
                     text = text.replace("@instructorUser", res[0].instructorUser);
+                    text = text.replace("@AllMinusCount", res[0].AllMinusCount);
+                    text = text.replace("@AllMinusSum", (res[0].AllMinusSum));
 
+                    text = text.replace("@Macbi", res[0].Macbi);
+                    text = text.replace("@Clalit", res[0].Clalit);
+                    text = text.replace("@Leumit", res[0].Leumit);
+                    text = text.replace("@Meuedet", res[0].Meuedet);
+                    text = text.replace("@Other", res[0].Other);
+                   
+            
 
-                    usersService.report("2", Month + "_" + Year).then(function (res) {
+                    usersService.report("2", (Year + "_" + Month + "_01")).then(function (res) {
 
-                        var HtmlTable="";
+                        var HtmlTable = "";
                         var ExistInstructor = [];
+                        var HtmlHorsesTable = "";
+                        var ExistHorses = [];
+                        var FarmWorkHoursSus = 0;
 
-                        for (var i = 0; i < res.length; i++)
-                        {
-                         
+                        for (var i = 0; i < res.length; i++) {
+
                             if (ExistInstructor.indexOf(res[i].Id) == "-1") {
                                 ExistInstructor.push(res[i].Id);
-
                                 HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName + "</td><td >" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
                                                                             + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "HourNumber")
                                                                             + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "Attend")
                                                                             + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttend")
                                                                             + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttendCharge")
                                                                             + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NoStatus") + "</td></tr>";
+                            }
+
+
+                          
+                            if (res[i].Name && ExistHorses.indexOf(res[i].Name) == "-1") {
+                               
+                                ExistHorses.push(res[i].Name);
+                                var WorkHoursSus = self.getInstructorCounter(res[i].Name, res, "HourNumberHorses");
+                                FarmWorkHoursSus += WorkHoursSus;
+                              
+                                HtmlHorsesTable += "<tr><td style='text-align:right'>" + res[i].Name + "</td><td>" + self.getRound((WorkHoursSus / (daysInMonth * 4))*100) + "</td></tr>";
+                                                                       
+
 
 
                             }
-                         
+
+
+
+
                         }
 
 
                         text = text.replace("@TableInstructor", HtmlTable);
+                     
+                        horsesService.getHorses().then(function (horses) {
+                            var HorseCount = 0,
+                              HorseActiveCount = 0,
+                              HorseNotActiveCount = 0,
+                              HorseSchool = 0,
+                              HorsePension = 0,
+                              HorseFarm = 0,
+                              HorseHerion = 0,
+                              HorsePirzool = 0,
+                              HorseTiluf = 0,
+                              HorseUp2 = 0,
+                              HorseMan = 0,
+                              HorseWoman = 0,
+                              HorseSirus = 0
 
 
 
 
-                        var blob = new Blob([text], {
-                            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                            horses.forEach(function (horse) {
+
+                                HorseCount++;
+
+                                if (horse.Meta.Active == "active") {
+
+                                    HorseActiveCount++;
+
+
+                                    if (horse.Meta.Ownage == "pension")
+                                        HorsePension++;
+                                    else if (horse.Meta.Ownage == "school"){
+                                        HorseSchool++;
+                                       
+                                        // מנצל את העובדה של הלופ ולכן
+                                        if (ExistHorses.indexOf(horse.Name) == "-1") {
+                                            ExistHorses.push(horse.Name);
+                                            HtmlHorsesTable += "<tr><td style='text-align:right'>" + horse.Name + "</td><td>0</td></tr>";
+                                        }
+
+                                    }
+                                       
+                                    else if (horse.Meta.Ownage == "farm")
+                                        HorseFarm++;
+
+
+                                    if (horse.Meta.Gender == "male")
+                                        HorseMan++;
+                                    else if (horse.Meta.Gender == "female")
+                                        HorseWoman++;
+                                    else if (horse.Meta.Gender == "castrated")
+                                        HorseSirus++;
+
+
+                                    if (horse.Meta.Shoeings && horse.Meta.Shoeings.length > 0) HorsePirzool++;
+                                    if (horse.Meta.Tilufings && horse.Meta.Tilufings.length > 0) HorseTiluf++;
+
+                                    if (moment() > moment(horse.Meta.BirthDate).add(2, 'Y')) HorseUp2++;
+
+                                    if (horse.Meta.Pregnancies && horse.Meta.Pregnancies.length > 0) {
+
+                                        var pregnancy = horse.Meta.Pregnancies[horse.Meta.Pregnancies.length - 1];
+                                        var PregnancyName = pregnancy.States[pregnancy.States.length - 1].State.name;
+                                        if (PregnancyName != 'לידה' && !pregnancy.Finished) {
+                                            HorseHerion++;
+                                        }
+
+                                    }
+
+
+
+                                }
+                                else HorseNotActiveCount++;
+
+
+                            });
+
+                            text = text.replace("@HorseCount", HorseCount);
+                            text = text.replace("@HorseActiveCount", HorseActiveCount);
+                            text = text.replace("@HorseNotActiveCount", HorseNotActiveCount);
+                            text = text.replace("@HorseSchool", HorseSchool);
+                            text = text.replace("@HorsePension", HorsePension);
+                            text = text.replace("@HorseFarm", HorseFarm);
+                            text = text.replace("@HorseHerion", HorseHerion);
+                            text = text.replace("@HorsePirzool", HorsePirzool);
+                            text = text.replace("@HorseTiluf", HorseTiluf);
+                            text = text.replace("@HorseUp2", HorseUp2);
+                            text = text.replace("@HorseMan", HorseMan);
+                            text = text.replace("@HorseWoman", HorseWoman);
+                            text = text.replace("@HorseSirus", HorseSirus);
+
+                           
+                            text = text.replace("@HorseSchoolPercent", self.getRound((FarmWorkHoursSus / (ExistHorses.length * daysInMonth * 4)) * 100));
+
+
+                            text = text.replace("@TableHorses", HtmlHorsesTable);
+
+
+                            var blob = new Blob([text], {
+                                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                            });
+
+
+                            saveAs(blob, "Leads " + new Date() + ".xls");
+
                         });
 
-
-                        saveAs(blob, "Leads " + new Date() + ".xls");
 
                     });
 
 
 
 
-                  
+
 
                 });
 
 
-               
-              
 
-             
+
+
+
             });
 
-        
-            
+
+
         }
 
+        function _getRound(number) {
+           
+             var rounded = Math.round(number * 10) / 10;
 
-        function _getInstructorCounter(Id,res,type) {
+             return rounded.toString();
+
+        }
+        function _getInstructorCounter(Id, res, type) {
+
+
+
+
+            // כאן id משמש של סוס ולא מדריך
+            if (type == "HourNumberHorses") {
+              
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (Id == res[i].Name && (res[i].Status == "attended" || res[i].IsComplete == 4)) {
+                       
+                            counter += res[i].Diff;
+                   
+                    }
+
+
+                }
+
+
+                return (counter == 0) ? 0 : (counter / 60);
+            }
+
+
+
 
             if (type == "DayInMonth") {
                 var DateExist = [];
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
-                    if (DateExist.indexOf(res[i].OnlyDate) == "-1" && Id == res[i].Id ) {
+                    if (DateExist.indexOf(res[i].OnlyDate) == "-1" && Id == res[i].Id) {
 
                         if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
                            (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
-                            )
-                        {
+                            ) {
                             DateExist.push(res[i].OnlyDate);
                             counter++;
                         }
@@ -128,7 +282,7 @@
 
                 }
 
-                
+
                 return (counter == 0) ? "" : counter.toString();
 
             }
@@ -142,8 +296,7 @@
 
                         if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
                            (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
-                            )
-                        {
+                            ) {
                             DateExist.push(res[i].Start);
                             counter += res[i].Diff;
                         }
@@ -153,22 +306,21 @@
 
                 }
 
-               
+
                 return (counter == 0) ? "" : (counter / 60).toString();
 
             }
 
             if (type == "Attend") {
-               
+
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
                     if (Id == res[i].Id) {
 
-                        if (res[i].Status == "attended" || (res[i].Status == "completion" && res[i].IsComplete == 4))
-                        {
-                         
-                            counter ++;
+                        if (res[i].Status == "attended" || (res[i].Status == "completion" && res[i].IsComplete == 4)) {
+
+                            counter++;
                         }
 
                     }
@@ -226,7 +378,7 @@
             }
 
             if (type == "NoStatus") {
-             
+
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
@@ -242,7 +394,7 @@
 
                 }
 
-               // if (counter > 0) alert(counter);
+                // if (counter > 0) alert(counter);
                 return (counter == 0) ? "" : counter.toString();
 
             }
@@ -380,7 +532,7 @@
             tasks.push(usersService.getUsers('student'));
             tasks.push(usersService.getUsers('instructor'));
             tasks.push(usersService.getUsers('profAdmin'));
-         
+
 
             $q.all(tasks).then(function (users) {
 
@@ -406,7 +558,7 @@
                     //alert(getName(lessons[0].resourceId));
 
                     for (var lesson of lessons) {
-                    
+
                         for (var status of lesson.statuses) {
                             var instructorName = getName(lesson.resourceId);
                             var student = getUser(status.StudentId);

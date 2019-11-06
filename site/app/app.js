@@ -259,7 +259,7 @@
                             return usersService.getUsers('student', true);
                         },
                         horses: function (horsesService) {
-                            return horsesService.getHorses();
+                            return horsesService.getHorsesForLessons();
                         }
                     }
                 }

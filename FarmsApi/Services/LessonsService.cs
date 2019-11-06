@@ -164,12 +164,14 @@ namespace FarmsApi.Services
                     {
                         var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, IsComplete = l.IsComplete, HorseId = l.HorseId }).Distinct().ToArray();
                         var studentsArray = students.Select(s => s.StudentName).ToArray();
+                        var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName!=null).Select(l => new { HorseName = l.HorseName }).ToArray();
                         ReturnLessons.Add(JObject.FromObject(new
                         {
                             id = Lesson.Id,
                             prevId = Lesson.ParentId,
                             start = Lesson.Start,
                             end = Lesson.End,
+                            horsenames = horsesArray.Select(s => s.HorseName).ToArray(),
                             editable = true,
                             resourceId = Lesson.Instructor_Id,
                             lessprice = Lesson.Price,

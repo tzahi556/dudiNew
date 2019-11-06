@@ -84,11 +84,19 @@
         <div class="dvSubtitle">
             <br /><br />
             <span style="text-decoration:underline">סוסים</span><br />
-            כמות סוסים: <span>44</span><br />
-            סה"כ סוסי בית ספר:<span>44</span><br />
-            סה"כ סוסים בפנסיון:<span>44</span><br />
-            סה"כ סוסות בהריון:<span>44</span><br />
-            אחוזי ניצול סוסי בית ספר :<span>44</span><br />
+            כמות סוסים: <span>@HorseCount</span><br />
+            <u>סה"כ פעילים</u>: <span>@HorseActiveCount</span>     <u>סה"כ לא פעילים</u>:<span>@HorseNotActiveCount</span><br />
+            סה"כ סוסי בית ספר:<span>@HorseSchool</span><br />
+            סה"כ סוסי פנסיון:<span>@HorsePension</span><br />
+            סה"כ סוסי חווה:<span>@HorseFarm</span><br /><br />
+            סה"כ סוסות בהריון:<span>@HorseHerion</span><br />
+            סה"כ סוסים מפורזלים:<span>@HorsePirzool</span><br />
+            סה"כ סוסים בטילוף:<span>@HorseTiluf</span><br />
+            סה"כ סוסים מעל שנתיים:<span>@HorseUp2</span><br />
+           
+
+            כמות סוסים זכרים: <span>@HorseMan</span>  כמות סוסות נקבות: <span>@HorseWoman</span>     כמות סוסים מסורסים:<span>@HorseSirus</span><br /><br />
+            אחוזי ניצול סוסי בית ספר :<span>@HorseSchoolPercent</span><br />
         </div>
        </div>
     
@@ -105,15 +113,7 @@
                     
                 </tr>
 
-                <tr>
-                    <td>דוד אלקסלסי</td>
-                    <td>44</td>
-
-                </tr>
-                <tr>
-                    <td>דוד צנעני אטון</td>
-                    <td>44</td>
-                </tr>
+                @TableHorses
             </table>
      </div>
 
@@ -121,15 +121,18 @@
        <div><br /></div>
         <div class="dvSubtitle">
             <span style="text-decoration:underline">סיכום</span><br />
-            סה"כ חייבים: <span>44</span>     סה"כ כסף:<span>44</span><br /><br />
+
+           
+
+            סה"כ חייבים: <span>@AllMinusCount</span>     סה"כ כסף:<span>@AllMinusSum ₪</span><br /><br />
             <span style="text-decoration:underline">סה"כ כמות שעורים בחתכים השונים</span><br />
-            סה"כ טיפולים של מכבי: <span>44</span><br />
+            סה"כ טיפולים של מכבי: <span>@Macbi</span><br />
             <!--סה"כ להגיש בדרישה לתשלום ממכבי:<span>44</span><br />-->
-            סה"כ טיפולים של הכללית:<span>44</span><br />
-            סה"כ טיפולים של לאומית:<span>44</span><br />
-            סה"כ טיפולים של מאוחדת:<span>44</span><br />
+            סה"כ טיפולים של הכללית:<span>@Clalit</span><br />
+            סה"כ טיפולים של לאומית:<span>@Leumit</span><br />
+            סה"כ טיפולים של מאוחדת:<span>@Meuedet</span><br />
             <!--סה"כ להגיש בדרישה לתשלום מהכללית:<span>44</span><br />-->
-            סה"כ שעורים אחר:<span>44</span><br />
+            סה"כ שעורים אחר:<span>@Other</span><br />
             <!--סה"כ שעורים ( כל היתר):<span>44</span><br />-->
         </div>
     </div>

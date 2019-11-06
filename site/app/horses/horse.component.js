@@ -33,8 +33,11 @@
         this.addVaccination = _addVaccination.bind(this);
         this.removeVaccination = _removeVaccination.bind(this);
         this.initNewShoeing = _initNewShoeing.bind(this);
+        this.initNewTilufing = _initNewTilufing.bind(this);
         this.addShoeing = _addShoeing.bind(this);
+        this.addTiluf = _addTiluf.bind(this);
         this.removeShoeing = _removeShoeing.bind(this);
+        this.removeTiluf = _removeTiluf.bind(this);
         this.initNewPregnancy = _initNewPregnancy.bind(this);
         this.addPregnancy = _addPregnancy.bind(this);
         this.removePregnancy = _removePregnancy.bind(this);
@@ -74,6 +77,8 @@
             this.initNewTreatment();
             this.initNewVaccination();
             this.initNewShoeing();
+            this.initNewTilufing();
+
             this.initNewPregnancy();
             this.initNewPregnancyState();
 
@@ -342,6 +347,14 @@
             }
         }
 
+        function _initNewTilufing() {
+            this.newTiluf = {};
+            this.newTiluf.Date = new Date();
+            if ($scope.tilufForm != null) {
+                $scope.tilufForm.$setPristine();
+            }
+        }
+
         function _addVaccination() {
             this.horse.Meta.Vaccinations = this.horse.Meta.Vaccinations || [];
             this.horse.Meta.Vaccinations.push(this.newVaccination);
@@ -399,6 +412,23 @@
                 }
             }
         }
+
+        function _addTiluf() {
+            this.horse.Meta.Tilufings = this.horse.Meta.Tilufings || [];
+            this.horse.Meta.Tilufings.push(this.newTiluf);
+            this.initNewTilufing();
+        }
+
+        function _removeTiluf(tiluf) {
+            for (var i in this.horse.Meta.Tilufings) {
+                if (this.horse.Meta.Tilufings[i] == tiluf) {
+                    this.horse.Meta.Tilufings.splice(i, 1);
+                }
+            }
+        }
+
+
+
 
         function _submit() {
             if ($scope.horseForm.$valid) {
