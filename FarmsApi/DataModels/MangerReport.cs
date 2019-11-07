@@ -18,7 +18,7 @@ namespace FarmsApi.DataModels
         public int? Leumit { get; set; }
         public int? Meuedet { get; set; }
         public int? Other { get; set; }
-
+        public string farmNAME { get; set; }
 
 
         //  public int Id { get; set; }

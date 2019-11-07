@@ -32,7 +32,9 @@
         function _submit() {
             if (this.scope.instructorForm.$valid) {
                 this.user.Role = this.user.Role || 'instructor';
+                this.user.Active = 'active';
                 usersService.updateUserMultiTables(this.user, [], [], [], [], [], this.availablehours).then(function (user) {
+                    
                     this.user = user;
                     this.initInstructor();
                     alert('נשמר בהצלחה');

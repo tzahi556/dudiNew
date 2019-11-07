@@ -413,8 +413,17 @@ namespace FarmsApi.Services
 
         private static void ReassignStudentLessons(JObject Lesson, DataModels.Context Context)
         {
+
+          
             int LessonId = Lesson["id"].Value<int>();
-            Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
+
+          
+             Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
+
+            //}catch(Exception ex)
+            //{
+
+            //}
             if (Lesson["students"] != null)
             {
                 var StudentIds = Lesson["students"].Values<int>().ToList();

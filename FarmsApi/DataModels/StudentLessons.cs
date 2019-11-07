@@ -16,8 +16,9 @@ namespace FarmsApi.DataModels
         public string Status { get; set; }
         public string Details { get; set; }
         public int IsComplete { get; set; }
-        public int HorseId { get; set; }
+        public int? HorseId { get; set; }
         public double? Price { get; set; }
         public int LessonPayType { get; set; }
+      
     }
 }

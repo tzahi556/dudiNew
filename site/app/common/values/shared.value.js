@@ -6,8 +6,6 @@
 
     var API_ADDRESS = window.location.href.indexOf('giddyup.co.il') != -1 ? '/api/' : 'http://localhost:54033/';
 
-   
-
     app.value('sharedValues', {
 
        

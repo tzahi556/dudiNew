@@ -40,17 +40,18 @@
 
 
                 text = text.replace("@ReportDate", Month + "/" + Year);
-                text = text.replace("@NameHava", $rootScope.farmName);
+              //$rootScope.farmName
 
-              //  alert((Year + "/" + Month + "/01"));
+                //  alert((Year + "/" + Month + "/01"));
+
                 usersService.report("1", (Year + "_" + Month + "_01" )).then(function (res) {
-
 
                     text = text.replace("@ActiveUser", res[0].ActiveUser);
                     text = text.replace("@notActiveUser", res[0].notActiveUser);
                     text = text.replace("@instructorUser", res[0].instructorUser);
                     text = text.replace("@AllMinusCount", res[0].AllMinusCount);
                     text = text.replace("@AllMinusSum", (res[0].AllMinusSum));
+                    text = text.replace("@NameHava", res[0].farmNAME);
 
                     text = text.replace("@Macbi", res[0].Macbi);
                     text = text.replace("@Clalit", res[0].Clalit);
@@ -99,7 +100,6 @@
 
 
                         }
-
 
                         text = text.replace("@TableInstructor", HtmlTable);
                      
@@ -239,7 +239,7 @@
         function _getInstructorCounter(Id, res, type) {
 
 
-
+        
 
             // כאן id משמש של סוס ולא מדריך
             if (type == "HourNumberHorses") {
@@ -288,14 +288,14 @@
             }
 
             if (type == "HourNumber") {
+               
                 var DateExist = [];
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
                     if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
 
-                        if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
-                           (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
+                        if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
                             ) {
                             DateExist.push(res[i].Start);
                             counter += res[i].Diff;

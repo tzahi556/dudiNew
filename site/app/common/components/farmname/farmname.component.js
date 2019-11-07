@@ -28,7 +28,7 @@
         }
 
 
-        $rootScope.farmName = self.farmName;
+       // $rootScope.farmName = self.farmName;
         //alert(self.farmName);
     }
 
