@@ -245,7 +245,7 @@
                     }
                  
 
-                    $(element).find(".fc-time span").before(" <span class='spHorse'> (" + horsenames + ")  <span>");
+                    $(element).find(".fc-time span").css("float","right").before("<span class='spHorse'> (" + horsenames + ")  </span>");
                 }
 
 

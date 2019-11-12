@@ -204,7 +204,7 @@
                             });
 
 
-                            saveAs(blob, "Leads " + new Date() + ".xls");
+                            saveAs(blob, "Leads " + new Date() + ".html");
 
                         });
 
