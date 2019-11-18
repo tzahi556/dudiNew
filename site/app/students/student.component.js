@@ -421,7 +421,7 @@
 
 
         function _initNewHorse() {
-
+         
             this.userhorses = this.userhorses || [];
             this.newHorse = null;
             if ($scope.newHorseForm != null) {
@@ -430,22 +430,22 @@
         }
 
         function _addNewHorse() {
-
-
+           
+           
             for (var i in this.userhorses) {
-                if (this.userhorses[i].Id == this.newHorse.Id) {
+                if (this.userhorses[i].HorseId == this.newHorse.Id) {
                     return false;
                 }
             }
             this.userhorses = this.userhorses || [];
-            this.userhorses.push({ Id: this.newHorse.Id, Name: this.newHorse.Name, PensionPrice: 0 });
+            this.userhorses.push({ HorseId: this.newHorse.Id, Name: this.newHorse.Name, PensionPrice: 0 });
             this.initNewHorse();
         }
 
         function _removeHorse(horse) {
             var horses = this.userhorses;
             for (var i in horses) {
-                if (horses[i].Id == horse.Id) {
+                if (horses[i].HorseId == horse.HorseId) {
                     horses.splice(i, 1);
                 }
             }
@@ -1560,7 +1560,7 @@
           
                 if (this.user.BirthDate)
                     this.user.BirthDate.setHours(this.user.BirthDate.getHours() + 3);
-
+               
 
                 usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses).then(function (user) {
                     

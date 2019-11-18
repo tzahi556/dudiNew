@@ -638,12 +638,12 @@ namespace FarmsApi.Services
 
             List<Expenses> e = dataObj[4].ToObject<List<Expenses>>();
             UpdateExpensesObject(e, u);
-
-            List<UserHorses> uhs = dataObj[5].ToObject<List<UserHorses>>();
-            UpdateUserHorsesObject(uhs, u);
-
             try
             {
+                List<UserHorses> uhs = dataObj[5].ToObject<List<UserHorses>>();
+                UpdateUserHorsesObject(uhs, u);
+
+          
                 List<AvailableHours> uav = dataObj[6].ToObject<List<AvailableHours>>();
                 UpdateAvailableHoursObject(uav, u);
 
@@ -965,6 +965,7 @@ namespace FarmsApi.Services
 
                     item_uhs.UserId = u.Id;
 
+                   // var ExistHorses = Context.UserHorses.Where(x => x.Id == item_uhs.Id && x.UserId == u.Id).FirstOrDefault();
                     if (item_uhs.Id == 0)
                     {
                         Context.UserHorses.Add(item_uhs);
