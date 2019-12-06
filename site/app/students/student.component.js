@@ -289,7 +289,7 @@
         }
 
         function _createNotifications() {
-
+           
             var hmoMessage = '';
             for (var hmo of this.HMOs) {
                 if (hmo.id == this.user.HMO) {
@@ -1058,8 +1058,10 @@
             var totalLessons = 0;
             var totalLessonsThisYear = 0;
             for (var i in payments) {
+                if (payments[i].lessons && payments[i].canceled) payments[i].count = 0 + " שיעורים ";
                 if (payments[i].lessons && !payments[i].canceled) {
-                    totalLessons += payments[i].lessons
+                    totalLessons += payments[i].lessons;
+                    payments[i].count = payments[i].lessons + " שיעורים ";
                     if (moment(payments[i].Date).format('YYYY') == moment().format('YYYY')) {
                         totalLessonsThisYear += payments[i].lessons;
                     }
@@ -1072,7 +1074,7 @@
         }
 
         function _countPaidMonths() {
-
+          
             var payments = this.payments || [];
             var results = [];
             var sum = 0;
@@ -1080,7 +1082,7 @@
             var totalExpenOut = 0;
             for (var i in payments) {
 
-
+                if (payments[i].month && payments[i].canceled) payments[i].count = 0 + " חודשים ";
                 if (payments[i].month && !payments[i].canceled) {
                     paid += payments[i].InvoiceSum;
                     var month = moment(payments[i].month).format('MM-YYYY');
@@ -1095,7 +1097,7 @@
                             //    if (parseInt(moment(payments[i].Date).format('YYYYMMDD')) < parseInt(moment("20190331").format('YYYYMMDD'))) diffMonth++;
                             //}
 
-
+                            payments[i].count = diffMonth + " חודשים ";
                             for (var j = 0; j < diffMonth; j++) {
                                 results.push(moment(payments[i].month).add(j, 'M'));
                                 sum += payments[i].Price;
@@ -1103,6 +1105,7 @@
 
 
                         } else {
+                            payments[i].count = 1 + " חודשים ";
                             results.push(month);
                             sum += payments[i].Price;
                         }

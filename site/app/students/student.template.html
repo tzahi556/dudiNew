@@ -361,7 +361,7 @@
                                 <th>תאריך</th>
                                 <th>חשבונית מס/קבלה</th>
                                 <th style="width:50%">פירוט עיסקה</th>
-                                <!--<th>שיעורים</th>-->
+                                <th>ח/ש</th>
                                 <th>סכום</th>
                                 <th></th>
                             </tr>
@@ -376,7 +376,7 @@
                                     {{payment.InvoiceDetails}}
                                     <span ng-if="payment.canceled">(מזוכת: {{payment.canceled}})</span>
                                 </td>
-                                <!--<td>{{payment.lessons}}</td>-->
+                                <td>{{payment.count}}</td>
                                 <!--<td>{{payment.Price}}</td>-->
                                 <td>{{payment.InvoiceSum}}</td>
                                 <td>

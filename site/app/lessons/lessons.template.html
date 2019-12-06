@@ -1,24 +1,32 @@
 ﻿<div class="panel panel-default">
     <div class="panel-heading">
         לו"ז
-        <input class='form-control addedCalender' style='width:150px;' ng-model="$ctrl.searchDate" ng-change='$ctrl.customDate()'  placeholder='לפי תאריך' type='date' />
-      
-            <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'"  style="margin-right:50px;text-decoration:underline"> פעילים - </span>
-            <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'"  style="font-weight:bold;font-size:15px">{{$ctrl.getCounter('active')}} </span>
-            <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'"  style="margin-right:50px;text-decoration:underline"> לא פעילים - </span>
-            <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'"  style="font-weight:bold;font-size:15px">{{$ctrl.getCounter('notActive')}}</span>
-       
-      <div style="float:left">
+        <input class='form-control addedCalender' style='width:150px;' ng-model="$ctrl.searchDate" ng-change='$ctrl.customDate()' placeholder='לפי תאריך' type='date' />
+
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="margin-right:50px;text-decoration:underline"> פעילים - </span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="font-weight:bold;font-size:15px">{{$ctrl.getCounter('active')}} </span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="margin-right:50px;text-decoration:underline"> לא פעילים - </span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="font-weight:bold;font-size:15px">{{$ctrl.getCounter('notActive')}}</span>
+
+        <div style="float:left">
             <div id="mainController"></div>
 
-            <div ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="cursor:pointer;text-align:center;" 
-                 ng-click="showDiv = !showDiv"><span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span> &nbsp;ממתינים לשיעור השלמה </div>
+            <div ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="cursor:pointer;text-align:center;"
+                 ng-click="showDiv = !showDiv"><span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span>&nbsp;ממתינים לשיעור השלמה</div>
             <div ng-show="showDiv" class="dvContainer" style="height:550px;overflow:auto">
-                <div class="fc-draggable dvDragElement"
-                      ondragstart="dragStart(event)"
-                      ondragover="allowDrop(event)"
-                      draggable="true" id="{{les.Id}}" ng-repeat="les in $ctrl.lessonsComplete">{{les.FullName}}  ({{les.completionReq}}) - {{les.InstructorName}} </div>
 
+                <div ng-repeat="lesinst in $ctrl.lessonsComplete |filter:{isInstructor:'1'}" style="width:250px">
+                    <div class="fc-draggable dvDragElement" style="background-color:goldenrod" ng-click="open = !open">
+                        <img ng-show="open" src="../../images/table-arrow-down.png" />
+                        <img ng-show="!open" src="../../images/table-arrow-right.png" />
+                        {{lesinst.InstructorName}}
+
+                    </div>
+                    <div class="fc-draggable dvDragElement" ng-show="open"
+                         ondragstart="dragStart(event)"
+                         ondragover="allowDrop(event)"
+                         draggable="true" id="{{les.Id}}" ng-repeat="les in $ctrl.lessonsComplete |filter:{isInstructor:'0',InstructorName:lesinst.InstructorName}">{{les.FullName}}({{les.completionReq}})</div>
+                </div>
             </div>
         </div>
     </div>
@@ -61,14 +69,14 @@
         }
 
         function drop(event) {
-            
+
             $(".hadPeami").show();
             angular.element(document.getElementById('mainController')).scope().makeDrop(event, currentStudentId);
             currentStudentId = "";
 
         }
 
-     
+
 
     </script>
 
@@ -111,6 +119,8 @@
             </calendar>
         </div>
     </div>
+
+
 </div>
 
 

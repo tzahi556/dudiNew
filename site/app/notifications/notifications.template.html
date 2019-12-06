@@ -5,9 +5,36 @@
     <div class="panel-body" ng-if="$ctrl.isSysAdmin">
         <a class="btn btn-success btn-xs" ui-sref="notification({id:0})">התראה חדשה</a>
     </div>
+
+    <div class="row" style="padding:15px;">
+
+        <div class="col-md-3">
+            <input type="radio" name="filter" value="" ng-model="$ctrl.filter.EntityType" ng-change="$ctrl.refreshData()">
+            <label for="rdoSfiCode">הכל</label>
+
+            <input type="radio" name="filter" value="student" ng-model="$ctrl.filter.EntityType" >
+            <label for="rdoTitleDisc">תלמידים</label>
+
+            <input type="radio" name="filter" value="horse" ng-model="$ctrl.filter.EntityType" >
+            <label for="rdoTitleDisc">סוסים</label>
+        </div>
+
+
+            <div class="col-md-1">
+                <label>חיפוש חופשי</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" ng-model="$ctrl.filter.Text" placeholder="חיפוש חופשי" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-danger" ng-disabled="!$ctrl.getifOneCheck()" ng-click="$ctrl.deleteALL()">מחק מסומנים</button>
+            </div>
+        </div>
+
     <table class="table table-hover">
         <thead>
             <tr>
+                <th><input type="checkbox" ng-model="selectAll" ng-click="$ctrl.reloadCheckUnCheck()" /> סמן הכל</th>
                 <th>מס</th>
                 <th>תאריך</th>
                 <th>התראה</th>
@@ -16,7 +43,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="notification in $ctrl.notifications | orderBy: 'Date'">
+            <!--<div ng-repeat="item in (filteredItems = (items | orderBy:'order_prop' | filter:query | limitTo:4))">-->
+            <tr ng-repeat="notification in ($ctrl.filteredItems = ($ctrl.notifications | filter:$ctrl.filter | orderBy: 'Date'))">
+                <td width="8%"><input type="checkbox" name="selectedNotification[]" ng-model="notification.Show" /></td>
                 <td>{{$index + 1}}</td>
                 <td>{{notification.Date | date:'dd/MM/yyyy'}}</td>
                 <td><a href="" ng-click="$ctrl.redirect(notification)">{{notification.Text}}</a></td>

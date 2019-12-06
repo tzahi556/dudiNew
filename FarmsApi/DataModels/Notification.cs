@@ -16,5 +16,6 @@ namespace FarmsApi.DataModels
         public int FarmId { get; set; }
         public DateTime Date { get; set; }
         public bool Deletable { get; set; }
+      
     }
 }

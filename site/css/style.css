@@ -18,10 +18,14 @@
     background-image: url(../images/warning-icon.png);
     background-position: top left;
     background-repeat: no-repeat;
-
 }
 
-
+.notarrive-icon {
+    background-image: url(../images/notArrive.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-size: 30px 30px,30px 30px;
+}
 
 .approve-icon {
     background-image: url(../images/approve-icon.png);

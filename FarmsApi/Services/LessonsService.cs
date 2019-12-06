@@ -154,43 +154,51 @@ namespace FarmsApi.Services
             //}
 
 
-            var lessons = query.ToList();
-            int lastId = 0;
-            foreach (var Lesson in lessons)
-            {
-                try
+            //try
+            //{
+                var lessons = query.ToList();
+                int lastId = 0;
+                foreach (var Lesson in lessons)
                 {
-                    if (Lesson.Id != lastId)
+                    try
                     {
-                        var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, IsComplete = l.IsComplete, HorseId = l.HorseId }).Distinct().ToArray();
-                        var studentsArray = students.Select(s => s.StudentName).ToArray();
-                        var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName!=null).Select(l => new { HorseName = l.HorseName }).ToArray();
-                        ReturnLessons.Add(JObject.FromObject(new
+                        if (Lesson.Id != lastId)
                         {
-                            id = Lesson.Id,
-                            prevId = Lesson.ParentId,
-                            start = Lesson.Start,
-                            end = Lesson.End,
-                            horsenames = horsesArray.Select(s => s.HorseName).ToArray(),
-                            editable = true,
-                            resourceId = Lesson.Instructor_Id,
-                            lessprice = Lesson.Price,
-                            lessonpaytype = Lesson.LessonPayType,
-                            details = Lesson.Details,
-                            students = students.Select(s => s.StudentId).ToArray(),
-                            statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId }).ToArray(),
-                            title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : "")
-                        }));
+                            var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, IsComplete = l.IsComplete, HorseId = l.HorseId }).Distinct().ToArray();
+                            var studentsArray = students.Select(s => s.StudentName).ToArray();
+                            var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName != null).Select(l => new { HorseName = l.HorseName }).ToArray();
+                            ReturnLessons.Add(JObject.FromObject(new
+                            {
+                                id = Lesson.Id,
+                                prevId = Lesson.ParentId,
+                                start = Lesson.Start,
+                                end = Lesson.End,
+                                horsenames = horsesArray.Select(s => s.HorseName).ToArray(),
+                                editable = true,
+                                resourceId = Lesson.Instructor_Id,
+                                lessprice = Lesson.Price,
+                                lessonpaytype = Lesson.LessonPayType,
+                                details = Lesson.Details,
+                                students = students.Select(s => s.StudentId).ToArray(),
+                                statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId }).ToArray(),
+                                title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : "")
+                            }));
+                        }
+                        lastId = Lesson.Id;
                     }
-                    lastId = Lesson.Id;
+                    catch (Exception)
+                    {
+
+                    }
                 }
-                catch (Exception)
-                {
 
-                }
-            }
+            //}
+            //catch (Exception ex)
+            //{
 
 
+
+            //}
 
 
 
@@ -226,7 +234,7 @@ namespace FarmsApi.Services
                             inner join Lessons l on l.Id = t4.Lesson_Id
                             inner join Users ui on ui.Id = l.Instructor_Id
 
-                            where t3.completionReq > 0 and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")";
+                            where t3.completionReq > 0 and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ") order by Instructor_Id";
 
 
                 using (var reader = cmd.ExecuteReader())
@@ -414,11 +422,11 @@ namespace FarmsApi.Services
         private static void ReassignStudentLessons(JObject Lesson, DataModels.Context Context)
         {
 
-          
+
             int LessonId = Lesson["id"].Value<int>();
 
-          
-             Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
+
+            Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
 
             //}catch(Exception ex)
             //{

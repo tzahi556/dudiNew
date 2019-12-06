@@ -10,8 +10,25 @@
         this.deleteNotification = _deleteNotification;
         this.updateDetails = _updateDetails;
         this.getMessagesList = _getMessagesList;
+        this.deleteAllNotification = _deleteAllNotification;
+
+
+        function _deleteAllNotification(notifications) {
+
+            var deferred = $q.defer();
+            $http.post(sharedValues.apiUrl + 'notifications/deleteAllNotification/', notifications).then(function (res) {
+                deferred.resolve(res.data);
+
+            });
+            return deferred.promise;
+
+            //return $http.post(sharedValues.apiUrl + 'notifications/deleteAllNotification/', notifications);
+          
+        }
+        
 
         function _createNotification(notification) {
+
             return $http.post(sharedValues.apiUrl + 'notifications/createNotification', notification);
         }
 

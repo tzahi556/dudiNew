@@ -179,7 +179,7 @@ namespace FarmsApi.Services
         {
             using (var Context = new Context())
             {
-                var Notification = Context.Notifications.SingleOrDefault(n => n.Id == id && n.Deletable);
+                var Notification = Context.Notifications.SingleOrDefault(n => n.Id == id);  //צחי הוריד && n.Deletable);
                 Context.Notifications.Remove(Notification);
                 Context.SaveChanges();
             }

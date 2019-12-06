@@ -13,7 +13,7 @@
         }
     });
 
-    function LessonsController($scope, $rootScope, $q, lessonsService, notificationsService) {
+    function LessonsController($scope, $rootScope, $q, lessonsService, notificationsService, $filter) {
 
         this.lessonsService = lessonsService;
         $rootScope.createNewfromdd = _eventCreate.bind(this);
@@ -535,7 +535,36 @@
             this.lessonsService.getLessons(null, this.startDate, fakendDate, true).then(function (lessons) {
               
                 this.lessonsCompletelength = lessons.length;
-                this.lessonsComplete = lessons;
+               
+                lessons = $filter('orderBy')(lessons, 'InstructorName');
+                var lessonsGroupBy = [];
+                var prevInstructor = "";
+                for (var i in lessons) {
+                
+                    if (lessons[i].InstructorName != prevInstructor) {
+                        
+                        var newData = angular.copy(lessons[i]);
+                        newData.isInstructor = 1;
+                        lessonsGroupBy.push(newData);
+
+                        lessons[i].isInstructor = 0;
+                        lessonsGroupBy.push(lessons[i]);
+                        prevInstructor = lessons[i].InstructorName;
+                    }
+                    else
+                    {
+                        lessons[i].isInstructor = 0;
+                        lessonsGroupBy.push(lessons[i]);
+
+
+                    }
+
+                }
+              
+              
+                this.lessonsComplete = lessonsGroupBy;
+
+
 
 
 

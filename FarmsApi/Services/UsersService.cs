@@ -725,6 +725,9 @@ namespace FarmsApi.Services
                 foreach (Payments item in objList)
                 {
 
+                    if (item.month != null) item.month = ((DateTime)item.month).AddHours(3);
+                    if (item.untilmonth != null) item.untilmonth = ((DateTime)item.untilmonth).AddHours(3);
+
                     item.UserId = u.Id;
 
                     if (item.Id == 0)

@@ -162,18 +162,25 @@
 
             eventRender: function (event, element) {
               
-                var IsFuture = (event.end) ? (event.end.format('YYYYMMDD') <= moment().format('YYYYMMDD')) : false;
+                var IsFuture = true;//(event.end) ? (event.end.format('YYYYMMDD') <= moment().format('YYYYMMDD')) : false;
 
                 if (event.rendering != "background" && event.statuses && event.statuses.length > 0) {
 
 
                     for (var i in event.statuses) {
                       
-                        if (IsFuture && !event.statuses[i].Status || event.statuses[i].Status == '' || event.statuses[i].Status == 'notAttended') {
+                        if (IsFuture && !event.statuses[i].Status || event.statuses[i].Status == '') {
                            
                             $(element).addClass('warning-icon');
                         }
 
+                       else if (event.statuses[i].Status == 'notAttended') {
+                           
+                           $(element).addClass('notarrive-icon');
+                        }
+
+
+                      
                         //לא הגיע לא לחייב
                         else if (IsFuture && event.statuses[i].Status == 'notAttendedDontCharge') {
 
@@ -255,20 +262,6 @@
         });
 
 
-        //var d = new Date();
-        //dt = d.getDate();
-        //mn = d.getMonth() + 1;
-        //yy = d.getFullYear();
-
-        //mn = (mn < 10) ? ("0" + mn) : mn;
-        //dt = (dt < 10) ? ("0" + dt) : dt;
-        //var CurrentDate = yy + "-" + mn + "-" + dt;
-
-      //  $("input").remove(".addedCalender");
-     //   $(".fc-right").prepend("<input class='form-control addedCalender' style='width:150px;' ng-change='alert()'  value='" + CurrentDate + "' placeholder='לפי תאריך' type='date'/>");
-
-
-        // $('#calendar').fullCalendar('gotoDate', dateText);
 
         $(".addedCalender").prependTo(".fc-right");
 

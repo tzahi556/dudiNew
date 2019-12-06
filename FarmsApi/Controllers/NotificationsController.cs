@@ -76,5 +76,20 @@ namespace FarmsApi.Services
             NotificationsService.DeleteNotification(id);
             return Ok();
         }
+
+
+        [Authorize]
+        [Route("deleteAllNotification")]
+        [HttpPost]
+        public IHttpActionResult DeleteAllNotification(List<DataModels.Notification> Notifications)
+        {
+            foreach (var not in Notifications)
+            {
+                NotificationsService.DeleteNotification(not.Id);
+            }
+
+            return Ok(NotificationsService.GetNotifications());
+        }
+
     }
 }
