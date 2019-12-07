@@ -180,7 +180,7 @@
         }
 
         function _addVaccineNotification(vaccineName, notificationMessage) {
-
+          
             var horseBirthDate = this.horse.Meta.BirthDate;
             var horseAge = moment().diff(moment(horseBirthDate), 'years');
             var vaccine = _getVaccination(vaccineName);

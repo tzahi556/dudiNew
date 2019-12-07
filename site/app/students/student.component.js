@@ -290,14 +290,15 @@
 
         function _createNotifications() {
            
-            var hmoMessage = '';
-            for (var hmo of this.HMOs) {
-                if (hmo.id == this.user.HMO) {
-                    if (hmo.maxLessons) {
-                        hmoMessage = ', לקוח ' + hmo.name + ' (נוצלו: ' + self.commitmentLessonsThisYear + ' שיעורים מתוך: ' + hmo.maxLessons + ')';
-                    }
-                }
-            }
+            // בינתיים צחי ביטל
+            //var hmoMessage = '';
+            //for (var hmo of this.HMOs) {
+            //    if (hmo.id == this.user.HMO) {
+            //        if (hmo.maxLessons) {
+            //            hmoMessage = ', לקוח ' + hmo.name + ' (נוצלו: ' + self.commitmentLessonsThisYear + ' שיעורים מתוך: ' + hmo.maxLessons + ')';
+            //        }
+            //    }
+            //}
 
 
             if (this.user.PayType == 'lessonCost') {
@@ -307,13 +308,19 @@
                 var notificationText = 'יש לגבות תשלום עבור החודש הבא מ' + this.user.FirstName + ' ' + this.user.LastName;
             }
 
+            var heshbon = this.totalExpensesNoShulam * -1 + this.unpaidLessons; //+ this.monthlyBalance;
+
+         
             notificationsService.createNotification({
                 entityType: 'student',
                 entityId: this.user.Id,
                 group: 'balance',
                 farmId: this.user.Farm_Id,
                 // צחי שינה מ this.creditPaidLessons < 1 ל this.creditPaidLessons < 0
-                text: (this.user.Active == 'active' && this.creditPaidLessons < 0 && this.attendedLessons && this.attendedLessons > 0) || (this.user.Active == 'active' && this.user.PayType == 'monthCost') ? notificationText : null,
+                text: (heshbon < 0) ? notificationText : null,
+                      //(this.user.Active == 'active' && this.creditPaidLessons < 0 && this.attendedLessons && this.attendedLessons > 0)
+                      //||
+                      //(this.user.Active == 'active' && this.user.PayType == 'monthCost') ? notificationText : null,
                 date: moment().endOf('month').format('YYYY-MM-DD')
             });
 

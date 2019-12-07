@@ -180,8 +180,12 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
                 var Notification = Context.Notifications.SingleOrDefault(n => n.Id == id);  //צחי הוריד && n.Deletable);
-                Context.Notifications.Remove(Notification);
-                Context.SaveChanges();
+                if (Notification != null)
+                {
+                    Notification.Deletable = true;
+                    // Context.Notifications.Remove(Notification);
+                    Context.SaveChanges();
+                }
             }
         }
 
@@ -191,7 +195,7 @@ namespace FarmsApi.Services
             {
                 var currentUser = UsersService.GetCurrentUser();
                 var untilDate = DateTime.Now.AddDays(7);
-                var notifications = Context.Notifications.Where(n => n.Date < untilDate && n.FarmId == currentUser.Farm_Id).ToList();
+                var notifications = Context.Notifications.Where(n => n.Date < untilDate && n.FarmId == currentUser.Farm_Id && !n.Deletable).ToList();
                 notifications = notifications.ToList().Where(n =>
                 {
                     if (n.EntityType == "lessons" && n.EntityId == currentUser.Id)
@@ -217,9 +221,9 @@ namespace FarmsApi.Services
         {
             using (var Context = new Context())
             {
-              
+
                 var messagesList = Context.Messages.ToList();
-            
+
                 return messagesList;
             }
         }
