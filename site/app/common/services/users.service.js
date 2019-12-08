@@ -20,6 +20,8 @@
         this.getUserFilesByUserId = _getUserFilesByUserId;
         this.getUserCommitmentsByUserId = _getUserCommitmentsByUserId;
         this.getAvailablehours = _getAvailablehours;
+        this.getTransferData = _getTransferData;
+
         this.report = _report;
 
 
@@ -210,6 +212,25 @@
             });
             return deferred.promise;
         }
+
+
+        function _getTransferData(insructorId, dow,date) {
+       
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'users/getTransferData/' + insructorId + "/" + dow + "/" + date).then(function (res) {
+                var data = res.data;
+              
+                deferred.resolve(data);
+            });
+            return deferred.promise;
+        }
+
+
+
+
+
+
+
 
     }
 

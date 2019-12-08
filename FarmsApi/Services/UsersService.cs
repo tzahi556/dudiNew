@@ -643,7 +643,7 @@ namespace FarmsApi.Services
                 List<UserHorses> uhs = dataObj[5].ToObject<List<UserHorses>>();
                 UpdateUserHorsesObject(uhs, u);
 
-          
+
                 List<AvailableHours> uav = dataObj[6].ToObject<List<AvailableHours>>();
                 UpdateAvailableHoursObject(uav, u);
 
@@ -968,7 +968,7 @@ namespace FarmsApi.Services
 
                     item_uhs.UserId = u.Id;
 
-                   // var ExistHorses = Context.UserHorses.Where(x => x.Id == item_uhs.Id && x.UserId == u.Id).FirstOrDefault();
+                    // var ExistHorses = Context.UserHorses.Where(x => x.Id == item_uhs.Id && x.UserId == u.Id).FirstOrDefault();
                     if (item_uhs.Id == 0)
                     {
                         Context.UserHorses.Add(item_uhs);
@@ -1163,7 +1163,7 @@ namespace FarmsApi.Services
 
                 SqlParameter Type = new SqlParameter("Type", type);
                 SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
-                SqlParameter StartDatePara = new SqlParameter("StartDate", date.Replace("_","/"));
+                SqlParameter StartDatePara = new SqlParameter("StartDate", date.Replace("_", "/"));
 
 
 
@@ -1200,6 +1200,36 @@ namespace FarmsApi.Services
             }
         }
 
+        public static object GetTransferData(string insructorId, string dow,string date)
+        {
+            using (var Context = new Context())
+            {
+                var CurrentUser = GetCurrentUser();
+
+
+              
+
+
+                SqlParameter ResourceId = new SqlParameter("ResourceId", insructorId);
+                SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
+                SqlParameter dowPara = new SqlParameter("dow", dow);
+                SqlParameter datePara = new SqlParameter("date", date);
+
+               
+                var query = Context.Database.SqlQuery<TransferResult>
+                ("GetTransferData @ResourceId,@Farm_Id,@dow,@date",
+                ResourceId, Farm_IdPara, dowPara, datePara);
+                var res = query.ToList();
+                return res;
+               
+
+
+            }
+
+
+            return null;
+
+        }
 
         #region
 

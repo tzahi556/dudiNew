@@ -165,11 +165,22 @@ namespace FarmsApi.Services
         [HttpGet]
         public IHttpActionResult getReport([FromUri] string type, [FromUri] string date)
         {
-            //foreach (var user in users)
-            //{
-            //    UsersService.UpdateUser(user);
-            //}
+           
             return Ok(UsersService.ManagerReport(type,date));
         }
+
+
+        [Authorize]
+        [Route("getTransferData/{insructorId}/{dow}/{date}")]
+        [HttpGet]
+        public IHttpActionResult getTransferData([FromUri] string insructorId, [FromUri] string dow, [FromUri] string date)
+        {
+
+            return Ok(UsersService.GetTransferData(insructorId, dow,date));
+        }
+
+
+
+
     }
 }

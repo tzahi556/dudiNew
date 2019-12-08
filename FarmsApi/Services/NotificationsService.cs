@@ -53,8 +53,8 @@ namespace FarmsApi.Services
                     // Should add notification when
                     if ((!newNotificationIsEmpty && oldNotificationExists && newNotificationNotEqualToOld) || (!newNotificationIsEmpty && !oldNotificationExists))
                     {
-                        try { if (newNotification.Group == "balance") newNotification.Date = oldNotification.Date; }
-                        catch (Exception) { }
+                        //try { if (newNotification.Group == "balance") newNotification.Date = oldNotification.Date; }
+                        //catch (Exception) { }
                         Context.Notifications.Add(newNotification);
                         SendNotificationToInstructor(Context, newNotification);
                     }
@@ -182,7 +182,7 @@ namespace FarmsApi.Services
                 var Notification = Context.Notifications.SingleOrDefault(n => n.Id == id);  //צחי הוריד && n.Deletable);
                 if (Notification != null)
                 {
-                    Notification.Deletable = true;
+                    Notification.IsDelete = true;
                     // Context.Notifications.Remove(Notification);
                     Context.SaveChanges();
                 }
@@ -195,7 +195,7 @@ namespace FarmsApi.Services
             {
                 var currentUser = UsersService.GetCurrentUser();
                 var untilDate = DateTime.Now.AddDays(7);
-                var notifications = Context.Notifications.Where(n => n.Date < untilDate && n.FarmId == currentUser.Farm_Id && !n.Deletable).ToList();
+                var notifications = Context.Notifications.Where(n => n.Date < untilDate && n.FarmId == currentUser.Farm_Id && n.IsDelete==false).ToList();
                 notifications = notifications.ToList().Where(n =>
                 {
                     if (n.EntityType == "lessons" && n.EntityId == currentUser.Id)

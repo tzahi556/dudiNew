@@ -1,13 +1,59 @@
-﻿<div class="event-background" ng-if="$ctrl.event != null" ng-click="$ctrl.hide($event)">
+﻿
+<style>
+    .tranferStudent{
+        float:right;
+        padding-right:1px;
+
+    }
+
+    .myStyle{
+        background:red;
+        color:white;
+        font-weight:bold;
+        
+    }
+
+</style>
 
 
-    <comments studentid="$ctrl.selectedStudent"   close-callback="$ctrl.commentClose"></comments>
+
+<div class="event-background" ng-if="$ctrl.event != null" ng-click="$ctrl.hide($event)">
+
+
+    <comments studentid="$ctrl.selectedStudent" close-callback="$ctrl.commentClose"></comments>
     <newstudent studentid="$ctrl.createStudent" farmId="$ctrl.f" close-callback="$ctrl.createStudentClose"></newstudent>
 
     <div class="event">
 
         <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
+
+       
+            <div class="tranferStudent">
+                <input class="form-control" type="date" ng-model="$ctrl.tranferDate" ng-change="$ctrl.puplateInstructor()" />
+            </div>
+            <div class="tranferStudent">
+                <select class="form-control" ng-change="$ctrl.puplateTimesInstructor()"
+                        ng-model="$ctrl.SelectedinstructordId" ng-options="instructor.Id as instructor.Result for instructor in $ctrl.instructorsWorks">
+                    <option value="">-- בחר מדריך --</option>
+                </select>
+            </div>
+            <div class="tranferStudent">
+                <select class="form-control" 
+                        ng-model="$ctrl.SelectedinstructordTime">
+                    <option value="0">--בחר שעה--</option>
+                    <option ng-class="{myStyle: x.IsTafus == '1'}"   ng-disabled="x.IsTafus" ng-repeat="x in $ctrl.instructorsWorksTimes"  value="{{x.Id}}">{{x.Result}}</option>
+                    
+                </select>
+            </div>
+            <div class="tranferStudent">
+                <a class="btn btn-success" ng-click="$ctrl.close()" href="">העבר</a>
+            </div>
+       
+        <hr />
         <div class="form-group">
+
+
+
             <label>הוספת תלמיד</label>
             <input class="form-control" type="text" ng-model="$ctrl.studentFilter" />
             <div class="student-list">
@@ -22,8 +68,7 @@
 
         <div class="form-group">
             <label>הערות</label>
-            <textarea class="form-control" ng-model="$ctrl.event.details">
-            </textarea>
+            <textarea class="form-control" ng-model="$ctrl.event.details"></textarea>
         </div>
 
         <div class="form-group">
@@ -35,14 +80,14 @@
                         <a href="tel:{{$ctrl.studentDataById(studentId).PhoneNumber}}">{{$ctrl.studentDataById(studentId).PhoneNumber}}</a>
 
                         <a class="pull-left close" ng-click="$ctrl.removeStudentFromEvent(studentId)" href="">&times;</a>
-                   
-                        <select class="pull-left " style="margin-left:15px;" ng-change="$ctrl.changeHorseValidation(studentId)" 
+
+                        <select class="pull-left " style="margin-left:15px;" ng-change="$ctrl.changeHorseValidation(studentId)"
                                 ng-model="$ctrl.horsesarray[studentId]" ng-options="hors.Id as hors.Name for hors in $ctrl.horses">
                             <option value="">-- בחר סוס --</option>
                         </select>
-                    
-                     </td>
-                  
+
+                    </td>
+
                 </tr>
                 <tr ng-repeat-end class="status-row">
                     <td>
@@ -55,8 +100,7 @@
                     <td>
                         <div class="form-group">
 
-                            <textarea rows="1" class="form-control" placeholder="הערות סטטוס"   ng-model="$ctrl.statusDetails[studentId]">
-                            </textarea>
+                            <textarea rows="1" class="form-control" placeholder="הערות סטטוס" ng-model="$ctrl.statusDetails[studentId]"></textarea>
                             <!--<input type="text" class="form-control" placeholder="הערות סטטוס" ng-model="$ctrl.statusDetails[studentId]">-->
 
 

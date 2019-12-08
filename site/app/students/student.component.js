@@ -301,16 +301,16 @@
             //}
 
 
-            if (this.user.PayType == 'lessonCost') {
-                // var notificationText = 'יתרת השיעורים של התלמיד ' + this.user.FirstName + ' ' + this.user.LastName + ' נמוכה' + hmoMessage;
-                var notificationText = ' התלמיד ' + this.user.FirstName + ' ' + this.user.LastName + ' נמצא בחובה ועליו להסדיר את התשלום '; //+ hmoMessage;
-            } else {
-                var notificationText = 'יש לגבות תשלום עבור החודש הבא מ' + this.user.FirstName + ' ' + this.user.LastName;
-            }
+            //if (this.user.PayType == 'lessonCost') {
+            //    // var notificationText = 'יתרת השיעורים של התלמיד ' + this.user.FirstName + ' ' + this.user.LastName + ' נמוכה' + hmoMessage;
+             
+            //} else {
+            //    var notificationText = 'יש לגבות תשלום עבור החודש הבא מ' + this.user.FirstName + ' ' + this.user.LastName;
+            //}
+
+            var notificationText = ' התלמיד ' + this.user.FirstName + ' ' + this.user.LastName + ' נמצא בחובה ועליו להסדיר את התשלום '; //+ hmoMessage;
 
             var heshbon = this.totalExpensesNoShulam * -1 + this.unpaidLessons; //+ this.monthlyBalance;
-
-         
             notificationsService.createNotification({
                 entityType: 'student',
                 entityId: this.user.Id,
@@ -324,29 +324,28 @@
                 date: moment().endOf('month').format('YYYY-MM-DD')
             });
 
-            // text details notification
+            //text details notification
 
-
+            
+            this.monthlyReport();
+            
 
             var detailsText = null;
-
-            var condition1 = true;
+            var condition1 = false;
             var condition2 = this.user.Style === "treatment"; //|| this.user.Meta.Style === "privateTreatment";
-            var condition3 = moment() > (moment().endOf('month').add(-8, 'day'));
-
+          //  var condition3 = moment() > (moment().endOf('month').add(-8, 'day'));
 
 
             for (var i in this.monthlyReportHeader) {
                 if (moment(this.monthlyReportHeader[i].Date).format('YYYYMM') == moment().format('YYYYMM')) {
-                    condition1 = false;
+                    condition1 = true;
                     break;
                 }
             }
 
 
-            if (condition1 && condition3 && condition2) {
+            if (!condition1 && condition2) {
                 detailsText = "חסרה הערה חודשית לתלמיד " + this.user.FirstName + " " + this.user.LastName;
-
             } else {
                 detailsText = null;
 
@@ -360,7 +359,7 @@
                 group: 'details',
                 farmId: this.user.Farm_Id,
                 text: detailsText,
-                date: moment().format('YYYY-MM-DD')
+                date: moment().endOf('month').format('YYYY-MM-DD')// moment().format('YYYY-MM-DD')
             });
         }
 
@@ -413,13 +412,6 @@
         }
 
 
-
-
-
-
-        //     this.Sherit = total - this.totalExpensesShulam - totalLessons; 
-
-        //}
 
         function _isNullOrEmpty(value) {
             return value == null || value == '';
@@ -553,10 +545,6 @@
             // this.changeLessonsStatus(lesson.statuses[statusIndex].Status, lesson.statuses[statusIndex].Details, lesson.statuses[statusIndex].StudentId, lesson.id, lesson.statuses[statusIndex].IsComplete, lesson, false);
 
         }
-
-
-
-      
 
         function _initLessons() {
 

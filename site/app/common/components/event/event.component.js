@@ -36,9 +36,12 @@
         this.commentClose = _commentClose.bind(this);
         this.createStudentClose = _createStudentClose.bind(this);
         this.changeHorseValidation = _changeHorseValidation.bind(this);
-        
+      //  this.tranferDate = "";
         this.changeStudentstatus = _changeStudentstatus.bind(this);
-
+        this.puplateInstructor = _puplateInstructor.bind(this);
+        this.puplateTimesInstructor = _puplateTimesInstructor.bind(this);
+        
+      
         this.scope.$on('event.show', this.onShow);
     }
 
@@ -114,9 +117,36 @@
         }
     }
 
-    function _onShow(event, selectedLesson, studentTemplate) {
+    function _puplateInstructor() {
+      
+       
+        this.usersService.getTransferData(0, moment(this.tranferDate).day(), moment(this.tranferDate).format('YYYYMMDD')).then(function (res) {
 
-        //alert(this.horses.length);
+            this.instructorsWorks = res;
+
+        }.bind(this));
+    }
+
+    function _puplateTimesInstructor() {
+
+       
+        this.usersService.getTransferData(this.SelectedinstructordId, moment(this.tranferDate).day(), moment(this.tranferDate).format('YYYYMMDD')).then(function (res) {
+           
+            this.instructorsWorksTimes = res;
+
+        }.bind(this));
+    }
+
+
+    function _onShow(event, selectedLesson, studentTemplate) {
+       
+      
+        this.tranferDate = moment(selectedLesson.start).toDate();
+        this.puplateInstructor();
+        this.SelectedinstructordId = selectedLesson.resourceId;
+        this.SelectedinstructordTime = "0";
+        this.instructorsWorksTimes = [];
+
         this.studentTemplate = studentTemplate;
         this.copyStatuses(false, selectedLesson.statuses);
 
