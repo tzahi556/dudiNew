@@ -46,7 +46,7 @@
                 </select>
             </div>
             <div class="tranferStudent">
-                <a class="btn btn-success" ng-click="$ctrl.close()" href="">העבר</a>
+                <a class="btn btn-success" ng-disabled="$ctrl.SelectedinstructordTime==0 || !$ctrl.SelectedinstructordId" ng-click="$ctrl.transferLesson()" href="">העבר</a>
             </div>
        
         <hr />

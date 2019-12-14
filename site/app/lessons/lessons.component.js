@@ -58,9 +58,36 @@
 
         var visibleInstructors = sessionStorage.getItem('visibleInstructors') ? angular.fromJson(sessionStorage.getItem('visibleInstructors')) : {};
         for (var i in this.instructors) {
-            this.instructors[i].Show = typeof (visibleInstructors[this.instructors[i].Id]) !== 'undefined' ? visibleInstructors[this.instructors[i].Id] : false;
+            //this.instructors[i].Show = 
+
+
+          
+           
+            if (typeof (visibleInstructors[this.instructors[i].Id]) == 'undefined')
+            {
+                var CurrentDayInWeek = this.searchDate.getDay();
+                for (var j in this.availablehours) {
+                    if (this.availablehours[j].UserId == this.instructors[i].Id && CurrentDayInWeek == this.availablehours[j].dow) {
+                       
+                        this.instructors[i].Show = true;//(this.instructors[i].FirstShow) ? true : false;
+                        break;
+                    }
+
+                }
+
+               // if (!this.instructors[i].Show) this.instructors[i].Show = false;
+
+            }
+            else
+            {
+                this.instructors[i].Show = typeof (visibleInstructors[this.instructors[i].Id]) !== 'undefined' ? visibleInstructors[this.instructors[i].Id] : false;
+            }
+            
             if (this.instructors.length == 1)
                 this.instructors[i].Show = true;
+
+
+           // this.instructors[i].Show = true;
         }
 
         this.reloadCalendarData();
@@ -185,6 +212,7 @@
 
         function _reloadCalendarData() {
             for (var i in this.instructors) {
+               
                 visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
             }
             sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
@@ -300,6 +328,8 @@
             //   this.resourcesIds = "0";
 
             for (var i in this.instructors) {
+               
+              
                 if (this.instructors[i].Show) {
 
                     //  this.resourcesIds += "," + this.instructors[i].Id;
@@ -315,8 +345,11 @@
                     var avArray = [];
                  
                     for (var j in this.availablehours) {
-                        if (this.availablehours[j].UserId == this.instructors[i].Id)
+                        if (this.availablehours[j].UserId == this.instructors[i].Id) {
                             avArray.push(this.availablehours[j]);
+                           
+
+                        }
                     }
 
                     
@@ -335,11 +368,18 @@
 
         function _eventClose(event, lessonsQty) {
 
-            if (event) {
+            if (event.isFromChangePhone) {
+                this.eventChange(event);
+
+            }
+            //debugger
+            else if (event) {
                
                 this.updateLesson(event);
                 this.createChildEvent(event, lessonsQty);
-            } else {
+            }
+            else
+            {
                 this.reloadLessons();
 
             }
@@ -387,13 +427,13 @@
         }
 
         function _eventChange(event) {
-
+           
             $('#modal').modal('show');
             this.eventToChange = event;
         }
 
         function _modalClick(changeChildren) {
-
+          
             if (this.eventToChange) {
 
 

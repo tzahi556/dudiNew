@@ -33,6 +33,16 @@
             if (this.scope.instructorForm.$valid) {
                 this.user.Role = this.user.Role || 'instructor';
                 this.user.Active = 'active';
+
+                for (var i in this.availablehours) {
+
+                    if (this.availablehours[i].newEVENT) {
+                        this.availablehours[i].Id = 0;
+                    }
+                }
+
+
+
                 usersService.updateUserMultiTables(this.user, [], [], [], [], [], this.availablehours).then(function (user) {
                     
                     this.user = user;
@@ -53,6 +63,7 @@
 
         function _eventChange(event) {
          
+
             for (var i in this.availablehours) {
                
                 if (this.availablehours[i].Id == event.Id) {
@@ -75,15 +86,19 @@
         }
 
         function _eventCreate(start, end, jsEvent, view, resource) {
+           
             var eventId = this.getLastEventId(this.availablehours) + 1;
+          
             var event = {
-                Id: 0,
+                Id: eventId,
                 start: start.format('HH:mm'),
                 end: end.format('HH:mm'),
                 dow: start.format('e'),
                 UserId: this.user.Id,
-                resourceId: resource.id
+                resourceId: resource.id,
+                newEVENT:true
             };
+          //  event.Id = 0;
             this.availablehours.push(event);
         }
 
@@ -91,8 +106,9 @@
             
             var max = 0;
             for (var i in events) {
-                if (events[i].id >= max) {
-                    max = events[i].id;
+               
+                if (events[i].Id >= max) {
+                    max = events[i].Id;
                 }
             }
             return max;

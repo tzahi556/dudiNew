@@ -36,12 +36,14 @@
         this.commentClose = _commentClose.bind(this);
         this.createStudentClose = _createStudentClose.bind(this);
         this.changeHorseValidation = _changeHorseValidation.bind(this);
-      //  this.tranferDate = "";
+        //  this.tranferDate = "";
         this.changeStudentstatus = _changeStudentstatus.bind(this);
         this.puplateInstructor = _puplateInstructor.bind(this);
         this.puplateTimesInstructor = _puplateTimesInstructor.bind(this);
-        
-      
+
+        this.transferLesson = _transferLesson.bind(this);
+
+
         this.scope.$on('event.show', this.onShow);
     }
 
@@ -64,11 +66,11 @@
         var HorseId = this.horsesarray[studentId];
         if (HorseId) {
 
-           // alert(this.event.start);
+            // alert(this.event.start);
 
             var res = this.horsesService.getIfHorseWork(HorseId, this.event.start, this.event.end).then(function (res) {
 
-             
+
                 if (res > 0) {
                     alert("סוס זה כבר עובד בשעה זו... בחר סוס אחר");
                     this.horsesarray[studentId] = null;
@@ -76,8 +78,8 @@
 
             }.bind(this));
 
-          
-           
+
+
         }
 
 
@@ -86,7 +88,7 @@
 
     function _createStudentClose(returnStudent) {
 
-    
+
         this.students.push(returnStudent);
         this.addStudentToEvent(returnStudent);
 
@@ -117,30 +119,67 @@
         }
     }
 
-    function _puplateInstructor() {
-      
+
+    
+
+    function _transferLesson() {
+
        
+
+        var startHour = ((this.SelectedinstructordTime-1) * 15 + 480) / 60;
+        var endHour = ((this.SelectedinstructordTime - 1) * 15 + 510) / 60;
+
+        var startMinute = (startHour % 1) * 60; //((this.SelectedinstructordTime - 1) * 15 + 480) / 60;
+        var endMinute = (endHour % 1) * 60//((this.SelectedinstructordTime - 1) * 15 + 510) / 60;
+
+        this.tranferDate.setHours(startHour, startMinute, 0);
+        this.event.start = moment(this.tranferDate.toString()).format("YYYY-MM-DD HH:mm");
+        this.tranferDate.setHours(endHour, endMinute, 0);
+        this.event.end = moment(this.tranferDate.toString()).format("YYYY-MM-DD HH:mm");
+        //
+        //this.event.end =
+        this.event.resourceId = this.SelectedinstructordId;
+        this.event.isFromChangePhone = true;
+        this.close();
+
+
+      //  var dddd = this.event;
+
+       // alert(this.SelectedinstructordTime);
+
+      
+    }
+
+    function _puplateInstructor() {
+
+
         this.usersService.getTransferData(0, moment(this.tranferDate).day(), moment(this.tranferDate).format('YYYYMMDD')).then(function (res) {
 
             this.instructorsWorks = res;
-
+         
+            this.puplateTimesInstructor();
+        
         }.bind(this));
     }
 
     function _puplateTimesInstructor() {
+        this.SelectedinstructordTime = "0";
 
-       
-        this.usersService.getTransferData(this.SelectedinstructordId, moment(this.tranferDate).day(), moment(this.tranferDate).format('YYYYMMDD')).then(function (res) {
+        if (this.SelectedinstructordId) {
+
+            this.usersService.getTransferData(this.SelectedinstructordId, moment(this.tranferDate).day(), moment(this.tranferDate).format('YYYYMMDD')).then(function (res) {
+                this.instructorsWorksTimes = res;
+               
+            }.bind(this));
+        } else {
+            this.instructorsWorksTimes = [];
            
-            this.instructorsWorksTimes = res;
-
-        }.bind(this));
+        }
     }
 
-
     function _onShow(event, selectedLesson, studentTemplate) {
-       
-      
+
+
         this.tranferDate = moment(selectedLesson.start).toDate();
         this.puplateInstructor();
         this.SelectedinstructordId = selectedLesson.resourceId;
@@ -154,13 +193,13 @@
 
 
         if (role == "sysAdmin" || role == "farmAdmin") {
-          
+
             for (var i in this.sharedValues.lessonStatuses) {
-             
-               
+
+
                 this.sharedValues.lessonStatuses[i].hide = false;
 
-                if (selectedLesson.students.length==0)
+                if (selectedLesson.students.length == 0)
                     this.sharedValues.lessonStatuses[i].hide = false;
 
                 else if (this.isComplete[selectedLesson.statuses[0].StudentId] > 2 && i > 1 && i != 2)
@@ -178,9 +217,9 @@
         this.affectChildren = false;
 
 
-        
-        
-    
+
+
+
 
 
 
@@ -199,13 +238,13 @@
     }
 
     function _copyStatuses(onExit, statuses) {
-    
-      
+
+
         if (onExit) {
-           
+
             this.event.statuses = [];
 
-           
+
             for (var i in this.statuses) {
                 this.event.statuses.push({ StudentId: i, Status: this.statuses[i], Details: this.statusDetails[i], IsComplete: this.isComplete[i], HorseId: this.horsesarray[i] });
             }
@@ -216,13 +255,13 @@
             this.isComplete = [];
             this.horsesarray = [];
             for (var i in statuses) {
-               
-             
+
+
                 this.statuses[statuses[i].StudentId] = getRightStatus(statuses[i]);
                 this.statusDetails[statuses[i].StudentId] = statuses[i].Details;
                 this.isComplete[statuses[i].StudentId] = statuses[i].IsComplete;
                 this.horsesarray[statuses[i].StudentId] = statuses[i].HorseId;
-                
+
             }
         }
     }
@@ -232,9 +271,9 @@
         var res = statuses.Status;
 
         if (statuses.IsComplete == 4) {
-           
-         //   if (res == "attended")
-                res = "attended";
+
+            //   if (res == "attended")
+            res = "attended";
             //else
             //    res = "notAttendedCharge";
         }
@@ -249,12 +288,11 @@
 
         if (statuses.IsComplete == 3)
             res = "notAttended";
-        if(statuses.IsComplete == 5)
-           res = "";
-           
+        if (statuses.IsComplete == 5)
+            res = "";
+
         return res;
     }
-
 
     function filterDeletedStudents(students) {
         var results = [];
@@ -288,11 +326,11 @@
     }
 
     function _close() {
-       // alert(this.event.statuses[0].Status + "  ------ " + this.event.statuses[0].IsComplete);
-     
+        // alert(this.event.statuses[0].Status + "  ------ " + this.event.statuses[0].IsComplete);
+
         // כל זה בשביל לעדכן את הסטטוס בעת שינוי של הגעה
         //for (var i in this.changeLessonsStudent) {
-           
+
         //    var currentUserId = this.changeLessonsStudent[i].StudentId;
         //    var ChangeStatus = this.changeLessonsStudent[i].ChangeStatus;
         //    var SourceStatus = this.changeLessonsStudent[i].SourceStatus;
@@ -369,7 +407,7 @@
         this.event.students.push(studentId);
         //for (var i in selectedLesson.statuses) {
 
-      //  this.changeLessonsStudent.push({ StudentId: studentId, SourceStatus: null, ChangeStatus: null});
+        //  this.changeLessonsStudent.push({ StudentId: studentId, SourceStatus: null, ChangeStatus: null});
 
         //}
 
@@ -407,7 +445,7 @@
         this.scope.$broadcast('newstudent.show', this.studentTemplate);
     }
 
-    
+
 
     app.filter('filterDeletedStudents', function () {
         return function (students) {

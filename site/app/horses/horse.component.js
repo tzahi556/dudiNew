@@ -140,10 +140,22 @@
 
         function _addPregnancyNotification() {
             var horseBirthDate = this.horse.Meta.BirthDate;
+           
+            var IsPregnancyStop = false;
+            try{
+                var pregnancy = this.horse.Meta.Pregnancies[this.horse.Meta.Pregnancies.length - 1];
+                IsPregnancyStop = pregnancy.Finished;
+              
+            }catch(e)
+            {
+
+
+            }
+         
 
             notificationsService.createNotification({
                 entityType: 'horse', entityId: this.horse.Id, group: 'pregnancy', farmId: this.horse.Farm_Id,
-                text: angular.isUndefined(this.newPregnancyState.State) || this.horse.Meta.Active == 'notActive' ? null : this.newPregnancyState.State.name + ' עבור סוס: ' + this.horse.Name,
+                text: IsPregnancyStop || angular.isUndefined(this.newPregnancyState.State) || this.horse.Meta.Active == 'notActive' ? null : this.newPregnancyState.State.name + ' עבור סוס: ' + this.horse.Name,
                 date: this.newPregnancyState.Date ? moment(this.newPregnancyState.Date).format('YYYY-MM-DD') : null
             });
         }
