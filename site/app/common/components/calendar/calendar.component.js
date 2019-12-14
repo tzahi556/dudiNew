@@ -41,6 +41,8 @@
 
             this.events = events;
             this.reloadEvents();
+           
+           
 
         }.bind(this));
 
@@ -264,6 +266,8 @@
 
 
         $(".addedCalender").prependTo(".fc-right");
+
+
 
     }
 

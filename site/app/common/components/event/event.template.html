@@ -6,6 +6,12 @@
 
     }
 
+    .tranferStudentButton{
+        margin-top:2px;
+        float:right;
+        padding-right:1px;
+    }
+
     .myStyle{
         background:red;
         color:white;
@@ -32,27 +38,28 @@
                 <input class="form-control" type="date" ng-model="$ctrl.tranferDate" ng-change="$ctrl.puplateInstructor()" />
             </div>
             <div class="tranferStudent">
-                <select class="form-control" ng-change="$ctrl.puplateTimesInstructor()"
+                <select class="form-control" style="width:100%" ng-change="$ctrl.puplateTimesInstructor()"
                         ng-model="$ctrl.SelectedinstructordId" ng-options="instructor.Id as instructor.Result for instructor in $ctrl.instructorsWorks">
                     <option value="">-- בחר מדריך --</option>
                 </select>
             </div>
-            <div class="tranferStudent">
+        <div class="clearfix"></div>
+            <div class="tranferStudentButton" >
                 <select class="form-control" 
                         ng-model="$ctrl.SelectedinstructordTime">
-                    <option value="0">--בחר שעה--</option>
+                    <option value="0">-------בחר שעה---------</option>
                     <option ng-class="{myStyle: x.IsTafus == '1'}"   ng-disabled="x.IsTafus" ng-repeat="x in $ctrl.instructorsWorksTimes"  value="{{x.Id}}">{{x.Result}}</option>
                     
                 </select>
             </div>
-            <div class="tranferStudent">
-                <a class="btn btn-success" ng-disabled="$ctrl.SelectedinstructordTime==0 || !$ctrl.SelectedinstructordId" ng-click="$ctrl.transferLesson()" href="">העבר</a>
+            <div class="tranferStudentButton">
+                <button  class="btn btn-success" ng-disabled="$ctrl.SelectedinstructordTime==0 || $ctrl.SelectedinstructordId==undefined || !$ctrl.SelectedinstructordId" ng-click="$ctrl.transferLesson()" href="">העבר</button>
             </div>
        
-        <hr />
+      
         <div class="form-group">
-
-
+            <div class="clearfix"></div>
+            <hr /> 
 
             <label>הוספת תלמיד</label>
             <input class="form-control" type="text" ng-model="$ctrl.studentFilter" />
