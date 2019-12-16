@@ -90,7 +90,11 @@
             isRTL: true,
 
             defaultView: this.view || 'agendaWeek',
-            selectable: true,
+
+          
+        
+
+          
             selectHelper: true,
             editable: true,
             slotEventOverlap: true,
@@ -110,10 +114,20 @@
 
             eventClick: this.eventClick.bind(this),
             select: this.eventSelect.bind(this),
-            eventResize: this.eventResize.bind(this),
+            
             eventDrop: this.eventDrop.bind(this),
             viewRender: this.viewRender.bind(this),
 
+            //************* בשביל מדריכים ללא הרשאה
+            eventStartEditable: false,
+            eventResize: false,
+            selectable: false,
+            eventDurationEditable:false,
+            //eventStartEditable: true,
+            //eventResize: this.eventResize.bind(this),
+            //selectable: true,
+
+            //******************************
             eventResizeStart: function (event, element) {
 
                 if (($rootScope.isPhone)) {
@@ -141,6 +155,7 @@
 
 
             }.bind(this),
+
             eventDragStop: function (event, element) {
 
                 $('html, body.fc-time-grid-container').css({
@@ -150,6 +165,7 @@
 
 
             }.bind(this),
+
             eventResizeStop: function (event, element) {
 
                 $('html, body').css({

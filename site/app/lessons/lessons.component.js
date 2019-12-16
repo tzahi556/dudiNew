@@ -19,6 +19,8 @@
         $rootScope.createNewfromdd = _eventCreate.bind(this);
         this.scope = $scope;
 
+        this.isSysAdmin = localStorage.getItem("currentRole") == "sysAdmin";
+
         this.startDate = this.startDate || moment().format('YYYY-MM-DD');
         this.endDate = this.endDate || moment().add(1, 'day').format('YYYY-MM-DD');
 
@@ -63,8 +65,9 @@
 
           
            
-            if (typeof (visibleInstructors[this.instructors[i].Id]) == 'undefined')
+            if (typeof (visibleInstructors[this.instructors[i].Id]) == 'undefined' && !this.isSysAdmin)
             {
+
                 var CurrentDayInWeek = this.searchDate.getDay();
                 for (var j in this.availablehours) {
                     if (this.availablehours[j].UserId == this.instructors[i].Id && CurrentDayInWeek == this.availablehours[j].dow) {
