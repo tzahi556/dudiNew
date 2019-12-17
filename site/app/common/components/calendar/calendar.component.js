@@ -119,13 +119,14 @@
             viewRender: this.viewRender.bind(this),
 
             //************* בשביל מדריכים ללא הרשאה
-            eventStartEditable: false,
-            eventResize: false,
-            selectable: false,
-            eventDurationEditable:false,
-            //eventStartEditable: true,
-            //eventResize: this.eventResize.bind(this),
-            //selectable: true,
+            //eventStartEditable: false,
+            //eventResize: false,
+            //selectable: false,
+            //eventDurationEditable:false,
+
+            eventStartEditable: true,
+            eventResize: this.eventResize.bind(this),
+            selectable: true,
 
             //******************************
             eventResizeStart: function (event, element) {

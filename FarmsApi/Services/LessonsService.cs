@@ -234,7 +234,7 @@ namespace FarmsApi.Services
                             inner join Lessons l on l.Id = t4.Lesson_Id
                             inner join Users ui on ui.Id = l.Instructor_Id
 
-                            where t3.completionReq > 0 and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ") order by Instructor_Id";
+                            where t3.completionReq > 0 and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ") and(u.Role!='instructor' or (Instructor_Id=" +CurrentUser.Id+")    ) order by Instructor_Id";
 
 
                 using (var reader = cmd.ExecuteReader())

@@ -36,6 +36,8 @@
         this.updateLesson = _updateLesson.bind(this);
         this.getLessonById = _getLessonById.bind(this);
         this.reloadLessons = _reloadLessons.bind(this);
+        this.reloadLessonsComplete = _reloadLessonsComplete.bind(this);
+        
         this.createChildEvent = _createChildEvent.bind(this);
         this.changeChildEvent = _changeChildEvent.bind(this);
         this.reloadCalendarData = _reloadCalendarData.bind(this);
@@ -54,48 +56,26 @@
 
         this.searchDate = new Date();
 
+        this.role = localStorage.getItem('currentRole');
+        //   this.FarmInstractorPolicy = localStorage.getItem('FarmInstractorPolicy');
+
+
+
+
         //alert(this.students.length);
         // this.resourcesIds = "0";
         // set all instructors checkboxes checked
 
-        var visibleInstructors = sessionStorage.getItem('visibleInstructors') ? angular.fromJson(sessionStorage.getItem('visibleInstructors')) : {};
-        for (var i in this.instructors) {
-            //this.instructors[i].Show = 
+        //var visibleInstructors = sessionStorage.getItem('visibleInstructors') ? angular.fromJson(sessionStorage.getItem('visibleInstructors')) : {};
+     
 
+      
 
-          
-           
-            if (typeof (visibleInstructors[this.instructors[i].Id]) == 'undefined' && !this.isSysAdmin)
-            {
+       // this.reloadCalendarData();
 
-                var CurrentDayInWeek = this.searchDate.getDay();
-                for (var j in this.availablehours) {
-                    if (this.availablehours[j].UserId == this.instructors[i].Id && CurrentDayInWeek == this.availablehours[j].dow) {
-                       
-                        this.instructors[i].Show = true;//(this.instructors[i].FirstShow) ? true : false;
-                        break;
-                    }
+      //  this.filteredLessons = this.filterLessonsBySelectedInstructors();
 
-                }
-
-               // if (!this.instructors[i].Show) this.instructors[i].Show = false;
-
-            }
-            else
-            {
-                this.instructors[i].Show = typeof (visibleInstructors[this.instructors[i].Id]) !== 'undefined' ? visibleInstructors[this.instructors[i].Id] : false;
-            }
-            
-            if (this.instructors.length == 1)
-                this.instructors[i].Show = true;
-
-
-           // this.instructors[i].Show = true;
-        }
-
-        this.reloadCalendarData();
-
-        this.filteredLessons = this.filterLessonsBySelectedInstructors();
+        this.reloadLessonsComplete();
 
         function _customDate() {
 
@@ -105,13 +85,55 @@
 
         this.scope.$on('calendar.viewRender', function (event, params) {
 
-         
-            this.role = localStorage.getItem('currentRole');
 
             this.startDate = moment(params.startDate).format('YYYY-MM-DD');
+           
             this.endDate = moment(params.endDate).format('YYYY-MM-DD');
 
+            this.searchDate = new Date(params.startDate);
+
+
+
+           // alert(this.searchDate.getDay());
+            for (var i in this.instructors) {
+                //this.instructors[i].Show = 
+
+
+                //typeof (visibleInstructors[this.instructors[i].Id]) == 'undefined' &&
+
+                if (!this.isSysAdmin) {
+                    // this.startDate
+
+                    var CurrentDayInWeek = this.searchDate.getDay();
+                    for (var j in this.availablehours) {
+                        if (this.availablehours[j].UserId == this.instructors[i].Id && CurrentDayInWeek == this.availablehours[j].dow) {
+
+                            this.instructors[i].Show = true;//(this.instructors[i].FirstShow) ? true : false;
+                            break;
+                        } else {
+
+                            this.instructors[i].Show = false;
+                        }
+
+                    }
+
+
+                }
+                //else
+                //{
+                //    this.instructors[i].Show = typeof (visibleInstructors[this.instructors[i].Id]) !== 'undefined' ? visibleInstructors[this.instructors[i].Id] : false;
+                //}
+
+                if (this.instructors.length == 1)
+                    this.instructors[i].Show = true;
+
+
+                // this.instructors[i].Show = true;
+            }
+
             this.reloadLessons();
+          //  this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
+            this.reloadCalendarData();
 
         }.bind(this));
 
@@ -142,6 +164,9 @@
                     pageY: newEvent.pageY,
                 })
                 $el.trigger(event);
+
+
+                $scope.$ctrl.reloadLessonsComplete();
 
 
             }
@@ -214,11 +239,12 @@
         }
 
         function _reloadCalendarData() {
-            for (var i in this.instructors) {
+
+            //for (var i in this.instructors) {
                
-                visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
-            }
-            sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
+            //    visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
+            //}
+            //sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
 
             this.initResources();
             this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
@@ -232,14 +258,13 @@
 
 
                 this.instructors[i].Show = $scope.selectAll;
-                visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
+               // visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
 
             }
 
 
-            sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
+            //sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
             this.initResources();
-
             this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
             this.scope.$broadcast('calendar.reloadBackgroundEvents', this.backgroundEvents);
             this.scope.$broadcast('calendar.reloadResources', this.resources);
@@ -396,6 +421,7 @@
                 var deleteChildren = deleteChildren || false;
                 this.lessonsService.deleteLesson(event.id, deleteChildren).then(function (res) {
                     this.reloadLessons();
+                    $scope.$ctrl.reloadLessonsComplete();
                 }.bind(this));
             }
         }
@@ -563,29 +589,43 @@
 
           
             
-
+         //  
 
             var fakendDate = moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
               
                 this.lessons = lessons;
+                // בדיקת היתכנות הורדה
                 this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
                 setupTooltip();
+
+                
             }.bind(this));
 
 
+           
+        }
+
+        function _reloadLessonsComplete() {
+
+
+
+            
+            var fakendDate = moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
+       
+
             // להביא את ההשלמות
             this.lessonsService.getLessons(null, this.startDate, fakendDate, true).then(function (lessons) {
-              
+
                 this.lessonsCompletelength = lessons.length;
-               
+
                 lessons = $filter('orderBy')(lessons, 'InstructorName');
                 var lessonsGroupBy = [];
                 var prevInstructor = "";
                 for (var i in lessons) {
-                
+
                     if (lessons[i].InstructorName != prevInstructor) {
-                        
+
                         var newData = angular.copy(lessons[i]);
                         newData.isInstructor = 1;
                         lessonsGroupBy.push(newData);
@@ -603,16 +643,11 @@
                     }
 
                 }
-              
-              
+
+
                 this.lessonsComplete = lessonsGroupBy;
-
-
-
-
-
-                //this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
-                //setupTooltip();
+               // this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
+              //  setupTooltip();
             }.bind(this));
         }
 
