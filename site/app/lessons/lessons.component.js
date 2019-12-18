@@ -37,7 +37,7 @@
         this.getLessonById = _getLessonById.bind(this);
         this.reloadLessons = _reloadLessons.bind(this);
         this.reloadLessonsComplete = _reloadLessonsComplete.bind(this);
-        
+
         this.createChildEvent = _createChildEvent.bind(this);
         this.changeChildEvent = _changeChildEvent.bind(this);
         this.reloadCalendarData = _reloadCalendarData.bind(this);
@@ -67,13 +67,13 @@
         // set all instructors checkboxes checked
 
         //var visibleInstructors = sessionStorage.getItem('visibleInstructors') ? angular.fromJson(sessionStorage.getItem('visibleInstructors')) : {};
-     
 
-      
 
-       // this.reloadCalendarData();
 
-      //  this.filteredLessons = this.filterLessonsBySelectedInstructors();
+
+        // this.reloadCalendarData();
+
+        //  this.filteredLessons = this.filterLessonsBySelectedInstructors();
 
         this.reloadLessonsComplete();
 
@@ -85,68 +85,63 @@
 
         this.scope.$on('calendar.viewRender', function (event, params) {
 
+            var view = $('.calendar').fullCalendar('getView');
+            // debugger
+            //  alert("The view's title is " + view.title);
+
+          //  alert();
 
             this.startDate = moment(params.startDate).format('YYYY-MM-DD');
-           
+
             this.endDate = moment(params.endDate).format('YYYY-MM-DD');
 
             this.searchDate = new Date(params.startDate);
 
 
-
-           // alert(this.searchDate.getDay());
-            for (var i in this.instructors) {
-                //this.instructors[i].Show = 
+            if (!this.isSysAdmin) {
 
 
-                //typeof (visibleInstructors[this.instructors[i].Id]) == 'undefined' &&
+                for (var i in this.instructors) {
 
-                if (!this.isSysAdmin) {
-                    // this.startDate
+                    if (view.type != "agendaDay") {
+                        this.instructors[i].Show = this.instructors[i].Shvoi;
+                    } else {
 
-                    var CurrentDayInWeek = this.searchDate.getDay();
-                    for (var j in this.availablehours) {
-                        if (this.availablehours[j].UserId == this.instructors[i].Id && CurrentDayInWeek == this.availablehours[j].dow) {
+                        var CurrentDayInWeek = this.searchDate.getDay();
+                        for (var j in this.availablehours) {
+                            if (this.availablehours[j].resourceId == this.availablehours[j].UserId && this.availablehours[j].UserId == this.instructors[i].Id && CurrentDayInWeek == this.availablehours[j].dow) {
 
-                            this.instructors[i].Show = true;//(this.instructors[i].FirstShow) ? true : false;
-                            break;
-                        } else {
+                                this.instructors[i].Show = true;
+                                break;
+                            } else {
 
-                            this.instructors[i].Show = false;
+                                this.instructors[i].Show = false;
+                            }
+
                         }
-
                     }
-
+                    if (this.instructors.length == 1)
+                        this.instructors[i].Show = true;
 
                 }
-                //else
-                //{
-                //    this.instructors[i].Show = typeof (visibleInstructors[this.instructors[i].Id]) !== 'undefined' ? visibleInstructors[this.instructors[i].Id] : false;
-                //}
 
-                if (this.instructors.length == 1)
-                    this.instructors[i].Show = true;
-
-
-                // this.instructors[i].Show = true;
             }
 
             this.reloadLessons();
-          //  this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
             this.reloadCalendarData();
 
         }.bind(this));
 
 
         $scope.makeDrop = function (newEvent, currentStudentId) {
-           
+
             if (newEvent && newEvent.target.className.indexOf("fc-draggable dvDragElement") == -1) {
-           
-              
+
+
                 $rootScope.statuses = [{ "StudentId": currentStudentId, "Status": "completion", "Details": "", "IsComplete": 2 }];
                 $rootScope.students = [(currentStudentId)];
 
-             
+
 
                 var $el = $(newEvent.target);
 
@@ -174,11 +169,11 @@
 
         //$rootScope.$watch('noNetwork', function (newValue) {
 
-          
+
         //    $(".hadPeami").hide();
         //    if (newValue && newValue.target.className.indexOf("fc-draggable dvDragElement") == -1) {
         //        alert();
-             
+
 
         //        var Dragid = $rootScope.studentIdDrag;
         //        $rootScope.statuses = [{ "StudentId": Dragid, "Status": "completion", "Details": "", "IsComplete": 2 }];
@@ -204,10 +199,10 @@
         //    }
 
         //});
-        
+
         function _getCounter(type) {
             var Count = 0;
-          
+
             for (var i in this.students) {
 
                 if (!this.students[i].Deleted && this.students[i].Active == type) {
@@ -239,9 +234,21 @@
         }
 
         function _reloadCalendarData() {
+          
+            var view = $('.calendar').fullCalendar('getView');
+            if (view.type != "agendaDay") {
 
+                for (var i in this.instructors) {
+
+                   
+
+                    this.instructors[i].Shvoi = this.instructors[i].Show;
+                }
+
+            }
+          
             //for (var i in this.instructors) {
-               
+
             //    visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
             //}
             //sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
@@ -258,7 +265,7 @@
 
 
                 this.instructors[i].Show = $scope.selectAll;
-               // visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
+                // visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
 
             }
 
@@ -356,8 +363,8 @@
             //   this.resourcesIds = "0";
 
             for (var i in this.instructors) {
-               
-              
+
+
                 if (this.instructors[i].Show) {
 
                     //  this.resourcesIds += "," + this.instructors[i].Id;
@@ -371,16 +378,16 @@
 
 
                     var avArray = [];
-                 
+
                     for (var j in this.availablehours) {
                         if (this.availablehours[j].UserId == this.instructors[i].Id) {
                             avArray.push(this.availablehours[j]);
-                           
+
 
                         }
                     }
 
-                    
+
                     this.backgroundEvents = this.backgroundEvents.concat(avArray);
 
                     for (var e in this.backgroundEvents) {
@@ -400,14 +407,13 @@
                 this.eventChange(event);
 
             }
-            //debugger
+                //debugger
             else if (event) {
-               
+
                 this.updateLesson(event);
                 this.createChildEvent(event, lessonsQty);
             }
-            else
-            {
+            else {
                 this.reloadLessons();
 
             }
@@ -456,13 +462,13 @@
         }
 
         function _eventChange(event) {
-           
+
             $('#modal').modal('show');
             this.eventToChange = event;
         }
 
         function _modalClick(changeChildren) {
-          
+
             if (this.eventToChange) {
 
 
@@ -495,18 +501,18 @@
         }
 
         function _eventClick(event, jsEvent) {
-          
+
             var elemId = jsEvent.target.id;
             if (elemId) {
 
-               //debugger
-               //var payValue = $("#" + elemId).html().replace(")", "").replace("(", "").replace("&#x200E;", "");
-               // //var t = $.trim($("#" + elemId).html().replace("(", '').replace(")", ''));
-               //alert(eval(payValue));
-                this.selectedPayValue =$("#" + elemId).text();
+                //debugger
+                //var payValue = $("#" + elemId).html().replace(")", "").replace("(", "").replace("&#x200E;", "");
+                // //var t = $.trim($("#" + elemId).html().replace("(", '').replace(")", ''));
+                //alert(eval(payValue));
+                this.selectedPayValue = $("#" + elemId).text();
                 this.selectedStudent = elemId.replace("dvPaid_", "");//this.getLessonById(event.id);
 
-             
+
                 this.scope.$broadcast('pay.show', this.selectedStudent, this.selectedPayValue);
             }
             else {
@@ -519,7 +525,7 @@
         }
 
         function _eventCreate(start, end, jsEvent, view, resource) {
-          
+
             if ($rootScope.students && $rootScope.students.length > 0) {
 
                 for (var i in this.lessons) {
@@ -544,7 +550,7 @@
             }
 
 
-          
+
             var event = {
                 id: 0,
                 start: start,
@@ -571,48 +577,48 @@
 
             //}
 
-           
+
             this.createNotifications(event, 'create');
 
             this.updateLesson(event);
         }
 
         function _updateLesson(event) {
-           
+
             this.lessonsService.updateLesson(event).then(function (res) {
-             
+
                 this.reloadLessons();
             }.bind(this));
         }
 
         function _reloadLessons() {
 
-          
-            
-         //  
+
+
+            //  
 
             var fakendDate = moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
-              
+
                 this.lessons = lessons;
                 // בדיקת היתכנות הורדה
                 this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
                 setupTooltip();
 
-                
+
             }.bind(this));
 
 
-           
+
         }
 
         function _reloadLessonsComplete() {
 
 
 
-            
+
             var fakendDate = moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
-       
+
 
             // להביא את ההשלמות
             this.lessonsService.getLessons(null, this.startDate, fakendDate, true).then(function (lessons) {
@@ -634,8 +640,7 @@
                         lessonsGroupBy.push(lessons[i]);
                         prevInstructor = lessons[i].InstructorName;
                     }
-                    else
-                    {
+                    else {
                         lessons[i].isInstructor = 0;
                         lessonsGroupBy.push(lessons[i]);
 
@@ -646,8 +651,8 @@
 
 
                 this.lessonsComplete = lessonsGroupBy;
-               // this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
-              //  setupTooltip();
+                // this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
+                //  setupTooltip();
             }.bind(this));
         }
 
