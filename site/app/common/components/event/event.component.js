@@ -125,7 +125,7 @@
     function _transferLesson() {
 
        // $ctrl.SelectedinstructordTime == 0 || !$ctrl.SelectedinstructordId
-        debugger
+        
         var startHour = ((this.SelectedinstructordTime-1) * 15 + 480) / 60;
         var endHour = ((this.SelectedinstructordTime - 1) * 15 + 510) / 60;
 

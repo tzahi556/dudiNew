@@ -53,8 +53,8 @@ namespace FarmsApi.Services
                     // Should add notification when
                     if ((!newNotificationIsEmpty && oldNotificationExists && newNotificationNotEqualToOld) || (!newNotificationIsEmpty && !oldNotificationExists))
                     {
-                        //try { if (newNotification.Group == "balance") newNotification.Date = oldNotification.Date; }
-                        //catch (Exception) { }
+                        try { if (newNotification.Group == "balance") newNotification.Date = oldNotification.Date; }
+                        catch (Exception) { }
                         Context.Notifications.Add(newNotification);
                         SendNotificationToInstructor(Context, newNotification);
                     }

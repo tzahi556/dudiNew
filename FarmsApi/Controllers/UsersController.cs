@@ -13,9 +13,16 @@ namespace FarmsApi.Services
     public class UsersController : ApiController
     {
 
+        [Route("UpdateUsersLessons")]
+        [HttpGet]
+        public string UpdateUsersLessons()
+        {
+            UploadFromAccess.UpdateUsersLessons();
+            return "sdsdsdsd";
+        }
 
 
-      
+
         //[Route("UpdateUsers")]
         //[HttpGet]
         //public string UpdateUsers()

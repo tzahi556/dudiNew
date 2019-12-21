@@ -160,6 +160,7 @@
     <Compile Include="DataModels\UserDevices.cs" />
     <Compile Include="DataModels\StudentLessons.cs" />
     <Compile Include="DataModels\Horse.cs" />
+    <Compile Include="Services\UploadFromAccess.cs" />
     <Compile Include="Services\CommonTasks.cs" />
     <Compile Include="Services\NotificationsService.cs" />
     <Compile Include="Services\LessonsService.cs" />

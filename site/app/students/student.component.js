@@ -311,6 +311,9 @@
             var notificationText = ' התלמיד ' + this.user.FirstName + ' ' + this.user.LastName + ' נמצא בחובה ועליו להסדיר את התשלום '; //+ hmoMessage;
 
             var heshbon = this.totalExpensesNoShulam * -1 + this.unpaidLessons; //+ this.monthlyBalance;
+            debugger
+
+
             notificationsService.createNotification({
                 entityType: 'student',
                 entityId: this.user.Id,

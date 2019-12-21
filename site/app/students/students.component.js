@@ -93,7 +93,11 @@
                         var data = e.target.result;
                         var workbook;
                         workbook = XLSX.read(data, { type: 'binary' });
+                        debugger
                         var students = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+
+
+
 
                         students.map(function (student) {
                             student.Id = 0;
@@ -122,9 +126,9 @@
 
 
 
-                        usersService.importUsers(students).then(function () {
-                            location.reload();
-                        }.bind(this));
+                        //usersService.importUsers(students).then(function () {
+                        //    location.reload();
+                        //}.bind(this));
 
                     };
                     reader.readAsBinaryString(f);

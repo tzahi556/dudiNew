@@ -175,16 +175,24 @@
 
         }
 
+        //function _importUsers(users) {
+        //    var deferred = $q.defer();
+        //    for (var user of users) {
+        //        user.Meta = angular.toJson(user.Meta);
+        //    }
+        //    $http.post(sharedValues.apiUrl + 'users/importusers', users).then(function () {
+        //        deferred.resolve();
+        //    });
+        //    return deferred.promise;
+        //}
         function _importUsers(users) {
-            var deferred = $q.defer();
-            for (var user of users) {
-                user.Meta = angular.toJson(user.Meta);
-            }
+          
             $http.post(sharedValues.apiUrl + 'users/importusers', users).then(function () {
                 deferred.resolve();
             });
             return deferred.promise;
         }
+
 
         function _deleteUser(id) {
             var deferred = $q.defer();
