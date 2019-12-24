@@ -54,7 +54,9 @@ namespace FarmsApi.DataModels
         //public string Meta { get; set; }
 
         public string EventsColor { get; set; }
-        
+
+        public int? EntityId { get; set; }
+
 
 
     }
