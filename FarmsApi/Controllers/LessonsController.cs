@@ -40,6 +40,14 @@ namespace FarmsApi.Services
             return Ok(LessonsService.UpdateLesson(lesson, changeChildren, lessonsQty));
         }
 
+        [Authorize]
+        [Route("updateLessonDetails")]
+        [HttpPost]
+        public IHttpActionResult UpdateLessonDetails(JObject lesson)
+        {
+            return Ok(LessonsService.UpdateLessonDetails(lesson));
+        }
+
 
         [Route("deleteLesson/{lessonId}/{deleteChildren}")]
         [HttpGet]

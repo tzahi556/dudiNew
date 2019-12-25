@@ -687,7 +687,7 @@
                                     עד תאריך:<br>
                                     <input type="date" ng-model="$ctrl.dateTo">
                                 </td>
-                                <td colspan="2"></td>
+                                <td colspan="2"><br><button class="btn btn-primary" ng-click="showDetails=!showDetails;">{{showDetails ? 'הצג הערות משרד' : 'הצג הערות מדריך'}} </button></td>
                             </tr>
                             <tr>
                                 <th>מס</th>
@@ -697,7 +697,7 @@
                                 <th ng-if="$ctrl.user.Meta.PayType != 'lessonCost'">עלות חודשית</th>-->
 
                                 <th>סטטוס</th>
-                                <th>הערות</th>
+                                <th>הערות  {{showDetails ? ' מדריך ' : ' משרד '}}</th>
                                 <th></th>
                                 <th style="width:100px">מחיר</th>
                                 <th>שולם</th>
@@ -727,12 +727,12 @@
                                 <td>
                                     <!--<input style="width:90%;" type="text" ng-model="lesson.statuses[statusIndex].Details" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id)">-->
 
-                                    <textarea rows="1" class="form-control" placeholder="הערות סטטוס" ng-model="lesson.statuses[statusIndex].Details" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,true)"></textarea>
-
+                                    <textarea rows="1" class="form-control" ng-show="showDetails" placeholder="הערות סטטוס" ng-model="lesson.statuses[statusIndex].Details" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,true)"></textarea>
+                                    <textarea rows="1" class="form-control" ng-show="!showDetails" ng-model="lesson.details" ng-change="$ctrl.setLessonsDetails(lesson)"  placeholder="הערות משרד"></textarea> 
 
                                 </td>
                                 <td>
-                                    <a class="btn btn-success btn-xs" ng-click="$ctrl.openComments(statusIndex,lesson)" href="">...</a>
+                                    <a class="btn btn-success btn-xs" ng-show="showDetails" ng-click="$ctrl.openComments(statusIndex,lesson)" href="">...</a>
                                 </td>
                                 <td>
 

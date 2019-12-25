@@ -312,6 +312,23 @@ namespace FarmsApi.Services
 
         }
 
+
+
+        
+
+        public static JObject UpdateLessonDetails(JObject Lesson)
+        {
+            int LessonId = Lesson["id"].Value<int>();
+            using (var Context = new Context())
+            {
+                var newLesson = Context.Lessons.SingleOrDefault(l => l.Id == LessonId);
+                newLesson.Details = Lesson["details"] != null ? Lesson["details"].Value<string>() : "";
+                Context.Entry(newLesson).State = System.Data.Entity.EntityState.Modified;
+                Context.SaveChanges();
+            }
+            return Lesson;
+
+        }
         public static JObject UpdateLesson(JObject Lesson, bool changeChildren, int? lessonsQty)
         {
             int LessonId = Lesson["id"].Value<int>();

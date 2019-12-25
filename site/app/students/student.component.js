@@ -108,6 +108,7 @@
         this.getLessonsDateNoPaid = _getLessonsDateNoPaid.bind(this);
         this.getIfanyCheckValid = _getIfanyCheckValid.bind(this);
         this.setLessPrice = _setLessPrice.bind(this);
+        this.setLessonsDetails = _setLessonsDetails.bind(this);
         this.changeLessonsData = _changeLessonsData.bind(this);
       
        
@@ -521,6 +522,13 @@
 
 
             return results;
+
+        }
+
+        function _setLessonsDetails(lesson) {
+            //this.lessonToUpdate = this.lessonToUpdate || [];
+            //this.lessonToUpdate.push(lesson);
+            lessonsService.updateLessonDetails(lesson);
 
         }
 
@@ -1562,7 +1570,8 @@
                 if (this.user.BirthDate)
                     this.user.BirthDate.setHours(this.user.BirthDate.getHours() + 3);
                
-
+             
+               
                 usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses).then(function (user) {
                     
                     if (user.FirstName == "Error") {
@@ -1571,6 +1580,17 @@
                         return;
                     }
                    
+                    //this.lessonToUpdate.push(lesson);
+                    //lessonsService.updateLesson(lesson);
+                    //for (var i in this.lessonToUpdate) {
+
+                    //    alert(this.lessonToUpdate[i].details);
+                    //}
+
+
+
+
+
                     lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate);
                     this.user = user;
 

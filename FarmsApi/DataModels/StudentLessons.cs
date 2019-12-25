@@ -19,7 +19,7 @@ namespace FarmsApi.DataModels
         public int? HorseId { get; set; }
         public double? Price { get; set; }
         public int LessonPayType { get; set; }
-        public string OfficeDetails { get; set; }
+        //public string OfficeDetails { get; set; }
 
     }
 }
