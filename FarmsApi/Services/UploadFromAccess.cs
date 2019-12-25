@@ -8,6 +8,9 @@ using FarmsApi.DataModels;
 
 namespace FarmsApi.Services
 {
+
+    // הערות חשובות
+    // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
         public int FarmId = 59;
