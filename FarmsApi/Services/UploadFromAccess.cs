@@ -17,8 +17,6 @@ namespace FarmsApi.Services
         public string MailPrefix = "greenfeldes";
         public string Hava = "greenfeldes";
 
-     //   public List<Payments> lp = new List<Payments>();
-
         public UploadFromAccess()
         {
             String connection = @"Provider=Microsoft.Jet.OLEDB.4.0;" +
@@ -38,9 +36,9 @@ namespace FarmsApi.Services
 
 
 
-            string sqlLessons = @"  SELECT top 50 * FROM FarmDairy ";
+            string sqlLessons = @"  SELECT * FROM FarmDairy ";
 
-            string sqlRiders = @" SELECT TOP 50 * from Riders ";
+            string sqlRiders = @" SELECT * from Riders ";
 
             string sqlInstructor = @" SELECT * from Workers ";
 
@@ -84,12 +82,48 @@ namespace FarmsApi.Services
 
         public void UpdateUsersLessons()
         {
+            //  BuildEntityIdOnly();
             BuildUserRiders();
             BuildUserInstructors();
             BuildLessons();
         }
 
-      
+        private void BuildEntityIdOnly()
+        {
+
+            foreach (DataRow item in ds.Tables[0].Rows)
+            {
+                string FirstName = GetRightName(item["PrivateName"].ToString());
+                string LastName = GetRightName(item["FamilyName"].ToString());
+                string RiderId = item["RiderId"].ToString();
+                int RiderIdInt = Int32.Parse(RiderId);
+                var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role=="student" && x.FirstName == FirstName && x.LastName == LastName).FirstOrDefault();
+                if (UserEN != null)
+                {
+                    UserEN.EntityId = RiderIdInt;
+                    Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
+                }
+            }
+
+
+            foreach (DataRow item in ds.Tables[1].Rows)
+            {
+                string FirstName = GetRightName(item["FirstName"].ToString());
+                string LastName = GetRightName(item["FamilyName"].ToString().Replace("_", ""));
+                string WorkerID = item["WorkerID"].ToString();
+                int WorkerIDInt = Int32.Parse(WorkerID);
+                var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "instructor" && x.FirstName == FirstName && x.LastName == LastName).FirstOrDefault();
+                if (UserEN != null)
+                {
+                    UserEN.EntityId = WorkerIDInt;
+                    Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
+                }
+
+            }
+
+
+            Context.SaveChanges();
+        }
 
         private void BuildUserRiders()
         {
@@ -146,7 +180,7 @@ namespace FarmsApi.Services
                 }
 
 
-                var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == RiderIdInt).FirstOrDefault();
+                var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
                 if (UserEN == null)
                 {
                     User UserE = new User();
@@ -164,7 +198,7 @@ namespace FarmsApi.Services
                     UserE.IdNumber = IdNumber;
                     UserE.Email = Email;
                     UserE.BirthDate = GetDateTimeParse(BirthDate);// DateTime.Parse(BirthDate);
-                    UserE.PayType = (Int32.Parse(PayType) + 1).ToString();
+                    UserE.PayType = (PayType == "0") ? "lessonCost" : "monthCost";
                     UserE.Style = Style;
                     UserE.HMO = HMO;
 
@@ -177,37 +211,37 @@ namespace FarmsApi.Services
                     UserE.Cost = GetCostByHMO(HMO, item["Lasttariff"].ToString());
                     Context.Users.Add(UserE);
                 }
-                else
-                {
-                    var UserE = UserEN;
+                //else
+                //{
+                //    var UserE = UserEN;
 
-                    UserE.Farm_Id = FarmId;
-                    UserE.Role = Role;
-                    UserE.Deleted = false;
+                //    UserE.Farm_Id = FarmId;
+                //    UserE.Role = Role;
+                //    UserE.Deleted = false;
 
-                    UserE.FirstName = FirstName;
-                    UserE.LastName = LastName;
-                    UserE.Active = (Active == "True") ? "active" : "notActive";
-                    UserE.Address = Address;
-                    UserE.Password = Password;
-                    UserE.IdNumber = IdNumber;
-                    UserE.Email = Email;
-                    UserE.BirthDate = GetDateTimeParse(BirthDate);
-                    UserE.PayType = (Int32.Parse(PayType) + 1).ToString();
-                    UserE.Style = Style;
-                    UserE.HMO = HMO;
-
-
-                    UserE.ParentName = ParentName;
-                    UserE.ParentName2 = ParentName2;
-                    UserE.PhoneNumber = PhoneNumber;
-                    UserE.PhoneNumber2 = PhoneNumber2;
-                    UserE.AnotherEmail = AnotherEmail;
-                    UserE.Cost = GetCostByHMO(HMO, item["Lasttariff"].ToString());
+                //    UserE.FirstName = FirstName;
+                //    UserE.LastName = LastName;
+                //    UserE.Active = (Active == "True") ? "active" : "notActive";
+                //    UserE.Address = Address;
+                //    UserE.Password = Password;
+                //    UserE.IdNumber = IdNumber;
+                //    UserE.Email = Email;
+                //    UserE.BirthDate = GetDateTimeParse(BirthDate);
+                //    UserE.PayType = (PayType == "0") ? "lessonCost" : "monthCost";
+                //    UserE.Style = Style;
+                //    UserE.HMO = HMO;
 
 
-                    Context.Entry(UserE).State = System.Data.Entity.EntityState.Modified;
-                }
+                //    UserE.ParentName = ParentName;
+                //    UserE.ParentName2 = ParentName2;
+                //    UserE.PhoneNumber = PhoneNumber;
+                //    UserE.PhoneNumber2 = PhoneNumber2;
+                //    UserE.AnotherEmail = AnotherEmail;
+                //    UserE.Cost = GetCostByHMO(HMO, item["Lasttariff"].ToString());
+
+
+                //    Context.Entry(UserE).State = System.Data.Entity.EntityState.Modified;
+                //}
 
             }
 
@@ -228,7 +262,7 @@ namespace FarmsApi.Services
             foreach (DataRow item in ds.Tables[1].Rows)
             {
                 FirstName = GetRightName(item["FirstName"].ToString());
-                LastName = GetRightName(item["FamilyName"].ToString());
+                LastName = GetRightName(item["FamilyName"].ToString().Replace("_",""));
                 Active = (item["Active"].ToString()=="True")?"active":"notActive";
                 Deleted = (Active == "active") ? false : true;
                 Address = item["Address"].ToString() + " " + item["City"].ToString();
@@ -246,7 +280,7 @@ namespace FarmsApi.Services
                 // רק מדריך פעיל וממחלקה 1 שזה מדריך רכיבה
                 if (DepartmetId!="1") continue;
              
-                var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == WorkerIDInt).FirstOrDefault();
+                var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId  && x.Role == "instructor" && x.EntityId == WorkerIDInt).FirstOrDefault();
                 if (UserEN == null)
                 {
                     User UserE = new User();
@@ -264,26 +298,26 @@ namespace FarmsApi.Services
                     UserE.PhoneNumber = PhoneNumber;
                     Context.Users.Add(UserE);
                 }
-                else
-                {
-                    var UserE = UserEN;
+                //else
+                //{
+                //    var UserE = UserEN;
 
-                    UserE.Farm_Id = FarmId;
-                    UserE.Role = Role;
-                    UserE.Deleted = Deleted;
+                //    UserE.Farm_Id = FarmId;
+                //    UserE.Role = Role;
+                //    UserE.Deleted = Deleted;
 
-                    UserE.FirstName = FirstName;
-                    UserE.LastName = LastName;
-                    UserE.Active = (Active == "True") ? "active" : "notActive";
-                    UserE.Address = Address;
-                    UserE.Password = Password;
-                    UserE.IdNumber = IdNumber;
-                    UserE.Email = Email;
-                    UserE.PhoneNumber = PhoneNumber;
+                //    UserE.FirstName = FirstName;
+                //    UserE.LastName = LastName;
+                //    UserE.Active = (Active == "True") ? "active" : "notActive";
+                //    UserE.Address = Address;
+                //    UserE.Password = Password;
+                //    UserE.IdNumber = IdNumber;
+                //    UserE.Email = Email;
+                //    UserE.PhoneNumber = PhoneNumber;
                   
 
-                    Context.Entry(UserE).State = System.Data.Entity.EntityState.Modified;
-                }
+                //    Context.Entry(UserE).State = System.Data.Entity.EntityState.Modified;
+                //}
 
 
             }
@@ -317,7 +351,7 @@ namespace FarmsApi.Services
                 Price = item["Price"].ToString();
 
                 invoice = item["invoice"].ToString();
-                TypeForBookkeeping = item["TypeForBookkeeping"].ToString(); // 
+                TypeForBookkeeping = item["TypeForBookkeeping"].ToString();
 
                 var StudentObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == RiderIdInt && x.Role=="student").FirstOrDefault();
                 var InstructorObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == WorkerIDInt && x.Role == "instructor").FirstOrDefault();
@@ -334,7 +368,7 @@ namespace FarmsApi.Services
                 if (LessonEN == null)
                 {
                     Lesson Less = new Lesson();
-                    Less.Instructor_Id = 1;
+                    Less.Instructor_Id = InstructorObj.Id;
                     Less.ParentId = 0;
                     Less.Start = LessonsStart;
                     Less.End = LessonsEnd;
@@ -370,7 +404,7 @@ namespace FarmsApi.Services
                 }
 
                 // חשבונית
-                if (!string.IsNullOrEmpty(invoice))
+                if (!string.IsNullOrEmpty(invoice) && invoice!="0")
                 {
                     var invoiceUser = Context.Payments.Where(x=>x.InvoiceNum== invoice && x.UserId== StudentObj.Id).FirstOrDefault();
                     if (invoiceUser == null)
@@ -395,10 +429,12 @@ namespace FarmsApi.Services
 
                         Context.Payments.Add(pay);
 
-                    }else
+                    }
+                    else
                     {
                         invoiceUser.Price = double.Parse(Price);
                         invoiceUser.InvoiceSum += double.Parse(Price);
+                        invoiceUser.lessons += 1;
                         Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
 
                     }
