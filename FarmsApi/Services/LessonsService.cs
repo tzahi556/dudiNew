@@ -164,9 +164,10 @@ namespace FarmsApi.Services
                     {
                         if (Lesson.Id != lastId)
                         {
-                            var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, IsComplete = l.IsComplete, HorseId = l.HorseId }).Distinct().ToArray();
+                            var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, OfficeDetails= l.OfficeDetails, IsComplete = l.IsComplete, HorseId = l.HorseId }).Distinct().ToArray();
                             var studentsArray = students.Select(s => s.StudentName).ToArray();
                             var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName != null).Select(l => new { HorseName = l.HorseName }).ToArray();
+
                             ReturnLessons.Add(JObject.FromObject(new
                             {
                                 id = Lesson.Id,
@@ -180,7 +181,7 @@ namespace FarmsApi.Services
                                 lessonpaytype = Lesson.LessonPayType,
                                 details = Lesson.Details,
                                 students = students.Select(s => s.StudentId).ToArray(),
-                                statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId }).ToArray(),
+                                statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId,OfficeDetails=s.OfficeDetails }).ToArray(),
                                 title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : "")
                             }));
                         }
@@ -295,6 +296,7 @@ namespace FarmsApi.Services
 
                                 StudentLesson.Status = Status["status"].Value<string>();
                                 StudentLesson.Details = Status["details"].Value<string>();
+                                StudentLesson.OfficeDetails = Status["officedetails"].Value<string>();
                                 StudentLesson.IsComplete = Status["isComplete"].Value<int>();
                             }
                             Context.Entry(StudentLesson).State = System.Data.Entity.EntityState.Modified;
@@ -615,6 +617,30 @@ namespace FarmsApi.Services
             newLesson.End = Lesson["end"].Value<DateTime>();
             newLesson.Instructor_Id = Lesson["resourceId"] != null ? Lesson["resourceId"].Value<int>() : 0;
             newLesson.Details = Lesson["details"] != null ? Lesson["details"].Value<string>() : "";
+
+            //var oldDetails = newLesson.Details;
+
+            //if (Lesson["details"] != null)
+            //{
+            //    string DetailsFromUser = Lesson["details"].Value<string>();
+            //    if (oldDetails == null || oldDetails == "")
+            //    {  
+            //         //oldDetails
+            //         newLesson.Details = " דוד: " + DetailsFromUser;
+            //    }
+            //    else
+            //    {
+            //        //var oldNewDetails = DetailsFromUser.Replace(oldDetails.Trim(), "");
+            //        var newDetails = DetailsFromUser.Replace(oldDetails.Trim(), "");
+            //        newLesson.Details = newDetails;
+
+            //    }
+            //}
+            //else
+            //{
+            //    newLesson.Details = "";
+
+            //}
 
         }
 

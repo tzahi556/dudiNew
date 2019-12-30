@@ -53,6 +53,7 @@
         var self = this;
         this.scope = $scope;
         this.farmsService = farmsService;
+       
         this.HMOs = sharedValues.HMOs;
         this.lessonStatuses = sharedValues.lessonStatuses;
         this.styles = sharedValues.styles;
@@ -108,7 +109,7 @@
         this.getLessonsDateNoPaid = _getLessonsDateNoPaid.bind(this);
         this.getIfanyCheckValid = _getIfanyCheckValid.bind(this);
         this.setLessPrice = _setLessPrice.bind(this);
-        this.setLessonsDetails = _setLessonsDetails.bind(this);
+      //  this.setLessonsDetails = _setLessonsDetails.bind(this);
         this.changeLessonsData = _changeLessonsData.bind(this);
       
        
@@ -183,7 +184,8 @@
                     this.currentLesson.id,
                     this.currentLesson.statuses[this.selectedStudent].IsComplete,
                     this.currentLesson,
-                    true);
+                    true,
+                    this.currentLesson.statuses[this.selectedStudent].OfficeDetails);
             }
 
         }
@@ -525,12 +527,17 @@
 
         }
 
-        function _setLessonsDetails(lesson) {
-            //this.lessonToUpdate = this.lessonToUpdate || [];
-            //this.lessonToUpdate.push(lesson);
-            lessonsService.updateLessonDetails(lesson);
+        //function _setLessonsDetails(lesson) {
+        //    //this.lessonToUpdate = this.lessonToUpdate || [];
+        //    //this.lessonToUpdate.push(lesson);
+        //    //lessonsService.updateLessonDetails(lesson);
 
-        }
+        //   lessonsService.updateLesson(lesson, false).then(function () {
+        //        //this.createNotifications(event, 'update');
+        //        //this.reloadLessons();
+        //    }.bind(this));
+
+        //}
 
         function _setLessPrice(lesson, index) {
 
@@ -559,6 +566,12 @@
 
         function _initLessons() {
 
+
+
+
+
+
+
             // הגדרות בשביל הדוח
             this.lessReport = [];
             this.getStatusLengthFrom1 = 0, this.getStatusLengthFrom2 = 0, this.getStatusLengthFrom3 = 0, this.getStatusLengthFrom4 = 0, this.getStatusLengthFrom5 = 0;
@@ -573,7 +586,7 @@
 
           
 
-            this.creditPaidLessons = this.paidLessons + this.commitmentLessons;
+            this.creditPaidLessons = this.paidLessons //+ this.commitmentLessons;
 
             this.creditPaidMonth = this.paidMonths;
 
@@ -581,14 +594,29 @@
             this.newPrice = 0;
             for (var i in this.lessons) {
 
+                // הפרדה לאנשי מכבי
+                if (this.lessons[i].lessprice == 0) {
+
+                    var studentsStatus = this.lessons[i].statuses[this.getStatusIndex(this.lessons[i])].Status;  //|| (['completion'].indexOf(studentsStatus) != -1 && lesson.IsComplete==4)
+                    if (['attended', 'notAttendedCharge'].indexOf(studentsStatus) != -1 ) {
+
+                        if (this.commitmentLessons-->0)
+                           this.lessons[i].paid = true;
+                        else
+                            this.lessons[i].paid = false;
+                    } else {
+                        this.lessons[i].paid = false;
+
+
+                    }
+                    continue;
+                }
+
+
                 var ststIndex = this.getStatusIndex(this.lessons[i]);
                 // שיעור השלמה
                 if (this.lessons[i].statuses[ststIndex].IsComplete == "4") {
-                    //var CurrentStatus = this.lessons[i].statuses[ststIndex].Status;
-                    //if (CurrentStatus == "attended")
-                        this.lessons[i].statuses[ststIndex].Status = "attended";
-                    //else
-                    //    this.lessons[i].statuses[ststIndex].Status = "notAttendedCharge";
+                    this.lessons[i].statuses[ststIndex].Status = "attended";
                 }
 
                 if (this.lessons[i].statuses[ststIndex].IsComplete == "6") {
@@ -645,29 +673,7 @@
 
 
                     
-                    // אם השיעור מוגדר חודשי
-                    //if (this.lessons[i].lessonpaytype == 2) {
-
-                    //    var monthCurrent = moment().format("YYYYMM");
-                    //    var monthOnly = moment(this.lessons[i].start).format("YYYYMM");
-
-                    //    if (results.indexOf(monthOnly) == -1) {
-
-                    //        if (this.lessons[i].paid && monthOnly > monthCurrent)
-                    //            this.monthlyBalance += this.user.Cost;
-
-                    //        if (!this.lessons[i].paid && monthOnly <= monthCurrent) {
-
-                    //            if (['attended', 'notAttendedCharge', 'completionReq'].indexOf(this.lessons[i].statuses[this.getStatusIndex(this.lessons[i])].Status) != -1)
-                    //                this.monthlyBalance -= this.user.Cost;
-                    //        }
-
-
-                    //        results.push(monthOnly);
-                    //    }
-
-                    //}
-
+                 
                 }
             }
         }
@@ -940,9 +946,9 @@
             }
         }
 
-        function _changeLessonsStatus(status, details, studentId, lessonId, isComplete, lesson, isText) {
+        function _changeLessonsStatus(status, details, studentId, lessonId, isComplete, lesson, isText, officedetails) {
          
-       
+           
             if (!isText && (isComplete >2)) {
                 //var ind = this.getStatusIndex(lesson);
 
@@ -993,13 +999,14 @@
                 if (this.lessonStatusesToUpdate[i].studentId == studentId && this.lessonStatusesToUpdate[i].lessonId == lessonId) {
                     this.lessonStatusesToUpdate[i].status = status;
                     this.lessonStatusesToUpdate[i].details = details;
+                    this.lessonStatusesToUpdate[i].officedetails = officedetails;
                     this.lessonStatusesToUpdate[i].isComplete = isComplete;
 
                     found = true;
                 }
             }
             if (!found) {
-                this.lessonStatusesToUpdate.push({ studentId: studentId, lessonId: lessonId, status: status, details: details, isComplete: isComplete });
+                this.lessonStatusesToUpdate.push({ studentId: studentId, lessonId: lessonId, status: status, details: details, isComplete: isComplete, officedetails: officedetails });
             }
 
             this.countAllCredits();

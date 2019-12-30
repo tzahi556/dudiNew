@@ -7,7 +7,7 @@
     function LessonsService($http, $q, sharedValues, usersService, notificationsService, $rootScope) {
         this.getLessons = _getLessons.bind(this);
         this.updateLesson = _updateLesson.bind(this);
-        this.updateLessonDetails = _updateLessonDetails.bind(this);
+       // this.updateLessonDetails = _updateLessonDetails.bind(this);
         
         this.deleteLesson = _deleteLesson.bind(this);
         this.updateStudentLessonsStatuses = _updateStudentLessonsStatuses.bind(this);
@@ -125,7 +125,7 @@
         function _updateLesson(lesson, changeChildren, lessonsQty) {
          
            
-         
+           // debugger
             changeChildren = changeChildren || false;
             var deferred = $q.defer();
             $http.post(sharedValues.apiUrl + 'lessons/updateLesson/' + changeChildren + "/" + lessonsQty, lesson).then(function (res) {
@@ -136,14 +136,14 @@
             return deferred.promise;
         }
 
-        function _updateLessonDetails(lesson) {
+        //function _updateLessonDetails(lesson) {
            
-            var deferred = $q.defer();
-            $http.post(sharedValues.apiUrl + 'lessons/updateLessonDetails/', lesson).then(function (res) {
-                deferred.resolve(res.data);
-            }.bind(this));
-            return deferred.promise;
-        }
+        //    var deferred = $q.defer();
+        //    $http.post(sharedValues.apiUrl + 'lessons/updateLessonDetails/', lesson).then(function (res) {
+        //        deferred.resolve(res.data);
+        //    }.bind(this));
+        //    return deferred.promise;
+        //}
 
       //  lessonsService.updateLessonDetails(lesson);
     }
