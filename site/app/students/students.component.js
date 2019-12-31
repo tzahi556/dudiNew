@@ -106,29 +106,27 @@
                             student.Role = 'student';
                             student.FirstName = student.firstName;
                             student.LastName = student.lastName;
-                            student.Meta = {
-                                BirthDate: moment(student.birthDate).toDate(),
-                                Active: 'active',
-                                ParentName: student.fatherName,
-                                ParentName2: student.motherName,
-                                Address: student.address,
-                                PhoneNumber: student.phone1,
-                                PhoneNumber2: student.phone2,
-                                AnotherEmail: student.email,
-                                IdNumber: student.id,
-                                Style: student.style,
-                                HMO: student.hmo,
-                                TeamMember: student.teamMember,
-                                Cost: student.cost && !isNaN(student.cost) ? parseFloat(student.cost) : 0,
-                                PayType: student.payType,
-                            };
+                            student.BirthDate= moment(student.birthDate).toDate();
+                            student.Active= 'active';
+                            student.ParentName= student.fatherName;
+                            student.ParentName2= student.motherName;
+                            student.Address= student.address;
+                            student.PhoneNumber= student.phone1;
+                            student.PhoneNumber2= student.phone2;
+                            student.AnotherEmail= student.email;
+                            student.IdNumber= student.id;
+                            student.Style= student.style;
+                            student.HMO= student.hmo;
+                            student.TeamMember= student.teamMember;
+                            student.Cost= student.cost && !isNaN(student.cost) ? parseFloat(student.cost) : 0;
+                            student.PayType = student.payType;
                         });
 
 
 
-                        //usersService.importUsers(students).then(function () {
-                        //    location.reload();
-                        //}.bind(this));
+                        usersService.importUsers(students).then(function () {
+                            location.reload();
+                        }.bind(this));
 
                     };
                     reader.readAsBinaryString(f);

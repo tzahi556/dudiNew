@@ -14,13 +14,16 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 67; // 67 חווה אמת
+        public int FarmId = 71; // רנצו מניס
+         //67 חוות גרין פילדס חווה אמת
         // טסט 59
         public DataSet ds = new DataSet();
 
         public Context Context = new Context();
-        public string MailPrefix = "greenfields";
-        public string Hava = "greenfields";
+        public string MailPrefix = "rancho";
+        // "greenfields";
+        public string Hava = "rancho";
+        //"greenfields";
 
         public UploadFromAccess()
         {
@@ -39,7 +42,7 @@ namespace FarmsApi.Services
 
 
 
-           // and Riders.RiderId in(1985,5382,2603)
+          
 
             string sqlLessons = @"  
                                 SELECT FarmDairy.*
@@ -99,7 +102,7 @@ namespace FarmsApi.Services
            //BuildUserRiders();
            //BuildUserInstructors();
             //  BuildLessons();
-          BuildStudentLessons();
+           BuildStudentLessons();
             //BuildCommitmentsLessons();
             //  BuildPayments();
 
