@@ -15,8 +15,8 @@ namespace FarmsApi.Services
     public class UploadFromAccess
     {
         public int FarmId = 71; // רנצו מניס
-         //67 חוות גרין פילדס חווה אמת
-        // טסט 59
+                                //67 חוות גרין פילדס חווה אמת
+                                // טסט 59
         public DataSet ds = new DataSet();
 
         public Context Context = new Context();
@@ -42,7 +42,7 @@ namespace FarmsApi.Services
 
 
 
-          
+
 
             string sqlLessons = @"  
                                 SELECT FarmDairy.*
@@ -99,8 +99,8 @@ namespace FarmsApi.Services
         {
 
             //BuildEntityIdOnly();
-           //BuildUserRiders();
-           //BuildUserInstructors();
+          //  BuildUserRiders();
+          //  BuildUserInstructors();
             //  BuildLessons();
            BuildStudentLessons();
             //BuildCommitmentsLessons();
@@ -477,11 +477,11 @@ namespace FarmsApi.Services
                     DateTime LessonsStart = GetDateFromAccess(DayofRide, HourofRide);
                     DateTime LessonsEnd = LessonsStart.AddMinutes(30); //GetDateFromAccess(DayofRide, HourofRide);
                                                                        //  var LessonEN = Context.Lessons.Where(x => x.Instructor_Id == InstructorObj.Id && x.Start == LessonsStart).FirstOrDefault();
-                   
+
 
 
                     // מכניס מחיר לשיעור השלמה
-                    if(TypeofRiders=="1")
+                    if (TypeofRiders == "1")
                     {
                         foreach (DictionaryEntry de in hs)
                         {
@@ -559,9 +559,9 @@ namespace FarmsApi.Services
                                     StudLess.Status = (executed == "True") ? "attended" : "notAttended";
                                     // אם לא הגיע ויש חשבונית שמור את המחיר והחשבונית ואם יימצא בשורות הבאות שיעור השלמה הוא יעדכן שם מחיר כי 
                                     // כשיש שיעור השלמה המחיר הוא 0
-                                    if (StudLess.Status== "notAttended" && financier!="2" &&  invoice!="0" && !hs.ContainsKey(invoice))
+                                    if (StudLess.Status == "notAttended" && financier != "2" && invoice != "0" && !hs.ContainsKey(invoice))
                                     {
-                                        
+
                                         hs.Add(invoice, FixedPrice);
 
                                     }
@@ -668,14 +668,14 @@ namespace FarmsApi.Services
                                 pay.Date = LessonsStart;
                                 pay.InvoicePdf = "";
                                 pay.InvoiceNum = invoice;
-                                pay.InvoiceDetails = invoice + " חשבונית "  + " " + UnexecutedReson;
+                                pay.InvoiceDetails = invoice + " חשבונית " + " " + UnexecutedReson;
 
                                 //pay.canceled = CheckifExistStr(Item["canceled"]);
                                 pay.Price = FixedPrice;
                                 pay.InvoiceSum = FixedPrice;
 
                                 pay.payment_type = "1";
-                                if(WorkerID!="3")  pay.lessons = 1;
+                                if (WorkerID != "3") pay.lessons = 1;
                                 //pay.month = CheckifExistDate(Item["month"]);
                                 //pay.untilmonth = CheckifExistDate(Item["untilmonth"]);
 
@@ -922,7 +922,7 @@ namespace FarmsApi.Services
             if (HMO == "maccabiSheli") return 0;
             if (HMO == "klalit") return 45;
 
-            if (!string.IsNullOrEmpty(Acost)) return double.Parse(Acost);
+            if (!string.IsNullOrEmpty(Acost)) return double.Parse(Acost); //- double.Parse(Financer);
 
             return 0;
 
@@ -941,14 +941,39 @@ namespace FarmsApi.Services
 
         private string GetHMO(string style, string finance)
         {
-            if (style == "treatment" && finance == "2") return "maccabiSheli";
-            if (style == "treatment" && finance == "15") return "klalit";
+            // גולדן פילד
+
+            if (FarmId == 67)
+            {
+                if (style == "treatment" && finance == "2") return "maccabiSheli";
+                if (style == "treatment" && finance == "15") return "klalit";
+            }
+
+
+            // רנצו
+            if (FarmId == 71)
+            {
+                if (style == "treatment" && finance == "54") return "maccabiSheli";
+                if (style == "treatment" && finance == "105") return "klalit";
+                if (style == "treatment" && finance == "106") return "leumit";
+                if (style == "treatment" && finance == "107") return "meuhedet";
+            }
+
             return "";
         }
 
         private string GetStyleHava(string finance)
         {
-            if (finance == "2" || finance == "15") return "treatment";
+            // גולדן פילד
+            if (FarmId == 67)
+            {
+                if (finance == "2" || finance == "15") return "treatment";
+            }
+            // רנצו
+            if (FarmId == 71)
+            {
+                if (finance == "54" || finance == "105" || finance == "106" || finance == "107") return "treatment";
+            }
             return "privateTreatment";
         }
 

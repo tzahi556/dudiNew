@@ -296,10 +296,21 @@ namespace FarmsApi.Services
 
                                 StudentLesson.Status = Status["status"].Value<string>();
                                 StudentLesson.Details = Status["details"].Value<string>();
-                                StudentLesson.OfficeDetails = Status["officedetails"].Value<string>();
+                               
                                 StudentLesson.IsComplete = Status["isComplete"].Value<int>();
                             }
-                            Context.Entry(StudentLesson).State = System.Data.Entity.EntityState.Modified;
+
+                            if (Status["officedetails"] != null)
+                            {
+                                StudentLesson.OfficeDetails = Status["officedetails"].Value<string>();
+                            }
+
+
+
+
+
+
+                                Context.Entry(StudentLesson).State = System.Data.Entity.EntityState.Modified;
                         }
                     }
                     Context.SaveChanges();

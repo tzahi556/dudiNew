@@ -53,7 +53,7 @@
         var self = this;
         this.scope = $scope;
         this.farmsService = farmsService;
-       
+        this.state = $state;
         this.HMOs = sharedValues.HMOs;
         this.lessonStatuses = sharedValues.lessonStatuses;
         this.styles = sharedValues.styles;
@@ -118,6 +118,8 @@
 
         function _changeLessonsData() {
 
+
+            var ssss = 
 
 
             for (var i in this.lessons) {
@@ -314,7 +316,7 @@
             var notificationText = ' התלמיד ' + this.user.FirstName + ' ' + this.user.LastName + ' נמצא בחובה ועליו להסדיר את התשלום '; //+ hmoMessage;
 
             var heshbon = this.totalExpensesNoShulam * -1 + this.unpaidLessons; //+ this.monthlyBalance;
-            debugger
+          
 
 
             notificationsService.createNotification({
@@ -1567,7 +1569,7 @@
         function _submit(isalert) {
 
           
-         
+           
             if ($scope.studentForm.$valid) {
 
                 this.user.Role = 'student';
@@ -1618,9 +1620,11 @@
 
         function _delete() {
             if (confirm('האם למחוק את התלמיד?')) {
-              
+               
+                var ctrl = this;
                 usersService.deleteUser(this.user.Id).then(function (res) {
-                    $state.go('students');
+                   ctrl.user.Deleted = true;
+                   $state.go('students');
                 });
             }
         }

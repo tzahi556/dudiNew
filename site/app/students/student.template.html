@@ -168,12 +168,12 @@
                                 <td>כמות שיעורים ששולמו בשנה הנוכחית</td>
                                 <td>{{$ctrl.paidLessonsThisYear}}</td>
                             </tr>
-                            <tr style="background-color:#ff9933" ng-show="$ctrl.user.PayType == 'lessonCost' && $ctrl.user.HMO.indexOf('maccabi')!=-1">
+                            <tr style="background-color:#ff9933" ng-show="$ctrl.user.PayType == 'lessonCost' && $ctrl.user.HMO && $ctrl.user.HMO.indexOf('maccabi')!=-1">
                                 <td>כמות שיעורים בהתחייבות מכבי בשנה הנוכחית</td>
                                 <td>{{$ctrl.commitmentLessonsThisYear}}</td>
                             </tr>
 
-                            <tr style="background-color:#ff9933" ng-show="$ctrl.user.PayType == 'lessonCost' && $ctrl.user.HMO.indexOf('maccabi')!=-1">
+                            <tr style="background-color:#ff9933" ng-show="$ctrl.user.PayType == 'lessonCost' && $ctrl.user.HMO && $ctrl.user.HMO.indexOf('maccabi')!=-1">
                                 <td>יתרת שיעורים מכבי</td>
                                 <td style="direction:ltr;text-align:right;">{{$ctrl.commitmentLessons}}</td>
                             </tr>
