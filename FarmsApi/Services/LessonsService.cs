@@ -434,6 +434,7 @@ namespace FarmsApi.Services
                 }
                 Context.SaveChanges();
             }
+
             if (ChildLessonId.HasValue)
             {
                 UpdateChildrenLessons(ChildLessonId.Value);
@@ -576,7 +577,7 @@ namespace FarmsApi.Services
 
                     }
 
-                    Context.StudentLessons.Add(new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]), HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]) });
+                    Context.StudentLessons.Add(new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]), HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]), OfficeDetails = StatusData[4] });
 
                     //try
                     //{
@@ -597,10 +598,10 @@ namespace FarmsApi.Services
                 var Status = Lesson["statuses"].SingleOrDefault(s => s["StudentId"].Value<int>() == StudentId);
                 if (Status != null)
                 {
-                    return new string[] { Status["Status"].Value<string>(), Status["Details"] != null ? Status["Details"].Value<string>() : null, Status["IsComplete"] != null ? Status["IsComplete"].Value<string>() : null, Status["HorseId"] != null ? Status["HorseId"].Value<string>() : null };
+                    return new string[] { Status["Status"].Value<string>(), Status["Details"] != null ? Status["Details"].Value<string>() : null, Status["IsComplete"] != null ? Status["IsComplete"].Value<string>() : null, Status["HorseId"] != null ? Status["HorseId"].Value<string>() : null, Status["HorseId"] != null ? Status["OfficeDetails"].Value<string>() : null };
                 }
             }
-            return new string[] { null, null, null, null };
+            return new string[] { null, null, null, null, null };
 
         }
 

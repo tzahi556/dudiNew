@@ -42,7 +42,7 @@
         this.puplateTimesInstructor = _puplateTimesInstructor.bind(this);
 
         this.transferLesson = _transferLesson.bind(this);
-
+        this.role = localStorage.getItem('currentRole');
 
         this.scope.$on('event.show', this.onShow);
     }
@@ -179,7 +179,7 @@
 
     function _onShow(event, selectedLesson, studentTemplate) {
 
-
+      //  alert(this.role);
         this.tranferDate = moment(selectedLesson.start).toDate();
         this.puplateInstructor();
         this.SelectedinstructordId = selectedLesson.resourceId;
@@ -246,19 +246,23 @@
 
 
             for (var i in this.statuses) {
-                this.event.statuses.push({ StudentId: i, Status: this.statuses[i], Details: this.statusDetails[i], IsComplete: this.isComplete[i], HorseId: this.horsesarray[i] });
+               
+                this.event.statuses.push({ StudentId: i, Status: this.statuses[i], OfficeDetails: this.statusOfficeDetails[i], Details: this.statusDetails[i], IsComplete: this.isComplete[i], HorseId: this.horsesarray[i] });
             }
         }
         else {
             this.statuses = [];
             this.statusDetails = [];
+            this.statusOfficeDetails = [];
             this.isComplete = [];
             this.horsesarray = [];
+           
             for (var i in statuses) {
 
 
                 this.statuses[statuses[i].StudentId] = getRightStatus(statuses[i]);
                 this.statusDetails[statuses[i].StudentId] = statuses[i].Details;
+                this.statusOfficeDetails[statuses[i].StudentId] = statuses[i].OfficeDetails;
                 this.isComplete[statuses[i].StudentId] = statuses[i].IsComplete;
                 this.horsesarray[statuses[i].StudentId] = statuses[i].HorseId;
 

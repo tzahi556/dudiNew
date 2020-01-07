@@ -119,8 +119,7 @@
         function _changeLessonsData() {
 
 
-            var ssss = 
-
+    
 
             for (var i in this.lessons) {
 

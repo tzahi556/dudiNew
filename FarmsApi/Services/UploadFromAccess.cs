@@ -14,16 +14,24 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 71; // רנצו מניס
+        public int FarmId = 67; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
         public DataSet ds = new DataSet();
 
         public Context Context = new Context();
-        public string MailPrefix = "rancho";
+        public string MailPrefix = "greenfields";
         // "greenfields";
-        public string Hava = "rancho";
+       
+        public string Hava = "greenfields";
         //"greenfields";
+        //rancho
+        public string ExpensWorkerId = "3";
+        //3 חוות גרין פילדס חווה אמת
+        //6 חוות רנצו
+        // טסט 59
+
+
 
         public UploadFromAccess()
         {
@@ -47,9 +55,8 @@ namespace FarmsApi.Services
             string sqlLessons = @"  
                                 SELECT FarmDairy.*
                                 FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
-                                Where (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
+                                Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
                                 and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
-                               
                                 Order by FarmDairy.DayofRide
                   ";
 
@@ -99,10 +106,10 @@ namespace FarmsApi.Services
         {
 
             //BuildEntityIdOnly();
-          //  BuildUserRiders();
-          //  BuildUserInstructors();
+        //  BuildUserRiders();
+       //   BuildUserInstructors();
             //  BuildLessons();
-           BuildStudentLessons();
+          BuildStudentLessons();
             //BuildCommitmentsLessons();
             //  BuildPayments();
 
@@ -510,7 +517,7 @@ namespace FarmsApi.Services
                     //}
 
                     // זה הוצאות אחרות 3
-                    if (WorkerID != "3")
+                    if (WorkerID != ExpensWorkerId)
                     {
 
                         int LessId;
@@ -675,7 +682,7 @@ namespace FarmsApi.Services
                                 pay.InvoiceSum = FixedPrice;
 
                                 pay.payment_type = "1";
-                                if (WorkerID != "3") pay.lessons = 1;
+                                if (WorkerID != ExpensWorkerId) pay.lessons = 1;
                                 //pay.month = CheckifExistDate(Item["month"]);
                                 //pay.untilmonth = CheckifExistDate(Item["untilmonth"]);
 
@@ -689,7 +696,7 @@ namespace FarmsApi.Services
                             {
                                 invoiceUser.Price = FixedPrice;
                                 invoiceUser.InvoiceSum += FixedPrice;
-                                if (WorkerID != "3") invoiceUser.lessons += 1;
+                                if (WorkerID != ExpensWorkerId) invoiceUser.lessons += 1;
                                 Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
                                 Context.SaveChanges();
                             }

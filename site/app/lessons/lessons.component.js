@@ -75,7 +75,7 @@
 
         //  this.filteredLessons = this.filterLessonsBySelectedInstructors();
 
-        this.reloadLessonsComplete();
+       
 
         function _customDate() {
 
@@ -129,6 +129,7 @@
 
             this.reloadLessons();
             this.reloadCalendarData();
+            this.reloadLessonsComplete();
 
         }.bind(this));
 
@@ -254,6 +255,7 @@
             //sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
 
             this.initResources();
+           // בדיקה אם אפשר להסתדר בלי זה
             this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
             this.scope.$broadcast('calendar.reloadBackgroundEvents', this.backgroundEvents);
             this.scope.$broadcast('calendar.reloadResources', this.resources);
@@ -402,21 +404,26 @@
         }
 
         function _eventClose(event, lessonsQty) {
-
+           
             if (event.isFromChangePhone) {
                 this.eventChange(event);
 
             }
-                //debugger
+                //
             else if (event) {
-
+                debugger
                 this.updateLesson(event);
                 this.createChildEvent(event, lessonsQty);
+                
+             
+              
             }
             else {
                 this.reloadLessons();
 
             }
+
+          
         }
 
         function _eventDelete(event, deleteChildren) {
@@ -588,6 +595,7 @@
             this.lessonsService.updateLesson(event).then(function (res) {
 
                 this.reloadLessons();
+                this.reloadLessonsComplete();
             }.bind(this));
         }
 
@@ -623,13 +631,14 @@
             // להביא את ההשלמות
             this.lessonsService.getLessons(null, this.startDate, fakendDate, true).then(function (lessons) {
 
+                this.lessonsComplete = [];
                 this.lessonsCompletelength = lessons.length;
 
                 lessons = $filter('orderBy')(lessons, 'InstructorName');
                 var lessonsGroupBy = [];
                 var prevInstructor = "";
                 for (var i in lessons) {
-
+                   
                     if (lessons[i].InstructorName != prevInstructor) {
 
                         var newData = angular.copy(lessons[i]);

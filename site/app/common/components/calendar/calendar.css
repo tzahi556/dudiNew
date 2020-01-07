@@ -8,3 +8,23 @@
     color:#4d4d4d;
 
 }
+.fc td{
+
+    border-right:solid 3px gray !important;
+
+}
+
+.fc-view-container { 
+  overflow-x: auto; 
+  
+}
+
+
+/*.fc-axis{
+    display:block !important;
+    position:absolute !important; 
+    border:solid 3px red !important;
+
+
+
+}*/

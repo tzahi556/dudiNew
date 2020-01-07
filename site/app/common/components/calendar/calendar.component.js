@@ -30,25 +30,28 @@
         this.reloadResources = _reloadResources.bind(this);
         this.loadResources = _loadResources.bind(this);
         this.loadEvents = _loadEvents.bind(this);
-      
+
 
         this.pastEditEnabled = this.pastEditEnabled || true;
         this.calendar = $($element).children('.calendar')[0];
         this.scope = $scope;
-      
+        this.currentView = "";
 
         this.scope.$on('calendar.reloadEvents', function (event, events) {
 
             this.events = events;
             this.reloadEvents();
-           
-           
+
+
+
+
 
         }.bind(this));
 
         this.scope.$on('calendar.reloadBackgroundEvents', function (event, backgroundEvents) {
             this.backgroundEvents = backgroundEvents;
             this.reloadEvents();
+            //  alert(12);
         }.bind(this));
 
         this.scope.$on('calendar.reloadResources', function (event, resources) {
@@ -91,10 +94,10 @@
 
             defaultView: this.view || 'agendaWeek',
 
-          
-        
 
-          
+
+
+
             selectHelper: true,
             editable: true,
             slotEventOverlap: true,
@@ -114,7 +117,7 @@
 
             eventClick: this.eventClick.bind(this),
             select: this.eventSelect.bind(this),
-            
+
             eventDrop: this.eventDrop.bind(this),
             viewRender: this.viewRender.bind(this),
 
@@ -180,31 +183,32 @@
 
 
             eventRender: function (event, element) {
-              
+
                 var IsFuture = true;//(event.end) ? (event.end.format('YYYYMMDD') <= moment().format('YYYYMMDD')) : false;
 
                 if (event.rendering != "background" && event.statuses && event.statuses.length > 0) {
 
 
                     for (var i in event.statuses) {
-                      
+
                         if (IsFuture && !event.statuses[i].Status || event.statuses[i].Status == '') {
-                           
+
                             $(element).addClass('warning-icon');
                         }
 
-                       else if (event.statuses[i].Status == 'notAttended') {
-                           
-                           $(element).addClass('notarrive-icon');
+                        else if (event.statuses[i].Status == 'notAttended') {
+
+                            $(element).addClass('notarrive-icon');
                         }
 
 
-                      
-                        //לא הגיע לא לחייב
+
+                            //לא הגיע לא לחייב
                         else if (IsFuture && event.statuses[i].Status == 'notAttendedDontCharge') {
 
                             $(element).addClass('redvi2-icon');
                         }
+
                             //לא הגיע  לחייב
                         else if (IsFuture && event.statuses[i].Status == 'notAttendedCharge') {
 
@@ -219,29 +223,33 @@
                             $(element).addClass('returngreen-iconfloat');
                         }
 
-                        //  במידה ויש דרוש שיעור השלמה על ההשלמה
+                            //  במידה ויש דרוש שיעור השלמה על ההשלמה
+                            // כנראה מיותר
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 5) {
-                           
-                         //   $(element).css("color", "white").css("background", "Silver").css("border-color", "gray");
+
+                            //   $(element).css("color", "white").css("background", "Silver").css("border-color", "gray");
                             $(element).addClass('returngreen-icon');
                         }
 
+                            // הוגדר שהוא צריך שיעור השלמה
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 1) {
-                          
+
                             $(element).css("background-color", "lightGray").css("border-color", "gray");
                             $(element).addClass('returnred-icon');
                             $(element).addClass("hadPeami");
                         }
+
+                            // שמו לו שיעור השלמה איפה שהוא
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 2) {
-                        
+
                             $(element).css("background-color", "lightGray").css("border-color", "gray");
-                         
+
                             $(element).addClass('returngreen-icon');
                             $(element).addClass("hadPeami");
                         }
 
                         else if (IsFuture) {
-                         
+
                             $(element).addClass('approve-icon');
                         }
 
@@ -262,16 +270,16 @@
                     $(element).css("color", "white").css("background", "gray").css("border-color", "Silver");
                     $(element).addClass("hadPeami");
                 } else if (event.horsenames && event.horsenames.length > 0) {
-                 
+
                     var horsenames = "";
                     var prefix = "";
                     for (var i = 0; i < event.horsenames.length; i++) {
                         if (i != 0) prefix = ",";
-                        horsenames =horsenames + prefix + event.horsenames[i];
+                        horsenames = horsenames + prefix + event.horsenames[i];
                     }
-                 
 
-                    $(element).find(".fc-time span").css("float","right").before("<span class='spHorse'> (" + horsenames + ")  </span>");
+
+                    $(element).find(".fc-time span").css("float", "right").before("<span class='spHorse'> (" + horsenames + ")  </span>");
                 }
 
 
@@ -280,23 +288,29 @@
 
         });
 
-
-
         $(".addedCalender").prependTo(".fc-right");
+
+
+        //Scroll To End 
 
 
 
     }
 
-  
-   
+
+
 
 
     function _viewRender(view, element) {
+
+
         this.scope.$emit('calendar.viewRender', { startDate: view.start, endDate: view.end });
         this.reloadEvents();
 
-      
+
+
+
+
     }
 
     function _eventResize(event) {
@@ -319,13 +333,13 @@
     }
 
     function _eventClick(event, jsEvent) {
-       
+
         //if (!jsEvent.target.id) {
         this.eventClickCallback(event, jsEvent);
         this.reloadEvents();
         this.scope.$apply();
 
-       
+
         //}
     }
 
@@ -359,6 +373,8 @@
 
 
 
+
+
     }
 
     function _reloadResources() {
@@ -371,8 +387,40 @@
         });
 
 
-      
+
+        var view = $('.calendar').fullCalendar('getView');
+
        
+
+        var resCount = this.resources.length;
+      
+        if (resCount > 6) {
+
+            var setWidth = resCount * 16.66666666;
+
+            $(".fc-view.fc-agendaDay-view.fc-agenda-view").css("width", setWidth + "%");
+            $(".fc-view.fc-agendaWeek-view.fc-agenda-view").css("width", setWidth + "%");
+            $(".fc-view.fc-month-view.fc-basic-view").css("width", setWidth + "%");
+           
+            if (view.type != this.currentView) {
+               // alert(22);
+                $(".fc-view-container").scrollLeft(5000);
+                this.currentView = view.type;
+
+            }
+          
+        } else {
+            $(".fc-view.fc-agendaDay-view.fc-agenda-view").css("width", "100%");
+            $(".fc-view.fc-agendaWeek-view.fc-agenda-view").css("width", "100%");
+            $(".fc-view.fc-month-view.fc-basic-view").css("width", "100%");
+
+
+        }
+
+
+       
+
+      
 
 
     }
