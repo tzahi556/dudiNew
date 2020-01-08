@@ -613,6 +613,7 @@
                     continue;
                 }
 
+              
 
                 var ststIndex = this.getStatusIndex(this.lessons[i]);
                 // שיעור השלמה
@@ -990,8 +991,11 @@
                 lesson.statuses[0].IsComplete = isComplete;
             }
 
+          
+            if (status == "completionReq" && isComplete == 0) {
 
-
+                isComplete = 1;
+            }
 
 
             this.lessonStatusesToUpdate = this.lessonStatusesToUpdate || [];
@@ -1598,7 +1602,7 @@
 
 
 
-
+                    debugger
                     lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate);
                     this.user = user;
 

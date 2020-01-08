@@ -388,32 +388,31 @@
 
 
 
-        var view = $('.calendar').fullCalendar('getView');
-
        
 
+       
+        //  הקוד הבא בשביל ליצור גלילה אנכית אם יש יותר מ6 מדריכים במסך
         var resCount = this.resources.length;
-      
+      // alert(22);
         if (resCount > 6) {
-
+            //var view = $('.calendar').fullCalendar('getView');
             var setWidth = resCount * 16.66666666;
 
             $(".fc-view.fc-agendaDay-view.fc-agenda-view").css("width", setWidth + "%");
-            $(".fc-view.fc-agendaWeek-view.fc-agenda-view").css("width", setWidth + "%");
-            $(".fc-view.fc-month-view.fc-basic-view").css("width", setWidth + "%");
-           
-            if (view.type != this.currentView) {
-               // alert(22);
-                $(".fc-view-container").scrollLeft(5000);
-                this.currentView = view.type;
+            //$(".fc-view.fc-agendaWeek-view.fc-agenda-view").css("width", setWidth + "%");
+            //$(".fc-view.fc-month-view.fc-basic-view").css("width", setWidth + "%");
+            $(".fc-view-container").scrollLeft(5000);
+            //if (view.type != this.currentView) {
+          
+            //    $(".fc-view-container").scrollLeft(5000);
+            //    this.currentView = view.type;
 
-            }
+            //}
           
         } else {
             $(".fc-view.fc-agendaDay-view.fc-agenda-view").css("width", "100%");
-            $(".fc-view.fc-agendaWeek-view.fc-agenda-view").css("width", "100%");
-            $(".fc-view.fc-month-view.fc-basic-view").css("width", "100%");
-
+            //$(".fc-view.fc-agendaWeek-view.fc-agenda-view").css("width", "100%");
+            //$(".fc-view.fc-month-view.fc-basic-view").css("width", "100%");
 
         }
 
