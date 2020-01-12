@@ -289,6 +289,8 @@
             var returnLessons = [];
 
             for (var i in this.lessons) {
+
+
                 for (var x in this.resources) {
                     if (this.lessons[i].resourceId == this.resources[x].id) {
 
@@ -299,7 +301,9 @@
                             if (!this.lessons[i]) continue;
                         }
 
-                        returnLessons.push(this.lessons[i]);
+
+                       returnLessons.push(this.lessons[i]);
+                           
                         break;
                     }
                 }
@@ -310,20 +314,21 @@
         }
 
         function _getIfLessonPrevExist(lesson, returnLessons) {
-
+           
+           
             var prevStartDate = moment(lesson.start).add(-7, 'day').format('YYYY-MM-DDTHH:mm:ss');
             var prevEndDate = moment(lesson.end).add(-7, 'day').format('YYYY-MM-DDTHH:mm:ss');
             var resourceId = lesson.resourceId;
+       
 
             for (var i in returnLessons) {
                 var startLesDate = moment(returnLessons[i].start).format('YYYY-MM-DDTHH:mm:ss');
                 var endLesDate = moment(returnLessons[i].end).format('YYYY-MM-DDTHH:mm:ss');
 
                 if (resourceId != returnLessons[i].resourceId) continue;
+               
 
                 if (
-
-
 
                     (
                      (prevStartDate >= startLesDate
@@ -353,6 +358,7 @@
             lesson.students = [];
             lesson.statuses = [];
             this.NewLesIds--;
+
             lesson.id = this.NewLesIds;
             lesson.prevId = -1;
             return lesson;
@@ -460,7 +466,10 @@
                         alert("המערכת יצרה שיעורים עד לתאריך - " + DateTafus + ", מדריך תפוס בתאריך זה ");
                         return;
                     }
+
+
                     this.createChildEvent(res, --lessonsQty);
+
                 }.bind(this));
             }
             else {

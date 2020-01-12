@@ -27,6 +27,7 @@ namespace FarmsApi.DataModels
         public int? LessonPayType { get; set; }
         public string HorseName { get; set; }
         public string OfficeDetails { get; set; }
+        public int PrevNext { get; set; }
 
         // id = lesson.Id,
         //prevId = lesson.ParentId,

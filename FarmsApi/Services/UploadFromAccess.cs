@@ -14,25 +14,28 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 67; //71 רנצו מניס
+        public int FarmId = 73; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
+                                //73 חניאל
         public DataSet ds = new DataSet();
 
         public Context Context = new Context();
-        public string MailPrefix = "greenfields";
+        public string MailPrefix = "haniel";
         // "greenfields";
        
-        public string Hava = "greenfields";
+        public string Hava = "haniel";
         //"greenfields";
         //rancho
-        public string ExpensWorkerId = "3";
+        //haniel
+        public string ExpensWorkerId = "-11";
         //3 חוות גרין פילדס חווה אמת
         //6 חוות רנצו
         // טסט 59
-
-
-
+        public string HavaMacabi="2";
+        //מכבי בחווה גרין פילדס 2
+        //מכבי בחווה רנצו 54
+        //מכבי בחווה חניאל 2
         public UploadFromAccess()
         {
             String connection = @"Provider=Microsoft.Jet.OLEDB.4.0;" +
@@ -62,7 +65,7 @@ namespace FarmsApi.Services
 
             string sqlRiders = @" SELECT * from Riders";
 
-            string sqlInstructor = @" SELECT * from Workers ";
+            string sqlInstructor = @" SELECT * from Workers Where Active=True";
 
             string sqlOrganizations = @" SELECT * from Organizations ";
 
@@ -106,10 +109,10 @@ namespace FarmsApi.Services
         {
 
             //BuildEntityIdOnly();
-        //  BuildUserRiders();
-       //   BuildUserInstructors();
+       //   BuildUserRiders();
+      //    BuildUserInstructors();
             //  BuildLessons();
-          BuildStudentLessons();
+         BuildStudentLessons();
             //BuildCommitmentsLessons();
             //  BuildPayments();
 
@@ -502,11 +505,13 @@ namespace FarmsApi.Services
                         if (Price == "0") Price = StudentObj.Cost.ToString();
 
                     }
+
+
                     //הוצאות נוספות
                     double? FixedPrice = double.Parse(Price) - double.Parse(financPrecent);
 
                     // אם מכבימתכניס 0
-                    if (financier == "2")
+                    if (financier == HavaMacabi)
                     {
                         FixedPrice = 0;
                     }
@@ -608,7 +613,7 @@ namespace FarmsApi.Services
                         try
                         {
                             // אם מכבי
-                            if (financier == "2" && TypeofRiders == "0") // אם זה לא שיעור השלמה
+                            if (financier == HavaMacabi && TypeofRiders == "0") // אם זה לא שיעור השלמה
                             {
                                 var CommitmentsUser = Context.Commitments.Where(x => x.HMO == "maccabiSheli" && x.UserId == StudentObj.Id).FirstOrDefault();
                                 if (CommitmentsUser == null)
@@ -759,6 +764,7 @@ namespace FarmsApi.Services
 
 
                     DateTime LessonsStart = GetDateFromAccess(DayofRide, HourofRide);
+                  
                     // אם מכבי
                     if (financier == "2")
                     {
@@ -875,8 +881,6 @@ namespace FarmsApi.Services
             }
         }
 
-
-
         private DateTime GetDateFromAccess(string dayofRide, string hourofRide)
         {
             string strDateStarted = dayofRide.Substring(0, 10) + " " + hourofRide;
@@ -949,11 +953,12 @@ namespace FarmsApi.Services
         private string GetHMO(string style, string finance)
         {
             // גולדן פילד
-
             if (FarmId == 67)
             {
                 if (style == "treatment" && finance == "2") return "maccabiSheli";
                 if (style == "treatment" && finance == "15") return "klalit";
+
+
             }
 
 
@@ -964,6 +969,15 @@ namespace FarmsApi.Services
                 if (style == "treatment" && finance == "105") return "klalit";
                 if (style == "treatment" && finance == "106") return "leumit";
                 if (style == "treatment" && finance == "107") return "meuhedet";
+            }
+
+            // חניאל
+            if (FarmId == 73)
+            {
+                if (style == "treatment" && finance == "2") return "maccabiSheli";
+                if (style == "treatment" && finance == "3") return "klalit";
+                if (style == "treatment" && finance == "10") return "leumit";
+                if (style == "treatment" && finance == "8") return "meuhedet";
             }
 
             return "";
@@ -981,6 +995,16 @@ namespace FarmsApi.Services
             {
                 if (finance == "54" || finance == "105" || finance == "106" || finance == "107") return "treatment";
             }
+
+
+            // חניאל
+            if (FarmId == 73)
+            {
+                if (finance == "2" || finance == "3" || finance == "8" || finance == "10") return "treatment";
+            }
+
+
+
             return "privateTreatment";
         }
 

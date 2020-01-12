@@ -156,42 +156,43 @@ namespace FarmsApi.Services
 
             //try
             //{
-                var lessons = query.ToList();
-                int lastId = 0;
-                foreach (var Lesson in lessons)
+            var lessons = query.ToList();
+            int lastId = 0;
+            foreach (var Lesson in lessons)
+            {
+                try
                 {
-                    try
+                    if (Lesson.Id != lastId)
                     {
-                        if (Lesson.Id != lastId)
+                        var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, OfficeDetails = l.OfficeDetails, IsComplete = l.IsComplete, HorseId = l.HorseId }).Distinct().ToArray();
+                        var studentsArray = students.Select(s => s.StudentName).ToArray();
+                        var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName != null).Select(l => new { HorseName = l.HorseName }).ToArray();
+
+                        ReturnLessons.Add(JObject.FromObject(new
                         {
-                            var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, OfficeDetails= l.OfficeDetails, IsComplete = l.IsComplete, HorseId = l.HorseId }).Distinct().ToArray();
-                            var studentsArray = students.Select(s => s.StudentName).ToArray();
-                            var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName != null).Select(l => new { HorseName = l.HorseName }).ToArray();
-
-                            ReturnLessons.Add(JObject.FromObject(new
-                            {
-                                id = Lesson.Id,
-                                prevId = Lesson.ParentId,
-                                start = Lesson.Start,
-                                end = Lesson.End,
-                                horsenames = horsesArray.Select(s => s.HorseName).ToArray(),
-                                editable = true,
-                                resourceId = Lesson.Instructor_Id,
-                                lessprice = Lesson.Price,
-                                lessonpaytype = Lesson.LessonPayType,
-                                details = Lesson.Details,
-                                students = students.Select(s => s.StudentId).ToArray(),
-                                statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId,OfficeDetails=s.OfficeDetails }).ToArray(),
-                                title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : "")
-                            }));
-                        }
-                        lastId = Lesson.Id;
+                            id = Lesson.Id,
+                            prevId = Lesson.ParentId,
+                            start = Lesson.Start,
+                            end = Lesson.End,
+                            horsenames = horsesArray.Select(s => s.HorseName).ToArray(),
+                            editable = true,
+                            resourceId = Lesson.Instructor_Id,
+                            lessprice = Lesson.Price,
+                            lessonpaytype = Lesson.LessonPayType,
+                            details = Lesson.Details,
+                            students = students.Select(s => s.StudentId).ToArray(),
+                            statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId, OfficeDetails = s.OfficeDetails }).ToArray(),
+                            title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : ""),
+                            PrevNext = Lesson.PrevNext
+                        }));
                     }
-                    catch (Exception)
-                    {
-
-                    }
+                    lastId = Lesson.Id;
                 }
+                catch (Exception)
+                {
+
+                }
+            }
 
             //}
             //catch (Exception ex)
@@ -235,7 +236,7 @@ namespace FarmsApi.Services
                             inner join Lessons l on l.Id = t4.Lesson_Id
                             inner join Users ui on ui.Id = l.Instructor_Id
 
-                            where t3.completionReq > 0 and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ") and(u.Role!='instructor' or (Instructor_Id=" +CurrentUser.Id+")    ) order by Instructor_Id";
+                            where t3.completionReq > 0 and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ") and(u.Role!='instructor' or (Instructor_Id=" + CurrentUser.Id + ")    ) order by Instructor_Id";
 
 
                 using (var reader = cmd.ExecuteReader())
@@ -296,7 +297,7 @@ namespace FarmsApi.Services
 
                                 StudentLesson.Status = Status["status"].Value<string>();
                                 StudentLesson.Details = Status["details"].Value<string>();
-                               
+
                                 StudentLesson.IsComplete = Status["isComplete"].Value<int>();
                             }
 
@@ -310,7 +311,7 @@ namespace FarmsApi.Services
 
 
 
-                                Context.Entry(StudentLesson).State = System.Data.Entity.EntityState.Modified;
+                            Context.Entry(StudentLesson).State = System.Data.Entity.EntityState.Modified;
                         }
                     }
                     Context.SaveChanges();
@@ -327,7 +328,7 @@ namespace FarmsApi.Services
 
 
 
-        
+
 
         public static JObject UpdateLessonDetails(JObject Lesson)
         {
@@ -342,6 +343,7 @@ namespace FarmsApi.Services
             return Lesson;
 
         }
+
         public static JObject UpdateLesson(JObject Lesson, bool changeChildren, int? lessonsQty)
         {
             int LessonId = Lesson["id"].Value<int>();
@@ -579,16 +581,69 @@ namespace FarmsApi.Services
 
                     Context.StudentLessons.Add(new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]), HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]), OfficeDetails = StatusData[4] });
 
-                    //try
-                    //{
-                    //}
-                    //catch (Exception ex)
-                    //{
 
-                    //}
                 }
+
+
                 Context.SaveChanges();
+
+               // if (StudentIds.Count() > 1)
+
+                AddOrRemvoveFromGroup(Context, StudentIds, LessonId);
+
             }
+        }
+
+
+
+        private static void AddOrRemvoveFromGroup(Context context, List<int> studentIds, int lessonId)
+        {
+            // אםקיים שיעור נלווה - הבא
+            var l = context.Lessons.Where(x => x.ParentId == lessonId).FirstOrDefault();
+            if (l != null)
+            {
+                // כל התלמידים של השיעור
+                var sl = context.StudentLessons.Where(x => x.Lesson_Id == l.Id).ToList();
+
+                //if(sl.Count()!= studentIds.Count())
+                //{
+               // קיים במערכת ולא 
+                foreach (StudentLessons item in sl)
+                {
+                    int studentId = item.User_Id;
+
+                    bool exists = studentIds.Contains(studentId);
+
+                    if (!exists)
+                    {
+                        context.StudentLessons.Remove(item);
+                    }
+
+                }
+
+                // איד חדש שלא קיים במערכת
+                foreach (int itemStudId in studentIds)
+                {
+                    var studentInSystem = context.StudentLessons.Where(x => x.Lesson_Id == l.Id && x.User_Id == itemStudId).FirstOrDefault();
+                    if (studentInSystem == null)
+                    {
+                        context.StudentLessons.Add(new StudentLessons() { Lesson_Id = l.Id, User_Id = itemStudId, Status = "", Details = "", IsComplete = 0, HorseId = null, OfficeDetails = "" });
+
+                    }
+
+                }
+
+
+
+
+                AddOrRemvoveFromGroup(context, studentIds, l.Id);
+            }
+
+
+            context.SaveChanges();
+            // }
+
+
         }
 
         private static string[] GetStatusDataFromJson(JObject Lesson, int StudentId)
