@@ -43,7 +43,9 @@
 
         this.transferLesson = _transferLesson.bind(this);
         this.role = localStorage.getItem('currentRole');
-
+        this.isEventHaveChild = false;
+        this.onlyOne = 0;
+        this.modalAppendClick = _modalAppendClick.bind(this);
         this.scope.$on('event.show', this.onShow);
     }
 
@@ -120,13 +122,13 @@
     }
 
 
-    
+
 
     function _transferLesson() {
 
-       // $ctrl.SelectedinstructordTime == 0 || !$ctrl.SelectedinstructordId
-        
-        var startHour = ((this.SelectedinstructordTime-1) * 15 + 480) / 60;
+        // $ctrl.SelectedinstructordTime == 0 || !$ctrl.SelectedinstructordId
+
+        var startHour = ((this.SelectedinstructordTime - 1) * 15 + 480) / 60;
         var endHour = ((this.SelectedinstructordTime - 1) * 15 + 510) / 60;
 
         var startMinute = (startHour % 1) * 60; //((this.SelectedinstructordTime - 1) * 15 + 480) / 60;
@@ -143,11 +145,12 @@
         this.close();
 
 
-      //  var dddd = this.event;
 
-       // alert(this.SelectedinstructordTime);
+        //  var dddd = this.event;
 
-      
+        // alert(this.SelectedinstructordTime);
+
+
     }
 
     function _puplateInstructor() {
@@ -156,9 +159,9 @@
         this.usersService.getTransferData(0, moment(this.tranferDate).day(), moment(this.tranferDate).format('YYYYMMDD')).then(function (res) {
 
             this.instructorsWorks = res;
-         
+
             this.puplateTimesInstructor();
-        
+
         }.bind(this));
     }
 
@@ -169,17 +172,20 @@
 
             this.usersService.getTransferData(this.SelectedinstructordId, moment(this.tranferDate).day(), moment(this.tranferDate).format('YYYYMMDD')).then(function (res) {
                 this.instructorsWorksTimes = res;
-               
+
             }.bind(this));
         } else {
             this.instructorsWorksTimes = [];
-           
+
         }
     }
 
     function _onShow(event, selectedLesson, studentTemplate) {
+        // debugger
+        this.isEventHaveChild = false;
+        if (selectedLesson.students.length>0) this.isEventHaveChild = true;
 
-      //  alert(this.role);
+
         this.tranferDate = moment(selectedLesson.start).toDate();
         this.puplateInstructor();
         this.SelectedinstructordId = selectedLesson.resourceId;
@@ -246,7 +252,7 @@
 
 
             for (var i in this.statuses) {
-               
+
                 this.event.statuses.push({ StudentId: i, Status: this.statuses[i], OfficeDetails: this.statusOfficeDetails[i], Details: this.statusDetails[i], IsComplete: this.isComplete[i], HorseId: this.horsesarray[i] });
             }
         }
@@ -256,7 +262,7 @@
             this.statusOfficeDetails = [];
             this.isComplete = [];
             this.horsesarray = [];
-           
+
             for (var i in statuses) {
 
 
@@ -388,6 +394,7 @@
         //    this.event = null;
         //}
 
+       
 
         this.copyStatuses(true);
         this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
@@ -398,6 +405,8 @@
     }
 
     function _addStudentToEvent(student) {
+
+
         var studentId = student.Id;
         this.studentFilter = null;
         if (!angular.isArray(this.event.students)) {
@@ -408,7 +417,28 @@
                 return;
             }
         }
+        
+
+       
+
+        if (this.isEventHaveChild) {
+
+            $('#myModalLabel').text(' כיצד תרצי להוסיף את התלמיד? ');
+            $('#dvAppendHad').text(' הוסף תלמיד באופן חד פעמי ');
+            $('#dvAppendTz').text(' הוסף תלמיד לצמיתות ');
+            $('#modalAppend').modal('show');
+            //if (confirm(')) {
+            //    this.event.onlyOne = 1;
+            //}
+        }
+
         this.event.students.push(studentId);
+
+        //if (this.isEventHaveChild)
+        //    this.isEventChange = true;
+
+
+
         //for (var i in selectedLesson.statuses) {
 
         //  this.changeLessonsStudent.push({ StudentId: studentId, SourceStatus: null, ChangeStatus: null});
@@ -416,6 +446,13 @@
         //}
 
     }
+
+    function _modalAppendClick(onlyOne) {
+
+        if (onlyOne) this.event.onlyOne = 1;
+    }
+
+
 
     function _studentDataById(studentId) {
         for (var i in this.students) {
@@ -428,11 +465,34 @@
     function _removeStudentFromEvent(studentId) {
         if (!confirm('האם אתה בטוח?')) { return false; }
 
+      
+
+      
+
         for (var i in this.event.students) {
             if (this.event.students[i] == studentId) {
                 this.event.students.splice(i, 1);
             }
         }
+
+
+        if (this.event.students.length > 0) {
+
+            $('#myModalLabel').text(' כיצד תרצי להסיר את התלמיד? ');
+            $('#dvAppendHad').text(' הסרת התלמיד באופן חד פעמי ');
+            $('#dvAppendTz').text(' הסרת התלמיד לצמיתות ');
+
+
+
+            $('#modalAppend').modal('show');
+
+            //if (confirm('לחץ אישור אם ברצונך להסיר תלמיד זה באופן חד פעמי מהקבוצה , ביטול יסיר אותו מהקבוצה לצמיתות')) {
+            //    this.event.onlyOne = 1;
+            //}
+        }
+
+
+
     }
 
     function _openComments(studentId) {

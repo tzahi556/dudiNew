@@ -131,9 +131,24 @@
             <label>כמות יצירת שיעורים נוספים</label>
             <input class="form-control" type="number" ng-model="$ctrl.lessonsQty"  /><!--ng-disabled="$ctrl.event.prevId != 0"-->
         </div>
-
+       
         <a class="btn btn-success" ng-click="$ctrl.close()" href="">שמור</a>
         <a class="btn btn-default" ng-click="$ctrl.delete()" href="">מחק</a>
         <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.affectChildren">כולל אירועים עתידיים</label></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAppend" style="z-index:50000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">האם לשנות גם אירועים עתידיים?</h4>
+            </div>
+            <div class="modal-body">
+                <button type="button" class="btn btn-primary" ng-click="$ctrl.modalAppendClick(true)" data-dismiss="modal" id="dvAppendHad">הוסף תלמיד באופן חד פעמי</button>
+                <button type="button" class="btn btn-primary" ng-click="$ctrl.modalAppendClick(false)" data-dismiss="modal" id="dvAppendTz">הוסף תלמיד לצמיתות </button>
+            </div>
+        </div>
     </div>
 </div>

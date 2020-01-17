@@ -60,7 +60,7 @@
 
         var currentStudentId = "";
         function dragStart(event) {
-            $(".hadPeami").hide();
+          //  $(".hadPeami").hide();
             currentStudentId = event.target.id;
         }
 
@@ -70,7 +70,7 @@
 
         function drop(event) {
 
-            $(".hadPeami").show();
+           // $(".hadPeami").show();
             angular.element(document.getElementById('mainController')).scope().makeDrop(event, currentStudentId);
             currentStudentId = "";
 

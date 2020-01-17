@@ -135,16 +135,19 @@
 
 
         $scope.makeDrop = function (newEvent, currentStudentId) {
-
+           
             if (newEvent && newEvent.target.className.indexOf("fc-draggable dvDragElement") == -1) {
-
-
+               
+               
                 $rootScope.statuses = [{ "StudentId": currentStudentId, "Status": "completion", "Details": "", "IsComplete": 2 }];
                 $rootScope.students = [(currentStudentId)];
 
-
+               
 
                 var $el = $(newEvent.target);
+
+             //   alert($el[0].className);
+              
 
                 var event = jQuery.Event('mousedown', {
                     which: 1,
@@ -168,38 +171,55 @@
             }
         }
 
-        //$rootScope.$watch('noNetwork', function (newValue) {
+        function _eventCreate(start, end, jsEvent, view, resource) {
+          
+            if ($rootScope.students && $rootScope.students.length > 0) {
+
+                for (var i in this.lessons) {
+
+                    if (resource.id == this.lessons[i].resourceId &&
+                        (
+                         this.lessons[i].start == start.toISOString() ||
+                         this.lessons[i].end == end.toISOString() ||
+                         (moment(start.toISOString()) < moment(this.lessons[i].end) && moment(start.toISOString()) > moment(this.lessons[i].start))
+                        )
+
+                        ) {
+                        //alert(1);
+                        start = this.lessons[i].start;
+                        end = this.lessons[i].end;
+                        break;
+                        // return this.lessons[i];
+                    }
+
+                }
 
 
-        //    $(".hadPeami").hide();
-        //    if (newValue && newValue.target.className.indexOf("fc-draggable dvDragElement") == -1) {
-        //        alert();
+
+            }
 
 
-        //        var Dragid = $rootScope.studentIdDrag;
-        //        $rootScope.statuses = [{ "StudentId": Dragid, "Status": "completion", "Details": "", "IsComplete": 2 }];
-        //        $rootScope.students = [(Dragid)];
 
-        //        var $el = $(newValue.target);
+            var event = {
+                id: 0,
+                start: start,
+                end: end,
+                resourceId: resource.id,
+                statuses: $rootScope.statuses,
+                students: $rootScope.students
+            };
 
-        //        var event = jQuery.Event('mousedown', {
-        //            which: 1,
-        //            pageX: newValue.pageX,
-        //            pageY: newValue.pageY,
-        //        })
+            $rootScope.statuses = [];
+            $rootScope.students = [];
+         
 
-        //        $el.trigger(event);
 
-        //        event = jQuery.Event('mouseup', {
-        //            which: 1,
-        //            pageX: newValue.pageX,
-        //            pageY: newValue.pageY,
-        //        })
-        //        $el.trigger(event);
+            this.createNotifications(event, 'create');
 
-        //    }
+            this.updateLesson(event);
+        }
 
-        //});
+     
 
         function _getCounter(type) {
             var Count = 0;
@@ -290,20 +310,46 @@
 
             for (var i in this.lessons) {
 
-
                 for (var x in this.resources) {
                     if (this.lessons[i].resourceId == this.resources[x].id) {
 
-                        if (this.lessons[i].start > this.endDate) {
+
+                        //if (this.lessons[i].start > this.endDate) {
+
+                         //   this.lessons[i] = this.getIfLessonPrevExistNew(this.lessons[i]); //this.getIfLessonPrevExist(this.lessons[i], returnLessons);// moment(this.lessons[i].start).add(-7, 'day');
+                         //   if (!this.lessons[i]) continue;
+                       // }
 
 
-                            this.lessons[i] = this.getIfLessonPrevExist(this.lessons[i], returnLessons);// moment(this.lessons[i].start).add(-7, 'day');
-                            if (!this.lessons[i]) continue;
-                        }
+                        // כל זה בדיקה שאין ביחד גם צבע אפור וגם שיעור
+                        //var isExist = false;
+                       
+                        //var lessstart = this.lessons[i].start;
+                        //var resourceId = this.lessons[i].resourceId;
+                        //for (var y in returnLessons) {
+                        //    if (lessstart == returnLessons[y].start && returnLessons[y].resourceId == resourceId) {
+                                
+                        //        for (var m in returnLessons[y].statuses) {
+                                  
+                        //            if (returnLessons[y].statuses[m] && returnLessons[y].statuses[m].Status == "completionReq") {
+                        //                returnLessons.splice(returnLessons.indexOf(returnLessons[y]), 1);
+                        //            }
+                        //        }
 
+                        //        for (var m in this.lessons[i].statuses) {
 
-                       returnLessons.push(this.lessons[i]);
-                           
+                        //            if (this.lessons[i].statuses[m] && this.lessons[i].statuses[m].Status == "completionReq") {
+                        //                isExist = true;
+                                       
+                        //            }
+                        //        }
+
+                        //        break;
+                        //    }
+                        //}
+
+                        //if (!isExist) returnLessons.push(this.lessons[i]);
+                        returnLessons.push(this.lessons[i]);
                         break;
                     }
                 }
@@ -312,6 +358,7 @@
 
             return returnLessons;
         }
+     
 
         function _getIfLessonPrevExist(lesson, returnLessons) {
            
@@ -540,64 +587,7 @@
             }
         }
 
-        function _eventCreate(start, end, jsEvent, view, resource) {
-
-            if ($rootScope.students && $rootScope.students.length > 0) {
-
-                for (var i in this.lessons) {
-
-                    if (resource.id == this.lessons[i].resourceId &&
-                        (
-                         this.lessons[i].start == start.toISOString() ||
-                         this.lessons[i].end == end.toISOString() ||
-                         (moment(start.toISOString()) < moment(this.lessons[i].end) && moment(start.toISOString()) > moment(this.lessons[i].start))
-                        )
-
-                        ) {
-                        //alert(1);
-                        start = this.lessons[i].start;
-                        end = this.lessons[i].end;
-                        break;
-                        // return this.lessons[i];
-                    }
-
-                }
-
-            }
-
-
-
-            var event = {
-                id: 0,
-                start: start,
-                end: end,
-                resourceId: resource.id,
-                statuses: $rootScope.statuses,
-                students: $rootScope.students
-            };
-
-            $rootScope.statuses = [];
-            $rootScope.students = [];
-            //if ($rootScope.statuses) {
-
-            //    event = {
-            //        id: 0,
-            //        start: start.toISOString(),
-            //        end: end.toISOString(),
-            //        resourceId: resource.id,
-            //      //  statuses: $rootScope.statuses,
-            //        students: $rootScope.students
-            //    };
-
-            //    $rootScope.statuses = null;
-
-            //}
-
-
-            this.createNotifications(event, 'create');
-
-            this.updateLesson(event);
-        }
+       
 
         function _updateLesson(event) {
 
@@ -614,9 +604,9 @@
 
             //  
 
-            var fakendDate = moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
+            var fakendDate = this.endDate;//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
-
+           
                 this.lessons = lessons;
                 // בדיקת היתכנות הורדה
                 this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
@@ -634,7 +624,7 @@
 
 
 
-            var fakendDate = moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
+            var fakendDate = this.endDate;//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
 
 
             // להביא את ההשלמות

@@ -401,7 +401,7 @@
 
             for (var i in this.lessons) {
 
-                if (!this.lessons[i].paid) {
+                if (!this.lessons[i].paid && this.lessons[i].lessprice && this.lessons[i].lessprice > 0) {
 
                     var CurrentStatus = this.lessons[i].statuses[this.getStatusIndex(this.lessons[i])].Status;
                     if (CurrentStatus == 'completionReq') continue;

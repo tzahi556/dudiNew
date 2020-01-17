@@ -458,6 +458,9 @@ namespace FarmsApi.Services
 
             int LessonId = Lesson["id"].Value<int>();
 
+            int onlyOne = 0;
+            if (Lesson["onlyOne"] !=null)
+                onlyOne = Lesson["onlyOne"].Value<int>();
 
             Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
 
@@ -589,7 +592,7 @@ namespace FarmsApi.Services
 
                // if (StudentIds.Count() > 1)
 
-                AddOrRemvoveFromGroup(Context, StudentIds, LessonId);
+               if(onlyOne==0) AddOrRemvoveFromGroup(Context, StudentIds, LessonId);
 
             }
         }

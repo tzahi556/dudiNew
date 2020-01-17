@@ -498,7 +498,7 @@
 
             for (var i in this.lessons) {
 
-                if (!this.lessons[i].paid) {
+                if (!this.lessons[i].paid && this.lessons[i].lessprice && this.lessons[i].lessprice>0) {
 
                     var CurrentStatus = this.lessons[i].statuses[this.getStatusIndex(this.lessons[i])].Status;
                     if (CurrentStatus == 'completionReq') continue;
@@ -595,24 +595,7 @@
             this.newPrice = 0;
             for (var i in this.lessons) {
 
-                // הפרדה לאנשי מכבי
-                if (this.lessons[i].lessprice == 0) {
-
-                    var studentsStatus = this.lessons[i].statuses[this.getStatusIndex(this.lessons[i])].Status;  //|| (['completion'].indexOf(studentsStatus) != -1 && lesson.IsComplete==4)
-                    if (['attended', 'notAttendedCharge'].indexOf(studentsStatus) != -1 ) {
-
-                        if (this.commitmentLessons-->0)
-                           this.lessons[i].paid = true;
-                        else
-                            this.lessons[i].paid = false;
-                    } else {
-                        this.lessons[i].paid = false;
-
-
-                    }
-                    continue;
-                }
-
+               
               
 
                 var ststIndex = this.getStatusIndex(this.lessons[i]);
@@ -638,6 +621,28 @@
                 if (this.lessons[i].statuses[ststIndex].Status == "notAttended") this.getStatusLengthFrom3 += 1;
                 if (this.lessons[i].statuses[ststIndex].Status == "notAttendedDontCharge") this.getStatusLengthFrom4 += 1;
                 if (this.lessons[i].statuses[ststIndex].Status == "completionReq") this.getStatusLengthFrom5 += 1;
+
+
+
+
+                // הפרדה לאנשי מכבי
+                if (this.lessons[i].lessprice == 0) {
+
+                    var studentsStatus = this.lessons[i].statuses[this.getStatusIndex(this.lessons[i])].Status;  //|| (['completion'].indexOf(studentsStatus) != -1 && lesson.IsComplete==4)
+                    if (['attended', 'notAttendedCharge'].indexOf(studentsStatus) != -1 ) {
+
+                        if (this.commitmentLessons-->0)
+                           this.lessons[i].paid = true;
+                        else
+                            this.lessons[i].paid = false;
+                    } else {
+                        this.lessons[i].paid = false;
+
+
+                    }
+                    continue;
+                }
+
 
 
                 if (this.lessons[i].statuses[ststIndex].IsComplete < 7) {
@@ -950,7 +955,7 @@
 
         function _changeLessonsStatus(status, details, studentId, lessonId, isComplete, lesson, isText, officedetails) {
          
-           
+             
             if (!isText && (isComplete >2)) {
                 //var ind = this.getStatusIndex(lesson);
 

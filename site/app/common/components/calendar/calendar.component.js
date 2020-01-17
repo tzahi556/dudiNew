@@ -183,7 +183,7 @@
 
 
             eventRender: function (event, element) {
-               
+
                 var IsFuture = true;//(event.end) ? (event.end.format('YYYYMMDD') <= moment().format('YYYYMMDD')) : false;
 
                 if (event.rendering != "background" && event.statuses && event.statuses.length > 0) {
@@ -223,15 +223,15 @@
                             $(element).addClass('returngreen-iconfloat');
                         }
 
-                        //  במידה ויש דרוש שיעור השלמה על ההשלמה
-                        // כנראה מיותר
+                            //  במידה ויש דרוש שיעור השלמה על ההשלמה
+                            // כנראה מיותר
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 5) {
 
                             //   $(element).css("color", "white").css("background", "Silver").css("border-color", "gray");
                             $(element).addClass('returngreen-icon');
                         }
 
-                        // הוגדר שהוא צריך שיעור השלמה
+                            // הוגדר שהוא צריך שיעור השלמה
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 1) {
 
                             $(element).css("background-color", "lightGray").css("border-color", "gray");
@@ -239,7 +239,7 @@
                             $(element).addClass("hadPeami");
                         }
 
-                        // שמו לו שיעור השלמה איפה שהוא
+                            // שמו לו שיעור השלמה איפה שהוא
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 2) {
 
                             $(element).css("background-color", "lightGray").css("border-color", "gray");
@@ -257,7 +257,7 @@
                     }
 
                     // הסתרה בעת שיש גרירה על אחד מכל אלו
-                    HideMultipleHadPeami(element);
+                 //  HideMultipleHadPeami(element);
 
                     // שיעור אחרון
                     if (event.PrevNext == 1) {
@@ -273,7 +273,7 @@
                 }
 
 
-              
+
                 if (event.title == "ניתן להכניס חד פעמי") {
                     $(element).css("color", "white").css("background", "gray").css("border-color", "Silver");
                     $(element).addClass("hadPeami");
@@ -308,27 +308,35 @@
 
 
     function HideMultipleHadPeami(element) {
-        var elementNext = $(element).next();
-        var elementPrev = $(element).prev(); 
-        var elementNextStart = $(elementNext).find(".fc-time").attr("data-start");
-        var elementPrevStart = $(elementPrev).find(".fc-time").attr("data-start");
+       
+
         var elementStart = $(element).find(".fc-time").attr("data-start");
+        var elementSibilng = $(element).siblings();
 
-        if (elementStart == elementNextStart && $(element).attr("class").indexOf('hadPeami') > -1) {
-            $(element).hide();
-        }
-        if (elementStart == elementNextStart && $(elementNext).attr("class").indexOf('hadPeami') > -1) {
-            $(elementNext).hide();
-        }
-
-        if (elementStart == elementPrevStart && $(element).attr("class").indexOf('hadPeami') > -1) {
-            $(element).hide();
-        }
-        if (elementStart == elementPrevStart && $(elementPrev).attr("class").indexOf('hadPeami') > -1) {
-            $(elementPrev).hide();
+        var elementNext = $($(elementSibilng)[1]);
+        if (elementNext) {
+            var elementNextStart = $(elementNext).find(".fc-time").attr("data-start");
+            if (elementStart == elementNextStart && $(element).attr("class").indexOf('hadPeami') > -1) {
+                $(element).hide();
+            }
+            if (elementStart == elementNextStart && $(elementNext).attr("class").indexOf('hadPeami') > -1) {
+                $(elementNext).hide();
+            }
         }
 
+       
 
+        var elementPrev = $($(elementSibilng)[0]);
+        if (elementPrev) {
+            var elementPrevStart = $(elementPrev).find(".fc-time").attr("data-start");
+            if (elementStart == elementPrevStart && $(element).attr("class").indexOf('hadPeami') > -1) {
+                $(element).hide();
+            }
+            if (elementStart == elementPrevStart && $(elementPrev).attr("class").indexOf('hadPeami') > -1) {
+                $(elementPrev).hide();
+            }
+
+        }
 
     }
 
@@ -419,12 +427,12 @@
 
 
 
-       
 
-       
+
+
         //  הקוד הבא בשביל ליצור גלילה אנכית אם יש יותר מ6 מדריכים במסך
         var resCount = this.resources.length;
-      // alert(22);
+        // alert(22);
         if (resCount > 6) {
             //var view = $('.calendar').fullCalendar('getView');
             var setWidth = resCount * 16.66666666;
@@ -434,12 +442,12 @@
             //$(".fc-view.fc-month-view.fc-basic-view").css("width", setWidth + "%");
             $(".fc-view-container").scrollLeft(5000);
             //if (view.type != this.currentView) {
-          
+
             //    $(".fc-view-container").scrollLeft(5000);
             //    this.currentView = view.type;
 
             //}
-          
+
         } else {
             $(".fc-view.fc-agendaDay-view.fc-agenda-view").css("width", "100%");
             //$(".fc-view.fc-agendaWeek-view.fc-agenda-view").css("width", "100%");
@@ -448,9 +456,9 @@
         }
 
 
-       
 
-      
+
+
 
 
     }
