@@ -59,8 +59,8 @@
         this.role = localStorage.getItem('currentRole');
         //   this.FarmInstractorPolicy = localStorage.getItem('FarmInstractorPolicy');
 
-
-
+      
+       
 
         //alert(this.students.length);
         // this.resourcesIds = "0";
@@ -73,7 +73,7 @@
 
         // this.reloadCalendarData();
 
-        //  this.filteredLessons = this.filterLessonsBySelectedInstructors();
+      // this.filteredLessons = this.filterLessonsBySelectedInstructors();
 
        
 
@@ -133,7 +133,6 @@
 
         }.bind(this));
 
-
         $scope.makeDrop = function (newEvent, currentStudentId) {
            
             if (newEvent && newEvent.target.className.indexOf("fc-draggable dvDragElement") == -1) {
@@ -146,7 +145,7 @@
 
                 var $el = $(newEvent.target);
 
-             //   alert($el[0].className);
+                alert($el[0].className);
               
 
                 var event = jQuery.Event('mousedown', {
@@ -172,7 +171,7 @@
         }
 
         function _eventCreate(start, end, jsEvent, view, resource) {
-          
+           
             if ($rootScope.students && $rootScope.students.length > 0) {
 
                 for (var i in this.lessons) {
@@ -197,9 +196,13 @@
 
 
             }
-
-
-
+            
+            // במידה והשיעור שנוצר הוא 15 שעה להעביר לחצי שעה זה הדיפולט
+            if (moment(end).diff(start, 'minutes', true) < 16)
+            {
+               end= moment(end).add('m', 15);
+            }
+          
             var event = {
                 id: 0,
                 start: start,
@@ -300,14 +303,15 @@
         }
 
         function _filterLessonsBySelectedInstructors() {
-            //alert(this.resourcesIds);
+
+         
             //alert(this.lessons.length);
             ////031668957
             //var diffMonth = (moment(this.endDate)).diff(moment(this.startDate), 'months', true);
             //   if (this.resources.length == 0) return [];
 
             var returnLessons = [];
-
+           
             for (var i in this.lessons) {
 
                 for (var x in this.resources) {
@@ -587,8 +591,6 @@
             }
         }
 
-       
-
         function _updateLesson(event) {
 
             this.lessonsService.updateLesson(event).then(function (res) {
@@ -603,11 +605,13 @@
 
 
             //  
-
+           
             var fakendDate = this.endDate;//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
-           
+                
                 this.lessons = lessons;
+
+
                 // בדיקת היתכנות הורדה
                 this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
                 setupTooltip();

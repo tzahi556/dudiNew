@@ -38,7 +38,7 @@
         this.currentView = "";
 
         this.scope.$on('calendar.reloadEvents', function (event, events) {
-
+         
             this.events = events;
             this.reloadEvents();
 
@@ -49,6 +49,7 @@
         }.bind(this));
 
         this.scope.$on('calendar.reloadBackgroundEvents', function (event, backgroundEvents) {
+           
             this.backgroundEvents = backgroundEvents;
             this.reloadEvents();
             //  alert(12);
@@ -469,7 +470,7 @@
     }
 
     function _loadEvents(start, end, timezone, callback) {
-
+       
         callback(this.events.concat(this.backgroundEvents || []));
 
     }
