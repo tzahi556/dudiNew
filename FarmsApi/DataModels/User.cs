@@ -57,6 +57,9 @@ namespace FarmsApi.DataModels
 
         public int? EntityId { get; set; }
 
+        public string Intek { get; set; }
+        public string MatrotAl { get; set; }
+
 
 
     }

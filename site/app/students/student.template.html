@@ -12,9 +12,9 @@
                 </div>
                 <div class="panel-body">
 
-                    <div class="form-group" >
+                    <div class="form-group">
                         <input type="text" name="search" class="form-control" placeholder="חיפוש תלמיד אחר" ng-model="searchInput" autocomplete="off" />
-                        <div  ng-show="searchInput"  style="border:solid 1px #ddd">
+                        <div ng-show="searchInput" style="border:solid 1px #ddd">
 
                             <div ng-repeat="s in $ctrl.students  | filter:search | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
 
@@ -22,8 +22,8 @@
 
                             </div>
                         </div>
-                    
-                     </div>
+
+                    </div>
 
 
                     <div class="form-group hidden">
@@ -159,7 +159,7 @@
                     </div>
                     <table class="table">
                         <tbody>
-                           
+
                             <tr style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>כמות שיעורים ששולמו סה״כ</td>
                                 <td>{{$ctrl.paidLessons}}</td>
@@ -220,7 +220,7 @@
                             <tr ng-show="showDiv">
                                 <td colspan="2" style="border:double 4px gray">
                                     <form name="paymentDetails" style="">
-                                       
+
                                         <div class="col-md-12">
                                             <label>שיעורים</label>
                                             <table class="table" border="1" style="font-weight:bold">
@@ -245,70 +245,70 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            </div>
+                                        </div>
 
                                         <div class="col-md-4">
-                                                <label>מחירי שיעורים</label>
-                                                <table class="table" border="1">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>סוג</th>
-                                                            <th>כמות</th>
-                                                            <th>מחיר</th>
-                                                            <th>סה"כ</th>
+                                            <label>מחירי שיעורים</label>
+                                            <table class="table" border="1">
+                                                <thead>
+                                                    <tr>
+                                                        <th>סוג</th>
+                                                        <th>כמות</th>
+                                                        <th>מחיר</th>
+                                                        <th>סה"כ</th>
 
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
 
 
-                                                        <tr ng-repeat="lprice in $ctrl.lessReport">
-                                                            <td>{{lprice.type==1 ? 'שיעורים' : 'חודשים'}}</td>
-                                                            <td>{{lprice.count}}</td>
-                                                            <td>{{lprice.price}}</td>
-                                                            <td>{{lprice.count * lprice.price}}</td>
-                                                        </tr>
+                                                    <tr ng-repeat="lprice in $ctrl.lessReport">
+                                                        <td>{{lprice.type==1 ? 'שיעורים' : 'חודשים'}}</td>
+                                                        <td>{{lprice.count}}</td>
+                                                        <td>{{lprice.price}}</td>
+                                                        <td>{{lprice.count * lprice.price}}</td>
+                                                    </tr>
 
-                                                        <!--<tr>
-                                                            <td>22</td>
-                                                            <td>33</td>
-                                                            <td>2235</td>
-                                                        </tr>-->
-                                                        <tr>
-                                                            <td></td>
-                                                            <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid">{{$ctrl.getStatusLengthFrom1 + $ctrl.getStatusLengthFrom2}}</td>
-                                                            <td  style="border:0;font-weight:bold;text-align:left">סה"כ עבור שיעורים</td>
-                                                            <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid" >{{$ctrl.newPrice}}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                                    <!--<tr>
+                                                        <td>22</td>
+                                                        <td>33</td>
+                                                        <td>2235</td>
+                                                    </tr>-->
+                                                    <tr>
+                                                        <td></td>
+                                                        <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid">{{$ctrl.getStatusLengthFrom1 + $ctrl.getStatusLengthFrom2}}</td>
+                                                        <td style="border:0;font-weight:bold;text-align:left">סה"כ עבור שיעורים</td>
+                                                        <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid">{{$ctrl.newPrice}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
 
-                                            </div>
+                                        </div>
 
                                         <div class="col-md-4">
                                             <label>חיוב הוצאות אחרות</label>
                                             <table class="table" border="1">
-                                                    <tr>
+                                                <tr>
 
-                                                        <td style="border:0;font-weight:bold;text-align:left" colspan="2">סך חיוב עבור הוצאות</td>
-                                                        <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid">{{$ctrl.totalExpensesShulam + $ctrl.totalExpensesNoShulam}}</td>
-                                                    </tr>
-                                                
+                                                    <td style="border:0;font-weight:bold;text-align:left" colspan="2">סך חיוב עבור הוצאות</td>
+                                                    <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid">{{$ctrl.totalExpensesShulam + $ctrl.totalExpensesNoShulam}}</td>
+                                                </tr>
+
                                             </table>
 
 
 
                                             <div style="padding:5px;background-color:antiquewhite;font-weight:bold;border:solid 1px gray;border-radius:6px">
                                                 <div style="text-align:center;font-weight:bold;font-size:20px;text-decoration:underline">חישוב סופי</div>
-                                               
-                                                <div  style="text-align:center;font-weight:bold;font-size:18px;direction:ltr"><span style="color:blue">{{$ctrl.totalPay}}</span> - <span style="color:red">({{$ctrl.totalExpensesShulam + $ctrl.totalExpensesNoShulam}} + {{$ctrl.newPrice}})</span> = <u style="border:solid 1px gray;font-size:24px">{{$ctrl.totalPay - ($ctrl.totalExpensesShulam + $ctrl.totalExpensesNoShulam) - $ctrl.newPrice}}</u></div>
-                                                
+
+                                                <div style="text-align:center;font-weight:bold;font-size:18px;direction:ltr"><span style="color:blue">{{$ctrl.totalPay}}</span> - <span style="color:red">({{$ctrl.totalExpensesShulam + $ctrl.totalExpensesNoShulam}} + {{$ctrl.newPrice}})</span> = <u style="border:solid 1px gray;font-size:24px">{{$ctrl.totalPay - ($ctrl.totalExpensesShulam + $ctrl.totalExpensesNoShulam) - $ctrl.newPrice}}</u></div>
+
                                                 <div style="text-align:center;font-weight:bold;font-size:16px;direction:rtl">
                                                     <span>מצב חשבון</span> =
-                                                     <span style="color:red">כמה אני חייב</span> - 
-                                                     <span style="color:blue">כמה שילמתי</span>       
-                                                  
-                                                 </div>
+                                                    <span style="color:red">כמה אני חייב</span> -
+                                                    <span style="color:blue">כמה שילמתי</span>
+
+                                                </div>
 
                                             </div>
 
@@ -323,14 +323,14 @@
                                                         <th> שיעורים </th>
                                                         <th> חודשים </th>
                                                         <th>סה"כ</th>
-                                                      
+
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                 
+
                                                     <tr>
-                                                       
-                                                        <td style="font-weight:bold;" >{{$ctrl.paidLessons}}</td>
+
+                                                        <td style="font-weight:bold;">{{$ctrl.paidLessons}}</td>
                                                         <td style="font-weight:bold;">{{$ctrl.paidMonths}}</td>
                                                         <td style="font-weight:bold;background-color:aquamarine;border:solid 1px black">{{$ctrl.totalPay}}</td>
                                                     </tr>
@@ -399,7 +399,7 @@
                         <form ng-if="$ctrl.showNewPayment" name="paymentForm">
                             <div class="form-group">
                                 <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isMasKabala" />חשבונית מס קבלה</label>
-                                <label ><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isKabala" /> קבלה</label>
+                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isKabala" /> קבלה</label>
                                 <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabala=false" ng-model="$ctrl.newPayment.isKabalaTroma" /> קבלה על תרומה</label>
                             </div>
                             <div class="form-group">
@@ -719,7 +719,7 @@
                                 <td>
 
 
-                                   
+
 
                                     <select ng-options="status.id as status.name for status in $ctrl.lessonStatuses" ng-init="statusIndex = $ctrl.getStatusIndex(lesson)"
                                             ng-model="lesson.statuses[statusIndex].Status" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,false)">
@@ -734,7 +734,7 @@
                                     <!--<input style="width:90%;" type="text" ng-model="lesson.statuses[statusIndex].Details" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id)">-->
 
                                     <textarea rows="1" class="form-control" ng-show="showDetails" placeholder="הערות סטטוס" ng-model="lesson.statuses[statusIndex].Details" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,true,lesson.statuses[statusIndex].OfficeDetails)"></textarea>
-                                    <textarea rows="1" class="form-control" ng-show="!showDetails"  ng-model="lesson.statuses[statusIndex].OfficeDetails"   placeholder="הערות משרד" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,true,lesson.statuses[statusIndex].OfficeDetails)"></textarea>  <!--ng-change="$ctrl.setLessonsDetails(lesson)"-->
+                                    <textarea rows="1" class="form-control" ng-show="!showDetails" ng-model="lesson.statuses[statusIndex].OfficeDetails" placeholder="הערות משרד" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,true,lesson.statuses[statusIndex].OfficeDetails)"></textarea>  <!--ng-change="$ctrl.setLessonsDetails(lesson)"-->
 
                                 </td>
                                 <td>
@@ -742,7 +742,7 @@
                                 </td>
                                 <td>
 
-                                    <input style="width:100px"  type="text" ng-model="lesson.lessprice" ng-disabled="lesson.disable" ng-change="$ctrl.setLessPrice(lesson,$index)">
+                                    <input style="width:100px" type="text" ng-model="lesson.lessprice" ng-disabled="lesson.disable" ng-change="$ctrl.setLessPrice(lesson,$index)">
 
                                 </td>
                                 <td><i class="fa fa-check-circle-o green" ng-show="lesson.paid" aria-hidden="true"></i></td>
@@ -801,6 +801,32 @@
                         </div>-->
                     </div>
                 </div>
+
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        אינטק
+                    </div>
+                    <div class="panel-body">
+                        <textarea class="form-control" rows="7"  ng-model="$ctrl.user.Intek"></textarea>
+
+
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        מטרות על
+                    </div>
+                    <div class="panel-body">
+                        <textarea class="form-control" rows="7"  ng-model="$ctrl.user.MatrotAl"></textarea>
+
+
+                    </div>
+                </div>
+
+
+
 
             </uib-tab>
             <uib-tab index="4" heading="סוסים">

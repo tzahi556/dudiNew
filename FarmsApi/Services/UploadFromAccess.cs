@@ -39,7 +39,7 @@ namespace FarmsApi.Services
         public UploadFromAccess()
         {
             String connection = @"Provider=Microsoft.Jet.OLEDB.4.0;" +
-                                @"Data source=C:\DataBase\Amir.mdb;Jet OLEDB:Database Password=diana;";
+                                @"Data source=C:\Users\tzahi\Desktop\ORD\Database\Amir.mdb;Jet OLEDB:Database Password=diana;";
 
 
 
@@ -51,6 +51,9 @@ namespace FarmsApi.Services
             ds.Tables.Add(new DataTable("RiderParents"));
             ds.Tables.Add(new DataTable("Users"));
 
+            ds.Tables.Add(new DataTable("Candidates"));
+
+            
 
 
 
@@ -73,6 +76,7 @@ namespace FarmsApi.Services
 
             string sqlUsers = @" SELECT * from Users ";
 
+            string sqlCandidates = @" SELECT * from Candidates ";
 
             using (OleDbConnection conn = new OleDbConnection(connection))
             {
@@ -96,6 +100,10 @@ namespace FarmsApi.Services
                 da.SelectCommand.CommandText = sqlUsers;
                 da.Fill(ds, "Users");
 
+                da.SelectCommand.CommandText = sqlCandidates;
+                da.Fill(ds, "Candidates");
+
+
                 conn.Close();
 
 
@@ -109,15 +117,46 @@ namespace FarmsApi.Services
         {
 
             //BuildEntityIdOnly();
-       //   BuildUserRiders();
-      //    BuildUserInstructors();
+        // BuildUserRiders();
+        // BuildUserInstructors();
             //  BuildLessons();
-         BuildStudentLessons();
+        //   BuildStudentLessons();
             //BuildCommitmentsLessons();
             //  BuildPayments();
 
+            BuildCandidates();
         }
 
+        private void BuildCandidates()
+        {
+            foreach (DataRow item in ds.Tables[6].Rows)
+            {
+
+
+
+                string CandidateID = item["CandidateID"].ToString();
+                string Intek = item["DirectingCause"].ToString();
+                string MatrotAl = item["Remark"].ToString();
+                int RiderIdInt = Int32.Parse(CandidateID);
+
+                var UserE = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
+                if (UserE != null)
+                {
+                    UserE.Intek = Intek;
+                    UserE.MatrotAl = MatrotAl;
+
+                    Context.Entry(UserE).State = System.Data.Entity.EntityState.Modified;
+                }
+
+               
+
+            }
+
+
+            Context.SaveChanges();
+
+
+        }
 
         private void BuildEntityIdOnly()
         {
