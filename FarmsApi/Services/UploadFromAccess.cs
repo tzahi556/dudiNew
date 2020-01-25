@@ -220,7 +220,7 @@ namespace FarmsApi.Services
                     RiderId = item["RiderId"].ToString();
                     int RiderIdInt = Int32.Parse(RiderId);
 
-                    if (string.IsNullOrEmpty(item["Id"].ToString()))
+                    if (string.IsNullOrEmpty(item["Id"].ToString()) || item["Id"].ToString()=="0")
                     {
                         IdNumber = (Hava + RiderId);
                         Password = (Hava + RiderId);
