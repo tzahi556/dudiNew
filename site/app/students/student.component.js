@@ -855,8 +855,8 @@
                 }
             }
             if (this.expenses !== undefined) {
-                for (var expense of this.expenses.filter(function (expense) { return  expense.Checked })) {
-
+                for (var expense of this.expenses.filter(function (expense) { return expense.Checked && expense.Price != expense.Sum })) {
+                    
                     self.newPayment.InvoiceSum += expense.Price - ((!expense.Sum) ? 0 : expense.Sum);
                     self.newPayment.InvoiceDetails += ', ' + expense.Details;
                 }
@@ -1466,7 +1466,7 @@
                     newPayment.InvoicePdf = response.data.pdf_link;
 
                     this.expenses.map(function (expense) {
-                        if (expense.Checked) { //&& !expense.Paid !צחי הוריד בינתיים
+                        if (expense.Checked && expense.Price != expense.Sum) { //&& !expense.Paid !צחי הוריד בינתיים
                            
                             expense.Paid = newPayment.InvoiceNum;
                             expense.Sum = (!expense.Sum) ? 0 : expense.Sum;
@@ -1502,7 +1502,7 @@
               
               
                 this.expenses.map(function (expense) {
-                    if (expense.Checked ) { //&& !expense.Paid !צחי הוריד בינתיים
+                    if (expense.Checked && expense.Price != expense.Sum) { //&& !expense.Paid !צחי הוריד בינתיים
                         expense.Paid = newPayment.InvoiceNum;
                         expense.Sum = (!expense.Sum) ? 0 : expense.Sum;
                         var Diff = expense.Price - expense.Sum;
