@@ -23,7 +23,7 @@ namespace FarmsApi.Services
         public Context Context = new Context();
         public string MailPrefix = "haniel";
         // "greenfields";
-       
+
         public string Hava = "haniel";
         //"greenfields";
         //rancho
@@ -32,10 +32,23 @@ namespace FarmsApi.Services
         //3 חוות גרין פילדס חווה אמת
         //6 חוות רנצו
         // טסט 59
-        public string HavaMacabi="2";
+        public string HavaMacabi = "2";
         //מכבי בחווה גרין פילדס 2
         //מכבי בחווה רנצו 54
         //מכבי בחווה חניאל 2
+
+        public string SectionCourse = "36";
+        //קורס מדריכים בחווה גרין פילדס
+        //קורס מדריכים בחווה רנצו 
+        //קורס מדריכים בחווה חניאל 36
+        public string SectionPension = "7";
+        //פנסיון בחווה גרין פילדס
+        //פנסיון  בחווה רנצו 
+        //פנסיון בחווה חניאל 7 
+
+
+
+
         public UploadFromAccess()
         {
             String connection = @"Provider=Microsoft.Jet.OLEDB.4.0;" +
@@ -50,10 +63,9 @@ namespace FarmsApi.Services
             ds.Tables.Add(new DataTable("Organizations"));
             ds.Tables.Add(new DataTable("RiderParents"));
             ds.Tables.Add(new DataTable("Users"));
-
             ds.Tables.Add(new DataTable("Candidates"));
 
-            
+
 
 
 
@@ -117,16 +129,82 @@ namespace FarmsApi.Services
         {
 
             //BuildEntityIdOnly();
-        // BuildUserRiders();
-        // BuildUserInstructors();
+            // BuildUserRiders();
+            // BuildUserInstructors();
             //  BuildLessons();
-        //   BuildStudentLessons();
+            //   BuildStudentLessons();
             //BuildCommitmentsLessons();
             //  BuildPayments();
 
-            BuildCandidates();
+            //  BuildCandidates();
+
+            // BuildPensionAndCourse();
+            BuildHorses();
+
         }
 
+        private void BuildHorses()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BuildPensionAndCourse()
+        {
+            foreach (DataRow item in ds.Tables[0].Rows)
+            {
+                string Section = item["Section"].ToString();
+                string RiderId = item["RiderId"].ToString();
+                int RiderIdInt = Int32.Parse(RiderId);
+                var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
+                if (UserEN!=null && (Section == SectionCourse || Section == SectionPension))
+                {
+                    if (Section == SectionCourse)
+                        UserEN.Style = "course";
+
+                    if (Section == SectionPension)
+                        UserEN.Style = "horseHolder";
+                    
+                    
+                    Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
+                  
+                    var PaymentsList = Context.Payments.Where(x => x.UserId == UserEN.Id).ToList();
+                    foreach (Payments pay in PaymentsList)
+                    {
+                        pay.lessons = 0;
+                        Context.Entry(pay).State = System.Data.Entity.EntityState.Modified;
+
+
+                        Expenses ex = new Expenses();
+                        ex.Id = 0;
+                        ex.Paid = pay.InvoiceNum;
+                        ex.Price = pay.InvoiceSum;
+                        ex.Sum = pay.InvoiceSum;
+                        ex.UserId = pay.UserId;
+                        ex.Date = pay.Date;
+                        ex.Details = pay.InvoiceDetails.Replace(pay.InvoiceNum,"");
+
+                        Context.Expenses.Add(ex);
+
+                    }
+
+
+                    var StudentLessonsList = Context.StudentLessons.Where(x => x.User_Id == UserEN.Id).ToList();
+
+                    foreach (StudentLessons stl in StudentLessonsList)
+                    {
+                        var LessonEN = Context.Lessons.Where(x => x.Id == stl.Lesson_Id).FirstOrDefault();
+                        Context.Lessons.Remove(LessonEN);
+                       
+                    }
+
+
+                    Context.StudentLessons.RemoveRange(StudentLessonsList);
+
+                }
+            }
+
+            Context.SaveChanges();
+        }
         private void BuildCandidates()
         {
             foreach (DataRow item in ds.Tables[6].Rows)
@@ -148,7 +226,7 @@ namespace FarmsApi.Services
                     Context.Entry(UserE).State = System.Data.Entity.EntityState.Modified;
                 }
 
-               
+
 
             }
 
@@ -220,7 +298,7 @@ namespace FarmsApi.Services
                     RiderId = item["RiderId"].ToString();
                     int RiderIdInt = Int32.Parse(RiderId);
 
-                    if (string.IsNullOrEmpty(item["Id"].ToString()) || item["Id"].ToString()=="0")
+                    if (string.IsNullOrEmpty(item["Id"].ToString()) || item["Id"].ToString() == "0")
                     {
                         IdNumber = (Hava + RiderId);
                         Password = (Hava + RiderId);
@@ -803,7 +881,7 @@ namespace FarmsApi.Services
 
 
                     DateTime LessonsStart = GetDateFromAccess(DayofRide, HourofRide);
-                  
+
                     // אם מכבי
                     if (financier == "2")
                     {

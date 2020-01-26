@@ -35,6 +35,7 @@
             { id: 'reining', name: 'ריינינג' },
             { id: 'karting', name: 'קאטינג' },
             { id: 'english', name: 'אינגליש' },
+            { id: 'course', name: 'קורס מדריכים' },
             { id: 'horseHolder', name: 'אחזקת סוס (פנסיון)' },
             { id: 'treatmentPsychological', name: 'טיפול פסיכולוגי' },
             { id: 'treatmentPsychological3-9', name: 'טיפול פסיכולוגי 3-9' },
