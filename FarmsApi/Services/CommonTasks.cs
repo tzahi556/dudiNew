@@ -23,11 +23,51 @@ namespace FarmsApi.Services
 
         public static void AddExpenseToHorseLanders()
         {
+            using (var Context = new Context())
+            {
+                var UsersH = Context.UserHorses;
+
+                foreach (var UserH in UsersH)
+                {
+                    var PensionPrice = UserH.PensionPrice;
+                    var TrainingCost = UserH.TrainingCost;
+                    string addExpen = "";
+
+
+                    if (PensionPrice != null && PensionPrice > 0)
+                        addExpen +=  " פנסיון(" + PensionPrice + ")";
+
+                    if (TrainingCost != null && TrainingCost > 0)
+                        addExpen +=  " + אימון(" + TrainingCost + ")" ;
+
+
+                    if (!string.IsNullOrEmpty(addExpen))
+                    {
+                        Expenses ex = new Expenses();
+                        ex.Id = 0;
+                        ex.Date = DateTime.Now;
+                        ex.Price = (PensionPrice ?? 0) +  (TrainingCost ?? 0);
+                        ex.UserId = UserH.UserId;
+                        string MonthPay =  DateTime.Now.Month.ToString();
+                        string YearPay = DateTime.Now.Year.ToString();
+                        ex.Details = " תשלום חודש "+ MonthPay + "/" + YearPay + " עבור סוס:  " + UserH.Name + " " + addExpen;
+
+                        Context.Expenses.Add(ex);
+
+
+                    }
+
+                }
+
+                Context.SaveChanges();
+            }
+
+
             //// צחי צריך לסדר
             //using (var Context = new Context())
             //{
             //    var Users = Context.Users.SqlQuery("SELECT * FROM Users WHERE Meta NOT LIKE '%\"Horses\":[[]]%' AND Meta LIKE '%\"Horses\":%'");
-            //    var HorseBalance = new List<HorseBalanceRecord>();
+            //   var HorseBalance = new List<HorseBalanceRecord>();
             //    foreach (var User in Users)
             //    {
 
