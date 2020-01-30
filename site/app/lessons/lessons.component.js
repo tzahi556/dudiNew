@@ -53,8 +53,10 @@
         this.modalClick = _modalClick.bind(this);
         this.NewLesIds = 0;
         this.getCounter = _getCounter.bind(this);
-
+        this.modalAppendClick2 = _modalAppendClick2.bind(this);
+        
         this.searchDate = new Date();
+        this.lessToDrop="";
 
         this.role = localStorage.getItem('currentRole');
         //   this.FarmInstractorPolicy = localStorage.getItem('FarmInstractorPolicy');
@@ -141,13 +143,29 @@
                 $rootScope.statuses = [{ "StudentId": currentStudentId, "Status": "completion", "Details": "", "IsComplete": 2 }];
                 $rootScope.students = [(currentStudentId)];
 
-               
+                $scope.$ctrl.lessToDrop = "";
 
                 var $el = $(newEvent.target);
 
-                alert($el[0].className);
-              
 
+                var main_idelem = $($el).closest("a");
+                var main_id = $(main_idelem).attr("main_id");
+                if (main_id) { 
+                  
+                    $scope.$ctrl.lessToDrop = $scope.$ctrl.getLessonById(main_id);
+
+                    $scope.$ctrl.lessToDrop.students.push(currentStudentId);
+                    $scope.$ctrl.lessToDrop.statuses.push({ "StudentId": currentStudentId, "Status": "completion", "Details": "", "IsComplete": 2 });
+
+                    $('#myModalLabel').text(' כיצד תרצי להוסיף את התלמיד? ');
+                    $('#dvAppendHad').text(' הוסף תלמיד באופן חד פעמי ');
+                    $('#dvAppendTz').text(' הוסף תלמיד לצמיתות ');
+                    $('#modalAppend2').modal('show');
+                    // alert($el[0].className);
+
+
+                    return;
+                }
                 var event = jQuery.Event('mousedown', {
                     which: 1,
                     pageX: newEvent.pageX,
@@ -168,6 +186,14 @@
 
 
             }
+        }
+
+        function _modalAppendClick2(onlyOne) {
+           
+            var lt = $scope.$ctrl.lessToDrop;
+            if (onlyOne) $scope.$ctrl.lessToDrop.onlyOne = 1;
+            $scope.$ctrl.updateLesson(lt);
+          
         }
 
         function _eventCreate(start, end, jsEvent, view, resource) {
@@ -221,8 +247,6 @@
 
             this.updateLesson(event);
         }
-
-     
 
         function _getCounter(type) {
             var Count = 0;
@@ -362,7 +386,6 @@
 
             return returnLessons;
         }
-     
 
         function _getIfLessonPrevExist(lesson, returnLessons) {
            
@@ -466,14 +489,10 @@
                 this.eventChange(event);
 
             }
-                //
+            //
             else if (event) {
-                debugger
                 this.updateLesson(event);
                 this.createChildEvent(event, lessonsQty);
-                
-             
-              
             }
             else {
                 this.reloadLessons();
@@ -537,12 +556,8 @@
         function _modalClick(changeChildren) {
 
             if (this.eventToChange) {
-
-
                 var event = this.eventToChange;
                 this.eventToChange = null;
-
-
                 this.lessonsService.updateLesson(event, changeChildren).then(function () {
                     this.createNotifications(event, 'update');
                     this.reloadLessons();

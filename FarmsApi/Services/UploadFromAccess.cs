@@ -14,7 +14,7 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 73; //71 רנצו מניס
+        public int FarmId = 59; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
@@ -52,7 +52,7 @@ namespace FarmsApi.Services
         public UploadFromAccess()
         {
             String connection = @"Provider=Microsoft.Jet.OLEDB.4.0;" +
-                                @"Data source=C:\Users\tzahi\Desktop\ORD\Database\Amir.mdb;Jet OLEDB:Database Password=diana;";
+                                @"Data source=C:\Users\tzahi\Desktop\ORD\Rancho_Amir.mdb;Jet OLEDB:Database Password=diana;";
 
 
 
@@ -139,9 +139,105 @@ namespace FarmsApi.Services
             //  BuildCandidates();
 
             // BuildPensionAndCourse();
-            BuildHorses();
+           // BuildHorses();
+            BuildFixedPhone();
 
         }
+
+        private void BuildFixedPhone()
+        {
+
+            try
+            {
+
+                string RiderId,
+
+                    PhonHome = "",
+                    SelolarPhon = "",
+                    PhonAnother = "",
+                    PhoneNumber = "",
+                    PhoneNumber2 = "";
+                   
+
+                foreach (DataRow item in ds.Tables[0].Rows)
+                {
+
+
+
+                   
+
+
+                    RiderId = item["RiderId"].ToString();
+                    int RiderIdInt = Int32.Parse(RiderId);
+
+                    PhonHome = item["PhonHome"].ToString();
+                    SelolarPhon = item["SelolarPhon"].ToString();
+                    PhonAnother = item["PhonAnother"].ToString();
+
+
+
+                    var ParentDetalis = GetParentDetalis(RiderId);
+                    if (ParentDetalis != null)
+                    {
+                        //ParentName = ParentDetalis["FatherName"].ToString();
+                        //ParentName2 = ParentDetalis["MotherName"].ToString();
+
+                      //  AnotherEmail = GetEmailMotherFather(ParentDetalis);
+
+                        PhoneNumber = ParentDetalis["PhonFather"].ToString();
+                        PhoneNumber2 = ParentDetalis["PhonMother"].ToString();
+
+                    }
+
+
+
+
+                    if (string.IsNullOrEmpty(PhoneNumber.Trim()))
+                    {
+                        PhoneNumber = (string.IsNullOrEmpty(SelolarPhon)) ? ((string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother) : SelolarPhon;
+                    }
+
+                    if (string.IsNullOrEmpty(PhoneNumber2.Trim()))
+                    {
+
+                        if(PhoneNumber == SelolarPhon)
+                            PhoneNumber2 = (string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother;
+                        else if (PhoneNumber == PhonAnother)
+                            PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? PhonHome : SelolarPhon;
+                        else if (PhoneNumber == PhonHome)
+                            PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? PhonAnother : SelolarPhon;
+                        else
+                            PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? ((string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother) : SelolarPhon;
+
+
+
+                    }
+
+
+                    var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
+                    if (UserEN != null)
+                    {
+
+                        UserEN.PhoneNumber = PhoneNumber;
+                        UserEN.PhoneNumber2 = PhoneNumber2;
+                        Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
+                    }
+                   
+                }
+
+
+                Context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+
+
+            }
+
+        }
+
+
 
         private void BuildHorses()
         {
@@ -281,7 +377,7 @@ namespace FarmsApi.Services
 
                 string Role = "student", Email, Password, FirstName, LastName, Deleted = "0", Active, RiderId,
                     IdNumber, BirthDate, ParentName2 = "", ParentName = "", Address, PhoneNumber = "",
-                   PhoneNumber2 = "", AnotherEmail = "",
+                   PhoneNumber2 = "", AnotherEmail = "", PhonHome="", SelolarPhon="", PhonAnother="",
                    Style = "treatment", TeamMember = "no", Cost, PayType, Details, HMO, BalanceDetails;
 
                 foreach (DataRow item in ds.Tables[0].Rows)
@@ -293,7 +389,9 @@ namespace FarmsApi.Services
                     LastName = GetRightName(item["FamilyName"].ToString());
                     Active = (item["Active"].ToString() == "True") ? "active" : "notActive"; //(Active == "True") ? "active" : "notActive"; item["Active"].ToString();
                     Address = item["Address"].ToString() + " " + item["City"].ToString();
-
+                    PhonHome = item["PhonHome"].ToString();
+                    SelolarPhon = item["SelolarPhon"].ToString();
+                    PhonAnother = item["PhonAnother"].ToString();
 
                     RiderId = item["RiderId"].ToString();
                     int RiderIdInt = Int32.Parse(RiderId);
@@ -325,9 +423,34 @@ namespace FarmsApi.Services
                     {
                         ParentName = ParentDetalis["FatherName"].ToString();
                         ParentName2 = ParentDetalis["MotherName"].ToString();
+                        
                         AnotherEmail = GetEmailMotherFather(ParentDetalis);
+                       
                         PhoneNumber = ParentDetalis["PhonFather"].ToString();
                         PhoneNumber2 = ParentDetalis["PhonMother"].ToString();
+
+                    }
+
+
+
+                    if (string.IsNullOrEmpty(PhoneNumber.Trim()))
+                    {
+                        PhoneNumber = (string.IsNullOrEmpty(SelolarPhon)) ? ((string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother) : SelolarPhon;
+                    }
+
+                    if (string.IsNullOrEmpty(PhoneNumber2.Trim()))
+                    {
+
+                        if (PhoneNumber == SelolarPhon)
+                            PhoneNumber2 = (string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother;
+                        else if (PhoneNumber == PhonAnother)
+                            PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? PhonHome : SelolarPhon;
+                        else if (PhoneNumber == PhonHome)
+                            PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? PhonAnother : SelolarPhon;
+                        else
+                            PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? ((string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother) : SelolarPhon;
+
+
 
                     }
 

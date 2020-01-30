@@ -38,7 +38,7 @@
         this.currentView = "";
 
         this.scope.$on('calendar.reloadEvents', function (event, events) {
-         
+
             this.events = events;
             this.reloadEvents();
 
@@ -49,7 +49,7 @@
         }.bind(this));
 
         this.scope.$on('calendar.reloadBackgroundEvents', function (event, backgroundEvents) {
-           
+
             this.backgroundEvents = backgroundEvents;
             this.reloadEvents();
             //  alert(12);
@@ -185,80 +185,76 @@
 
             eventRender: function (event, element) {
 
-                var IsFuture = true;//(event.end) ? (event.end.format('YYYYMMDD') <= moment().format('YYYYMMDD')) : false;
+              
 
                 if (event.rendering != "background" && event.statuses && event.statuses.length > 0) {
 
-
+                    var countCompletionReq = 0;
                     for (var i in event.statuses) {
-
-                        if (IsFuture && !event.statuses[i].Status || event.statuses[i].Status == '') {
+                       
+                        //בלי סטטוס
+                        if (!event.statuses[i].Status || event.statuses[i].Status == '') {
 
                             $(element).addClass('warning-icon');
                         }
-
+                        //לא הגיע 
                         else if (event.statuses[i].Status == 'notAttended') {
-
                             $(element).addClass('notarrive-icon');
                         }
 
-
-
-                            //לא הגיע לא לחייב
-                        else if (IsFuture && event.statuses[i].Status == 'notAttendedDontCharge') {
+                        //לא הגיע לא לחייב
+                        else if (event.statuses[i].Status == 'notAttendedDontCharge') {
 
                             $(element).addClass('redvi2-icon');
                         }
 
-                            //לא הגיע  לחייב
-                        else if (IsFuture && event.statuses[i].Status == 'notAttendedCharge') {
+                        //לא הגיע  לחייב
+                        else if (event.statuses[i].Status == 'notAttendedCharge') {
 
                             $(element).addClass('redvi-icon');
                         }
 
+                        // שמו אותו  כאן אבל עדיין לא הגיע
                         else if (event.statuses[i].Status == 'completion' && (event.statuses[i].IsComplete == 3 || event.statuses[i].IsComplete == 5)) {
                             $(element).addClass('returnred-iconfloat');
                         }
 
+                        // שמו אותו איפה שהוא והגיע 
                         else if (event.statuses[i].Status == 'completion' && (event.statuses[i].IsComplete == 4 || event.statuses[i].IsComplete == 6)) {
                             $(element).addClass('returngreen-iconfloat');
                         }
 
-                            //  במידה ויש דרוש שיעור השלמה על ההשלמה
-                            // כנראה מיותר
-                        else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 5) {
+                        ////  במידה ויש דרוש שיעור השלמה על ההשלמה
+                        //// כנראה מיותר
+                        //else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 5) {
 
-                            //   $(element).css("color", "white").css("background", "Silver").css("border-color", "gray");
-                            $(element).addClass('returngreen-icon');
-                        }
+                        //    $(element).addClass('returngreen-icon');
+                        //}
 
-                            // הוגדר שהוא צריך שיעור השלמה
+                        // הוגדר שהוא צריך שיעור השלמה
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 1) {
 
-                            $(element).css("background-color", "lightGray").css("border-color", "gray");
+                          //  $(element).css("background-color", "lightGray").css("border-color", "gray");
                             $(element).addClass('returnred-icon');
-                            $(element).addClass("hadPeami");
+                            countCompletionReq++;
                         }
 
-                            // שמו לו שיעור השלמה איפה שהוא
+                        // שמו לו שיעור השלמה איפה שהוא
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 2) {
-
-                            $(element).css("background-color", "lightGray").css("border-color", "gray");
-
+                           //$(element).css("background-color", "lightGray").css("border-color", "gray");
                             $(element).addClass('returngreen-icon');
-                            $(element).addClass("hadPeami");
+                            countCompletionReq++;
                         }
 
-                        else if (IsFuture) {
-
+                        else {
                             $(element).addClass('approve-icon');
                         }
 
 
                     }
 
-                    // הסתרה בעת שיש גרירה על אחד מכל אלו
-                 //  HideMultipleHadPeami(element);
+                    if (event.statuses && countCompletionReq == event.statuses.length)
+                        $(element).css("background-color", "lightGray").css("border-color", "gray");
 
                     // שיעור אחרון
                     if (event.PrevNext == 1) {
@@ -271,14 +267,22 @@
                     }
 
 
+
+
                 }
 
+                // מעדכן איידי לכל אירוע בשביל הגרירה
+                if (event.id) {
+                    $(element).attr("main_id", event.id);
+                }
+
+                //if (event.title == "ניתן להכניס חד פעמי") {
+                //    $(element).css("color", "white").css("background", "gray").css("border-color", "Silver");
+                //    $(element).addClass("hadPeami");
+                //} else
 
 
-                if (event.title == "ניתן להכניס חד פעמי") {
-                    $(element).css("color", "white").css("background", "gray").css("border-color", "Silver");
-                    $(element).addClass("hadPeami");
-                } else if (event.horsenames && event.horsenames.length > 0) {
+                if (event.horsenames && event.horsenames.length > 0) {
 
                     var horsenames = "";
                     var prefix = "";
@@ -309,7 +313,7 @@
 
 
     function HideMultipleHadPeami(element) {
-       
+
 
         var elementStart = $(element).find(".fc-time").attr("data-start");
         var elementSibilng = $(element).siblings();
@@ -325,7 +329,7 @@
             }
         }
 
-       
+
 
         var elementPrev = $($(elementSibilng)[0]);
         if (elementPrev) {
@@ -470,7 +474,7 @@
     }
 
     function _loadEvents(start, end, timezone, callback) {
-       
+
         callback(this.events.concat(this.backgroundEvents || []));
 
     }
