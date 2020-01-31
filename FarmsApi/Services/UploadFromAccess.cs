@@ -14,21 +14,21 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 59; //71 רנצו מניס
+        public int FarmId =67; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
         public DataSet ds = new DataSet();
 
         public Context Context = new Context();
-        public string MailPrefix = "haniel";
+        public string MailPrefix = "greenfields";
         // "greenfields";
 
-        public string Hava = "haniel";
+        public string Hava = "greenfields";
         //"greenfields";
         //rancho
         //haniel
-        public string ExpensWorkerId = "-11";
+        public string ExpensWorkerId = "3";
         //3 חוות גרין פילדס חווה אמת
         //6 חוות רנצו
         // טסט 59
@@ -52,7 +52,7 @@ namespace FarmsApi.Services
         public UploadFromAccess()
         {
             String connection = @"Provider=Microsoft.Jet.OLEDB.4.0;" +
-                                @"Data source=C:\Users\tzahi\Desktop\ORD\Rancho_Amir.mdb;Jet OLEDB:Database Password=diana;";
+                                @"Data source=C:\Users\tzahi\Desktop\ORD\Database\Amir.mdb;Jet OLEDB:Database Password=diana;";
 
 
 
@@ -69,14 +69,26 @@ namespace FarmsApi.Services
 
 
 
+            ////מקורי
+            //string sqlLessons = @"  
+            //                    SELECT FarmDairy.*
+            //                    FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+            //                    Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
+            //                    and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
+            //                    Order by FarmDairy.DayofRide
+            //      ";
 
-            string sqlLessons = @"  
-                                SELECT FarmDairy.*
-                                FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
-                                Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
-                                and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
+
+
+            // להביא רק שיעורים להשלמה
+            string sqlLessons = @" 
+            SELECT FarmDairy.*
+                            FROM(FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+                                Where(Riders.Active = True)
+                                and FarmDairy.DayofRide >= #2019-01-01 00:00:00#
+                               and FarmDairy.forComp = 1
                                 Order by FarmDairy.DayofRide
-                  ";
+                    ";
 
             string sqlRiders = @" SELECT * from Riders";
 
@@ -129,19 +141,55 @@ namespace FarmsApi.Services
         {
 
             //BuildEntityIdOnly();
-            // BuildUserRiders();
-            // BuildUserInstructors();
+           //  BuildUserRiders();
+           //   BuildUserInstructors();
             //  BuildLessons();
-            //   BuildStudentLessons();
+             BuildStudentLessons();
             //BuildCommitmentsLessons();
             //  BuildPayments();
 
             //  BuildCandidates();
 
             // BuildPensionAndCourse();
-           // BuildHorses();
-            BuildFixedPhone();
+            // BuildHorses();
+            //   BuildFixedPhone();
 
+            BuildHashlama();
+
+        }
+
+        private void BuildHashlama()
+        {
+            string RiderId, WorkerID, DayofRide, HourofRide, HorseId, TypeofRiders, financier;
+
+            foreach (DataRow item in ds.Tables[2].Rows)
+            {
+                RiderId = item["RiderId"].ToString();
+                int RiderIdInt = Int32.Parse(RiderId);
+
+                WorkerID = item["WorkerID"].ToString();
+                int WorkerIDInt = Int32.Parse(WorkerID);
+
+                DayofRide = item["DayofRide"].ToString();
+                HourofRide = item["HourofRide"].ToString();
+
+                var StudentObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == RiderIdInt && x.Role == "student").FirstOrDefault();
+                var InstructorObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == WorkerIDInt && x.Role == "instructor").FirstOrDefault();
+
+                if (StudentObj == null || InstructorObj == null) continue;
+                DateTime LessonsStart = GetDateFromAccess(DayofRide, HourofRide);
+                var LessonEN = Context.Lessons.Where(x => x.Instructor_Id == InstructorObj.Id && x.Start == LessonsStart).FirstOrDefault();
+                if (LessonEN != null)
+                {
+                    var StudentLessonsEN = Context.StudentLessons.Where(x => x.Lesson_Id == LessonEN.Id && x.User_Id == StudentObj.Id).FirstOrDefault();
+                    if (StudentLessonsEN != null)
+                    {
+                        StudentLessonsEN.Status = "completionReq";
+                        StudentLessonsEN.IsComplete = 1;
+                    }
+                }
+
+            }
         }
 
         private void BuildFixedPhone()
@@ -236,14 +284,10 @@ namespace FarmsApi.Services
             }
 
         }
-
-
-
         private void BuildHorses()
         {
             throw new NotImplementedException();
         }
-
         private void BuildPensionAndCourse()
         {
             foreach (DataRow item in ds.Tables[0].Rows)
@@ -331,7 +375,6 @@ namespace FarmsApi.Services
 
 
         }
-
         private void BuildEntityIdOnly()
         {
 
@@ -368,7 +411,6 @@ namespace FarmsApi.Services
 
             Context.SaveChanges();
         }
-
         private void BuildUserRiders()
         {
 
