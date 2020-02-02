@@ -1,4 +1,13 @@
-﻿<div class="row">
+﻿
+<style>
+    .selected {
+        background: #03fcca;
+    }
+
+
+</style>
+
+<div class="row">
     <div class="col-md-3">
         <comments studentid="$ctrl.selectedStudent" close-callback="$ctrl.commentClose"></comments>
 
@@ -870,29 +879,13 @@
                 </div>
             </uib-tab>
             <uib-tab index="5" heading="מעקב">
-                <!--student files-->
-                <!--<div class="panel panel-default">
-        <div class="panel-heading">
-            מעקב
-        </div>
-        <table class="table">
-            <tbody>
-                <tr ng-repeat="file in $ctrl.files">
-                    <td><a ng-href="{{$ctrl.uploadsUri + file.Link}}" target="_blank">{{file.Link}}</a></td>
-                    <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeFile(file.Link)">הסר</button></td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="panel-footer">
-            <input type="file" filename="$ctrl.newFile" filename-callback="$ctrl.uploadFile" />
-        </div>
-    </div>-->
+              
 
                 <div class="col-md-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             רשימת הערות
-                            <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="studentForm.$invalid">הוסיפי הערה חדשה</button>
+                            <button type="submit" class="btn btn-xs btn-success pull-left" ng-click="$ctrl.addMakav()">הוסיפי הערה חדשה</button>
                         </div>
                         <div class="panel-body">
                             <table class="table">
@@ -906,12 +899,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="horse in $ctrl.userhorses">
-                                        <td><input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" /></td>
-                                        <td>{{horse.Name}}</td>
-                                        <td><input class="form-control" type="text" style="width:250px" ng-model="horse.TrainingCost"></td>
-                                       
-                                        <td><button class="btn btn-danger" ng-click="$ctrl.removeHorse(horse)">הסר</button></td>
+                                    <tr ng-repeat="ma in $ctrl.makav" ng-click="$ctrl.setMakavDesc(ma,$index)" ng-style="cursor:default" ng-class="
+                                          {selected: $index === idSelectedVote}">
+                                        <td>{{ma.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                        <td>{{ma.UserWrite}}</td>
+                                        <td><input class="form-control" type="text" style="width:250px" ng-model="ma.Subject"></td>
+                                        <td><button class="btn btn-danger" ng-click="$ctrl.removeMakav(ma,$index)">הסר</button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -928,9 +921,7 @@
                           הערות
                         </div>
                         <div class="panel-body">
-                            <textarea class="form-control" rows="27" ng-model="$ctrl.user.MatrotAl"></textarea>
-
-
+                            <textarea  ng-repeat="ma in $ctrl.makav" ng-show="$index == idSelectedVote" class="form-control" rows="27" ng-model="ma.Desc"></textarea>
                         </div>
                     </div>
 

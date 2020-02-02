@@ -19,6 +19,8 @@
         this.getUserUserhorsesByUserId = _getUserUserhorsesByUserId;
         this.getUserFilesByUserId = _getUserFilesByUserId;
         this.getUserCommitmentsByUserId = _getUserCommitmentsByUserId;
+        this.getUserUserMakavByUserId = _getUserUserMakavByUserId;
+        
         this.getAvailablehours = _getAvailablehours;
         this.getTransferData = _getTransferData;
 
@@ -140,7 +142,15 @@
             return deferred.promise;
         }
 
-     
+        function _getUserUserMakavByUserId(id) {
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'users/getuserusermakavbyuserid/' + (id || '')).then(function (res) {
+                var user = res.data;
+
+                deferred.resolve(user);
+            });
+            return deferred.promise;
+        }
 
         function _updateUser(user) {
            
@@ -156,10 +166,10 @@
             return deferred.promise;
         }
 
-        function _updateUserMultiTables(user, payments, files, commitments, expenses, userhorses, availablehours) {
+        function _updateUserMultiTables(user, payments, files, commitments, expenses, userhorses, availablehours,makav) {
           
           
-            var dataobj = [user, payments, files, commitments, expenses, userhorses, availablehours];
+            var dataobj = [user, payments, files, commitments, expenses, userhorses, availablehours, makav];
             var deferred = $q.defer();
            // user.Meta = "";//angular.toJson(user.Meta);
 

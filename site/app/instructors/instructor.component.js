@@ -43,7 +43,7 @@
 
 
 
-                usersService.updateUserMultiTables(this.user, [], [], [], [], [], this.availablehours).then(function (user) {
+                usersService.updateUserMultiTables(this.user, [], [], [], [], [], this.availablehours,[]).then(function (user) {
                     
                     this.user = user;
                     this.initInstructor();

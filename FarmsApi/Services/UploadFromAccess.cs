@@ -14,7 +14,7 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId =67; //71 רנצו מניס
+        public int FarmId = 67; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
@@ -64,31 +64,32 @@ namespace FarmsApi.Services
             ds.Tables.Add(new DataTable("RiderParents"));
             ds.Tables.Add(new DataTable("Users"));
             ds.Tables.Add(new DataTable("Candidates"));
-
-
+            ds.Tables.Add(new DataTable("Horses"));
+            ds.Tables.Add(new DataTable("CustCorrespondence"));
 
 
 
             ////מקורי
-            //string sqlLessons = @"  
-            //                    SELECT FarmDairy.*
-            //                    FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
-            //                    Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
-            //                    and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
-            //                    Order by FarmDairy.DayofRide
-            //      ";
+            string sqlLessons = @"  
+                                SELECT FarmDairy.*
+                                FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+                                Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
+                                and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
+                                Order by FarmDairy.DayofRide
+                  ";
 
 
 
             // להביא רק שיעורים להשלמה
-            string sqlLessons = @" 
-            SELECT FarmDairy.*
-                            FROM(FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
-                                Where(Riders.Active = True)
-                                and FarmDairy.DayofRide >= #2019-01-01 00:00:00#
-                               and FarmDairy.forComp = 1
-                                Order by FarmDairy.DayofRide
-                    ";
+            //string sqlLessons = @" 
+            //SELECT FarmDairy.*
+            //                FROM(FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+            //                    Where(Riders.Active = True)
+            //                    and FarmDairy.DayofRide >= #2019-01-01 00:00:00#
+            //                    and FarmDairy.forComp = 1
+
+            //                    Order by FarmDairy.DayofRide
+            //        ";
 
             string sqlRiders = @" SELECT * from Riders";
 
@@ -101,6 +102,10 @@ namespace FarmsApi.Services
             string sqlUsers = @" SELECT * from Users ";
 
             string sqlCandidates = @" SELECT * from Candidates ";
+
+            string sqlHorses = @" SELECT * from Horses Where Active=True";
+
+            string sqlKesher = @" SELECT * from CustCorrespondence";
 
             using (OleDbConnection conn = new OleDbConnection(connection))
             {
@@ -127,6 +132,11 @@ namespace FarmsApi.Services
                 da.SelectCommand.CommandText = sqlCandidates;
                 da.Fill(ds, "Candidates");
 
+                da.SelectCommand.CommandText = sqlHorses;
+                da.Fill(ds, "Horses");
+
+                da.SelectCommand.CommandText = sqlKesher;
+                da.Fill(ds, "CustCorrespondence");
 
                 conn.Close();
 
@@ -141,21 +151,56 @@ namespace FarmsApi.Services
         {
 
             //BuildEntityIdOnly();
-           //  BuildUserRiders();
-           //   BuildUserInstructors();
+            //  BuildUserRiders();
+            //   BuildUserInstructors();
             //  BuildLessons();
-             BuildStudentLessons();
+            //  BuildStudentLessons();
             //BuildCommitmentsLessons();
             //  BuildPayments();
 
-            //  BuildCandidates();
+        //    BuildCandidates();
 
             // BuildPensionAndCourse();
-            // BuildHorses();
+            //   BuildHorses();
             //   BuildFixedPhone();
 
-            BuildHashlama();
+            // BuildHashlama();
 
+            BuildKesher();
+        }
+
+        private void BuildKesher()
+        {
+            foreach (DataRow item in ds.Tables[8].Rows)
+            {
+
+
+
+                string CustId = item["CustId"].ToString();
+                string DateofRecord = item["DateofRecord"].ToString();
+                string Subject = item["Subject"].ToString();
+                string Contents = item["Contents"].ToString();
+                string userId = item["userId"].ToString();
+
+                int RiderIdInt = Int32.Parse(CustId);
+                int WorkerIDInt = Int32.Parse(userId);
+
+                var StudentObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == RiderIdInt && x.Role == "student").FirstOrDefault();
+                var InstructorObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == WorkerIDInt && x.Role == "instructor").FirstOrDefault();
+
+                if (StudentObj == null || InstructorObj == null) continue;
+
+                Makavs ma = new Makavs();
+                ma.UserId = StudentObj.Id;
+                ma.UserWrite = InstructorObj.FirstName + " " + InstructorObj.LastName;
+                ma.Subject = Subject;
+                ma.Desc = Contents;
+                ma.Date = GetDateFromAccess(DateofRecord, "00:00");
+
+                Context.Makavs.Add(ma);
+            }
+
+            Context.SaveChanges();
         }
 
         private void BuildHashlama()
@@ -186,10 +231,14 @@ namespace FarmsApi.Services
                     {
                         StudentLessonsEN.Status = "completionReq";
                         StudentLessonsEN.IsComplete = 1;
+                        Context.Entry(StudentLessonsEN).State = System.Data.Entity.EntityState.Modified;
                     }
                 }
 
             }
+
+
+            Context.SaveChanges();
         }
 
         private void BuildFixedPhone()
@@ -205,14 +254,14 @@ namespace FarmsApi.Services
                     PhonAnother = "",
                     PhoneNumber = "",
                     PhoneNumber2 = "";
-                   
+
 
                 foreach (DataRow item in ds.Tables[0].Rows)
                 {
 
 
 
-                   
+
 
 
                     RiderId = item["RiderId"].ToString();
@@ -230,7 +279,7 @@ namespace FarmsApi.Services
                         //ParentName = ParentDetalis["FatherName"].ToString();
                         //ParentName2 = ParentDetalis["MotherName"].ToString();
 
-                      //  AnotherEmail = GetEmailMotherFather(ParentDetalis);
+                        //  AnotherEmail = GetEmailMotherFather(ParentDetalis);
 
                         PhoneNumber = ParentDetalis["PhonFather"].ToString();
                         PhoneNumber2 = ParentDetalis["PhonMother"].ToString();
@@ -248,7 +297,7 @@ namespace FarmsApi.Services
                     if (string.IsNullOrEmpty(PhoneNumber2.Trim()))
                     {
 
-                        if(PhoneNumber == SelolarPhon)
+                        if (PhoneNumber == SelolarPhon)
                             PhoneNumber2 = (string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother;
                         else if (PhoneNumber == PhonAnother)
                             PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? PhonHome : SelolarPhon;
@@ -270,7 +319,7 @@ namespace FarmsApi.Services
                         UserEN.PhoneNumber2 = PhoneNumber2;
                         Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
                     }
-                   
+
                 }
 
 
@@ -286,8 +335,85 @@ namespace FarmsApi.Services
         }
         private void BuildHorses()
         {
-            throw new NotImplementedException();
+            foreach (DataRow item in ds.Tables[7].Rows)
+            {
+
+
+
+                string HorseDec = item["HorseDec"].ToString();
+                string Active = item["Active"].ToString();
+                string DateofBirth = item["DateofBirth"].ToString();
+                string pension = item["pension"].ToString();
+                string Category = item["Category"].ToString();
+                string species = item["species"].ToString();
+
+
+                // string Meta = @"{""BirthDate"":""{0}"",""PensionStartDate"":""{1}"",""Treatments"":[],""Pregnancies"":[],""Active"":""active"",""Gender"":""{2}"",""Ownage"":""{3}"",""Vaccinations"":[]}";
+
+                string Output = String.Format("\"BirthDate\":\"{0}\",\"PensionStartDate\":\"{1}\",\"Treatments\":[],\"Pregnancies\":[],\"Active\":\"active\",\"Gender\":\"{2}\",\"Ownage\":\"{3}\",\"Vaccinations\":[]", DateofBirth, DateofBirth, GetHorsesGender(species), GetHorsesOwnage(Category, pension));
+
+                Horse hr = new Horse();
+                hr.Deleted = false;
+                hr.Farm_Id = FarmId;
+                hr.Name = HorseDec;
+                hr.Meta = "{" + Output + "}";
+                Context.Horses.Add(hr);
+
+
+            }
+
+
+            Context.SaveChanges();
         }
+
+        private string GetHorsesOwnage(string category, string pension)
+        {
+            if (pension != "True")
+                return "school";
+            else
+            {
+
+                if (category == "4")
+                    return "pensionEnglish";
+                if (category == "5")
+                    return "pensionMaravi";
+                if (category == "6")
+                    return "pensionMere";
+                if (category == "7")
+                    return "pensionKating";
+            }
+
+            return "pension";
+            //4   פנסיון אינגליש
+            //5   פנסיון ווסטרן
+            //6   פנסיון מרעה
+            //7   קאטינג
+
+            //< option value = "pension" > פנסיון </ option >
+            //< option value = "school" > בית ספר </ option >
+            //< option value = "farm" > חווה </ option >
+            //< option value = "pensionEnglish" > פנסיון אינגליש </ option >
+            //< option value = "pensionMaravi" > פנסיון מערבי </ option >
+            //< option value = "pensionKating" > פנסיון קאטינג </ option >
+            //< option value = "pensionMere" > פנסיון מרעה </ option >
+
+        }
+
+        private string GetHorsesGender(string species)
+        {
+            //< option value = "male" > זכר </ option >
+            //< option value = "female" > נקבה </ option >
+            //< option value = "castrated" > מסורס </ option >
+
+            if (string.IsNullOrEmpty(species) || species == "מסורס")
+                return "castrated";
+
+            if (species == "זכר")
+                return "male";
+            else
+                return "female";
+        }
+
         private void BuildPensionAndCourse()
         {
             foreach (DataRow item in ds.Tables[0].Rows)
@@ -296,17 +422,17 @@ namespace FarmsApi.Services
                 string RiderId = item["RiderId"].ToString();
                 int RiderIdInt = Int32.Parse(RiderId);
                 var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
-                if (UserEN!=null && (Section == SectionCourse || Section == SectionPension))
+                if (UserEN != null && (Section == SectionCourse || Section == SectionPension))
                 {
                     if (Section == SectionCourse)
                         UserEN.Style = "course";
 
                     if (Section == SectionPension)
                         UserEN.Style = "horseHolder";
-                    
-                    
+
+
                     Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
-                  
+
                     var PaymentsList = Context.Payments.Where(x => x.UserId == UserEN.Id).ToList();
                     foreach (Payments pay in PaymentsList)
                     {
@@ -321,7 +447,7 @@ namespace FarmsApi.Services
                         ex.Sum = pay.InvoiceSum;
                         ex.UserId = pay.UserId;
                         ex.Date = pay.Date;
-                        ex.Details = pay.InvoiceDetails.Replace(pay.InvoiceNum,"");
+                        ex.Details = pay.InvoiceDetails.Replace(pay.InvoiceNum, "");
 
                         Context.Expenses.Add(ex);
 
@@ -334,7 +460,7 @@ namespace FarmsApi.Services
                     {
                         var LessonEN = Context.Lessons.Where(x => x.Id == stl.Lesson_Id).FirstOrDefault();
                         Context.Lessons.Remove(LessonEN);
-                       
+
                     }
 
 
@@ -419,7 +545,7 @@ namespace FarmsApi.Services
 
                 string Role = "student", Email, Password, FirstName, LastName, Deleted = "0", Active, RiderId,
                     IdNumber, BirthDate, ParentName2 = "", ParentName = "", Address, PhoneNumber = "",
-                   PhoneNumber2 = "", AnotherEmail = "", PhonHome="", SelolarPhon="", PhonAnother="",
+                   PhoneNumber2 = "", AnotherEmail = "", PhonHome = "", SelolarPhon = "", PhonAnother = "",
                    Style = "treatment", TeamMember = "no", Cost, PayType, Details, HMO, BalanceDetails;
 
                 foreach (DataRow item in ds.Tables[0].Rows)
@@ -465,9 +591,9 @@ namespace FarmsApi.Services
                     {
                         ParentName = ParentDetalis["FatherName"].ToString();
                         ParentName2 = ParentDetalis["MotherName"].ToString();
-                        
+
                         AnotherEmail = GetEmailMotherFather(ParentDetalis);
-                       
+
                         PhoneNumber = ParentDetalis["PhonFather"].ToString();
                         PhoneNumber2 = ParentDetalis["PhonMother"].ToString();
 

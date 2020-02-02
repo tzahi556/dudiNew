@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include=".editorconfig" />
     <None Include="Properties\PublishProfiles\IIS.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -147,6 +148,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DataModels\AvailableHours.cs" />
+    <Compile Include="DataModels\Makav.cs" />
     <Compile Include="DataModels\TransferResult.cs" />
     <Compile Include="DataModels\MangerReport.cs" />
     <Compile Include="DataModels\LessonsResult.cs" />

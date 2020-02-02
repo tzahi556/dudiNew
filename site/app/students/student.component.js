@@ -16,7 +16,8 @@
             commitments: '<',
             expenses: '<',
             userhorses: '<',
-            students:'<'
+            students: '<',
+            makav: '<'
 
         }
     });
@@ -74,6 +75,8 @@
 
         this.initPaymentForm = _initPaymentForm.bind(this);
         this.initCommitmentForm = _initCommitmentForm.bind(this);
+        this.initMakavForm = _initMakavForm.bind(this);
+
         this.setPaid = _setPaid.bind(this);
         this.getStatusIndex = _getStatusIndex.bind(this);
         this.setStatus = _setStatus.bind(this);
@@ -111,7 +114,10 @@
         this.setLessPrice = _setLessPrice.bind(this);
       //  this.setLessonsDetails = _setLessonsDetails.bind(this);
         this.changeLessonsData = _changeLessonsData.bind(this);
-      
+
+        this.addMakav = _addMakav.bind(this);
+        this.removeMakav = _removeMakav.bind(this);
+        this.setMakavDesc = _setMakavDesc.bind(this);
        
 
         this.newPrice = 0;
@@ -215,6 +221,8 @@
             //  this.migration();
             this.initPaymentForm();
             this.initCommitmentForm();
+            this.initMakavForm();
+            if (!$scope.idSelectedVote)  $scope.idSelectedVote = 0;// סימון שורה ראשונה במידה ויש
             this.initNewExpense();
             this.initNewHorse();
             this.countAllCredits();
@@ -953,6 +961,15 @@
             }
         }
 
+        function _initMakavForm() {
+            this.newMakav = {};
+            this.newMakav.Date = new Date();
+            this.newMakav.UserWrite = localStorage.getItem('userLogin');
+            //if ($scope.commitmentForm != null) {
+            //    $scope.commitmentForm.$setPristine();
+            //}
+        }
+
         function _changeLessonsStatus(status, details, studentId, lessonId, isComplete, lesson, isText, officedetails) {
          
              
@@ -1244,6 +1261,50 @@
             }
             this.countAllCredits();
         }
+
+
+        function _addMakav() {
+            this.makav = this.makav || [];
+        //    this.newMakav.UserWrite = "צחיאל חזן";
+            this.makav.push(this.newMakav);
+            this.initMakavForm();
+      
+        }
+
+        function _removeMakav(ma, ind) {
+
+            $scope.idSelectedVote = ind;
+            if (confirm('האם למחוק את המעקב?')) {
+                var makav = this.makav;
+                for (var i in makav) {
+                    if (makav[i] == ma) {
+                        makav.splice(i, 1);
+                    }
+                }
+
+                $scope.idSelectedVote -= 1;
+            }
+        }
+
+        function _setMakavDesc(ma,ind) {
+            $scope.idSelectedVote = ind;
+            $scope.Desc = ma.Desc;
+          //  $scope.idSelectedVote  = ma.Id;
+          //  alert(ma.Desc);
+
+            //var makav = this.makav;
+            //for (var i in makav) {
+            //    if (i == ind) {
+            //        makav.splice(i, 1);
+            //    }
+            //}
+
+        }
+
+
+
+
+
 
         this.getccType = function (ValeType) {
 
@@ -1587,9 +1648,9 @@
                 if (this.user.BirthDate)
                     this.user.BirthDate.setHours(this.user.BirthDate.getHours() + 3);
                
-             
-               
-                usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses).then(function (user) {
+           
+
+                usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses,[], this.makav).then(function (user) {
                     
                     if (user.FirstName == "Error") {
                         alert('שגיאה בעת הכנסת תלמיד חדש , בדוק אם קיימת תעודת זהות במערכת');

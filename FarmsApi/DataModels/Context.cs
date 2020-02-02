@@ -19,14 +19,13 @@ namespace FarmsApi.DataModels
         public DbSet<StudentLessons> StudentLessons { get; set; }
         public DbSet<UserDevices> UserDevices { get; set; }
         public DbSet<Messages> Messages { get; set; }
-
-
         public DbSet<Commitments> Commitments { get; set; }
         public DbSet<Expenses> Expenses { get; set; }
         public DbSet<Files> Files { get; set; }
         public DbSet<Payments> Payments { get; set; }
         public DbSet<UserHorses> UserHorses { get; set; }
         public DbSet<AvailableHours> AvailableHours { get; set; }
+        public DbSet<Makavs> Makavs { get; set; }
         public Context() : base("Farms") { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

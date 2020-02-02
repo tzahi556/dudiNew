@@ -80,7 +80,13 @@ namespace FarmsApi.Services
             return Ok(UsersService.getuserexpensesbyuserid(id));
         }
 
-
+        [Authorize]
+        [Route("getuserusermakavbyuserid/{id?}")]
+        [HttpGet]
+        public IHttpActionResult getuserusermakavbyuserid(int? id = null)
+        {
+            return Ok(UsersService.getuserusermakavbyuserid(id));
+        }
 
 
 

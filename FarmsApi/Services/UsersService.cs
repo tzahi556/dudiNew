@@ -508,7 +508,18 @@ namespace FarmsApi.Services
             }
         }
 
+        public static List<Makavs> getuserusermakavbyuserid(int? Id)
+        {
+            using (var Context = new Context())
+            {
 
+                var MakavList = Context.Makavs.Where(u => u.UserId == Id).ToList();
+
+                return MakavList;
+
+                ///asasasas
+            }
+        }
 
 
         //*****************************************************************************
@@ -638,6 +649,10 @@ namespace FarmsApi.Services
 
             List<Expenses> e = dataObj[4].ToObject<List<Expenses>>();
             UpdateExpensesObject(e, u);
+
+            List<Makavs> m = dataObj[7].ToObject<List<Makavs>>();
+            UpdateMakavObject(m, u);
+
             try
             {
                 List<UserHorses> uhs = dataObj[5].ToObject<List<UserHorses>>();
@@ -715,7 +730,6 @@ namespace FarmsApi.Services
 
             }
         }
-
 
         private static void UpdatePaymentsObject(List<Payments> objList, User u)
         {
@@ -1009,6 +1023,60 @@ namespace FarmsApi.Services
 
                 // Context.UserHorses.AddRange(uhs);
                 //User u = UpdateUser(User);
+                Context.SaveChanges();
+
+
+            }
+        }
+
+        private static void UpdateMakavObject(List<Makavs> objList, User u)
+        {
+            using (var Context = new Context())
+            {
+
+
+                List<Makavs> Diff = new List<Makavs>();
+
+                foreach (Makavs item in objList)
+                {
+
+                    item.UserId = u.Id;
+
+                    if (item.Id == 0)
+                    {
+                        Context.Makavs.Add(item);
+                    }
+                    else
+                    {
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                    }
+
+                }
+
+                try
+                {
+
+                    var result = Context.Makavs.Where(p => p.UserId == u.Id).ToList();
+                    IEnumerable<Makavs> differenceQuery = result.Except(objList);
+
+                    foreach (Makavs item in differenceQuery)
+                    {
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
+
+
+             
                 Context.SaveChanges();
 
 

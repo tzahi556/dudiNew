@@ -316,20 +316,21 @@
             views: {
                 'main': {
                     template: '<student user="$ctrl.user" lessons="$ctrl.lessons" instructors="$ctrl.instructors" farms="$ctrl.farms" horses="$ctrl.horses"' 
-                             + 'horses="$ctrl.horses" payments="$ctrl.payments" files="$ctrl.files" commitments="$ctrl.commitments" expenses="$ctrl.expenses" userhorses="$ctrl.userhorses" students="$ctrl.students" ></student>',
-                    controller: function (user, lessons, instructors, farms, horses, payments, files, commitments, expenses, userhorses,students) {
+                        + 'horses="$ctrl.horses" payments="$ctrl.payments" files="$ctrl.files" commitments="$ctrl.commitments" expenses="$ctrl.expenses" userhorses="$ctrl.userhorses" students="$ctrl.students" makav="$ctrl.makav" ></student>',
+                    controller: function (user, lessons, instructors, farms, horses, payments, files, commitments, expenses, userhorses, students, makav) {
                         this.user = user;
                         this.lessons = lessons;
                         this.instructors = instructors;
                         this.farms = farms;
                         this.horses = horses;
-
                         this.payments = payments;
                         this.files = files;
                         this.commitments = commitments;
                         this.expenses = expenses;
                         this.userhorses = userhorses;
                         this.students = students;
+
+                        this.makav = makav;
 
                     },
                     controllerAs: '$ctrl',
@@ -368,9 +369,13 @@
                         },
                       
                         students: function (usersService) {
-                         
-                                return usersService.getUsers('student');
-                        }
+                             return usersService.getUsers('student');
+                        },
+
+                        makav: function (usersService, $stateParams) {
+                            debugger
+                            return usersService.getUserUserMakavByUserId($stateParams.id);
+                        },
                        
 
 

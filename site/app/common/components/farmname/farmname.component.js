@@ -16,10 +16,13 @@
         }
         else if (authData) {
             usersService.getUser().then(function (res) {
+                localStorage.setItem('userLogin', res.FirstName + " " + res.LastName);
+
                 farmsService.getFarm(res.Farm_Id).then(function (data) {
                 
                     self.farmName = data.Name ? data.Name : DEFAULT_NAME;
                     authData.farmName = self.farmName;
+                  
                     localStorage.setItem('authorizationData', angular.toJson(authData));
                    
                     localStorage.setItem('FarmInstractorPolicy', data.Meta.IsInstractorPolicy);
