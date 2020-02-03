@@ -723,8 +723,10 @@
                             <tr ng-repeat="lesson in $ctrl.lessons | orderBy:'start' | dateRange:$ctrl.dateFrom:$ctrl.dateTo " ng-class="{'set-status':$ctrl.setStatus(lesson)}">
                                 <td>{{$index+1}}</td>
                                 <td>{{$ctrl.getInstructorName(lesson.resourceId)}}</td>
-                                <td>{{lesson.start | ildate: 'DD/MM/YYYY HH:mm'}}</td>
-                                <!--<td>{{lesson.lessPrice}}</td>-->
+                                <td> {{$ctrl.getDayOfWeek(lesson.start)}}  {{lesson.start | ildate: 'DD/MM/YYYY HH:mm'}}</td>
+                               
+                                
+                                  <!--<td>{{lesson.lessPrice}}</td>-->
                                 <td>
 
 

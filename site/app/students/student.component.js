@@ -118,9 +118,25 @@
         this.addMakav = _addMakav.bind(this);
         this.removeMakav = _removeMakav.bind(this);
         this.setMakavDesc = _setMakavDesc.bind(this);
-       
+        this.getDayOfWeek = _getDayOfWeek.bind(this);
+        
 
         this.newPrice = 0;
+
+
+        function _getDayOfWeek(day) {
+            var newDate = new Date(day);
+            var CurrentDay = newDate.getDay();
+            if (CurrentDay == 0) return "א'";
+            if (CurrentDay == 1) return "ב'";
+            if (CurrentDay == 2) return "ג'";
+            if (CurrentDay == 3) return "ד'";
+            if (CurrentDay == 4) return "ה'";
+            if (CurrentDay == 5) return "ו'";
+            if (CurrentDay == 6) return "ש'";
+
+            return newDate.getDay();
+        }
 
         function _changeLessonsData() {
 

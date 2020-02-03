@@ -62,7 +62,7 @@
           
             this.unpaidLessons = selectedPayValue;
           
-            if (this.unpaidLessons >= 0) {
+            if (this.unpaidLessons > 0) {
 
                 this.colorForTotal = "blue";
             } else {

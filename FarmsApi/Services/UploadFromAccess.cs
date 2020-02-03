@@ -14,7 +14,7 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 67; //71 רנצו מניס
+        public int FarmId = 59; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
@@ -75,6 +75,7 @@ namespace FarmsApi.Services
                                 FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
                                 Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
                                 and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
+
                                 Order by FarmDairy.DayofRide
                   ";
 
@@ -93,7 +94,7 @@ namespace FarmsApi.Services
 
             string sqlRiders = @" SELECT * from Riders";
 
-            string sqlInstructor = @" SELECT * from Workers Where Active=True";
+            string sqlInstructor = @" SELECT * from Workers ";
 
             string sqlOrganizations = @" SELECT * from Organizations ";
 
@@ -105,7 +106,7 @@ namespace FarmsApi.Services
 
             string sqlHorses = @" SELECT * from Horses Where Active=True";
 
-            string sqlKesher = @" SELECT * from CustCorrespondence";
+            string sqlKesher = @" SELECT * from CustCorrespondence where CustCorrespondence.DateofRecord >= #2019-01-01 00:00:00#";
 
             using (OleDbConnection conn = new OleDbConnection(connection))
             {
@@ -154,17 +155,17 @@ namespace FarmsApi.Services
             //  BuildUserRiders();
             //   BuildUserInstructors();
             //  BuildLessons();
-            //  BuildStudentLessons();
-            //BuildCommitmentsLessons();
-            //  BuildPayments();
+            //   BuildStudentLessons();
+            // BuildCommitmentsLessons();
+            //   BuildPayments();
 
         //    BuildCandidates();
 
             // BuildPensionAndCourse();
             //   BuildHorses();
-            //   BuildFixedPhone();
+            //  BuildFixedPhone();
 
-            // BuildHashlama();
+         //   BuildHashlama();
 
             BuildKesher();
         }
@@ -182,6 +183,7 @@ namespace FarmsApi.Services
                 string Contents = item["Contents"].ToString();
                 string userId = item["userId"].ToString();
 
+                if (string.IsNullOrEmpty(CustId) || string.IsNullOrEmpty(userId)) continue;
                 int RiderIdInt = Int32.Parse(CustId);
                 int WorkerIDInt = Int32.Parse(userId);
 
@@ -720,6 +722,8 @@ namespace FarmsApi.Services
                     FirstName = GetRightName(item["FirstName"].ToString());
                     LastName = GetRightName(item["FamilyName"].ToString().Replace("_", ""));
                     Active = (item["Active"].ToString() == "True") ? "active" : "notActive";
+                   
+                    
                     Deleted = (Active == "active") ? false : true;
                     Address = item["Address"].ToString() + " " + item["City"].ToString();
                     IdNumber = item["IDNmber"].ToString();
@@ -1077,7 +1081,7 @@ namespace FarmsApi.Services
                     try
                     {
                         // חשבונית
-                        if (!string.IsNullOrEmpty(invoice) && invoice != "0" && financier != "2")
+                        if (!string.IsNullOrEmpty(invoice) && invoice != "0")
                         {
                             var invoiceUser = Context.Payments.Where(x => x.InvoiceNum == invoice && x.UserId == StudentObj.Id).FirstOrDefault();
                             if (invoiceUser == null)
@@ -1236,50 +1240,58 @@ namespace FarmsApi.Services
                     var StudentObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == RiderIdInt && x.Role == "student").FirstOrDefault();
                     var InstructorObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == WorkerIDInt && x.Role == "instructor").FirstOrDefault();
 
-
-                    if (StudentObj == null || InstructorObj == null) continue;
-
-
-                    DateTime LessonsStart = GetDateFromAccess(DayofRide, HourofRide);
-                    double FixedPrice = double.Parse(Price) - double.Parse(financPrecent);
-                    // חשבונית
-                    if (!string.IsNullOrEmpty(invoice) && invoice != "0")
+                    // להביא חשבוניות של שיעורים ללא מדריך
+                    if (StudentObj != null && InstructorObj == null)
                     {
-                        var invoiceUser = Context.Payments.Where(x => x.InvoiceNum == invoice && x.UserId == StudentObj.Id).FirstOrDefault();
-                        if (invoiceUser == null)
+
+                        DateTime LessonsStart = GetDateFromAccess(DayofRide, HourofRide);
+                        double FixedPrice = double.Parse(Price) - double.Parse(financPrecent);
+
+                        // חשבונית
+                        if (!string.IsNullOrEmpty(invoice) && invoice != "0")
                         {
-                            Payments pay = new Payments();
+                            var invoiceUser = Context.Payments.Where(x => x.InvoiceNum == invoice && x.UserId == StudentObj.Id).FirstOrDefault();
+                            if (invoiceUser == null)
+                            {
+                                Payments pay = new Payments();
 
-                            pay.UserId = StudentObj.Id;
-                            pay.Date = LessonsStart;
-                            pay.InvoicePdf = "";
-                            pay.InvoiceNum = invoice;
-                            pay.InvoiceDetails = invoice + " חשבונית ";
+                                pay.UserId = StudentObj.Id;
+                                pay.Date = LessonsStart;
+                                pay.InvoicePdf = "";
+                                pay.InvoiceNum = invoice;
+                                pay.InvoiceDetails = invoice + " חשבונית " + " " + UnexecutedReson;
 
-                            //pay.canceled = CheckifExistStr(Item["canceled"]);
-                            pay.Price = FixedPrice;
-                            pay.InvoiceSum = FixedPrice;
+                              
+                                pay.Price = FixedPrice;
+                                pay.InvoiceSum = FixedPrice;
 
-                            pay.payment_type = "1";
-                            pay.lessons = 1;
-                            //pay.month = CheckifExistDate(Item["month"]);
-                            //pay.untilmonth = CheckifExistDate(Item["untilmonth"]);
+                                pay.payment_type = "1";
+                                if (WorkerID != ExpensWorkerId) pay.lessons = 1;
+                              
 
-
-                            Context.Payments.Add(pay);
-                            Context.SaveChanges();
+                                Context.Payments.Add(pay);
+                                Context.SaveChanges();
 
 
+                            }
+                            else
+                            {
+                                invoiceUser.Price = FixedPrice;
+                                invoiceUser.InvoiceSum += FixedPrice;
+                                if (WorkerID != ExpensWorkerId) invoiceUser.lessons += 1;
+                                Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
+                                Context.SaveChanges();
+                            }
                         }
-                        else
-                        {
-                            invoiceUser.Price = FixedPrice;
-                            invoiceUser.InvoiceSum += FixedPrice;
-                            invoiceUser.lessons += 1;
-                            Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
-                            Context.SaveChanges();
-                        }
+
+
+
+
                     }
+
+
+
+
                 }
             }
             catch (Exception ex)
