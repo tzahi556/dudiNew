@@ -25,7 +25,8 @@
         this.getTransferData = _getTransferData;
 
         this.report = _report;
-
+        this.reportHMO = _reportHMO;
+        
 
         function _getUsers(role, includeDeleted) {
             var deferred = $q.defer();
@@ -220,10 +221,20 @@
             return sharedValues.roles;
         }
 
-        function _report(type, date) {
+        function _report(type, fromDate, toDate) {
          
             var deferred = $q.defer();
-            $http.get(sharedValues.apiUrl + 'users/getReport/' + type + "/" + date).then(function (res) {
+            $http.get(sharedValues.apiUrl + 'users/getReport/' + type + "/" + fromDate + "/" + toDate).then(function (res) {
+                var data = res.data;
+
+                deferred.resolve(data);
+            });
+            return deferred.promise;
+        }
+        function _reportHMO(fromDate, toDate) {
+         
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'users/getReportHMO/' + fromDate + "/" + toDate).then(function (res) {
                 var data = res.data;
 
                 deferred.resolve(data);

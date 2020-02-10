@@ -50,7 +50,7 @@
     });
 
     function StudentController(farmsService, usersService, lessonsService, filesService, sharedValues, $scope, $state, notificationsService, $http) {
-
+       
         var self = this;
         this.scope = $scope;
         this.farmsService = farmsService;
@@ -233,7 +233,7 @@
         // init student
         this.initStudent = function () {
 
-         
+          
             //  this.migration();
             this.initPaymentForm();
             this.initCommitmentForm();

@@ -40,6 +40,7 @@
         this.changeStudentstatus = _changeStudentstatus.bind(this);
         this.puplateInstructor = _puplateInstructor.bind(this);
         this.puplateTimesInstructor = _puplateTimesInstructor.bind(this);
+        this.getStatusofStudent = _getStatusofStudent.bind(this);
 
         this.transferLesson = _transferLesson.bind(this);
         this.role = localStorage.getItem('currentRole');
@@ -180,10 +181,31 @@
         }
     }
 
+    function _getStatusofStudent(StudentId) {
+        var role = localStorage.getItem('currentRole');
+
+
+        if (role == "sysAdmin" || role == "farmAdmin") {
+
+            for (var i in this.sharedValues.lessonStatuses) {
+                this.sharedValues.lessonStatuses[i].hide = false;
+
+
+                if (this.isComplete[StudentId] > 2 && i > 2)
+                    this.sharedValues.lessonStatuses[i].hide = true;
+
+            }
+        }
+        return this.sharedValues.lessonStatuses;
+
+        //  alert(StudentId);
+
+    }
+
     function _onShow(event, selectedLesson, studentTemplate) {
         // debugger
         this.isEventHaveChild = false;
-        if (selectedLesson.students.length>0) this.isEventHaveChild = true;
+        if (selectedLesson.students.length > 0) this.isEventHaveChild = true;
 
 
         this.tranferDate = moment(selectedLesson.start).toDate();
@@ -195,25 +217,26 @@
         this.studentTemplate = studentTemplate;
         this.copyStatuses(false, selectedLesson.statuses);
 
+
         var role = localStorage.getItem('currentRole');
 
 
-        if (role == "sysAdmin" || role == "farmAdmin") {
+        //if (role == "sysAdmin" || role == "farmAdmin") {
 
-            for (var i in this.sharedValues.lessonStatuses) {
+        //    for (var i in this.sharedValues.lessonStatuses) {
 
 
-                this.sharedValues.lessonStatuses[i].hide = false;
+        //        this.sharedValues.lessonStatuses[i].hide = false;
 
-                if (selectedLesson.students.length == 0)
-                    this.sharedValues.lessonStatuses[i].hide = false;
+        //        if (selectedLesson.students.length == 0)
+        //            this.sharedValues.lessonStatuses[i].hide = false;
 
-                else if (this.isComplete[selectedLesson.statuses[0].StudentId] > 2 && i > 1 && i != 2)
-                    this.sharedValues.lessonStatuses[i].hide = true;
+        //        else if (this.isComplete[selectedLesson.statuses[0].StudentId] > 2 && i > 1 && i != 2)
+        //            this.sharedValues.lessonStatuses[i].hide = true;
 
-            }
+        //    }
 
-        }
+        //}
 
 
 
@@ -394,7 +417,7 @@
         //    this.event = null;
         //}
 
-       
+
 
         this.copyStatuses(true);
         this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
@@ -417,9 +440,9 @@
                 return;
             }
         }
-        
 
-       
+
+
 
         if (this.isEventHaveChild) {
 
@@ -465,9 +488,9 @@
     function _removeStudentFromEvent(studentId) {
         if (!confirm('האם אתה בטוח?')) { return false; }
 
-      
 
-      
+
+
 
         for (var i in this.event.students) {
             if (this.event.students[i] == studentId) {

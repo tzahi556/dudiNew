@@ -60,5 +60,19 @@ namespace FarmsApi.DataModels
 
     }
 
+    public class HMOReport
+    {
+        public int Id { get; set; }
+        public string Type { get; set; }
+        public string Taz { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Count { get; set; }
+        public string Invoice { get; set; }
+        public DateTime? Start { get; set; }
 
- }
+        public string Total { get; set; }
+
+
+    }
+}

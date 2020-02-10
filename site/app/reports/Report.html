@@ -45,24 +45,34 @@
 </head>
 <body>
 
-   <div class="dvtitle">
-        דו"ח מנהלים לחודש @ReportDate  שם חווה - @NameHava
+    <div class="dvtitle">
+
+        <u> דו"ח מנהלים</u><br />
+        שם חווה - @NameHava
+        <br />
+        תאריכים - @FromDate - @ToDate
     </div>
-   <div class="dvSubtitle">
+
+
+
+    <!--<div class="dvtitle">
+        דו"ח מנהלים לחודש @ReportDate  שם חווה - @NameHava
+    </div>-->
+    <div class="dvSubtitle">
         מספר תלמידים פעילים: <span>@ActiveUser</span><br />
         מספר תלמידים לא פעילים:<span>@notActiveUser</span><br />
         מספר מדריכים:<span>@instructorUser</span><br /><br />
 
 
-       <span style="text-decoration:underline">מדריכים</span><br />
+        <span style="text-decoration:underline">מדריכים</span><br />
 
     </div>
-   <div class="dvTable">
-     
-        <table width="100%" border="1"  dir="rtl" style="border-collapse: collapse;">
+    <div class="dvTable">
+
+        <table width="100%" border="1" dir="rtl" style="border-collapse: collapse;">
             <tr>
                 <th style="background:#42ecf5;">שם המדריך</th>
-                <th style="background:#42ecf5;">מס' ימי עבודה <br /> בחודש</th>
+                <th style="background:#42ecf5;">מס' ימי עבודה </th>
                 <th style="background:#42ecf5;">מס' שעות</th>
                 <th style="background:#42ecf5;">מס' שיעורים בפועל <br />(התלמיד היה בשיעור)</th>
                 <th style="background:#42ecf5;">מס' שיעורים שלא נכחו</th>
@@ -75,10 +85,10 @@
             @TableInstructor
 
         </table>
-      
+
     </div>
 
-   <div class="dvTable">
+    <div class="dvTable">
 
 
         <div class="dvSubtitle">
@@ -93,36 +103,36 @@
             סה"כ סוסים מפורזלים:<span>@HorsePirzool</span><br />
             סה"כ סוסים בטילוף:<span>@HorseTiluf</span><br />
             סה"כ סוסים מעל שנתיים:<span>@HorseUp2</span><br />
-           
+
 
             כמות סוסים זכרים: <span>@HorseMan</span>  כמות סוסות נקבות: <span>@HorseWoman</span>     כמות סוסים מסורסים:<span>@HorseSirus</span><br /><br />
             אחוזי ניצול סוסי בית ספר :<span>@HorseSchoolPercent</span><br />
         </div>
-       </div>
-    
+    </div>
 
-    
-   <div class="dvTable" >
 
-       <div><br /></div>
-    
-         <table width="30%" border="1"  dir="rtl" style="border-collapse: collapse;float:right">
-                <tr>
-                    <th style="background:#42ecf5;">שם הסוס</th>
-                    <th style="background:#42ecf5;">% ניצול חודשי ב</th>
-                    
-                </tr>
 
-                @TableHorses
-            </table>
-     </div>
-   
-   <div class="dvTable">
-       <div style="clear:both"><br /></div>
+    <div class="dvTable">
+
+        <div><br /></div>
+
+        <table width="30%" border="1" dir="rtl" style="border-collapse: collapse;float:right">
+            <tr>
+                <th style="background:#42ecf5;">שם הסוס</th>
+                <th style="background:#42ecf5;">% ניצול חודשי ב</th>
+
+            </tr>
+
+            @TableHorses
+        </table>
+    </div>
+
+    <div class="dvTable">
+        <div style="clear:both"><br /></div>
         <div class="dvSubtitle">
             <span style="text-decoration:underline">סיכום</span><br />
 
-           
+
 
             סה"כ חייבים: <span>@AllMinusCount</span>     סה"כ כסף:<span>₪</span><span> @AllMinusSum </span><br /><br />
             <span style="text-decoration:underline">סה"כ כמות שעורים בחתכים השונים</span><br />
@@ -138,17 +148,17 @@
     </div>
 
 
-        <!--
+    <!--
 
 
 
 
+    </div>
+    <div style="clear:both"></div>
+    <div class="dvTable">
+        <div class="dvSubtitle">
+             <span style="text-decoration:underline">סיכום</span><br /><br />
         </div>
-        <div style="clear:both"></div>
-        <div class="dvTable">
-            <div class="dvSubtitle">
-                 <span style="text-decoration:underline">סיכום</span><br /><br />
-            </div>
-        </div>-->
+    </div>-->
 </body>
 </html>

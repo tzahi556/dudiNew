@@ -54,15 +54,15 @@
         this.NewLesIds = 0;
         this.getCounter = _getCounter.bind(this);
         this.modalAppendClick2 = _modalAppendClick2.bind(this);
-        
+
         this.searchDate = new Date();
-        this.lessToDrop="";
+        this.lessToDrop = "";
 
         this.role = localStorage.getItem('currentRole');
         //   this.FarmInstractorPolicy = localStorage.getItem('FarmInstractorPolicy');
 
-      
-       
+
+
 
         //alert(this.students.length);
         // this.resourcesIds = "0";
@@ -75,13 +75,15 @@
 
         // this.reloadCalendarData();
 
-      // this.filteredLessons = this.filterLessonsBySelectedInstructors();
+        // this.filteredLessons = this.filterLessonsBySelectedInstructors();
 
-       
+
 
         function _customDate() {
-
-            $('.calendar').fullCalendar('gotoDate', this.searchDate);
+            if (this.searchDate) {
+                if (this.searchDate.getFullYear() > 2000)
+                    $('.calendar').fullCalendar('gotoDate', this.searchDate);
+            }
 
         }
 
@@ -91,7 +93,7 @@
             // debugger
             //  alert("The view's title is " + view.title);
 
-          //  alert();
+            //  alert();
 
             this.startDate = moment(params.startDate).format('YYYY-MM-DD');
 
@@ -136,10 +138,10 @@
         }.bind(this));
 
         $scope.makeDrop = function (newEvent, currentStudentId) {
-           
+
             if (newEvent && newEvent.target.className.indexOf("fc-draggable dvDragElement") == -1) {
-               
-               
+
+
                 $rootScope.statuses = [{ "StudentId": currentStudentId, "Status": "completion", "Details": "", "IsComplete": 2 }];
                 $rootScope.students = [(currentStudentId)];
 
@@ -150,8 +152,8 @@
 
                 var main_idelem = $($el).closest("a");
                 var main_id = $(main_idelem).attr("main_id");
-                if (main_id) { 
-                  
+                if (main_id) {
+
                     $scope.$ctrl.lessToDrop = $scope.$ctrl.getLessonById(main_id);
 
                     $scope.$ctrl.lessToDrop.students.push(currentStudentId);
@@ -187,29 +189,32 @@
 
             }
         }
-
+        // פונקציה שמוסיפה תלמיד מגרירה של השלמה
         function _modalAppendClick2(onlyOne) {
-           
+
+            $rootScope.statuses = [];
+            $rootScope.students = [];
             var lt = $scope.$ctrl.lessToDrop;
             if (onlyOne) $scope.$ctrl.lessToDrop.onlyOne = 1;
             $scope.$ctrl.updateLesson(lt);
-          
+
         }
 
         function _eventCreate(start, end, jsEvent, view, resource) {
-           
+
             if ($rootScope.students && $rootScope.students.length > 0) {
+
 
                 for (var i in this.lessons) {
 
                     if (resource.id == this.lessons[i].resourceId &&
                         (
-                         this.lessons[i].start == start.toISOString() ||
-                         this.lessons[i].end == end.toISOString() ||
-                         (moment(start.toISOString()) < moment(this.lessons[i].end) && moment(start.toISOString()) > moment(this.lessons[i].start))
+                            this.lessons[i].start == start.toISOString() ||
+                            this.lessons[i].end == end.toISOString() ||
+                            (moment(start.toISOString()) < moment(this.lessons[i].end) && moment(start.toISOString()) > moment(this.lessons[i].start))
                         )
 
-                        ) {
+                    ) {
                         //alert(1);
                         start = this.lessons[i].start;
                         end = this.lessons[i].end;
@@ -222,13 +227,12 @@
 
 
             }
-            
+
             // במידה והשיעור שנוצר הוא 15 שעה להעביר לחצי שעה זה הדיפולט
-            if (moment(end).diff(start, 'minutes', true) < 16)
-            {
-               end= moment(end).add('m', 15);
+            if (moment(end).diff(start, 'minutes', true) < 16) {
+                end = moment(end).add('m', 15);
             }
-          
+
             var event = {
                 id: 0,
                 start: start,
@@ -240,7 +244,7 @@
 
             $rootScope.statuses = [];
             $rootScope.students = [];
-         
+
 
 
             this.createNotifications(event, 'create');
@@ -282,19 +286,19 @@
         }
 
         function _reloadCalendarData() {
-          
+
             var view = $('.calendar').fullCalendar('getView');
             if (view.type != "agendaDay") {
 
                 for (var i in this.instructors) {
 
-                   
+
 
                     this.instructors[i].Shvoi = this.instructors[i].Show;
                 }
 
             }
-          
+
             //for (var i in this.instructors) {
 
             //    visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
@@ -302,7 +306,7 @@
             //sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
 
             this.initResources();
-           // בדיקה אם אפשר להסתדר בלי זה
+            // בדיקה אם אפשר להסתדר בלי זה
             this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
             this.scope.$broadcast('calendar.reloadBackgroundEvents', this.backgroundEvents);
             this.scope.$broadcast('calendar.reloadResources', this.resources);
@@ -328,37 +332,68 @@
 
         function _filterLessonsBySelectedInstructors() {
 
-         
+
             //alert(this.lessons.length);
             ////031668957
             //var diffMonth = (moment(this.endDate)).diff(moment(this.startDate), 'months', true);
             //   if (this.resources.length == 0) return [];
 
             var returnLessons = [];
-           
+
             for (var i in this.lessons) {
+
+                //רק אם יש שיעור השלמה ושיעור רגיל
+                if (
+                    (this.lessons[eval(i) - 1] && this.lessons[eval(i) - 1].start == this.lessons[i].start &&
+                        this.lessons[eval(i) - 1].resourceId == this.lessons[i].resourceId)
+                    ||
+                    (this.lessons[eval(i) + 1] && this.lessons[eval(i) + 1].start == this.lessons[i].start &&
+                        this.lessons[eval(i) + 1].resourceId == this.lessons[i].resourceId)
+
+                ) {
+
+
+                    if (this.lessons[i].statuses[0] && this.lessons[i].statuses[0].Status == "completionReq")
+                        continue;
+                }
+
+                // אם אחד מהשלמה והשני דרוש שיעור השלמה תסיר אותו
+                //if (this.lessons[i].statuses[0] && this.lessons[i].statuses[1]) {
+                //  debugger
+                //    if (this.lessons[i].statuses[0].Status === "completionReq" && this.lessons[i].statuses[1].Status === "completion") {
+                //      //  this.lessons[i].statuses=this.lessons[i].statuses.slice(0, 1);
+                //      //  this.lessons[i].students=this.lessons[i].students.slice(0, 1);
+                //    }
+                //    if (this.lessons[i].statuses[0].Status === "completion" && this.lessons[i].statuses[1].Status === "completionReq") {
+                //        this.lessons[i].statuses = (this.lessons[i].statuses).splice(1, 1);
+                //        this.lessons[i].students = (this.lessons[i].students).splice(1, 1);
+
+                //    }
+                       
+                //}
 
                 for (var x in this.resources) {
                     if (this.lessons[i].resourceId == this.resources[x].id) {
 
 
+
                         //if (this.lessons[i].start > this.endDate) {
 
-                         //   this.lessons[i] = this.getIfLessonPrevExistNew(this.lessons[i]); //this.getIfLessonPrevExist(this.lessons[i], returnLessons);// moment(this.lessons[i].start).add(-7, 'day');
-                         //   if (!this.lessons[i]) continue;
-                       // }
+                        //   this.lessons[i] = this.getIfLessonPrevExistNew(this.lessons[i]); //this.getIfLessonPrevExist(this.lessons[i], returnLessons);// moment(this.lessons[i].start).add(-7, 'day');
+                        //   if (!this.lessons[i]) continue;
+                        // }
 
 
                         // כל זה בדיקה שאין ביחד גם צבע אפור וגם שיעור
                         //var isExist = false;
-                       
+
                         //var lessstart = this.lessons[i].start;
                         //var resourceId = this.lessons[i].resourceId;
                         //for (var y in returnLessons) {
                         //    if (lessstart == returnLessons[y].start && returnLessons[y].resourceId == resourceId) {
-                                
+
                         //        for (var m in returnLessons[y].statuses) {
-                                  
+
                         //            if (returnLessons[y].statuses[m] && returnLessons[y].statuses[m].Status == "completionReq") {
                         //                returnLessons.splice(returnLessons.indexOf(returnLessons[y]), 1);
                         //            }
@@ -368,7 +403,7 @@
 
                         //            if (this.lessons[i].statuses[m] && this.lessons[i].statuses[m].Status == "completionReq") {
                         //                isExist = true;
-                                       
+
                         //            }
                         //        }
 
@@ -388,38 +423,38 @@
         }
 
         function _getIfLessonPrevExist(lesson, returnLessons) {
-           
-           
+
+
             var prevStartDate = moment(lesson.start).add(-7, 'day').format('YYYY-MM-DDTHH:mm:ss');
             var prevEndDate = moment(lesson.end).add(-7, 'day').format('YYYY-MM-DDTHH:mm:ss');
             var resourceId = lesson.resourceId;
-       
+
 
             for (var i in returnLessons) {
                 var startLesDate = moment(returnLessons[i].start).format('YYYY-MM-DDTHH:mm:ss');
                 var endLesDate = moment(returnLessons[i].end).format('YYYY-MM-DDTHH:mm:ss');
 
                 if (resourceId != returnLessons[i].resourceId) continue;
-               
+
 
                 if (
 
                     (
-                     (prevStartDate >= startLesDate
-                     &&
-                     prevStartDate < endLesDate)
-                     ||
-                     (prevEndDate > startLesDate
-                     &&
-                     prevEndDate <= endLesDate)
-                     ||
-                      (prevStartDate < startLesDate
-                     &&
-                     prevEndDate > endLesDate)
+                        (prevStartDate >= startLesDate
+                            &&
+                            prevStartDate < endLesDate)
+                        ||
+                        (prevEndDate > startLesDate
+                            &&
+                            prevEndDate <= endLesDate)
+                        ||
+                        (prevStartDate < startLesDate
+                            &&
+                            prevEndDate > endLesDate)
 
                     )
 
-                    ) {
+                ) {
 
                     return "";
                 }
@@ -484,7 +519,7 @@
         }
 
         function _eventClose(event, lessonsQty) {
-           
+
             if (event.isFromChangePhone) {
                 this.eventChange(event);
 
@@ -499,7 +534,7 @@
 
             }
 
-          
+
         }
 
         function _eventDelete(event, deleteChildren) {
@@ -620,10 +655,10 @@
 
 
             //  
-           
+
             var fakendDate = this.endDate;//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
-                
+
                 this.lessons = lessons;
 
 
@@ -656,7 +691,7 @@
                 var lessonsGroupBy = [];
                 var prevInstructor = "";
                 for (var i in lessons) {
-                   
+
                     if (lessons[i].InstructorName != prevInstructor) {
 
                         var newData = angular.copy(lessons[i]);

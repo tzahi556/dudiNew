@@ -175,12 +175,21 @@ namespace FarmsApi.Services
 
 
         [Authorize]
-        [Route("getReport/{type}/{date}")]
+        [Route("getReport/{type}/{fromDate}/{toDate}")]
         [HttpGet]
-        public IHttpActionResult getReport([FromUri] string type, [FromUri] string date)
+        public IHttpActionResult getReport([FromUri] string type, [FromUri] string fromDate, [FromUri] string toDate)
         {
            
-            return Ok(UsersService.ManagerReport(type,date));
+            return Ok(UsersService.ManagerReport(type, fromDate, toDate));
+        }
+
+        [Authorize]
+        [Route("getReportHMO/{fromDate}/{toDate}")]
+        [HttpGet]
+        public IHttpActionResult getReportHMO([FromUri] string fromDate, [FromUri] string toDate)
+        {
+
+            return Ok(UsersService.HMOReport(fromDate, toDate));
         }
 
 

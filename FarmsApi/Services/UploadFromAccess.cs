@@ -14,7 +14,7 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 59; //71 רנצו מניס
+        public int FarmId = 67; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
@@ -159,15 +159,15 @@ namespace FarmsApi.Services
             // BuildCommitmentsLessons();
             //   BuildPayments();
 
-        //    BuildCandidates();
+            //    BuildCandidates();
 
             // BuildPensionAndCourse();
             //   BuildHorses();
-            //  BuildFixedPhone();
-
+            BuildFixedPhone();
+          //  BuildFixedBirthDate();
          //   BuildHashlama();
 
-            BuildKesher();
+            //    BuildKesher();
         }
 
         private void BuildKesher()
@@ -282,10 +282,14 @@ namespace FarmsApi.Services
                         //ParentName2 = ParentDetalis["MotherName"].ToString();
 
                         //  AnotherEmail = GetEmailMotherFather(ParentDetalis);
+                        var nomobileFather = ParentDetalis["PhonFather"].ToString();
+                        var nomobileMother = ParentDetalis["PhonMother"].ToString();
 
-                        PhoneNumber = ParentDetalis["PhonFather"].ToString();
-                        PhoneNumber2 = ParentDetalis["PhonMother"].ToString();
+                        PhoneNumber = ParentDetalis["mobileFather"].ToString();
+                        PhoneNumber2 = ParentDetalis["mobileMother"].ToString(); 
 
+                        if (string.IsNullOrEmpty(PhoneNumber)) PhoneNumber = nomobileFather;
+                        if (string.IsNullOrEmpty(PhoneNumber2)) PhoneNumber2 = nomobileMother;
                     }
 
 
@@ -319,6 +323,58 @@ namespace FarmsApi.Services
 
                         UserEN.PhoneNumber = PhoneNumber;
                         UserEN.PhoneNumber2 = PhoneNumber2;
+                        Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
+                    }
+
+                }
+
+
+                Context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+
+
+            }
+
+        }
+
+        private void BuildFixedBirthDate()
+        {
+
+            try
+            {
+
+                string RiderId,
+
+                    BirthDate = "";
+                   
+
+
+                foreach (DataRow item in ds.Tables[0].Rows)
+                {
+
+
+
+
+
+
+                    RiderId = item["RiderId"].ToString();
+                    int RiderIdInt = Int32.Parse(RiderId);
+
+                    BirthDate = item["BirthDay"].ToString();
+                   
+
+
+
+               
+
+                    var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
+                    if (UserEN != null)
+                    {
+
+                        UserEN.BirthDate = GetDateTimeParse(BirthDate);
                         Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
                     }
 
@@ -596,8 +652,14 @@ namespace FarmsApi.Services
 
                         AnotherEmail = GetEmailMotherFather(ParentDetalis);
 
-                        PhoneNumber = ParentDetalis["PhonFather"].ToString();
-                        PhoneNumber2 = ParentDetalis["PhonMother"].ToString();
+                        var nomobileFather = ParentDetalis["PhonFather"].ToString();
+                        var nomobileMother = ParentDetalis["PhonMother"].ToString();
+
+                        PhoneNumber = ParentDetalis["mobileFather"].ToString();
+                        PhoneNumber2 = ParentDetalis["mobileMother"].ToString();
+
+                        if (string.IsNullOrEmpty(PhoneNumber)) PhoneNumber = nomobileFather;
+                        if (string.IsNullOrEmpty(PhoneNumber2)) PhoneNumber2 = nomobileMother;
 
                     }
 

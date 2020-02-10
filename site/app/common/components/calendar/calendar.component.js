@@ -190,6 +190,7 @@
                 if (event.rendering != "background" && event.statuses && event.statuses.length > 0) {
 
                     var countCompletionReq = 0;
+                    
                     for (var i in event.statuses) {
                        
                         //בלי סטטוס
@@ -253,8 +254,17 @@
 
                     }
 
+
+                    //if (event.statuses && event.statuses.length == 2 && countCompletionReq == 1) {
+                         
+                    //    // event.statuses[i].Status == 'completionReq'
+
+                    //}
+
                     if (event.statuses && countCompletionReq == event.statuses.length)
                         $(element).css("background-color", "lightGray").css("border-color", "gray");
+
+                   
 
                     // שיעור אחרון
                     if (event.PrevNext == 1) {
@@ -301,7 +311,7 @@
 
         });
 
-        $(".addedCalender").prependTo(".fc-right");
+      $(".addedCalender").prependTo(".fc-right");
 
 
         //Scroll To End 

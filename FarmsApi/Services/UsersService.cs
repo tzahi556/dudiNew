@@ -1223,7 +1223,7 @@ namespace FarmsApi.Services
             }
         }
 
-        public static object ManagerReport(string type, string date)
+        public static object ManagerReport(string type, string fromDate, string toDate)
         {
             using (var Context = new Context())
             {
@@ -1231,15 +1231,17 @@ namespace FarmsApi.Services
 
                 SqlParameter Type = new SqlParameter("Type", type);
                 SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
-                SqlParameter StartDatePara = new SqlParameter("StartDate", date.Replace("_", "/"));
+                SqlParameter FromDatePara = new SqlParameter("StartDate", fromDate);
+                SqlParameter ToDatePara = new SqlParameter("EndDate", toDate);
+               // SqlParameter StartDatePara = new SqlParameter("StartDate", date.Replace("_", "/"));
 
 
 
                 if (type == "1")
                 {
                     var query = Context.Database.SqlQuery<ManagerReport>
-                    ("GetReport @Type,@Farm_Id,@StartDate",
-                    Type, Farm_IdPara, StartDatePara);
+                    ("GetReport @Type,@Farm_Id,@StartDate,@EndDate",
+                    Type, Farm_IdPara, FromDatePara, ToDatePara);
                     var res = query.ToList();
                     return res;
                 }
@@ -1248,7 +1250,7 @@ namespace FarmsApi.Services
                 {
                     var query = Context.Database.SqlQuery<ManagerReportInstructorTable>
                     ("GetReport @Type,@Farm_Id,@StartDate",
-                    Type, Farm_IdPara, StartDatePara);
+                    Type, Farm_IdPara, FromDatePara, ToDatePara);
                     try
                     {
                         var res = query.ToList();
@@ -1268,14 +1270,45 @@ namespace FarmsApi.Services
             }
         }
 
-        public static object GetTransferData(string insructorId, string dow,string date)
+        public static object HMOReport(string fromDate, string toDate)
         {
             using (var Context = new Context())
             {
                 var CurrentUser = GetCurrentUser();
 
+               
+            
+                SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
+                SqlParameter FromDatePara = new SqlParameter("FromDate", fromDate);
+                SqlParameter ToDatePara = new SqlParameter("ToDate", toDate);
 
-              
+
+                try {  
+                    var query = Context.Database.SqlQuery<HMOReport>
+                    ("GetReportHMO @Farm_Id,@FromDate,@ToDate",
+                    Farm_IdPara, FromDatePara, ToDatePara);
+                    var res = query.ToList();
+                    return res;
+
+                }catch(Exception ex)
+                {
+
+
+                }
+
+
+
+                return null;
+
+            }
+        }
+
+
+        public static object GetTransferData(string insructorId, string dow,string date)
+        {
+            using (var Context = new Context())
+            {
+                var CurrentUser = GetCurrentUser();
 
 
                 SqlParameter ResourceId = new SqlParameter("ResourceId", insructorId);

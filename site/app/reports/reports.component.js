@@ -12,6 +12,7 @@
         self.lessonsReport = _lessonsReport;
         self.horsesReport = _horsesReport;
         self.ReportManger = _ReportManger;
+        self.ReportHMO = _ReportHMO;
         self.getInstructorCounter = _getInstructorCounter;
         self.getRound = _getRound;
         self.reports = [
@@ -22,29 +23,117 @@
 
 
 
+        function _ReportHMO() {
+
+
+           
+
+            $.get('app/reports/ReportHMO.html?sss=' + new Date(), function (text) {
+
+                // var CurrentDate = self.fromDate;
+                //if (!CurrentDate) CurrentDate = new Date();
+                //var daysInMonth = moment(CurrentDate).daysInMonth();
+
+                //var Month = CurrentDate.getMonth() + 1;
+                //var Year = CurrentDate.getFullYear();
+                //if (Month < 10) Month = "0" + Month;
+
+
+
+                text = text.replace("@FromDate", moment(self.fromDate).format('DD/MM/YYYY')).replace("@ToDate", moment(self.toDate).format('DD/MM/YYYY'));
+                text = text.replace("@NameHava", localStorage.getItem('FarmName'));
+
+                usersService.reportHMO(moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
+                
+                    var TableMacabi = "";
+                    var TableKlalit = "";
+                    var PrevStudentId = "";
+                    var Count = 0;
+                    var StartDetails = "";
+                    for (var i = 0; i < res.length; i++) {
+                    
+                        var Type = res[i].Type;
+                        var Taz = res[i].Taz;
+                        var StudentId = res[i].Id;
+                        var FirstName = res[i].FirstName;
+                        var LastName = res[i].LastName;
+                        var Invoice = res[i].Invoice;
+                        var Start = moment(res[i].Start).format('DD/MM/YYYY');
+                        var Total = res[i].Total;
+
+                        StartDetails += Start + ",";
+                        Count++;
+                        if (!res[i + 1] || (res[i + 1].Id != StudentId)) {
+
+
+                            if (Type == "1")
+                                TableMacabi += "<tr><td>" + Taz
+                                    + "</td><td style='text-align:right'>" + FirstName
+                                    + "</td><td style='text-align:right'>" + LastName
+                                    + "</td><td>" + Total// פה לשים יתרת שיעורים
+                                    + "</td><td>" + Count.toString()
+                                    + "</td><td>" + StartDetails + "</td ></tr>";
+
+                            if (Type == "2")
+                                TableKlalit += "<tr><td>" + Taz
+                                    + "</td><td style='text-align:right'>" + FirstName
+                                    + "</td><td style='text-align:right'>" + LastName
+                                    + "</td><td>" + Count.toString()
+                                    + "</td><td>" + Invoice
+                                    + "</td><td>" + StartDetails + "</td ></tr > ";
+
+
+                            StartDetails = "";
+                            Count = 0;
+
+                        }
+
+
+                    }
+
+                    text = text.replace("@TableMacabi", TableMacabi);
+                    text = text.replace("@TableKlalit", TableKlalit);
+
+                    var blob = new Blob([text], {
+                        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                    });
+
+
+                    saveAs(blob, "HMOReport_ " + new Date() + ".html");
+                });
+
+            });
+
+
+
+        }
+
         function _ReportManger() {
 
 
-
+            if (!self.toDate || !self.fromDate) { alert("חובה לבחור תאריכים לדו''ח"); return;}
 
             $.get('app/reports/Report.html?sdsdsd=' + new Date(), function (text) {
 
-                var CurrentDate = self.fromDate;
-                if (!CurrentDate) CurrentDate = new Date();
-                var daysInMonth = moment(CurrentDate).daysInMonth();
-               
-                var Month = CurrentDate.getMonth() + 1;
-                var Year = CurrentDate.getFullYear();
+               // var CurrentDate = self.fromDate;
+            //    if (!CurrentDate) CurrentDate = new Date();
+               // var daysInMonth = moment(CurrentDate).daysInMonth();
+                var daysInMonth = (moment(self.toDate)).diff(moment(self.fromDate), 'days', true);
+                daysInMonth++;
+              
+              //
+                //var Month = CurrentDate.getMonth() + 1;
+                //var Year = CurrentDate.getFullYear();
 
-                if (Month < 10) Month = "0" + Month;
+                //if (Month < 10) Month = "0" + Month;
 
 
-                text = text.replace("@ReportDate", Month + "/" + Year);
-              //$rootScope.farmName
+               // text = text.replace("@ReportDate", Month + "/" + Year);
+                text = text.replace("@FromDate", moment(self.fromDate).format('DD/MM/YYYY')).replace("@ToDate", moment(self.toDate).format('DD/MM/YYYY'));
+                text = text.replace("@NameHava", localStorage.getItem('FarmName'));
 
-                //  alert((Year + "/" + Month + "/01"));
+                usersService.report("1",moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
 
-                usersService.report("1", (Year + "_" + Month + "_01" )).then(function (res) {
 
                     text = text.replace("@ActiveUser", res[0].ActiveUser);
                     text = text.replace("@notActiveUser", res[0].notActiveUser);
@@ -58,10 +147,11 @@
                     text = text.replace("@Leumit", res[0].Leumit);
                     text = text.replace("@Meuedet", res[0].Meuedet);
                     text = text.replace("@Other", res[0].Other);
-                   
-            
 
-                    usersService.report("2", (Year + "_" + Month + "_01")).then(function (res) {
+
+
+                    usersService.report("2", moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
+
 
                         var HtmlTable = "";
                         var ExistInstructor = [];
@@ -74,23 +164,23 @@
                             if (ExistInstructor.indexOf(res[i].Id) == "-1") {
                                 ExistInstructor.push(res[i].Id);
                                 HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName + "</td><td >" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
-                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "HourNumber")
-                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "Attend")
-                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttend")
-                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttendCharge")
-                                                                            + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NoStatus") + "</td></tr>";
+                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "HourNumber")
+                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "Attend")
+                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttend")
+                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttendCharge")
+                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NoStatus") + "</td></tr>";
                             }
 
 
-                          
+
                             if (res[i].Name && ExistHorses.indexOf(res[i].Name) == "-1") {
-                               
+
                                 ExistHorses.push(res[i].Name);
                                 var WorkHoursSus = self.getInstructorCounter(res[i].Name, res, "HourNumberHorses");
                                 FarmWorkHoursSus += WorkHoursSus;
-                              
-                                HtmlHorsesTable += "<tr><td style='text-align:right'>" + res[i].Name + "</td><td>" + self.getRound((WorkHoursSus / (daysInMonth * 4))*100) + "</td></tr>";
-                                                                       
+
+                                HtmlHorsesTable += "<tr><td style='text-align:right'>" + res[i].Name + "</td><td>" + self.getRound((WorkHoursSus / (daysInMonth * 4)) * 100) + "</td></tr>";
+
 
 
 
@@ -102,21 +192,21 @@
                         }
 
                         text = text.replace("@TableInstructor", HtmlTable);
-                     
+
                         horsesService.getHorses().then(function (horses) {
                             var HorseCount = 0,
-                              HorseActiveCount = 0,
-                              HorseNotActiveCount = 0,
-                              HorseSchool = 0,
-                              HorsePension = 0,
-                              HorseFarm = 0,
-                              HorseHerion = 0,
-                              HorsePirzool = 0,
-                              HorseTiluf = 0,
-                              HorseUp2 = 0,
-                              HorseMan = 0,
-                              HorseWoman = 0,
-                              HorseSirus = 0
+                                HorseActiveCount = 0,
+                                HorseNotActiveCount = 0,
+                                HorseSchool = 0,
+                                HorsePension = 0,
+                                HorseFarm = 0,
+                                HorseHerion = 0,
+                                HorsePirzool = 0,
+                                HorseTiluf = 0,
+                                HorseUp2 = 0,
+                                HorseMan = 0,
+                                HorseWoman = 0,
+                                HorseSirus = 0
 
 
 
@@ -132,9 +222,9 @@
 
                                     if (horse.Meta.Ownage == "pension")
                                         HorsePension++;
-                                    else if (horse.Meta.Ownage == "school"){
+                                    else if (horse.Meta.Ownage == "school") {
                                         HorseSchool++;
-                                       
+
                                         // מנצל את העובדה של הלופ ולכן
                                         if (ExistHorses.indexOf(horse.Name) == "-1") {
                                             ExistHorses.push(horse.Name);
@@ -142,7 +232,7 @@
                                         }
 
                                     }
-                                       
+
                                     else if (horse.Meta.Ownage == "farm")
                                         HorseFarm++;
 
@@ -192,7 +282,7 @@
                             text = text.replace("@HorseWoman", HorseWoman);
                             text = text.replace("@HorseSirus", HorseSirus);
 
-                           
+
                             text = text.replace("@HorseSchoolPercent", self.getRound((FarmWorkHoursSus / (ExistHorses.length * daysInMonth * 4)) * 100));
 
 
@@ -230,27 +320,27 @@
         }
 
         function _getRound(number) {
-           
-             var rounded = Math.round(number * 10) / 10;
 
-             return rounded.toString();
+            var rounded = Math.round(number * 10) / 10;
+
+            return rounded.toString();
 
         }
         function _getInstructorCounter(Id, res, type) {
 
 
-        
+
 
             // כאן id משמש של סוס ולא מדריך
             if (type == "HourNumberHorses") {
-              
+
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
                     if (Id == res[i].Name && (res[i].Status == "attended" || res[i].IsComplete == 4)) {
-                       
-                            counter += res[i].Diff;
-                   
+
+                        counter += res[i].Diff;
+
                     }
 
 
@@ -271,8 +361,8 @@
                     if (DateExist.indexOf(res[i].OnlyDate) == "-1" && Id == res[i].Id) {
 
                         if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
-                           (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
-                            ) {
+                            (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
+                        ) {
                             DateExist.push(res[i].OnlyDate);
                             counter++;
                         }
@@ -288,7 +378,7 @@
             }
 
             if (type == "HourNumber") {
-               
+
                 var DateExist = [];
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
@@ -296,7 +386,7 @@
                     if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
 
                         if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
-                            ) {
+                        ) {
                             DateExist.push(res[i].Start);
                             counter += res[i].Diff;
                         }

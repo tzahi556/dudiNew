@@ -336,7 +336,7 @@
                     controllerAs: '$ctrl',
                     resolve: {
                         user: function (usersService, $stateParams) {
-                            return usersService.getUser($stateParams.id);
+                           return usersService.getUser($stateParams.id);
                         },
                         lessons: function (lessonsService, $stateParams) {
                             return lessonsService.getLessons($stateParams.id);
@@ -373,7 +373,7 @@
                         },
 
                         makav: function (usersService, $stateParams) {
-                            debugger
+                           
                             return usersService.getUserUserMakavByUserId($stateParams.id);
                         },
                        
