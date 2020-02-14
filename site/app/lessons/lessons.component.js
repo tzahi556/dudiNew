@@ -55,12 +55,19 @@
         this.getCounter = _getCounter.bind(this);
         this.modalAppendClick2 = _modalAppendClick2.bind(this);
 
+        this.getLessonByStartAndResource = _getLessonByStartAndResource.bind(this);
+        
+
         this.searchDate = new Date();
         this.lessToDrop = "";
 
         this.role = localStorage.getItem('currentRole');
         //   this.FarmInstractorPolicy = localStorage.getItem('FarmInstractorPolicy');
+        this.activeStudent = 0;
+        this.notActiveStudent = 0;
+        this.pensionStudent = 0;
 
+        this.getCounter();
 
 
 
@@ -252,17 +259,26 @@
             this.updateLesson(event);
         }
 
-        function _getCounter(type) {
-            var Count = 0;
+        function _getCounter() {
 
             for (var i in this.students) {
 
-                if (!this.students[i].Deleted && this.students[i].Active == type) {
-                    Count++;
+                if (this.students[i].Deleted == 1) continue;
+
+                if (this.students[i].Style == 'horseHolder') {
+                    this.pensionStudent++;
                 }
+                else if (this.students[i].Active == 'active') {
+                    this.activeStudent++;
+                }
+                else {
+
+                    this.notActiveStudent++;
+                }
+
             }
 
-            return Count;
+
 
         }
 
@@ -342,20 +358,42 @@
 
             for (var i in this.lessons) {
 
+                //var countCompletionReq = 0;
+               
+                //for (var m in this.lessons[i].statuses) {
+                //    if (this.lessons[i].statuses[m].Status == 'completionReq') countCompletionReq++;
+                //}
+
+                //if (countCompletionReq != this.lessons[i].statuses.length) {
+                //    var j = this.lessons[i].statuses.length;
+                //    while (j >= 0) {
+                //        if (this.lessons[i].statuses[j] && this.lessons[i].statuses[j].Status == 'completionReq') {
+                //            this.lessons[i].statuses.splice(j, 1);
+                //           // this.lessons[i].students.splice(j, 1);
+                //        }
+                //        j--;
+                //    }
+                //}
+                //var TempArr = angular.copy(this.lessons[i].statuses);
+                //
+                // alert(1);
+
+
+
                 //רק אם יש שיעור השלמה ושיעור רגיל
-                if (
-                    (this.lessons[eval(i) - 1] && this.lessons[eval(i) - 1].start == this.lessons[i].start &&
-                        this.lessons[eval(i) - 1].resourceId == this.lessons[i].resourceId)
-                    ||
-                    (this.lessons[eval(i) + 1] && this.lessons[eval(i) + 1].start == this.lessons[i].start &&
-                        this.lessons[eval(i) + 1].resourceId == this.lessons[i].resourceId)
+                //if (
+                //    (this.lessons[eval(i) - 1] && this.lessons[eval(i) - 1].start == this.lessons[i].start &&
+                //        this.lessons[eval(i) - 1].resourceId == this.lessons[i].resourceId)
+                //    ||
+                //    (this.lessons[eval(i) + 1] && this.lessons[eval(i) + 1].start == this.lessons[i].start &&
+                //        this.lessons[eval(i) + 1].resourceId == this.lessons[i].resourceId)
 
-                ) {
+                //) {
 
 
-                    if (this.lessons[i].statuses[0] && this.lessons[i].statuses[0].Status == "completionReq")
-                        continue;
-                }
+                //    if (this.lessons[i].statuses[0] && this.lessons[i].statuses[0].Status == "completionReq")
+                //        continue;
+                //}
 
                 // אם אחד מהשלמה והשני דרוש שיעור השלמה תסיר אותו
                 //if (this.lessons[i].statuses[0] && this.lessons[i].statuses[1]) {
@@ -369,7 +407,7 @@
                 //        this.lessons[i].students = (this.lessons[i].students).splice(1, 1);
 
                 //    }
-                       
+
                 //}
 
                 for (var x in this.resources) {
@@ -583,16 +621,43 @@
         }
 
         function _eventChange(event) {
+           
+          
 
-            $('#modal').modal('show');
-            this.eventToChange = event;
+            var tempevent = this.getLessonByStartAndResource(moment(event.start).format('YYYY-MM-DDTHH:mm:ss') ,moment(event.end).format('YYYY-MM-DDTHH:mm:ss'), event.resourceId);
+            if (!tempevent) {
+                this.eventToChange = event;
+                $('#modal').modal('show');
+            }
+            else { 
+
+
+                for (var i in event.students) {
+                    tempevent.students.push(event.students[i]);
+                    tempevent.statuses.push(event.statuses[i]);
+                }
+
+                this.lessonsService.deleteLesson(event.id, false).then(function (res) {
+                    this.reloadLessons();
+                    
+                }.bind(this));
+              
+
+                this.eventToChange = tempevent;
+                this.eventToChange.onlyOne = 1;
+                this.modalClick(false);
+
+
+            }
         }
 
         function _modalClick(changeChildren) {
 
             if (this.eventToChange) {
+                
                 var event = this.eventToChange;
                 this.eventToChange = null;
+               
                 this.lessonsService.updateLesson(event, changeChildren).then(function () {
                     this.createNotifications(event, 'update');
                     this.reloadLessons();
@@ -734,6 +799,17 @@
                     return this.lessons[i];
                 }
             }
+        }
+
+        function _getLessonByStartAndResource(start,end, resourceId) {
+           
+            for (var i in this.lessons) {
+                if (this.lessons[i].start == start && this.lessons[i].end == end && this.lessons[i].resourceId == resourceId) {
+                    return this.lessons[i];
+                }
+            }
+
+            return null;
         }
     }
 

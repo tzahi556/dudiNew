@@ -19,6 +19,11 @@
         this.changeStatus = _changeStatus.bind(this);
         this.getCounter = _getCounter.bind(this);
 
+        this.activeStudent = 0;
+        this.notActiveStudent = 0;
+        this.pensionStudent = 0;
+
+        this.getCounter();
       //  alert(this.users.length);
       
         function _changeStatus(type) {
@@ -63,17 +68,25 @@
         }
 
 
-        function _getCounter(type) {
-            var Count = 0;
+        function _getCounter() {
+           
             for (var i in this.users) {
 
-                if (this.users[i].Active == type) {
-                    Count++;
+
+                if (this.users[i].Style == 'horseHolder') {
+                    this.pensionStudent++;
+                }
+                else if (this.users[i].Active == 'active') {
+                    this.activeStudent++;
+                }
+                else {
+
+                    this.notActiveStudent++;
                 }
                  
             }
 
-            return Count;
+            
 
         }
         

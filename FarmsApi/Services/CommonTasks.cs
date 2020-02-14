@@ -16,8 +16,9 @@ namespace FarmsApi.Services
             var EndOfMonthDay = DateTime.DaysInMonth(Today.Year, Today.Month);
             if (Today.Day == EndOfMonthDay && !TaskDone)
             {
-                AddExpenseToHorseLanders();
                 TaskDone = true;
+                AddExpenseToHorseLanders();
+               
             }
         }
 

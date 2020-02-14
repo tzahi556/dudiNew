@@ -119,11 +119,14 @@
         this.removeMakav = _removeMakav.bind(this);
         this.setMakavDesc = _setMakavDesc.bind(this);
         this.getDayOfWeek = _getDayOfWeek.bind(this);
+        this.show4 = _show4.bind(this);
         
-
         this.newPrice = 0;
 
+        function _show4(ashrai4) {
 
+            alert(ashrai4);
+        }
         function _getDayOfWeek(day) {
             var newDate = new Date(day);
             var CurrentDay = newDate.getDay();

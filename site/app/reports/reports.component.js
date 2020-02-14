@@ -61,7 +61,7 @@
                         var Start = moment(res[i].Start).format('DD/MM/YYYY');
                         var Total = res[i].Total;
 
-                        StartDetails += Start + ",";
+                        StartDetails += Start + ", ";
                         Count++;
                         if (!res[i + 1] || (res[i + 1].Id != StudentId)) {
 
@@ -70,17 +70,17 @@
                                 TableMacabi += "<tr><td>" + Taz
                                     + "</td><td style='text-align:right'>" + FirstName
                                     + "</td><td style='text-align:right'>" + LastName
-                                    + "</td><td>" + Total// פה לשים יתרת שיעורים
+                                    + "</td><td style='direction:ltr;text-align:right'>" + Total// פה לשים יתרת שיעורים
                                     + "</td><td>" + Count.toString()
-                                    + "</td><td>" + StartDetails + "</td ></tr>";
+                                    + "</td><td style='text-align:right'>" + StartDetails + "</td ></tr>";
 
                             if (Type == "2")
                                 TableKlalit += "<tr><td>" + Taz
                                     + "</td><td style='text-align:right'>" + FirstName
                                     + "</td><td style='text-align:right'>" + LastName
-                                    + "</td><td>" + Count.toString()
                                     + "</td><td>" + Invoice
-                                    + "</td><td>" + StartDetails + "</td ></tr > ";
+                                    + "</td><td>" + Count.toString()
+                                    + "</td><td style='text-align:right'>" + StartDetails + "</td ></tr > ";
 
 
                             StartDetails = "";
@@ -162,6 +162,7 @@
                         for (var i = 0; i < res.length; i++) {
 
                             if (ExistInstructor.indexOf(res[i].Id) == "-1") {
+                              
                                 ExistInstructor.push(res[i].Id);
                                 HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName + "</td><td >" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "HourNumber")
@@ -220,7 +221,13 @@
                                     HorseActiveCount++;
 
 
-                                    if (horse.Meta.Ownage == "pension")
+                                    if (horse.Meta.Ownage == "pension" ||
+                                        horse.Meta.Ownage == "pensionEnglish" ||
+                                        horse.Meta.Ownage == "pensionMaravi" ||
+                                        horse.Meta.Ownage == "pensionKating" ||
+                                        horse.Meta.Ownage == "pensionMere"
+
+                                    )
                                         HorsePension++;
                                     else if (horse.Meta.Ownage == "school") {
                                         HorseSchool++;
@@ -329,7 +336,7 @@
         function _getInstructorCounter(Id, res, type) {
 
 
-
+          
 
             // כאן id משמש של סוס ולא מדריך
             if (type == "HourNumberHorses") {

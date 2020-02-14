@@ -234,15 +234,18 @@
 
                         // הוגדר שהוא צריך שיעור השלמה
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 1) {
-
-                          //  $(element).css("background-color", "lightGray").css("border-color", "gray");
+                           
+                            //$(element).css("background-color", "lightGray").css("border-color", "gray");
                             $(element).addClass('returnred-icon');
                             countCompletionReq++;
+
+                         
                         }
 
                         // שמו לו שיעור השלמה איפה שהוא
                         else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 2) {
                            //$(element).css("background-color", "lightGray").css("border-color", "gray");
+                          
                             $(element).addClass('returngreen-icon');
                             countCompletionReq++;
                         }
@@ -261,9 +264,18 @@
 
                     //}
 
-                    if (event.statuses && countCompletionReq == event.statuses.length)
+                    if (event.statuses && countCompletionReq == event.statuses.length) {
                         $(element).css("background-color", "lightGray").css("border-color", "gray");
 
+                        // במידה ויש רק שיעור השלמה תעלים את הכלס כדי שלא יעלים אותו
+                        var title = $(element).find("div div.fc-title");
+                        $(title).text($(title).text().replace(/sp_completionReq/gi,"sp_empty"));
+
+                    } else {
+                      
+                        $(element).removeClass('returnred-icon');
+                        $(element).removeClass('returngreen-icon');
+                    }
                    
 
                     // שיעור אחרון
@@ -377,7 +389,7 @@
 
     function _eventDrop(event) {
 
-
+     
 
         this.eventChangeCallback(event);
         this.reloadEvents();
@@ -419,9 +431,11 @@
         $(".fc-title").each(function () {
 
             var currentElement = $(this).text();
-
-            //alert(currentElement);
+           
+            
             $(this).html(currentElement);
+
+            $(this).find(".sp_completionReq").remove();
 
         });
 

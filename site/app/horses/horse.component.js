@@ -63,11 +63,11 @@
         this.uploadsUri = sharedValues.apiUrl + '/uploads/'
         this.scope = $scope;
 
-        $scope.$on('submit', function (event, args) {
-            if (confirm('האם לשמור שינוים')) {
-                this.submit();
-            }
-        }.bind(this));
+        //$scope.$on('submit', function (event, args) {
+        //    if (confirm('האם לשמור שינוים')) {
+        //        this.submit();
+        //    }
+        //}.bind(this));
 
         // init
         this.initHorse = function () {
@@ -443,6 +443,7 @@
 
 
         function _submit() {
+
             if ($scope.horseForm.$valid) {
                 horsesService.updateHorse(this.horse).then(function (horse) {
                     var origId = this.horse.Id;

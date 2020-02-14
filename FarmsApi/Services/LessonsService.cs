@@ -445,6 +445,7 @@ namespace FarmsApi.Services
 
         private static void UpdateExistingLesson(JObject Lesson, DataModels.Context Context)
         {
+
             int LessonId = Lesson["id"].Value<int>();
             var newLesson = Context.Lessons.SingleOrDefault(l => l.Id == LessonId);
             AssignValuesFromJson(Lesson, Context, newLesson);

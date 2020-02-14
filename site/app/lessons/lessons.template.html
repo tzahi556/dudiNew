@@ -1,13 +1,14 @@
 ﻿<div class="panel panel-default">
-    <div class="panel-heading " >
+    <div class="panel-heading ">
         לו"ז
         <input class='form-control addedCalender' style='width:150px;' ng-model="$ctrl.searchDate" ng-change='$ctrl.customDate()' placeholder='לפי תאריך' type='date' />
 
         <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="margin-right:50px;text-decoration:underline"> פעילים - </span>
-        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="font-weight:bold;font-size:15px">{{$ctrl.getCounter('active')}} </span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="font-weight:bold;font-size:15px">{{$ctrl.activeStudent}} </span>
         <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="margin-right:50px;text-decoration:underline"> לא פעילים - </span>
-        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="font-weight:bold;font-size:15px">{{$ctrl.getCounter('notActive')}}</span>
-
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="font-weight:bold;font-size:15px">{{$ctrl.notActiveStudent}}</span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="margin-right:50px;text-decoration:underline"> פנסיון - </span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="font-weight:bold;font-size:15px">{{$ctrl.pensionStudent}}</span>
         <div style="float:left">
             <div id="mainController"></div>
 
