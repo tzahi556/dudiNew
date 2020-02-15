@@ -12,8 +12,9 @@
         <div style="float:left">
             <div id="mainController"></div>
 
-            <div ng-show="$ctrl.FarmInstractorPolicy ||  ($ctrl.role!='instructor' && $ctrl.role!='profAdmin')" style="cursor:pointer;text-align:center;"
-                 ng-click="showDiv = !showDiv"><span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span>&nbsp;ממתינים לשיעור השלמה</div>
+            <div ng-show="!$ctrl.IsInstructorBlock" style="cursor:pointer;text-align:center;"
+                 ng-click="showDiv = !showDiv">
+            <span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span>&nbsp;ממתינים לשיעור השלמה</div>
             <div ng-show="showDiv" class="dvContainer" style="height:550px;overflow:auto">
 
                 <div ng-repeat="lesinst in $ctrl.lessonsComplete |filter:{isInstructor:'1'}" style="width:250px">

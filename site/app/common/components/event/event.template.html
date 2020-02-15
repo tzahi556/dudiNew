@@ -1,24 +1,21 @@
 ﻿
 <style>
-    .tranferStudent{
-        float:right;
-        padding-right:1px;
-
+    .tranferStudent {
+        float: right;
+        padding-right: 1px;
     }
 
-    .tranferStudentButton{
-        margin-top:2px;
-        float:right;
-        padding-right:1px;
+    .tranferStudentButton {
+        margin-top: 2px;
+        float: right;
+        padding-right: 1px;
     }
 
-    .myStyle{
-        background:red;
-        color:white;
-        font-weight:bold;
-        
+    .myStyle {
+        background: red;
+        color: white;
+        font-weight: bold;
     }
-
 </style>
 
 
@@ -33,7 +30,9 @@
 
         <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
 
-       
+        <div ng-show="!$ctrl.IsInstructorBlock">
+            <!--ng-show="$ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin' "-->
+
             <div class="tranferStudent">
                 <input class="form-control" type="date" ng-model="$ctrl.tranferDate" ng-change="$ctrl.puplateInstructor()" />
             </div>
@@ -43,24 +42,24 @@
                     <option value="">-- בחר מדריך --</option>
                 </select>
             </div>
-        <div class="clearfix"></div>
-            <div class="tranferStudentButton" >
-                <select class="form-control" 
+            <div class="clearfix"></div>
+            <div class="tranferStudentButton">
+                <select class="form-control"
                         ng-model="$ctrl.SelectedinstructordTime">
                     <option value="0">-------בחר שעה---------</option>
-                    <option ng-class="{myStyle: x.IsTafus == '1'}"   ng-disabled="x.IsTafus" ng-repeat="x in $ctrl.instructorsWorksTimes"  value="{{x.Id}}">{{x.Result}}</option>
-                    
+                    <option ng-class="{myStyle: x.IsTafus == '1'}" ng-disabled="x.IsTafus" ng-repeat="x in $ctrl.instructorsWorksTimes" value="{{x.Id}}">{{x.Result}}</option>
+
                 </select>
             </div>
             <div class="tranferStudentButton">
-                <button  class="btn btn-success" ng-disabled="$ctrl.SelectedinstructordTime==0 || $ctrl.SelectedinstructordId==undefined || !$ctrl.SelectedinstructordId" ng-click="$ctrl.transferLesson()" href="">העבר</button>
+                <button class="btn btn-success" ng-disabled="$ctrl.SelectedinstructordTime==0 || $ctrl.SelectedinstructordId==undefined || !$ctrl.SelectedinstructordId" ng-click="$ctrl.transferLesson()" href="">העבר</button>
             </div>
-       
-      
-        <div class="form-group">
-            <div class="clearfix"></div>
-            <hr /> 
 
+
+            <div class="form-group">
+                <div class="clearfix"></div>
+                <hr />
+            </div>
             <label>הוספת תלמיד</label>
             <input class="form-control" type="text" ng-model="$ctrl.studentFilter" />
             <div class="student-list">
@@ -69,19 +68,19 @@
                 </ul>
             </div>
             <!--<select class="form-control" ng-change="$ctrl.addStudentToEvent()" ng-options="student.Id as student.FirstName + ' ' + student.LastName for student in $ctrl.students | filterDeletedStudents" ng-model="$ctrl.selectedStudent">
-                <option value="">בחר תלמיד</option>
-            </select>-->
+        <option value="">בחר תלמיד</option>
+    </select>-->
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-show="!$ctrl.IsInstructorBlock">
             <label>הערות משרד (כללי)</label>
             <textarea class="form-control" ng-model="$ctrl.event.details"></textarea>
         </div>
-        
+
         <div class="form-group">
             <label> תלמידים  </label>
-            <a class="btn btn-primary btn-xs" style="float:left" ng-click="$ctrl.createNewStudent(1)" href="">תלמיד חדש</a>
-            <a class="btn btn-success btn-xs" style="float:left;margin-left:2px" ng-show="$ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin' "  ng-click="showDetails=!showDetails;$ctrl.changeToOffice(1)">{{showDetails ? 'הצג הערות מדריך':   'הצג הערות משרד'}} </a>
+            <a class="btn btn-primary btn-xs" style="float:left" ng-show="!$ctrl.IsInstructorBlock"  ng-click="$ctrl.createNewStudent(1)" href="">תלמיד חדש</a>
+            <a class="btn btn-success btn-xs" style="float:left;margin-left:2px" ng-show="$ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin' " ng-click="showDetails=!showDetails;$ctrl.changeToOffice(1)">{{showDetails ? 'הצג הערות מדריך':   'הצג הערות משרד'}} </a>
             <table class="table small-padding">
                 <tr ng-repeat-start="studentId in $ctrl.event.students track by $index">
                     <td colspan="3">
@@ -119,7 +118,7 @@
                     <td valign="bottom" style="padding-top:9px;">
 
                         <a class="btn btn-success btn-xs" ng-show="!showDetails" ng-click="$ctrl.openComments(studentId)" href="">...</a>
-                        <a class="btn btn-success btn-xs" ng-show="showDetails" style="visibility:hidden"  href="">...</a>
+                        <a class="btn btn-success btn-xs" ng-show="showDetails" style="visibility:hidden" href="">...</a>
                     </td>
 
 
@@ -127,14 +126,14 @@
             </table>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-show="!$ctrl.IsInstructorBlock">
             <label>כמות יצירת שיעורים נוספים</label>
-            <input class="form-control" type="number" ng-model="$ctrl.lessonsQty"  /><!--ng-disabled="$ctrl.event.prevId != 0"-->
+            <input class="form-control" type="number" ng-model="$ctrl.lessonsQty" /><!--ng-disabled="$ctrl.event.prevId != 0"-->
         </div>
-       
+
         <a class="btn btn-success" ng-click="$ctrl.close()" href="">שמור</a>
-        <a class="btn btn-default" ng-click="$ctrl.delete()" href="">מחק</a>
-        <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.affectChildren">כולל אירועים עתידיים</label></div>
+        <a class="btn btn-default" ng-click="$ctrl.delete()" ng-show="!$ctrl.IsInstructorBlock" href="">מחק</a>
+        <div class="checkbox-inline" ng-show="!$ctrl.IsInstructorBlock" ><label><input type="checkbox" ng-model="$ctrl.affectChildren">כולל אירועים עתידיים</label></div>
     </div>
 </div>
 

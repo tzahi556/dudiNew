@@ -70,8 +70,7 @@
         this.getCounter();
 
 
-
-        //alert(this.students.length);
+        this.IsInstructorBlock= $rootScope.IsInstructorBlock;
         // this.resourcesIds = "0";
         // set all instructors checkboxes checked
 

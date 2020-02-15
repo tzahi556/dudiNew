@@ -25,8 +25,9 @@
 
                     localStorage.setItem('FarmName', self.farmName);
                     localStorage.setItem('authorizationData', angular.toJson(authData));
-                   
                     localStorage.setItem('FarmInstractorPolicy', data.Meta.IsInstractorPolicy);
+
+                  
 
                 });
             });

@@ -19,146 +19,171 @@
                     תלמיד
                     <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="studentForm.$invalid">עדכון</button>
                 </div>
-                <div class="panel-body">
 
-                    <div class="form-group">
-                        <input type="text" name="search" class="form-control" placeholder="חיפוש תלמיד אחר" ng-model="searchInput" autocomplete="off" />
-                        <div ng-show="searchInput" style="border:solid 1px #ddd">
-
-                            <div ng-repeat="s in $ctrl.students  | filter:search | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
-
-                                <div style="cursor:pointer;border-top:1px solid #ddd;padding:5px" ui-sref="student({id:s.Id})">{{s.FirstName}} {{s.LastName}} <span style="color:red" ng-if="s.Active == 'notActive'">(לא פעיל)</span> </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-group hidden">
-                        <label>מזהה</label>
-                        <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />
-                    </div>
-                    <div class="form-group">
-                        <imagepicker model="$ctrl.user.Image" image-label="תמונת תלמיד" />
-                    </div>
-                    <div class="form-group">
-                        <label>פעיל</label>
-                        <select class="form-control" ng-model="$ctrl.user.Active" required>
-                            <option value="active">פעיל</option>
-                            <option value="notActive">לא פעיל</option>
-                        </select>
-                    </div>
+                <div class="panel-body" ng-show="$ctrl.IsInstructorBlock">
                     <div class="form-group">
                         <label>מספר לקוח</label>
-                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
+                        <input type="text" name="idNumber" ng-disabled="true" class="form-control" ng-model="$ctrl.user.ClientNumber" />
                     </div>
                     <div class="form-group">
                         <label>שם פרטי </label>
-                        <input type="text" name="firstName" class="form-control" ng-model="$ctrl.user.FirstName" required />
+                        <input type="text" name="firstName"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.FirstName" required />
                     </div>
                     <div class="form-group">
                         <label>שם משפחה</label>
-                        <input type="text" name="lastName" class="form-control" ng-model="$ctrl.user.LastName" required />
+                        <input type="text" name="lastName"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.LastName" required />
                     </div>
                     <div class="form-group">
                         <label>ת.ז.</label>
-                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.IdNumber" required />
+                        <input type="text" name="idNumber"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.IdNumber" required />
                     </div>
                     <div class="form-group">
                         <label>תאריך לידה</label>
-                        <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" />
-                    </div>
-                    <div class="form-group">
-                        <label>שם אם</label>
-                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName2" />
-                    </div>
-                    <div class="form-group">
-                        <label>שם אב</label>
-                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName" />
-                    </div>
-                    <div class="form-group">
-                        <label>כתובת</label>
-                        <input type="text" name="address" class="form-control" ng-model="$ctrl.user.Address" />
-                    </div>
-                    <div class="form-group">
-                        <label>טלפון</label>
-                        <input type="tel" name="phoneNumber" class="form-control" ng-model="$ctrl.user.PhoneNumber" />
-                    </div>
-                    <div class="form-group">
-                        <label>טלפון 2</label>
-                        <input type="tel" name="phoneNumber2" class="form-control" ng-model="$ctrl.user.PhoneNumber2" />
-                    </div>
-                    <div class="form-group">
-                        <label>אימייל</label>
-                        <input type="email" name="email" class="form-control" ng-model="$ctrl.user.AnotherEmail" />
-                    </div>
-                    <!--<div class="form-group">
-                        <label>אימייל</label>
-                        <input type="email" name="email" class="form-control" ng-model="$ctrl.user.Email" ng-model-options="{updateOn:'blur'}" required email-exists="$ctrl.user.Id" />
-                        <span ng-show="studentForm.email.$error.emailExists">אימייל תפוס</span>
-                    </div>
-                    <div class="form-group">
-                        <label>סיסמה</label>
-                        <input type="text" name="password" class="form-control" ng-model="$ctrl.user.Password" required />
-                    </div>-->
-                    <div class="form-group" ng-if="$ctrl.farms.length > 1">
-                        <label>חווה</label>
-                        <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.user.Farm_Id" required>
-                            <option value="">בחר חווה</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>סגנון רכיבה</label>
-                        <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles"
-                                ng-model="$ctrl.user.Style"
-                                required>
-                            <option value="">בחר סגנון רכיבה</option>
-                        </select>
-                    </div>
-                    <div class="form-group" ng-if="$ctrl.user.Style.indexOf('treatment')!=-1">
-                        <label>קופ"ח</label>
-                        <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs"
-                                ng-model="$ctrl.user.HMO" required>
-                            <option value="">בחר קופת חולים</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>חבר נבחרת</label>
-                        <select class="form-control" ng-model="$ctrl.user.TeamMember">
-                            <option value="">בחר אפשרות</option>
-                            <option value="yes">כן</option>
-                            <option value="no">לא</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>עלות</label>
-                        <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
-                    </div>
-                    <div class="form-group">
-                        <label>סוג תשלום</label>
-                        <select class="form-control" ng-model="$ctrl.user.PayType" ng-change="$ctrl.changeLessonsData()" required>
-                            <option value="">בחר אפשרות</option>
-                            <option value="lessonCost">עלות שיעור</option>
-                            <option value="monthCost">עלות חודשית</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>הערות</label>
-                        <textarea class="form-control" ng-model="$ctrl.user.Details"></textarea>
+                        <input type="date" name="birthDate"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.BirthDate" />
                     </div>
                 </div>
-                <div class="panel-footer">
-                    <button type="submit" class="btn btn-success" ng-disabled="studentForm.$invalid">עדכון</button>
-                    <button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
-                </div>
+
+
+                    <div class="panel-body" ng-show="!$ctrl.IsInstructorBlock">
+
+                        <div class="form-group">
+                            <input type="text" name="search" class="form-control" placeholder="חיפוש תלמיד אחר" ng-model="searchInput" autocomplete="off" />
+                            <div ng-show="searchInput" style="border:solid 1px #ddd">
+
+                                <div ng-repeat="s in $ctrl.students  | filter:search | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
+
+                                    <div style="cursor:pointer;border-top:1px solid #ddd;padding:5px" ui-sref="student({id:s.Id})">{{s.FirstName}} {{s.LastName}} <span style="color:red" ng-if="s.Active == 'notActive'">(לא פעיל)</span> </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group hidden">
+                            <label>מזהה</label>
+                            <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />
+                        </div>
+                        <div class="form-group">
+                            <imagepicker model="$ctrl.user.Image" image-label="תמונת תלמיד" />
+                        </div>
+                        <div class="form-group">
+                            <label>פעיל</label>
+                            <select class="form-control" ng-model="$ctrl.user.Active" required>
+                                <option value="active">פעיל</option>
+                                <option value="notActive">לא פעיל</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>מספר לקוח</label>
+                            <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
+                        </div>
+                        <div class="form-group">
+                            <label>שם פרטי </label>
+                            <input type="text" name="firstName" class="form-control" ng-model="$ctrl.user.FirstName" required />
+                        </div>
+                        <div class="form-group">
+                            <label>שם משפחה</label>
+                            <input type="text" name="lastName" class="form-control" ng-model="$ctrl.user.LastName" required />
+                        </div>
+                        <div class="form-group">
+                            <label>ת.ז.</label>
+                            <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.IdNumber" required />
+                        </div>
+                        <div class="form-group">
+                            <label>תאריך לידה</label>
+                            <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" />
+                        </div>
+                        <div class="form-group">
+                            <label>שם אם</label>
+                            <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName2" />
+                        </div>
+                        <div class="form-group">
+                            <label>שם אב</label>
+                            <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName" />
+                        </div>
+                        <div class="form-group">
+                            <label>כתובת</label>
+                            <input type="text" name="address" class="form-control" ng-model="$ctrl.user.Address" />
+                        </div>
+                        <div class="form-group">
+                            <label>טלפון</label>
+                            <input type="tel" name="phoneNumber" class="form-control" ng-model="$ctrl.user.PhoneNumber" />
+                        </div>
+                        <div class="form-group">
+                            <label>טלפון 2</label>
+                            <input type="tel" name="phoneNumber2" class="form-control" ng-model="$ctrl.user.PhoneNumber2" />
+                        </div>
+                        <div class="form-group">
+                            <label>אימייל</label>
+                            <input type="email" name="email" class="form-control" ng-model="$ctrl.user.AnotherEmail" />
+                        </div>
+                        <!--<div class="form-group">
+                <label>אימייל</label>
+                <input type="email" name="email" class="form-control" ng-model="$ctrl.user.Email" ng-model-options="{updateOn:'blur'}" required email-exists="$ctrl.user.Id" />
+                <span ng-show="studentForm.email.$error.emailExists">אימייל תפוס</span>
             </div>
-        </form>
+            <div class="form-group">
+                <label>סיסמה</label>
+                <input type="text" name="password" class="form-control" ng-model="$ctrl.user.Password" required />
+            </div>-->
+                        <div class="form-group" ng-if="$ctrl.farms.length > 1">
+                            <label>חווה</label>
+                            <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.user.Farm_Id" required>
+                                <option value="">בחר חווה</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>סגנון רכיבה</label>
+                            <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles"
+                                    ng-model="$ctrl.user.Style"
+                                    required>
+                                <option value="">בחר סגנון רכיבה</option>
+                            </select>
+                        </div>
+                        <div class="form-group" ng-if="$ctrl.user.Style.indexOf('treatment')!=-1">
+                            <label>קופ"ח</label>
+                            <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs"
+                                    ng-model="$ctrl.user.HMO" required>
+                                <option value="">בחר קופת חולים</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>חבר נבחרת</label>
+                            <select class="form-control" ng-model="$ctrl.user.TeamMember">
+                                <option value="">בחר אפשרות</option>
+                                <option value="yes">כן</option>
+                                <option value="no">לא</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>עלות</label>
+                            <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
+                        </div>
+                        <div class="form-group">
+                            <label>סוג תשלום</label>
+                            <select class="form-control" ng-model="$ctrl.user.PayType" ng-change="$ctrl.changeLessonsData()" required>
+                                <option value="">בחר אפשרות</option>
+                                <option value="lessonCost">עלות שיעור</option>
+                                <option value="monthCost">עלות חודשית</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>הערות</label>
+                            <textarea class="form-control" ng-model="$ctrl.user.Details"></textarea>
+                        </div>
+                    </div>
+                    <div class="panel-footer" ng-show="!$ctrl.IsInstructorBlock">
+                        <button type="submit" class="btn btn-success" ng-disabled="studentForm.$invalid">עדכון</button>
+                        <button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
+                    </div>
+                </div>
+</form>
 
     </div>
     <div class="col-md-9">
 
-        <uib-tabset active="active" class="tab-form-demo">
+        <uib-tabset active="active" class="tab-form-demo" ng-show="!$ctrl.IsInstructorBlock">
             <uib-tab index="0" heading="התחשבנות">
 
                 <!-- balance -->
@@ -188,17 +213,17 @@
                             </tr>
 
                             <!--<tr style="background-color: #fdffe5">
-                        <td>כמות שיעורים בהתחייבות מכבי סה״כ</td>
-                        <td>{{$ctrl.commitmentLessons}}</td>
-                    </tr>-->
+                            <td>כמות שיעורים בהתחייבות מכבי סה״כ</td>
+                            <td>{{$ctrl.commitmentLessons}}</td>
+                        </tr>-->
                             <tr style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>יתרת שיעורים</td>
                                 <td style="direction:ltr;text-align:right;">{{$ctrl.creditPaidLessons}}</td>
                             </tr>
                             <!--<tr style="background-color: #fdffe5">
-                        <td>סה"כ יתרה עבור שיעורים</td>
-                        <td>{{$ctrl.moneyLeft}} ש"ח</td>
-                    </tr>-->
+                            <td>סה"כ יתרה עבור שיעורים</td>
+                            <td>{{$ctrl.moneyLeft}} ש"ח</td>
+                        </tr>-->
                             <tr style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
                                 <td>כמות חודשים שולמו</td>
                                 <td>{{$ctrl.paidMonths}}</td>
@@ -208,13 +233,13 @@
                                 <td><span style="display:inline-block;direction:ltr;text-align:right;"> {{$ctrl.creditPaidMonth}}</span></td>
                             </tr>
                             <!--<tr>
-                        <td>סה"כ הוצאות אחרות</td>
-                        <td>{{$ctrl.totalExpensesNoShulam}}- ש"ח</td>
-                    </tr>-->
+                            <td>סה"כ הוצאות אחרות</td>
+                            <td>{{$ctrl.totalExpensesNoShulam}}- ש"ח</td>
+                        </tr>-->
                             <!--<tr style="background-color: #fdffe5" ng-show="$ctrl.user.Meta.PayType == 'lessonCost'">
-                        <td>עודף</td>
-                        <td><span style="display:inline-block;direction:ltr;text-align:right;">{{$ctrl.Sherit}}</span></td>
-                    </tr>-->
+                            <td>עודף</td>
+                            <td><span style="display:inline-block;direction:ltr;text-align:right;">{{$ctrl.Sherit}}</span></td>
+                        </tr>-->
 
                             <tr>
                                 <td>סה"כ מצב חשבון</td>
@@ -279,10 +304,10 @@
                                                     </tr>
 
                                                     <!--<tr>
-                                                <td>22</td>
-                                                <td>33</td>
-                                                <td>2235</td>
-                                            </tr>-->
+                                                    <td>22</td>
+                                                    <td>33</td>
+                                                    <td>2235</td>
+                                                </tr>-->
                                                     <tr>
                                                         <td></td>
                                                         <td style="font-weight:bold;background-color:burlywood;border-top:1px black solid">{{$ctrl.getStatusLengthFrom1 + $ctrl.getStatusLengthFrom2}}</td>
@@ -586,7 +611,7 @@
                             <!--<button ng-click="$ctrl.addPayment()" ng-disabled="paymentForm.$invalid || $ctrl.user.Meta.Cost==0" type="submit" class="btn btn-success">הוספה</button>-->
                             <button ng-click="$ctrl.addPayment()" ng-disabled="$ctrl.disablBtn || (paymentForm.$invalid && $ctrl.getIfanyCheckValid())" type="submit" class="btn btn-success">הוספה</button>
                             <button ng-click="$ctrl.cancelToken()" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default">איפוס טוקן</button>
-                            <button ng-click="$ctrl.show4($ctrl.user.cc_4_digits)" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token"  type="button" class="btn btn-default"> הצג 4 ספרות אחרונות</button>
+                            <button ng-click="$ctrl.show4($ctrl.user.cc_4_digits)" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default"> הצג 4 ספרות אחרונות</button>
                             <span ng-if="$ctrl.user.Cost==0">עלות השיעור הינה 0, לא ניתן להוסיף תשלום</span>
                         </form>
                     </div>
@@ -709,7 +734,7 @@
                                 <th>מדריך</th>
                                 <th>התחלה</th>
                                 <!--<th ng-if="$ctrl.user.Meta.PayType == 'lessonCost'">מחיר שיעור</th>
-                        <th ng-if="$ctrl.user.Meta.PayType != 'lessonCost'">עלות חודשית</th>-->
+                            <th ng-if="$ctrl.user.Meta.PayType != 'lessonCost'">עלות חודשית</th>-->
 
                                 <th>סטטוס</th>
                                 <th>הערות  {{showDetails ? ' מדריך ' : ' משרד '}}</th>
@@ -724,9 +749,9 @@
                                 <td>{{$index+1}}</td>
                                 <td>{{$ctrl.getInstructorName(lesson.resourceId)}}</td>
                                 <td> {{$ctrl.getDayOfWeek(lesson.start)}}  {{lesson.start | ildate: 'DD/MM/YYYY HH:mm'}}</td>
-                               
-                                
-                                  <!--<td>{{lesson.lessPrice}}</td>-->
+
+
+                                <!--<td>{{lesson.lessPrice}}</td>-->
                                 <td>
 
 
@@ -805,11 +830,11 @@
                     </table>
                     <div class="panel-footer">
                         <!--<div class="form-group">
-                    <textarea rows="4" type="text" class="form-control" placeholder="טקסט" ng-model="$ctrl.newTextDetail.Text"></textarea>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-success" ng-click="$ctrl.addTextDetail()">הוספה</button>
-                </div>-->
+                        <textarea rows="4" type="text" class="form-control" placeholder="טקסט" ng-model="$ctrl.newTextDetail.Text"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success" ng-click="$ctrl.addTextDetail()">הוספה</button>
+                    </div>-->
                     </div>
                 </div>
 
@@ -881,7 +906,7 @@
                 </div>
             </uib-tab>
             <uib-tab index="5" heading="מעקב">
-              
+
 
                 <div class="col-md-8">
                     <div class="panel panel-default">
@@ -896,7 +921,7 @@
                                         <th>תאריך רישום</th>
                                         <th>שם עובד</th>
                                         <th>נושא</th>
-                                       
+
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -920,10 +945,10 @@
                 <div class="col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                          הערות
+                            הערות
                         </div>
                         <div class="panel-body">
-                            <textarea  ng-repeat="ma in $ctrl.makav" ng-show="$index == idSelectedVote" class="form-control" rows="27" ng-model="ma.Desc"></textarea>
+                            <textarea ng-repeat="ma in $ctrl.makav" ng-show="$index == idSelectedVote" class="form-control" rows="27" ng-model="ma.Desc"></textarea>
                         </div>
                     </div>
 
@@ -939,5 +964,93 @@
             </uib-tab>
 
         </uib-tabset>
+
+        <uib-tabset active="active2" class="tab-form-demo" ng-show="$ctrl.IsInstructorBlock">
+       
+            <uib-tab index="0" heading="קבצים">
+                <!--student files-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        קבצים
+                    </div>
+                    <table class="table">
+                        <tbody>
+                            <tr ng-repeat="file in $ctrl.files">
+                                <td><a ng-href="{{$ctrl.uploadsUri + file.Link}}" target="_blank">{{file.Link}}</a></td>
+                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeFile(file.Link)">הסר</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <input type="file" filename="$ctrl.newFile" filename-callback="$ctrl.uploadFile" />
+                    </div>
+                </div>
+
+                <!--details text editor-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        הערות (דו"ח חודשי)
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>תאריך</th>
+                                <th>טקסט</th>
+                                <!--<th>מחיקה</th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="detail in $ctrl.monthlyReportHeader">
+                                <td>{{detail.Date | date:'MM/yyyy'}}</td>
+                                <td> <button ng-click="$ctrl.openReport(detail.Date)" type="submit" class="btn btn-primary btn-xs">פתח דו"ח</button></td>
+                                <!--<td><button class="btn btn-danger btn-xs" ng-click="$ctrl.removeTextDetail(detail)">מחיקה</button></td>-->
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer">
+                        <!--<div class="form-group">
+                        <textarea rows="4" type="text" class="form-control" placeholder="טקסט" ng-model="$ctrl.newTextDetail.Text"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success" ng-click="$ctrl.addTextDetail()">הוספה</button>
+                    </div>-->
+                    </div>
+                </div>
+
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        אינטק
+                    </div>
+                    <div class="panel-body">
+                        <textarea class="form-control" rows="7" ng-model="$ctrl.user.Intek"></textarea>
+
+
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        מטרות על
+                    </div>
+                    <div class="panel-body">
+                        <textarea class="form-control" rows="7" ng-model="$ctrl.user.MatrotAl"></textarea>
+
+
+                    </div>
+                </div>
+
+
+
+
+            </uib-tab>
+        
+
+        </uib-tabset>
+
+
+
+
+
     </div>
 </div>

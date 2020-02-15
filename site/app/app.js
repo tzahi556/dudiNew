@@ -442,6 +442,12 @@
         //    });
         //}
 
+        $rootScope.role = localStorage.getItem('currentRole');
+        $rootScope.FarmInstractorPolicy = localStorage.getItem('FarmInstractorPolicy');
+
+        
+
+        $rootScope.IsInstructorBlock = ($rootScope.role == "instructor" && $rootScope.FarmInstractorPolicy=="true")?true:false;
 
         $rootScope.isPhone = false;
 

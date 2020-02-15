@@ -49,7 +49,7 @@
         };
     });
 
-    function StudentController(farmsService, usersService, lessonsService, filesService, sharedValues, $scope, $state, notificationsService, $http) {
+    function StudentController(farmsService, usersService, lessonsService, filesService, sharedValues, $scope, $rootScope, $state, notificationsService, $http) {
        
         var self = this;
         this.scope = $scope;
@@ -120,7 +120,8 @@
         this.setMakavDesc = _setMakavDesc.bind(this);
         this.getDayOfWeek = _getDayOfWeek.bind(this);
         this.show4 = _show4.bind(this);
-        
+        this.IsInstructorBlock = $rootScope.IsInstructorBlock;
+
         this.newPrice = 0;
 
         function _show4(ashrai4) {

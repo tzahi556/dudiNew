@@ -14,7 +14,7 @@
         }
     });
 
-    function EventController($scope, lessonsService, sharedValues, usersService, horsesService) {
+    function EventController($scope, $rootScope, lessonsService, sharedValues, usersService, horsesService) {
         this.usersService = usersService;
         this.horsesService = horsesService;
         this.scope = $scope;
@@ -47,6 +47,8 @@
         this.isEventHaveChild = false;
         this.onlyOne = 0;
         this.modalAppendClick = _modalAppendClick.bind(this);
+
+        this.IsInstructorBlock = $rootScope.IsInstructorBlock;
         this.scope.$on('event.show', this.onShow);
     }
 
@@ -220,7 +222,7 @@
 
         var role = localStorage.getItem('currentRole');
 
-
+     
         //if (role == "sysAdmin" || role == "farmAdmin") {
 
         //    for (var i in this.sharedValues.lessonStatuses) {

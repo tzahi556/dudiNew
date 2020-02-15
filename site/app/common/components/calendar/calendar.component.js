@@ -37,6 +37,9 @@
         this.scope = $scope;
         this.currentView = "";
 
+
+        //alert($rootScope.IsInstructorBlock);
+
         this.scope.$on('calendar.reloadEvents', function (event, events) {
 
             this.events = events;
@@ -124,13 +127,13 @@
 
             //************* בשביל מדריכים ללא הרשאה
             //eventStartEditable: false,
-            //eventResize: false,
+           // eventResize: false,
             //selectable: false,
-            //eventDurationEditable:false,
+            eventDurationEditable: !$rootScope.IsInstructorBlock,
 
-            eventStartEditable: true,
+            eventStartEditable: !$rootScope.IsInstructorBlock,
             eventResize: this.eventResize.bind(this),
-            selectable: true,
+            selectable: !$rootScope.IsInstructorBlock,
 
             //******************************
             eventResizeStart: function (event, element) {
