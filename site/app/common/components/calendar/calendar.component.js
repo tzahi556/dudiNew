@@ -272,7 +272,9 @@
 
                         // במידה ויש רק שיעור השלמה תעלים את הכלס כדי שלא יעלים אותו
                         var title = $(element).find("div div.fc-title");
-                        $(title).text($(title).text().replace(/sp_completionReq/gi,"sp_empty"));
+                        $(title).text($(title).text().replace(/sp_completionReq/gi, "sp_empty"));
+
+                      
 
                     } else {
                       

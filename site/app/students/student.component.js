@@ -120,7 +120,8 @@
         this.setMakavDesc = _setMakavDesc.bind(this);
         this.getDayOfWeek = _getDayOfWeek.bind(this);
         this.show4 = _show4.bind(this);
-        this.IsInstructorBlock = $rootScope.IsInstructorBlock;
+
+        this.IsInstructorBlock = ($rootScope.role == "instructor") ? true : false;    // $rootScope.IsInstructorBlock;
 
         this.newPrice = 0;
 

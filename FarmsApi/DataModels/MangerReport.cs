@@ -15,6 +15,8 @@ namespace FarmsApi.DataModels
         public int? AllMinusSum { get; set; }
         public int? Macbi { get; set; }
         public int? Clalit { get; set; }
+
+        public int? Dikla { get; set; }
         public int? Leumit { get; set; }
         public int? Meuedet { get; set; }
         public int? Other { get; set; }

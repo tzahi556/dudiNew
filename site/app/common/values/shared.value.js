@@ -54,6 +54,7 @@
             { id: 'maccabiSheli', name: 'מכבי שלי', prePaid: true, maxLessons: 50 },
             { id: 'klalit', name: 'כללית מושלם', maxLessons: 30 },
             { id: 'klalitPlatinum', name: 'כללית פלטינום', maxLessons: 55 },
+            { id: 'klalitDikla', name: 'כללית דקלה', maxLessons: 55 },
             { id: 'meuhedet', name: 'מאוחדת' },
             { id: 'leumit', name: 'לאומית' },
         ],

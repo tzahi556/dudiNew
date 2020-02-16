@@ -47,6 +47,7 @@
                 
                     var TableMacabi = "";
                     var TableKlalit = "";
+                    var TableDikla = "";
                     var PrevStudentId = "";
                     var Count = 0;
                     var StartDetails = "";
@@ -82,6 +83,13 @@
                                     + "</td><td>" + Count.toString()
                                     + "</td><td style='text-align:right'>" + StartDetails + "</td ></tr > ";
 
+                            if (Type == "3")
+                                TableDikla += "<tr><td>" + Taz
+                                    + "</td><td style='text-align:right'>" + FirstName
+                                    + "</td><td style='text-align:right'>" + LastName
+                                    + "</td><td>" + Invoice
+                                    + "</td><td>" + Count.toString()
+                                    + "</td><td style='text-align:right'>" + StartDetails + "</td ></tr > ";
 
                             StartDetails = "";
                             Count = 0;
@@ -93,6 +101,8 @@
 
                     text = text.replace("@TableMacabi", TableMacabi);
                     text = text.replace("@TableKlalit", TableKlalit);
+                    text = text.replace("@TableDikla", TableDikla);
+
 
                     var blob = new Blob([text], {
                         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
@@ -113,7 +123,7 @@
 
             if (!self.toDate || !self.fromDate) { alert("חובה לבחור תאריכים לדו''ח"); return;}
 
-            $.get('app/reports/Report.html?sdsdsd=' + new Date(), function (text) {
+            $.get('app/reports/Report.html?sdsd=' + new Date(), function (text) {
 
                // var CurrentDate = self.fromDate;
             //    if (!CurrentDate) CurrentDate = new Date();
@@ -134,7 +144,7 @@
 
                 usersService.report("1",moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
 
-
+                  
                     text = text.replace("@ActiveUser", res[0].ActiveUser);
                     text = text.replace("@notActiveUser", res[0].notActiveUser);
                     text = text.replace("@instructorUser", res[0].instructorUser);
@@ -144,6 +154,7 @@
 
                     text = text.replace("@Macbi", res[0].Macbi);
                     text = text.replace("@Clalit", res[0].Clalit);
+                    text = text.replace("@Dikla", res[0].Dikla);
                     text = text.replace("@Leumit", res[0].Leumit);
                     text = text.replace("@Meuedet", res[0].Meuedet);
                     text = text.replace("@Other", res[0].Other);
