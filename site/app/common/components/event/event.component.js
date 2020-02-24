@@ -45,7 +45,7 @@
         this.transferLesson = _transferLesson.bind(this);
         this.role = localStorage.getItem('currentRole');
         this.isEventHaveChild = false;
-        this.onlyOne = 0;
+        this.onlyMultiple = 0;
         this.modalAppendClick = _modalAppendClick.bind(this);
 
         this.IsInstructorBlock = $rootScope.IsInstructorBlock;
@@ -467,7 +467,7 @@
             $('#dvAppendTz').text(' הוסף תלמיד לצמיתות ');
             $('#modalAppend').modal('show');
             //if (confirm(')) {
-            //    this.event.onlyOne = 1;
+            //    this.event.onlyMultiple = 1;
             //}
         }
 
@@ -486,9 +486,9 @@
 
     }
 
-    function _modalAppendClick(onlyOne) {
+    function _modalAppendClick(onlyMultiple) {
 
-        if (onlyOne) this.event.onlyOne = 1;
+        if (onlyMultiple) this.event.onlyMultiple = 1;
     }
 
 
@@ -526,7 +526,7 @@
             $('#modalAppend').modal('show');
 
             //if (confirm('לחץ אישור אם ברצונך להסיר תלמיד זה באופן חד פעמי מהקבוצה , ביטול יסיר אותו מהקבוצה לצמיתות')) {
-            //    this.event.onlyOne = 1;
+            //    this.event.onlyMultiple = 1;
             //}
         }
 

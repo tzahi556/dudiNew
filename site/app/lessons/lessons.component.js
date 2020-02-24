@@ -196,12 +196,12 @@
             }
         }
         // פונקציה שמוסיפה תלמיד מגרירה של השלמה
-        function _modalAppendClick2(onlyOne) {
+        function _modalAppendClick2(onlyMultiple) {
 
             $rootScope.statuses = [];
             $rootScope.students = [];
             var lt = $scope.$ctrl.lessToDrop;
-            if (onlyOne) $scope.$ctrl.lessToDrop.onlyOne = 1;
+            if (onlyMultiple) $scope.$ctrl.lessToDrop.onlyMultiple = 1;
             $scope.$ctrl.updateLesson(lt);
 
         }
@@ -556,7 +556,7 @@
         }
 
         function _eventClose(event, lessonsQty) {
-
+         
             if (event.isFromChangePhone) {
                 this.eventChange(event);
 
@@ -621,7 +621,7 @@
 
         function _eventChange(event) {
            
-          
+             
 
             var tempevent = this.getLessonByStartAndResource(moment(event.start).format('YYYY-MM-DDTHH:mm:ss') ,moment(event.end).format('YYYY-MM-DDTHH:mm:ss'), event.resourceId);
             if (!tempevent) {
@@ -643,7 +643,7 @@
               
 
                 this.eventToChange = tempevent;
-                this.eventToChange.onlyOne = 1;
+                this.eventToChange.onlyMultiple = 0;
                 this.modalClick(false);
 
 
@@ -651,7 +651,7 @@
         }
 
         function _modalClick(changeChildren) {
-
+           
             if (this.eventToChange) {
                 
                 var event = this.eventToChange;
@@ -706,7 +706,7 @@
         }
 
         function _updateLesson(event) {
-
+            
             this.lessonsService.updateLesson(event).then(function (res) {
 
                 this.reloadLessons();
