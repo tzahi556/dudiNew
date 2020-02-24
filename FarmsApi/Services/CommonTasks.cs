@@ -90,7 +90,7 @@ namespace FarmsApi.Services
                     };
 
 
-                    dynamic response = doc.execute(Constants.ENV_TEST, reqObj);
+                    dynamic response = doc.execute(Constants.ENV_PRODUCTION, reqObj);
                     // אם זה הצליח
                     if (response[5].ToString()== "True")
                     {
@@ -100,7 +100,7 @@ namespace FarmsApi.Services
                         p.InvoiceNum = response[2].ToString();
                         p.InvoicePdf = response[0].ToString();
                         p.Price = uc.checks_sum;
-                        p.InvoiceDetails = "פירעון שיק" + uc.checks_number;
+                        p.InvoiceDetails = " פירעון שיק " + uc.checks_number;
                         p.UserId = User.Id;
                         p.InvoiceSum = uc.checks_sum;
 

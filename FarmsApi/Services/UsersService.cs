@@ -727,7 +727,14 @@ namespace FarmsApi.Services
 
                 // Context.UserHorses.AddRange(uhs);
                 //User u = UpdateUser(User);
+
+
+                
+             
                 Context.SaveChanges();
+
+                if (objList.Count > 0)
+                     CommonTasks.InsertChecksToMas();
 
 
             }
@@ -807,6 +814,8 @@ namespace FarmsApi.Services
                         Context.Payments.Add(item);
                         Context.SaveChanges();
                         NewId = item.Id;
+
+                      
                     }
                     else
                     {

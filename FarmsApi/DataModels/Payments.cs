@@ -26,7 +26,7 @@ namespace FarmsApi.DataModels
 
         public string doc_type { get; set; }
         
-        public int lessons { get; set; }
+        public int? lessons { get; set; }
         public DateTime? month { get; set; }
         public DateTime? untilmonth { get; set; }
     }

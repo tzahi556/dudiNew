@@ -31,7 +31,7 @@ namespace FarmsApi
                 // Cache will expire after one hour
                 // You can change this time interval according 
                 // to your requriements
-                TimeSpan.FromMinutes(1),
+                TimeSpan.FromMinutes(60),
                 // Cache will not be removed before expired
                 CacheItemPriority.NotRemovable,
                 // SetTimer function will be called when cache expire
@@ -48,7 +48,7 @@ namespace FarmsApi
                 int hour = moment.Hour;
                 if (day == 1 && hour == 8)
                     CommonTasks.AddExpenseToHorseLanders();
-               // if (hour == 8)
+                if (hour == 8)
                     CommonTasks.InsertChecksToMas();
             }
             catch
