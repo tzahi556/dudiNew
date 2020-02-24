@@ -221,6 +221,20 @@
 
 
         var role = localStorage.getItem('currentRole');
+        var IsHiyuvInHashlama = localStorage.getItem('IsHiyuvInHashlama');
+
+
+        //this.IsHiyuvInHashlama = this.farm.IsHiyuvInHashlama;
+        ////אם לחייב אז תוריד את דרוש שיעור השלמה הרגיל
+        if (IsHiyuvInHashlama == 1) {
+
+            this.sharedValues.lessonStatuses.splice(4, 1);
+
+        } else {
+
+            this.sharedValues.lessonStatuses.splice(5, 1);
+        }
+
 
      
         //if (role == "sysAdmin" || role == "farmAdmin") {

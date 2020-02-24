@@ -23,6 +23,9 @@ namespace FarmsApi.DataModels
         public double? Price { get; set; }
         public double? InvoiceSum { get; set; }
         public string payment_type { get; set; }
+
+        public string doc_type { get; set; }
+        
         public int lessons { get; set; }
         public DateTime? month { get; set; }
         public DateTime? untilmonth { get; set; }

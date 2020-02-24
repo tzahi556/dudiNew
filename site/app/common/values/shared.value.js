@@ -25,8 +25,8 @@
             { id: 'notAttended', name: 'לא הגיע', hide: false },
             { id: 'notAttendedCharge', name: 'לא הגיע, לחייב', hide: true },
             { id: 'notAttendedDontCharge', name: 'לא הגיע, לא לחייב', hide: true },
-            { id: 'completionReq', name: 'דרוש שיעור השלמה', hide: true }
-            //{ id: 'completion', name: 'שיעור השלמה', hide: true }
+            { id: 'completionReq', name: 'דרוש שיעור השלמה', hide: true },
+            { id: 'completionReqCharge', name: 'דרוש שיעור השלמה לחייב', hide: true }
         ],
         styles: [
             { id: 'treatment', name: 'רכיבה טיפולית' },

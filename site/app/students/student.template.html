@@ -399,6 +399,7 @@
                             <tr>
 
                                 <th>תאריך</th>
+                                <th>סוג מסמך</th>
                                 <th>חשבונית מס/קבלה</th>
                                 <th style="width:50%">פירוט עיסקה</th>
                                 <th>ח/ש</th>
@@ -411,6 +412,8 @@
                             <tr ng-repeat="payment in $ctrl.payments | orderByDateDesc track by $index ">
 
                                 <td>{{payment.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{(payment.doc_type=='Kabala')?'קבלה':((payment.doc_type=='MasKabala')?'חשבונית מס קבלה':((payment.doc_type=='Mas')?'חשבונית מס':''))}}</td>
+
                                 <td><a target="_blank" ng-href="{{payment.InvoicePdf}}">{{payment.InvoiceNum}}</a></td>
                                 <td>
                                     {{payment.InvoiceDetails}}
@@ -534,6 +537,11 @@
                             <!-- check -->
 
                             <div ng-if="$ctrl.newPayment.payment_type=='check'" style="border:solid 1px gray;border-radius:10px;padding:10px;">
+
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
+                                  <label> האם חשבונית מס תצא אוטמטית בזמן הפירעון?</label> <input class=""  type="checkbox" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_auto"  />
+                                </div>
+
                                 <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
                                     <input class="form-control" placeholder="שם בנק" type="text" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_bank_name" required />
                                 </div>

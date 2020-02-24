@@ -221,7 +221,7 @@ namespace FarmsApi.Services
 
                             Select t1.Id,completionReq = t1.CounterStatus - coalesce(t2.CounterStatus, 0) from (
                             Select st.User_Id as Id,Count(Status) as CounterStatus from StudentLessons st 
-                            where (st.Status = 'completionReq')
+                            where (st.Status in('completionReq','completionReqCharge'))
                             Group by st.User_Id
                             ) t1
 
@@ -232,11 +232,11 @@ namespace FarmsApi.Services
                             )t2	 on t2.Id=t1.Id
                             )t3	
                             inner join Users u on t3.Id = u.Id
-                            inner join ( Select *,ROW_NUMBER() OVER(Partition by User_Id ORDER BY Lesson_Id desc) as RowNum from StudentLessons where Status = 'completionReq') t4 on t4.User_Id=t3.Id and t4.RowNum = 1
+                            inner join ( Select *,ROW_NUMBER() OVER(Partition by User_Id ORDER BY Lesson_Id desc) as RowNum from StudentLessons where Status in('completionReq','completionReqCharge')) t4 on t4.User_Id=t3.Id and t4.RowNum = 1
                             inner join Lessons l on l.Id = t4.Lesson_Id
                             inner join Users ui on ui.Id = l.Instructor_Id
 
-                            where t3.completionReq > 0 and('"+ CurrentUser.Role.ToString() + "'!='instructor' or "+ CurrentUser.Id.ToString() + "=l.Instructor_Id ) and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")  order by Instructor_Id";
+                            where (t3.completionReq > 0) and('" + CurrentUser.Role.ToString() + "'!='instructor' or "+ CurrentUser.Id.ToString() + "=l.Instructor_Id ) and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")  order by Instructor_Id";
 
 
                 using (var reader = cmd.ExecuteReader())
@@ -477,44 +477,40 @@ namespace FarmsApi.Services
                     var StatusData = GetStatusDataFromJson(Lesson, StudentId);
                     // int isCompleteFromClient = (StatusData[2] != 0) ? 1 : 0;
 
-                    if (StatusData[0] == "completionReq" && (StatusData[2] == "0"))
+                    if ((StatusData[0]=="completionReq" || StatusData[0] == "completionReqCharge" ) && (StatusData[2] == "0"))
                     {
                         StatusData[2] = "1";
                     }
 
-                    if (StatusData[0] == "completionReq" && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "6"))
-                    {
-                        //StatusData[0] = "completion";
-                        StatusData[2] = "1";
-
-                        var conn = Context.Database.Connection;
-                        var connectionState = conn.State;
-                        if (connectionState != ConnectionState.Open) conn.Open();
-                        using (var cmd = conn.CreateCommand())
-                        {
-
-
-                            cmd.CommandText = "   UPDATE StudentLessons SET IsComplete = 5 "
-                                              + "  WHERE Lesson_Id = (SELECT top 1 Lesson_Id FROM StudentLessons WHERE Lesson_Id < " + LessonId + "  and User_Id = " + StudentId
-                                              + "  and Status = 'completionReq' order by Lesson_Id desc) and User_Id = " + StudentId;
-
-
-
-                            cmd.ExecuteNonQuery();
-
-                        }
-
-                        conn.Close();
-
-                    }
-
-
-                    //if (StatusData[0] == "completionReq" && StatusData[2] == "1")
+                    // בדיקה אם מיותר
+                    //if (StatusData[0].StartsWith("completionReq") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "6"))
                     //{
+                    //    //StatusData[0] = "completion";
                     //    StatusData[2] = "1";
+
+                    //    var conn = Context.Database.Connection;
+                    //    var connectionState = conn.State;
+                    //    if (connectionState != ConnectionState.Open) conn.Open();
+                    //    using (var cmd = conn.CreateCommand())
+                    //    {
+
+
+                    //        cmd.CommandText = "   UPDATE StudentLessons SET IsComplete = 5 "
+                    //                          + "  WHERE Lesson_Id = (SELECT top 1 Lesson_Id FROM StudentLessons WHERE Lesson_Id < " + LessonId + "  and User_Id = " + StudentId
+                    //                          + "  and Status = 'completionReq' order by Lesson_Id desc) and User_Id = " + StudentId;
+
+
+
+                    //        cmd.ExecuteNonQuery();
+
+                    //    }
+
+                    //    conn.Close();
+
                     //}
 
 
+                
 
                     if (StatusData[0] == "completion" && StatusData[2] == "2")
                     {
@@ -530,7 +526,7 @@ namespace FarmsApi.Services
 
                             cmd.CommandText = "   UPDATE StudentLessons SET IsComplete = 2 "
                                               + "  WHERE Lesson_Id = (SELECT top 1 Lesson_Id FROM StudentLessons WHERE Lesson_Id < " + LessonId + "  and User_Id = " + StudentId
-                                              + "  and Status = 'completionReq' and IsComplete = 1 order by Lesson_Id desc) and User_Id = " + StudentId;
+                                              + "  and Status in('completionReq','completionReqCharge') and IsComplete = 1 order by Lesson_Id desc) and User_Id = " + StudentId;
 
 
 
@@ -577,7 +573,7 @@ namespace FarmsApi.Services
                         StatusData[2] = "6";
                     }
 
-                    if ((StatusData[0] != "completion") && (StatusData[0] != "completionReq"))
+                    if ((StatusData[0] != "completion") && (StatusData[0] != "completionReq") && (StatusData[0] != "completionReqCharge"))
                     {
                         StatusData[2] = "0";
 
@@ -747,7 +743,7 @@ namespace FarmsApi.Services
 
                                     cmd.CommandText = "   UPDATE StudentLessons SET IsComplete = 1 "
                                                       + "  WHERE Lesson_Id = (SELECT top 1 Lesson_Id FROM StudentLessons WHERE Lesson_Id < " + LessonId + "  and User_Id = " + StudentId
-                                                      + "  and Status = 'completionReq' and IsComplete=2 order by Lesson_Id desc) and User_Id = " + StudentId;
+                                                      + "  and Status in('completionReq','completionReqCharge') and IsComplete=2 order by Lesson_Id desc) and User_Id = " + StudentId;
 
 
 

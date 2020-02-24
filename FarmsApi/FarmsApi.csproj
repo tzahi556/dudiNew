@@ -120,6 +120,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Global.asax" />
     <Content Include="packages.config" />
     <Content Include=".editorconfig" />
     <None Include="Properties\PublishProfiles\IIS.pubxml" />
@@ -149,6 +150,7 @@
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DataModels\AvailableHours.cs" />
     <Compile Include="DataModels\Makav.cs" />
+    <Compile Include="DataModels\Checks.cs" />
     <Compile Include="DataModels\TransferResult.cs" />
     <Compile Include="DataModels\MangerReport.cs" />
     <Compile Include="DataModels\LessonsResult.cs" />
@@ -162,6 +164,9 @@
     <Compile Include="DataModels\UserDevices.cs" />
     <Compile Include="DataModels\StudentLessons.cs" />
     <Compile Include="DataModels\Horse.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="Services\UploadFromAccess.cs" />
     <Compile Include="Services\CommonTasks.cs" />
     <Compile Include="Services\NotificationsService.cs" />

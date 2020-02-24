@@ -639,7 +639,7 @@ namespace FarmsApi.Services
             if (u.Id == 0) return u;
 
             List<Payments> p = dataObj[1].ToObject<List<Payments>>();
-            UpdatePaymentsObject(p, u);
+            int NewId= UpdatePaymentsObject(p, u);
 
             List<Files> f = dataObj[2].ToObject<List<Files>>();
             UpdateFilesObject(f, u);
@@ -662,6 +662,9 @@ namespace FarmsApi.Services
                 List<AvailableHours> uav = dataObj[6].ToObject<List<AvailableHours>>();
                 UpdateAvailableHoursObject(uav, u);
 
+                List<Checks> ch = dataObj[8].ToObject<List<Checks>>();
+                UpdateChecksObject(ch, u, NewId);
+
             }
             catch (Exception ex)
             {
@@ -674,7 +677,61 @@ namespace FarmsApi.Services
             return u;
         }
 
+        private static void UpdateChecksObject(List<Checks> objList, User u,int PaymentsId)
+        {
+            using (var Context = new Context())
+            {
 
+                foreach (Checks item in objList)
+                {
+
+                    item.UserId = u.Id;
+                    item.PaymentsId = PaymentsId;
+                    if (item.Id == 0)
+                    {
+                        Context.Checks.Add(item);
+                        //  Context.SaveChanges();
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    //var result = Context.Checks.Where(p => p.UserId == u.Id).ToList();
+                    //IEnumerable<Checks> differenceQuery = result.Except(objList);
+
+                    //foreach (Checks item in differenceQuery)
+                    //{
+                    //    Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                    //    // Context.SaveChanges();
+                    //}
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+                // 
+
+                // Context.UserHorses.AddRange(uhs);
+                //User u = UpdateUser(User);
+                Context.SaveChanges();
+
+
+            }
+        }
         private static void UpdateAvailableHoursObject(List<AvailableHours> objList, User u)
         {
             using (var Context = new Context())
@@ -731,8 +788,9 @@ namespace FarmsApi.Services
             }
         }
 
-        private static void UpdatePaymentsObject(List<Payments> objList, User u)
+        private static int UpdatePaymentsObject(List<Payments> objList, User u)
         {
+            int NewId = 0;
             using (var Context = new Context())
             {
 
@@ -747,8 +805,8 @@ namespace FarmsApi.Services
                     if (item.Id == 0)
                     {
                         Context.Payments.Add(item);
-                        //  Context.SaveChanges();
-
+                        Context.SaveChanges();
+                        NewId = item.Id;
                     }
                     else
                     {
@@ -772,7 +830,7 @@ namespace FarmsApi.Services
                         // Context.SaveChanges();
                     }
 
-
+                    Context.SaveChanges();
 
                 }
                 catch (Exception ex)
@@ -780,12 +838,10 @@ namespace FarmsApi.Services
 
 
                 }
-                // 
 
-                // Context.UserHorses.AddRange(uhs);
-                //User u = UpdateUser(User);
-                Context.SaveChanges();
 
+
+                return NewId;
 
             }
         }
@@ -1302,7 +1358,6 @@ namespace FarmsApi.Services
 
             }
         }
-
 
         public static object GetTransferData(string insructorId, string dow,string date)
         {

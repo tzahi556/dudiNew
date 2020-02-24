@@ -195,7 +195,9 @@
                     var countCompletionReq = 0;
                     
                     for (var i in event.statuses) {
-                       
+
+
+                      
                         //בלי סטטוס
                         if (!event.statuses[i].Status || event.statuses[i].Status == '') {
 
@@ -236,7 +238,7 @@
                         //}
 
                         // הוגדר שהוא צריך שיעור השלמה
-                        else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 1) {
+                        else if ((event.statuses[i].Status == 'completionReq' || event.statuses[i].Status == 'completionReqCharge' ) && event.statuses[i].IsComplete == 1) {
                            
                             //$(element).css("background-color", "lightGray").css("border-color", "gray");
                             $(element).addClass('returnred-icon');
@@ -246,7 +248,7 @@
                         }
 
                         // שמו לו שיעור השלמה איפה שהוא
-                        else if (event.statuses[i].Status == 'completionReq' && event.statuses[i].IsComplete == 2) {
+                        else if ((event.statuses[i].Status == 'completionReq' || event.statuses[i].Status == 'completionReqCharge') && event.statuses[i].IsComplete == 2) {
                            //$(element).css("background-color", "lightGray").css("border-color", "gray");
                           
                             $(element).addClass('returngreen-icon');
@@ -273,7 +275,7 @@
                         // במידה ויש רק שיעור השלמה תעלים את הכלס כדי שלא יעלים אותו
                         var title = $(element).find("div div.fc-title");
                         $(title).text($(title).text().replace(/sp_completionReq/gi, "sp_empty"));
-
+                        $(title).text($(title).text().replace(/sp_completionReqCharge/gi, "sp_empty"));
                       
 
                     } else {
@@ -441,7 +443,7 @@
             $(this).html(currentElement);
 
             $(this).find(".sp_completionReq").remove();
-
+            $(this).find(".sp_completionReqCharge").remove();
         });
 
 

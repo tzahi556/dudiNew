@@ -17,7 +17,7 @@ namespace FarmsApi.Services
         [HttpGet]
         public IHttpActionResult GetLessons(int? studentId = null, string startDate = null, string endDate = null, bool isFromCompletion = false)
         {
-           if(!isFromCompletion) CommonTasks.DoCommonTasks();
+          // if(!isFromCompletion) CommonTasks.DoCommonTasks();
 
             
             return Ok(LessonsService.GetLessons(studentId, startDate, endDate, isFromCompletion));
