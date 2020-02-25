@@ -852,12 +852,14 @@
                     }
                     
                     this.IsHiyuvInHashlama = this.farm.IsHiyuvInHashlama;
-                    //אם לחייב אז תוריד את דרוש שיעור השלמה הרגיל
-                    if (this.IsHiyuvInHashlama == 1) {
+                    ////אם לחייב אז תוריד את דרוש שיעור השלמה הרגיל
+                 
+
+                    if (this.IsHiyuvInHashlama == 1 && this.lessonStatuses.length > 5) {
 
                         this.lessonStatuses.splice(4, 1);
 
-                    } else {
+                    } else if (this.lessonStatuses.length > 3) {
 
                         this.lessonStatuses.splice(5, 1);
                     }
@@ -1794,14 +1796,24 @@
 
         function _getChecsObjList() {
             var CheckList = [];
-            for (var i in this.newPayment.Checks) {
 
-                this.newPayment.Checks[i].checks_date = moment(this.newPayment.Checks[i].checks_date).format("YYYY-MM-DD");
+            try {
 
-                CheckList.push(this.newPayment.Checks[i]);
+          
+                for (var i in this.newPayment.Checks) {
 
-                debugger
+                    this.newPayment.Checks[i].checks_date = moment(this.newPayment.Checks[i].checks_date).format("YYYY-MM-DD");
+
+                    CheckList.push(this.newPayment.Checks[i]);
+
+                    debugger
+                }
+
             }
+            catch (e) {
+
+            }
+            
             return CheckList;
         }
         

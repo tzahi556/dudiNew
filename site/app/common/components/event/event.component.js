@@ -223,14 +223,14 @@
         var role = localStorage.getItem('currentRole');
         var IsHiyuvInHashlama = localStorage.getItem('IsHiyuvInHashlama');
 
-
+     
         //this.IsHiyuvInHashlama = this.farm.IsHiyuvInHashlama;
         ////אם לחייב אז תוריד את דרוש שיעור השלמה הרגיל
-        if (IsHiyuvInHashlama == 1) {
+        if (IsHiyuvInHashlama == 1 && this.sharedValues.lessonStatuses.length>5) {
 
             this.sharedValues.lessonStatuses.splice(4, 1);
 
-        } else {
+        } else if (this.sharedValues.lessonStatuses.length > 3) {
 
             this.sharedValues.lessonStatuses.splice(5, 1);
         }
