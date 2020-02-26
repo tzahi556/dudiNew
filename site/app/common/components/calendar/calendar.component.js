@@ -189,14 +189,14 @@
             eventRender: function (event, element) {
 
               
-
+              
                 if (event.rendering != "background" && event.statuses && event.statuses.length > 0) {
 
                     var countCompletionReq = 0;
                     
                     for (var i in event.statuses) {
 
-
+                      
                       
                         //בלי סטטוס
                         if (!event.statuses[i].Status || event.statuses[i].Status == '') {

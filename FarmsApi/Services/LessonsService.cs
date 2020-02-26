@@ -477,7 +477,7 @@ namespace FarmsApi.Services
                     var StatusData = GetStatusDataFromJson(Lesson, StudentId);
                     // int isCompleteFromClient = (StatusData[2] != 0) ? 1 : 0;
 
-                    if ((StatusData[0]=="completionReq" || StatusData[0] == "completionReqCharge" ) && (StatusData[2] == "0"))
+                    if ((StatusData[0]=="completionReq" || StatusData[0] == "completionReqCharge" ) && (StatusData[2] == "0" || StatusData[2] ==null))
                     {
                         StatusData[2] = "1";
                     }

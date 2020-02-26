@@ -27,20 +27,42 @@
                     </div>
                     <div class="form-group">
                         <label>שם פרטי </label>
-                        <input type="text" name="firstName"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.FirstName" required />
+                        <input type="text" name="firstName" ng-disabled="true" class="form-control" ng-model="$ctrl.user.FirstName" required />
                     </div>
                     <div class="form-group">
                         <label>שם משפחה</label>
-                        <input type="text" name="lastName"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.LastName" required />
+                        <input type="text" name="lastName" ng-disabled="true" class="form-control" ng-model="$ctrl.user.LastName" required />
                     </div>
                     <div class="form-group">
                         <label>ת.ז.</label>
-                        <input type="text" name="idNumber"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.IdNumber" required />
+                        <input type="text" name="idNumber" ng-disabled="true" class="form-control" ng-model="$ctrl.user.IdNumber" required />
                     </div>
                     <div class="form-group">
                         <label>תאריך לידה</label>
-                        <input type="date" name="birthDate"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.BirthDate" />
+                        <input type="date" name="birthDate" ng-disabled="true" class="form-control" ng-model="$ctrl.user.BirthDate" />
                     </div>
+                    <div class="form-group">
+                        <label>שם אם</label>
+                        <input type="text" name="parentName"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.ParentName2" />
+                    </div>
+                    <div class="form-group">
+                        <label>שם אב</label>
+                        <input type="text" name="parentName"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.ParentName" />
+                    </div>
+                    <div class="form-group">
+                        <label>כתובת</label>
+                        <input type="text" name="address"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.Address" />
+                    </div>
+                    <div class="form-group">
+                        <label>טלפון</label>
+                        <input type="tel" name="phoneNumber"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.PhoneNumber" />
+                    </div>
+                    <div class="form-group">
+                        <label>טלפון 2</label>
+                        <input type="tel" name="phoneNumber2"  ng-disabled="true" class="form-control" ng-model="$ctrl.user.PhoneNumber2" />
+                    </div>
+
+
                 </div>
 
 
@@ -702,7 +724,7 @@
                             <div class="form-group">
                                 <select type="text" class="form-control" ng-model="$ctrl.newExpense.IsPension">
                                     <option value="" selected="selected">הוצאה רגילה</option>
-                                    <option value="true">פנסיון</option>
+                                    <!--<option value="true">פנסיון</option>-->
                                 </select>
                             </div>
                             <div class="form-group" ng-if="!$ctrl.newExpense.IsPension">

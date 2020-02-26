@@ -44,7 +44,7 @@
         // this.getIfExpensiveInMas = _getIfExpensiveInMas.bind(this);
         this.disablBtn = false;
 
-
+        this.IsHiyuvInHashlama = 0;
 
 
         this.getLessonsDateNoPaid = _getLessonsDateNoPaid.bind(this);
@@ -320,6 +320,8 @@
 
                     this.newPayment.isKabala = true;
                 }
+
+                this.IsHiyuvInHashlama = this.farm.IsHiyuvInHashlama;
                 this.newPayment.Date = new Date();
                 this.newPayment.Price = this.user.Cost;
                 this.newPayment.IsAshrai = this.farm.Meta.IsAshrai;
@@ -393,8 +395,7 @@
         }
 
         function _getLessonsDateNoPaid(LessonsPaidCounter) {
-          
-           
+
             if (!LessonsPaidCounter || LessonsPaidCounter == 0) return "";
             var results = "תאריכי שיעורים- ";
             var TotalPAID = this.creditPaidLessons;
@@ -403,17 +404,28 @@
 
                 if (!this.lessons[i].paid && this.lessons[i].lessprice && this.lessons[i].lessprice > 0) {
 
-                    var CurrentStatus = this.lessons[i].statuses[this.getStatusIndex(this.lessons[i])].Status;
-                    if (CurrentStatus == 'completionReq') continue;
+                    var studentsStatusObj = this.lessons[i].statuses[this.getStatusIndex(this.lessons[i])];
+                    var CurrentStatus = studentsStatusObj.Status;
+
+
+                    // במידה ומדובר בחווה שהחיוב הוא רק בעת הדרוש שיעור השלמה 
+                    //if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) {
+
+                    //    this.lessons[i].paid = false;
+                    //}
+                    if (CurrentStatus == 'completionReq' || (this.IsHiyuvInHashlama == 1 && (studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6"))) continue;
                     var IsPast = parseInt(moment(this.lessons[i].start).format('YYYYMMDD')) < parseInt(moment().format('YYYYMMDD'));
 
 
-                    if (LessonsPaidCounter > 0 && (!IsPast || ['attended', 'notAttendedCharge'].indexOf(CurrentStatus) != -1)) {
+                    if (
+                        LessonsPaidCounter > 0 &&
+                        (!IsPast || ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(CurrentStatus) != -1)
+
+                    ) {
                         if (TotalPAID > 0) {
                             TotalPAID--;
 
                         } else {
-
 
                             results += moment(this.lessons[i].start).format('DD/MM/YYYY') + ",  ";
                             LessonsPaidCounter--;
