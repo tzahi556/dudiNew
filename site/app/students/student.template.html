@@ -419,11 +419,12 @@
                     <table class="table" expandable>
                         <thead>
                             <tr>
-
+                                <th></th>
                                 <th>תאריך</th>
                                 <th>סוג מסמך</th>
-                                <th>חשבונית מס/קבלה</th>
-                                <th style="width:50%">פירוט עיסקה</th>
+                                <th>מס' מסמך</th>
+                                <th>מסמך אב</th>
+                                <th style="width:40%">פירוט עיסקה</th>
                                 <th>ח/ש</th>
                                 <th>סכום</th>
                                 <th></th>
@@ -433,16 +434,24 @@
                             <!--<tr ng-repeat="payment in $ctrl.payments | orderBy: 'Date':true ">שיניתי -->
                             <tr ng-repeat="payment in $ctrl.payments | orderByDateDesc track by $index ">
 
+                                <td><input ng-if="$ctrl.setCheckboxForClose(payment)" type="checkbox" ng-click="" ng-model="payment.SelectedForInvoiceTemp" /></td>
+                                <!--<td ng-if="($ctrl.newPayment.isKabala||$ctrl.newPayment.isKabalaTroma) && payment.doc_type=='Mas' && !payment.ParentInvoiceNum"></td>
+                                <td ng-if="($ctrl.newPayment.isMas) && payment.doc_type=='Kabala' && !payment.ParentInvoiceNum"><input type="checkbox" ng-click="" ng-model="" /></td>
+                               
+                                <td ng-if="(!$ctrl.newPayment.isKabala && !$ctrl.newPayment.isKabalaTroma && !$ctrl.newPayment.isMas) || !payment.doc_type || payment.ParentInvoiceNum">ghghhhgh</td>-->
+
                                 <td>{{payment.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{(payment.doc_type=='Kabala')?'קבלה':((payment.doc_type=='MasKabala')?'חשבונית מס קבלה':((payment.doc_type=='Mas')?'חשבונית מס':''))}}</td>
 
-                                <td><a target="_blank" ng-href="{{payment.InvoicePdf}}">{{payment.InvoiceNum}}</a></td>
+                                <td><a target="_blank" style="color:{{((payment.doc_type=='Kabala' || payment.doc_type=='Mas') && !payment.SelectedForInvoice)?'#990000':''}}" ng-href="{{payment.InvoicePdf}}">{{payment.InvoiceNum}}</a></td>
+
+                                <td><a target="_blank" ng-href="{{payment.ParentInvoicePdf}}">{{payment.ParentInvoiceNum}}</a></td>
+
                                 <td>
                                     {{payment.InvoiceDetails}}
                                     <span ng-if="payment.canceled">(מזוכת: {{payment.canceled}})</span>
                                 </td>
                                 <td>{{payment.count}}</td>
-                                <!--<td>{{payment.Price}}</td>-->
                                 <td>{{payment.InvoiceSum}}</td>
                                 <td>
                                     <button class="btn btn-xs btn-default" ng-click="$ctrl.refundPayment(payment)">זיכוי</button>
@@ -456,10 +465,15 @@
                     <div class="panel-footer">
                         <button class="btn btn-success" ng-if="!$ctrl.showNewPayment" ng-click="$ctrl.showNewPayment=true;$ctrl.disablBtn=false">הוספת תשלום</button>
                         <form ng-if="$ctrl.showNewPayment" name="paymentForm">
-                            <div class="form-group">
-                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isMasKabala" />חשבונית מס קבלה</label>
-                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false" ng-model="$ctrl.newPayment.isKabala" /> קבלה</label>
-                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabala=false" ng-model="$ctrl.newPayment.isKabalaTroma" /> קבלה על תרומה</label>
+                            <div class="form-group" style="background:{{($ctrl.newPayment.noEazi)?'red':''}}">
+                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isMas=false" ng-model="$ctrl.newPayment.isMasKabala" /> חשבונית מס קבלה</label>
+                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isKabala=false" ng-model="$ctrl.newPayment.isMas" /> חשבונית מס</label>
+                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isMas=false" ng-model="$ctrl.newPayment.isKabala" /> קבלה</label>
+                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isMas=false" ng-model="$ctrl.newPayment.isKabalaTroma" /> קבלה על תרומה</label>
+
+
+                                <label style="float:left"><input type="checkbox" ng-click="" ng-model="$ctrl.newPayment.noEazi" /> ללא חיבור לאיזיקאונט</label>
+
                             </div>
                             <div class="form-group">
                                 <input class="form-control" type="date" ng-model="$ctrl.newPayment.Date" required />
@@ -533,7 +547,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="form-group" ng-if="!$ctrl.newPayment.isMasKabala && !$ctrl.newPayment.isKabala  && !$ctrl.newPayment.isKabalaTroma">
+                            <div class="form-group" ng-if="(!$ctrl.newPayment.isMasKabala && !$ctrl.newPayment.isKabala  && !$ctrl.newPayment.isKabalaTroma && !$ctrl.newPayment.isMas) || $ctrl.newPayment.noEazi">
                                 <input class="form-control" placeholder="מספר מסמך" type="text" ng-model="$ctrl.newPayment.InvoiceNum" required />
                             </div>
                             <div class="form-group">
@@ -545,7 +559,7 @@
                                 <!--ng-change="$ctrl.countTotalByInvoiceSum()"-->
                             </div>
                             <!-- payment type -->
-                            <div class="form-group" ng-if="$ctrl.newPayment.isMasKabala || $ctrl.newPayment.isKabala || $ctrl.newPayment.isKabalaTroma">
+                            <div class="form-group" ng-if="$ctrl.newPayment.isMasKabala || $ctrl.newPayment.isKabala || $ctrl.newPayment.isKabalaTroma || $ctrl.newPayment.isMas">
                                 <select class="form-control" ng-model="$ctrl.newPayment.payment_type" required>
                                     <option value="">צורת תשלום</option>
                                     <option value="cash">מזומן</option>

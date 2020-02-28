@@ -112,7 +112,7 @@
         this.getLessonsDateNoPaid = _getLessonsDateNoPaid.bind(this);
         this.getIfanyCheckValid = _getIfanyCheckValid.bind(this);
         this.setLessPrice = _setLessPrice.bind(this);
-      //  this.setLessonsDetails = _setLessonsDetails.bind(this);
+        this.createNewPayment = _createNewPayment.bind(this);
         this.changeLessonsData = _changeLessonsData.bind(this);
 
         this.getChecsObjList = _getChecsObjList.bind(this);
@@ -120,14 +120,20 @@
         this.removeMakav = _removeMakav.bind(this);
         this.setMakavDesc = _setMakavDesc.bind(this);
         this.getDayOfWeek = _getDayOfWeek.bind(this);
+        this.setCheckboxForClose = _setCheckboxForClose.bind(this);
+        
+        
+        
         this.show4 = _show4.bind(this);
 
+        this.getRealDocType = _getRealDocType.bind(this);
         this.IsInstructorBlock = ($rootScope.role == "instructor") ? true : false;    // $rootScope.IsInstructorBlock;
 
+      
         this.newPrice = 0;
 
         this.IsHiyuvInHashlama = 0;
-       
+        
         function _show4(ashrai4) {
 
             alert(ashrai4);
@@ -1514,8 +1520,8 @@
 
         function _addPayment() {
 
-
-
+           
+             
 
            
             if (this.newPayment.payment_type == 'check') {
@@ -1578,9 +1584,18 @@
 
             var newPayment = angular.copy(this.newPayment);
             newPayment.cc_type_name = this.getccTypeName(this.newPayment.cc_type);
-            var TempSum = newPayment.InvoiceSum;
-            if (newPayment.isMasKabala || newPayment.isKabala || newPayment.isKabalaTroma) {
+            newPayment.doc_type = this.getRealDocType(newPayment);//(newPayment.isMasKabala) ? "MasKabala" : ((newPayment.isKabala || newPayment.isKabalaTroma) ? "Kabala" : "");
 
+            var TempSum = newPayment.InvoiceSum;
+
+
+
+         
+
+
+            if (!newPayment.noEazi && (newPayment.isMasKabala || newPayment.isKabala || newPayment.isKabalaTroma || newPayment.isMas)) {
+
+               
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
                     if (this.newPayment.payment_type == 'ashrai' || this.newPayment.payment_type == 'token') {
@@ -1666,25 +1681,18 @@
 
                         }
                     });
-
                     this.payments = this.payments || [];
-
-                    newPayment.doc_type = (newPayment.isMasKabala) ? "MasKabala" : ((newPayment.isKabala || newPayment.isKabalaTroma) ? "Kabala" : "");
                     this.payments.push(newPayment);
+                    this.createNewPayment(newPayment);
                     this.submit();
                     this.initPaymentForm();
                     this.countAllCredits();
-                   
-
                 }.bind(this));
             }
 
             else {
-
               
                 this.payments = this.payments || [];
-              
-              
                 this.expenses.map(function (expense) {
                     if (expense.Checked && expense.Price != expense.Sum) { //&& !expense.Paid !צחי הוריד בינתיים
                         expense.Paid = newPayment.InvoiceNum;
@@ -1703,16 +1711,66 @@
                         
                     }
                 });
-
-                newPayment.doc_type = (newPayment.isMasKabala) ? "MasKabala" : ((newPayment.isKabala || newPayment.isKabalaTroma)?"Kabala":"");
                 this.payments.push(newPayment);
-
+                this.createNewPayment(newPayment);
                 this.submit();
+              
                 this.initPaymentForm();
                 this.countAllCredits();
-              
             }
+
+      
         }
+
+        function _createNewPayment(newPayment) {
+            this.payments.map(function (payment) {
+                if (payment.SelectedForInvoiceTemp) {
+                    newPayment.SelectedForInvoice = true;
+                    if (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") {
+
+                        payment.ParentInvoiceNum = newPayment.InvoiceNum;
+                        payment.ParentInvoicePdf = newPayment.InvoicePdf;
+                        payment.SelectedForInvoice = true;
+                    }
+
+                    if (payment.doc_type == "Kabala" && newPayment.doc_type == "Mas") {
+
+                        payment.ParentInvoiceNum = newPayment.InvoiceNum;
+                        payment.ParentInvoicePdf = newPayment.InvoicePdf;
+                        payment.SelectedForInvoice = true;
+                    }
+                }
+            });
+
+        }
+
+        function _getRealDocType(pay) {
+
+            if (pay.isMasKabala) return "MasKabala";
+            if (pay.isKabala || pay.isKabalaTroma) return "Kabala";
+            if (pay.isMas) return "Mas";
+            return "";
+
+        }
+
+        function _setCheckboxForClose(pay) {
+
+            // אם זה קבלה והשורה היא חשבונית מס ואין לו מסמך אב תציג אופציה לסגירה  || this.newPayment.isKabalaTroma
+            if ((this.newPayment.isKabala) && pay.doc_type == 'Mas' && !pay.SelectedForInvoice) {
+
+                return true;
+
+            }
+            else if ((this.newPayment.isMas) && pay.doc_type == 'Kabala' && !pay.SelectedForInvoice) {
+
+                return true;
+            }
+            else
+                return false;
+        }
+
+        
+
 
         this.currentCheckindex = 0;
         this.checksCount = 0;
@@ -1794,7 +1852,7 @@
 
 
 
-                    debugger
+                  
                     lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate);
                     this.user = user;
 

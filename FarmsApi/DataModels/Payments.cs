@@ -17,6 +17,10 @@ namespace FarmsApi.DataModels
         public DateTime? Date { get; set; }
         public string InvoicePdf { get; set; }
         public string InvoiceNum { get; set; }
+
+        public string ParentInvoicePdf { get; set; }
+        public string ParentInvoiceNum { get; set; }
+
         public string InvoiceDetails { get; set; }
         public string canceled { get; set; }
 
@@ -29,5 +33,9 @@ namespace FarmsApi.DataModels
         public int? lessons { get; set; }
         public DateTime? month { get; set; }
         public DateTime? untilmonth { get; set; }
+       
+        public bool SelectedForInvoice { get; set; }
+
+
     }
 }
