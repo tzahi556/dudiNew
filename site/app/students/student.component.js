@@ -856,7 +856,8 @@
                     this.farm = farm;
                     this.showNewPayment = false;
                     this.newPayment = {};
-                 
+                    this.currentCheckindex = 0;
+                    this.checksCount = 0;
                     this.newPayment.doc_type = "";
                     this.newPayment.api_key = this.farm.Meta.api_key;
                     this.newPayment.ua_uuid = this.farm.Meta.ua_uuid;
