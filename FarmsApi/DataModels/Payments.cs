@@ -29,6 +29,8 @@ namespace FarmsApi.DataModels
         public string payment_type { get; set; }
 
         public string doc_type { get; set; }
+
+        public string doc_uuid { get; set; }
         
         public int? lessons { get; set; }
         public DateTime? month { get; set; }

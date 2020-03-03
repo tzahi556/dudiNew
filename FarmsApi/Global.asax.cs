@@ -11,10 +11,53 @@ namespace FarmsApi
 {
     public class Global : System.Web.HttpApplication
     {
-
+        private static CacheItemRemovedCallback OnCacheRemove = null;
         protected void Application_Start(object sender, EventArgs e)
         {
-            StartMailChecker();
+            //StartMailChecker();
+            AddTask("DoStuff",3600);
+        }
+
+        private void AddTask(string name, int seconds)
+        {
+            OnCacheRemove = new CacheItemRemovedCallback(CacheItemRemoved);
+            HttpRuntime.Cache.Insert(name, seconds, null,
+                DateTime.Now.AddSeconds(seconds), Cache.NoSlidingExpiration,
+                CacheItemPriority.NotRemovable, OnCacheRemove);
+        }
+
+        public void CacheItemRemoved(string k, object v, CacheItemRemovedReason r)
+        {
+            // do stuff here if it matches our taskname, like WebRequest
+
+
+            // re-add our task so it recurs
+            try
+            {
+                DateTime moment = DateTime.Now;
+                int day = moment.Day;
+
+                int hour = moment.Hour;
+
+
+                if (hour == 7)
+                {
+                    CommonTasks Tasking = new CommonTasks();
+
+                    if (day == 1) Tasking.AddExpenseToHorseLanders();
+                    Tasking.InsertChecksToMas();
+
+                }
+
+            }
+            catch(Exception ex)
+            {
+
+
+            }
+
+
+            AddTask(k, Convert.ToInt32(v));
         }
         public static void StartMailChecker()
         {
@@ -31,7 +74,7 @@ namespace FarmsApi
                 // Cache will expire after one hour
                 // You can change this time interval according 
                 // to your requriements
-                TimeSpan.FromMinutes(60),
+                TimeSpan.FromMinutes(1),
                 // Cache will not be removed before expired
                 CacheItemPriority.NotRemovable,
                 // SetTimer function will be called when cache expire
@@ -46,10 +89,18 @@ namespace FarmsApi
                 int day = moment.Day;
 
                 int hour = moment.Hour;
-                if (day == 1 && hour == 8)
-                    CommonTasks.AddExpenseToHorseLanders();
-                if (hour == 8)
-                    CommonTasks.InsertChecksToMas();
+
+                
+                if (hour == 9)
+                {
+                    CommonTasks Tasking = new CommonTasks();
+
+                    if (day == 1) Tasking.AddExpenseToHorseLanders();
+                    Tasking.InsertChecksToMas();
+
+
+                }
+              
             }
             catch
             {
@@ -58,7 +109,7 @@ namespace FarmsApi
             }
             finally
             {
-                StartMailChecker();
+              //  StartMailChecker();
             }
         }
         protected void Session_Start(object sender, EventArgs e)

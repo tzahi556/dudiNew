@@ -10,6 +10,7 @@ using EZcountApiLib;
 using Newtonsoft.Json;
 using RestSharp;
 using Newtonsoft.Json.Linq;
+using System.Configuration;
 
 namespace FarmsApi.Controllers
 {
@@ -19,8 +20,20 @@ namespace FarmsApi.Controllers
         [Authorize]
         [Route("sendInvoice")]
         [HttpPost]
+        [Obsolete]
         public IHttpActionResult sendInvoice(dynamic Params)
         {
+            string IsProduction = ConfigurationSettings.AppSettings["IsProduction"].ToString();
+
+            string SlikaUrlAsraiValidate = ConfigurationSettings.AppSettings["SlikaUrlAsraiValidate"].ToString();
+            string SuccessUrlAshrai = ConfigurationSettings.AppSettings["SuccessUrlAshrai"].ToString();
+            string SlikaUrlAshrai = ConfigurationSettings.AppSettings["SlikaUrlAshrai"].ToString();
+
+
+            string SuccessUrlToken = ConfigurationSettings.AppSettings["SuccessUrlToken"].ToString();
+            string SlikaUrlToken = ConfigurationSettings.AppSettings["SlikaUrlToken"].ToString();
+            string SlikaUrlChargeToken = ConfigurationSettings.AppSettings["SlikaUrlChargeToken"].ToString();
+
             DocCreation doc = new DocCreation();
 
             Params.payment = Params.InvoiceSum;
@@ -40,7 +53,7 @@ namespace FarmsApi.Controllers
 
                 string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjValidate);
 
-                var SlikaUrl = "https://demo.ezcount.co.il/api/payment/validate/" + Params.ksys_token;
+                var SlikaUrl = SlikaUrlAsraiValidate + Params.ksys_token;
                 var client = new HttpClient();
                 HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                 HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -57,7 +70,6 @@ namespace FarmsApi.Controllers
                 return Ok(response);
             }
 
-
             else if ((string)Params.payment_type == "ashrai")
             {
 
@@ -67,15 +79,13 @@ namespace FarmsApi.Controllers
                     //   api_email = (string)Params.api_email,
                     developer_email = "tzahi556@gmail.com",
                     sum = (decimal)Params.payment,
-                    successUrl = "http://giddyup.co.il/close.html"
-
-
+                    successUrl = SuccessUrlAshrai
                 };
 
 
                 string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
 
-                var SlikaUrl = "https://demo.ezcount.co.il/api/payment/prepareSafeUrl/clearingFormForMerchant";
+                var SlikaUrl = SlikaUrlAshrai;
                 var client = new HttpClient();
                 HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                 HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -99,14 +109,13 @@ namespace FarmsApi.Controllers
 
                     developer_email = "tzahi556@gmail.com",
 
-                    successUrl = "https://www.giddyup.co.il"///#/closetoken?aaa=5454545&UserId=" + (string)Params.UserId
-
+                    successUrl = SuccessUrlToken + "&UserId=" + (string)Params.UserId
                 };
 
 
                 string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
 
-                var SlikaUrl = "https://demo.ezcount.co.il/api/payment/prepareSafeUrl/token";
+                var SlikaUrl = SlikaUrlToken;
                 var client = new HttpClient();
                 HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                 HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -120,6 +129,7 @@ namespace FarmsApi.Controllers
 
                 return Ok(response);
             }
+
             else if ((string)Params.payment_type == "tokenBuy")
             {
 
@@ -141,7 +151,7 @@ namespace FarmsApi.Controllers
                 };
 
                 string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
-                var SlikaUrl = "https://demo.ezcount.co.il/api/payment/chargeToken";
+                var SlikaUrl = SlikaUrlChargeToken; 
                 var client = new HttpClient();
                 HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                 HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -172,6 +182,7 @@ namespace FarmsApi.Controllers
                 return Ok(responseToken);
 
             }
+
             else
             {
 
@@ -292,7 +303,7 @@ namespace FarmsApi.Controllers
                     customer_email = (string)Params.customer_email,
                     customer_address = (string)Params.customer_address,
                     comment = (string)Params.comment,
-
+                    parent = (string)Params.parents,//להכניס אמא
                     item = new dynamic[] {
                     new {
                         details = (string)Params.InvoiceDetails,
@@ -310,7 +321,8 @@ namespace FarmsApi.Controllers
                 };
 
 
-                dynamic response = doc.execute(Constants.ENV_TEST, reqObj);
+
+                dynamic response = doc.execute(((IsProduction=="0")? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
 
                 return Ok(response);
 

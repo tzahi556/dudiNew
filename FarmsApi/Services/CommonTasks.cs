@@ -5,13 +5,14 @@ using System.Linq;
 using System.Web;
 using FarmsApi.DataModels;
 using EZcountApiLib;
+using System.Configuration;
 
 namespace FarmsApi.Services
 {
-    public static class CommonTasks
+    public  class CommonTasks
     {
-        public static bool TaskDone { get; set; }
-        public static void DoCommonTasks()
+        public  bool TaskDone { get; set; }
+        public CommonTasks()
         {
             //var Today = DateTime.Now;
 
@@ -21,8 +22,13 @@ namespace FarmsApi.Services
             //    AddExpenseToHorseLanders();
             //}
         }
-        public static void InsertChecksToMas()
+
+      
+        public  void InsertChecksToMas()
         {
+            string IsProduction = ConfigurationSettings.AppSettings["IsProduction"].ToString();
+
+
             DateTime CurrentDate = DateTime.Now.Date;
             using (var Context = new Context())
             {
@@ -72,7 +78,7 @@ namespace FarmsApi.Services
                         customer_email = User.AnotherEmail,
                         customer_address = User.Address,
                         comment = "מס לקוח: " + User.ClientNumber  + ", ת.ז.: " + User.IdNumber,
-                
+                        parent = PaymentUser.doc_uuid,
 
                         item = new dynamic[] {
                         new {
@@ -90,7 +96,8 @@ namespace FarmsApi.Services
                     };
 
 
-                    dynamic response = doc.execute(Constants.ENV_PRODUCTION, reqObj);
+                    dynamic response = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
+
                     // אם זה הצליח
                     if (response[5].ToString()== "True")
                     {
@@ -99,6 +106,9 @@ namespace FarmsApi.Services
                         p.doc_type = "Mas";
                         p.InvoiceNum = response[2].ToString();
                         p.InvoicePdf = response[0].ToString();
+                        p.ParentInvoiceNum = PaymentUser.InvoiceNum;
+                        p.ParentInvoicePdf = PaymentUser.InvoicePdf;
+                        p.SelectedForInvoice = true;
                         p.Price = uc.checks_sum;
                         p.InvoiceDetails = " פירעון שיק " + uc.checks_number;
                         p.UserId = User.Id;
@@ -106,8 +116,10 @@ namespace FarmsApi.Services
 
                         uc.checks_auto = false;
                         Context.Payments.Add(p);
+                      //  Context.SaveChanges();
+                        PaymentUser.SelectedForInvoice = true;
+                        Context.Entry(PaymentUser).State = System.Data.Entity.EntityState.Modified;
                         Context.SaveChanges();
-
                        
 
                     }
@@ -116,11 +128,11 @@ namespace FarmsApi.Services
             }
 
         }
-        public static void AddExpenseToHorseLanders()
+        public  void AddExpenseToHorseLanders()
         {
             using (var Context = new Context())
             {
-                var UsersH = Context.UserHorses;
+                var UsersH = Context.UserHorses;//.Where(x=>x.UserId== 20533).ToList();
 
                 foreach (var UserH in UsersH)
                 {
@@ -221,7 +233,7 @@ namespace FarmsApi.Services
             //}
         }
 
-        private static void AddExpense(string Details, double Price, User user)
+        private  void AddExpense(string Details, double Price, User user)
         {
             //// צחי צריך לסדר
             //try

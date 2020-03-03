@@ -160,7 +160,7 @@
                     text = text.replace("@Other", res[0].Other);
 
 
-
+                    debugger
                     usersService.report("2", moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
 
 
@@ -173,7 +173,8 @@
                         for (var i = 0; i < res.length; i++) {
 
                             if (ExistInstructor.indexOf(res[i].Id) == "-1") {
-                              
+
+                               // if (res[i].Id == 18458) debugger
                                 ExistInstructor.push(res[i].Id);
                                 HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName + "</td><td >" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "HourNumber")

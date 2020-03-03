@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\FilesController.cs" />
+    <Compile Include="Controllers\InvoiceController - Wbconfig.cs" />
     <Compile Include="Controllers\InvoiceController_Prod.cs" />
     <Compile Include="Controllers\InvoiceController_Test.cs" />
     <Compile Include="Controllers\InvoiceController.cs" />

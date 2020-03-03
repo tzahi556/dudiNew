@@ -642,6 +642,7 @@
 
                     newPayment.InvoiceNum = response.data.doc_number;
                     newPayment.InvoicePdf = response.data.pdf_link;
+                    newPayment.doc_uuid = response.data.doc_uuid;
 
                     this.expenses.map(function (expense) {
                         if (expense.Checked) { //&& !expense.Paid !צחי הוריד בינתיים

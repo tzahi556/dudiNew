@@ -734,7 +734,11 @@ namespace FarmsApi.Services
                 Context.SaveChanges();
 
                 if (objList.Count > 0)
-                     CommonTasks.InsertChecksToMas();
+                {
+                    CommonTasks Tasking = new CommonTasks();
+                    Tasking.InsertChecksToMas();
+                }
+                    
 
 
             }
@@ -1318,7 +1322,7 @@ namespace FarmsApi.Services
                     Type, Farm_IdPara, FromDatePara, ToDatePara);
                     try
                     {
-                        var res = query.ToList();
+                        var res = query.OrderBy(x=>x.Id).ToList();
                         return res;
                     }
                     catch (Exception ex)
