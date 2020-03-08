@@ -60,6 +60,9 @@ namespace FarmsApi.DataModels
         public int? Diff { get; set; }
         public string Name { get; set; }
 
+        public string Style { get; set; }
+        
+
     }
 
     public class HMOReport

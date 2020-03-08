@@ -847,7 +847,7 @@
 
         function _initPaymentForm() {
 
-
+           
             for (var i in this.farms) {
                 if (this.farms[i].Id == this.user.Farm_Id) {
 

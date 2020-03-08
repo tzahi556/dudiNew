@@ -14,6 +14,7 @@
         self.ReportManger = _ReportManger;
         self.ReportHMO = _ReportHMO;
         self.getInstructorCounter = _getInstructorCounter;
+        self.getTotalPerStyle = _getTotalPerStyle;
         self.getRound = _getRound;
         self.reports = [
             { name: 'רשימת תלמידים כולל פרטים', callback: self.studentsReport },
@@ -123,7 +124,7 @@
 
             if (!self.toDate || !self.fromDate) { alert("חובה לבחור תאריכים לדו''ח"); return;}
 
-            $.get('app/reports/Report.html?sdsd=' + new Date(), function (text) {
+            $.get('app/reports/Report.html?sssd=' + new Date(), function (text) {
 
                // var CurrentDate = self.fromDate;
             //    if (!CurrentDate) CurrentDate = new Date();
@@ -160,7 +161,7 @@
                     text = text.replace("@Other", res[0].Other);
 
 
-                    debugger
+                   
                     usersService.report("2", moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
 
 
@@ -175,13 +176,25 @@
                             if (ExistInstructor.indexOf(res[i].Id) == "-1") {
 
                                // if (res[i].Id == 18458) debugger
+
+                                var ObjOfAMount = self.getTotalPerStyle(res[i].Id, res);
+                              
                                 ExistInstructor.push(res[i].Id);
                                 HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName + "</td><td >" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "HourNumber")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "Attend")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttend")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttendCharge")
-                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NoStatus") + "</td></tr>";
+                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NoStatus") 
+
+                                    + "</td><td>" + ObjOfAMount.OneTipuli
+                                    + "</td><td>" + ObjOfAMount.TwoTupuli
+                                    + "</td><td>" + ObjOfAMount.ThreeUp
+                                    + "</td><td>" + ObjOfAMount.western
+                                    + "</td><td>" + ObjOfAMount.karting
+                                    + "</td><td>" + ObjOfAMount.english
+                                    + "</tr>"
+                                    ;
                             }
 
 
@@ -345,6 +358,61 @@
             return rounded.toString();
 
         }
+
+
+        function _getTotalPerStyle(Id, res) {
+           
+            var myObj =
+            {
+                OneTipuli: 0,
+                TwoTupuli: 0,
+                ThreeUp: 0,
+                western: 0,
+                karting: 0,
+                english:0
+            }
+
+            var DateExist = [];
+            for (var i = 0; i < res.length; i++) {
+               
+                if (Id == res[i].Id) {
+
+                    if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
+                        (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
+                    ) {
+
+                        if (res[i].Style == "treatment" || res[i].Style == "privateTreatment") {
+                          
+                            var result = DateExist.filter(d => d.Date == res[i].Start);
+                            if (result.length>0){
+
+                                alert();
+                            } else {
+
+                                DateExist.push({ Date: res[i].Start, Count: 1 });
+                            }
+                          
+                        }
+
+                        if (res[i].Style == "western") { myObj.western++}
+                        if (res[i].Style == "karting") { myObj.karting++ }
+                        if (res[i].Style == "english") { myObj.english++ }
+
+                       
+                       
+                    }
+
+                }
+
+
+            }
+
+
+
+
+            return myObj;
+        }
+
         function _getInstructorCounter(Id, res, type) {
 
 
@@ -421,14 +489,14 @@
             }
 
             if (type == "Attend") {
-
+                var DateExist = [];
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
-                    if (Id == res[i].Id) {
+                    if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
 
                         if (res[i].Status == "attended" || (res[i].Status == "completion" && res[i].IsComplete == 4)) {
-
+                            DateExist.push(res[i].Start);
                             counter++;
                         }
 
@@ -465,14 +533,14 @@
             }
 
             if (type == "NotAttendCharge") {
-
+                var DateExist = [];
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
-                    if (Id == res[i].Id) {
+                    if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
 
                         if (res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && res[i].IsComplete == 6)) {
-
+                            DateExist.push(res[i].Start);
                             counter++;
                         }
 
