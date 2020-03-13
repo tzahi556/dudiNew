@@ -1318,7 +1318,7 @@ namespace FarmsApi.Services
                 if (type == "2")
                 {
                     var query = Context.Database.SqlQuery<ManagerReportInstructorTable>
-                    ("GetReport @Type,@Farm_Id,@StartDate",
+                    ("GetReport @Type,@Farm_Id,@StartDate,@EndDate",
                     Type, Farm_IdPara, FromDatePara, ToDatePara);
                     try
                     {
@@ -1360,6 +1360,39 @@ namespace FarmsApi.Services
                     return res;
 
                 }catch(Exception ex)
+                {
+
+
+                }
+
+
+
+                return null;
+
+            }
+        }
+
+        public static object DebtReport()
+        {
+            using (var Context = new Context())
+            {
+                var CurrentUser = GetCurrentUser();
+
+
+
+                SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
+               
+
+                try
+                {
+                    var query = Context.Database.SqlQuery<DebtReport>
+                    ("GetStudentsDebt @Farm_Id",
+                    Farm_IdPara);
+                    var res = query.ToList();
+                    return res;
+
+                }
+                catch (Exception ex)
                 {
 
 

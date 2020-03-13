@@ -13,6 +13,9 @@
         self.horsesReport = _horsesReport;
         self.ReportManger = _ReportManger;
         self.ReportHMO = _ReportHMO;
+        self.ReportDebt = _ReportDebt;
+
+
         self.getInstructorCounter = _getInstructorCounter;
         self.getTotalPerStyle = _getTotalPerStyle;
         self.getRound = _getRound;
@@ -24,10 +27,70 @@
 
 
 
+        function _ReportDebt() {
+
+
+
+
+            $.get('app/reports/ReportDebt.html?sss=' + new Date(), function (text) {
+             
+                text = text.replace("@NameHava", localStorage.getItem('FarmName'));
+
+                var TableDebt = "";
+
+
+                usersService.reportDebt().then(function (res) {
+
+                   
+                    var Count = 0;
+
+                    for (var i = 0; i < res.length; i++) {
+
+                        Count++;
+                        var Taz = res[i].Taz;
+                        var FirstName = res[i].FirstName;
+                        var LastName = res[i].LastName;
+                        var Total = res[i].Total;
+
+                        TableDebt += "<tr>"
+                            + "<td>" + Count.toString()
+                            + "</td><td> " + Taz
+                            + "</td><td style='text-align:right'>" + FirstName
+                            + "</td><td style='text-align:right'>" + LastName
+                            + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td ></tr>";
+
+
+
+
+                    }
+
+                    text = text.replace("@TableDebt", TableDebt);
+
+
+
+                    var blob = new Blob([text], {
+                        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                    });
+
+
+                    saveAs(blob, "HMODebt_ " + new Date() + ".html");
+                });
+
+              
+            });
+
+
+
+        }
+
+
+
+
+
         function _ReportHMO() {
 
 
-           
+
 
             $.get('app/reports/ReportHMO.html?sss=' + new Date(), function (text) {
 
@@ -45,15 +108,18 @@
                 text = text.replace("@NameHava", localStorage.getItem('FarmName'));
 
                 usersService.reportHMO(moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
-                
+
                     var TableMacabi = "";
                     var TableKlalit = "";
                     var TableDikla = "";
-                    var PrevStudentId = "";
+                    var PrevInvoice = "";
                     var Count = 0;
+                    var CountNoPay = 0;
                     var StartDetails = "";
+                    var StartDetailsNoPay = "";
+                    var InvoiceDetails = "";
                     for (var i = 0; i < res.length; i++) {
-                    
+
                         var Type = res[i].Type;
                         var Taz = res[i].Taz;
                         var StudentId = res[i].Id;
@@ -63,8 +129,22 @@
                         var Start = moment(res[i].Start).format('DD/MM/YYYY');
                         var Total = res[i].Total;
 
-                        StartDetails += Start + ", ";
-                        Count++;
+
+
+
+                        if ((!res[i + 1] || (res[i].Invoice != res[i + 1].Invoice)) && Invoice) {
+                            InvoiceDetails += ((InvoiceDetails) ? ", " : "") + Invoice;
+                        }
+
+                        if (Invoice) {
+                            Count++;
+                            StartDetails += ((StartDetails) ? ", " : "") + Start;
+                        }
+                        if (!Invoice) {
+                            CountNoPay++;
+                            StartDetailsNoPay += ((StartDetailsNoPay) ? ", " : "") + Start;
+                        }
+
                         if (!res[i + 1] || (res[i + 1].Id != StudentId)) {
 
 
@@ -80,21 +160,31 @@
                                 TableKlalit += "<tr><td>" + Taz
                                     + "</td><td style='text-align:right'>" + FirstName
                                     + "</td><td style='text-align:right'>" + LastName
-                                    + "</td><td>" + Invoice
-                                    + "</td><td>" + Count.toString()
-                                    + "</td><td style='text-align:right'>" + StartDetails + "</td ></tr > ";
+                                    + "</td><td>" + InvoiceDetails
+                                    + "</td><td>" + ((Count > 0) ? Count.toString() : "")
+                                    + "</td><td style='text-align:right'>" + StartDetails + "</td>"
+                                    + "</td><td>" + ((CountNoPay > 0) ? CountNoPay.toString() : "")
+                                    + "</td><td style='text-align:right'>" + StartDetailsNoPay + "</td></tr>";
+
+
+
+
 
                             if (Type == "3")
                                 TableDikla += "<tr><td>" + Taz
                                     + "</td><td style='text-align:right'>" + FirstName
                                     + "</td><td style='text-align:right'>" + LastName
-                                    + "</td><td>" + Invoice
-                                    + "</td><td>" + Count.toString()
-                                    + "</td><td style='text-align:right'>" + StartDetails + "</td ></tr > ";
+                                    + "</td><td>" + InvoiceDetails
+                                    + "</td><td>" + ((Count > 0) ? Count.toString() : "")
+                                    + "</td><td style='text-align:right'>" + StartDetails + "</td>"
+                                    + "</td><td>" + ((CountNoPay > 0) ? CountNoPay.toString() : "")
+                                    + "</td><td style='text-align:right'>" + StartDetailsNoPay + "</td></tr>";
 
                             StartDetails = "";
+                            StartDetailsNoPay = "";
+                            InvoiceDetails = "";
                             Count = 0;
-
+                            CountNoPay = 0;
                         }
 
 
@@ -122,30 +212,30 @@
         function _ReportManger() {
 
 
-            if (!self.toDate || !self.fromDate) { alert("חובה לבחור תאריכים לדו''ח"); return;}
+            if (!self.toDate || !self.fromDate) { alert("חובה לבחור תאריכים לדו''ח"); return; }
 
             $.get('app/reports/Report.html?sssd=' + new Date(), function (text) {
 
-               // var CurrentDate = self.fromDate;
-            //    if (!CurrentDate) CurrentDate = new Date();
-               // var daysInMonth = moment(CurrentDate).daysInMonth();
+                // var CurrentDate = self.fromDate;
+                //    if (!CurrentDate) CurrentDate = new Date();
+                // var daysInMonth = moment(CurrentDate).daysInMonth();
                 var daysInMonth = (moment(self.toDate)).diff(moment(self.fromDate), 'days', true);
                 daysInMonth++;
-              
-              //
+
+                //
                 //var Month = CurrentDate.getMonth() + 1;
                 //var Year = CurrentDate.getFullYear();
 
                 //if (Month < 10) Month = "0" + Month;
 
 
-               // text = text.replace("@ReportDate", Month + "/" + Year);
+                // text = text.replace("@ReportDate", Month + "/" + Year);
                 text = text.replace("@FromDate", moment(self.fromDate).format('DD/MM/YYYY')).replace("@ToDate", moment(self.toDate).format('DD/MM/YYYY'));
                 text = text.replace("@NameHava", localStorage.getItem('FarmName'));
 
-                usersService.report("1",moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
+                usersService.report("1", moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
 
-                  
+
                     text = text.replace("@ActiveUser", res[0].ActiveUser);
                     text = text.replace("@notActiveUser", res[0].notActiveUser);
                     text = text.replace("@instructorUser", res[0].instructorUser);
@@ -161,7 +251,7 @@
                     text = text.replace("@Other", res[0].Other);
 
 
-                   
+
                     usersService.report("2", moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
 
 
@@ -175,17 +265,17 @@
 
                             if (ExistInstructor.indexOf(res[i].Id) == "-1") {
 
-                               // if (res[i].Id == 18458) debugger
+                                // if (res[i].Id == 18458) debugger
 
                                 var ObjOfAMount = self.getTotalPerStyle(res[i].Id, res);
-                              
+
                                 ExistInstructor.push(res[i].Id);
                                 HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName + "</td><td >" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "HourNumber")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "Attend")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttend")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttendCharge")
-                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NoStatus") 
+                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NoStatus")
 
                                     + "</td><td>" + ObjOfAMount.OneTipuli
                                     + "</td><td>" + ObjOfAMount.TwoTupuli
@@ -361,7 +451,7 @@
 
 
         function _getTotalPerStyle(Id, res) {
-           
+
             var myObj =
             {
                 OneTipuli: 0,
@@ -369,12 +459,13 @@
                 ThreeUp: 0,
                 western: 0,
                 karting: 0,
-                english:0
+                english: 0
             }
 
             var DateExist = [];
+
             for (var i = 0; i < res.length; i++) {
-               
+
                 if (Id == res[i].Id) {
 
                     if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
@@ -382,24 +473,25 @@
                     ) {
 
                         if (res[i].Style == "treatment" || res[i].Style == "privateTreatment") {
-                          
-                            var result = DateExist.filter(d => d.Date == res[i].Start);
-                            if (result.length>0){
 
-                                alert();
+                            var result = DateExist.filter(d => d.Date == res[i].Start);
+                            if (result.length > 0) {
+
+                                result[0]["Count"] += 1;
+
                             } else {
 
                                 DateExist.push({ Date: res[i].Start, Count: 1 });
                             }
-                          
+
                         }
 
-                        if (res[i].Style == "western") { myObj.western++}
+                        if (res[i].Style == "western") { myObj.western++ }
                         if (res[i].Style == "karting") { myObj.karting++ }
                         if (res[i].Style == "english") { myObj.english++ }
 
-                       
-                       
+
+
                     }
 
                 }
@@ -407,8 +499,9 @@
 
             }
 
-
-
+            myObj.OneTipuli = (DateExist.filter(d => d.Count == 1)).length;
+            myObj.TwoTupuli = (DateExist.filter(d => d.Count == 2)).length;
+            myObj.ThreeUp = (DateExist.filter(d => d.Count >= 3)).length;
 
             return myObj;
         }
@@ -416,7 +509,7 @@
         function _getInstructorCounter(Id, res, type) {
 
 
-          
+
 
             // כאן id משמש של סוס ולא מדריך
             if (type == "HourNumberHorses") {

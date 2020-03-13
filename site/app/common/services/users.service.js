@@ -26,6 +26,8 @@
 
         this.report = _report;
         this.reportHMO = _reportHMO;
+        this.reportDebt = _reportDebt;
+        
         
 
         function _getUsers(role, includeDeleted) {
@@ -242,7 +244,18 @@
             return deferred.promise;
         }
 
+        function _reportDebt() {
 
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'users/getReportDebt').then(function (res) {
+                var data = res.data;
+
+                deferred.resolve(data);
+            });
+            return deferred.promise;
+        }
+
+        
         function _getTransferData(insructorId, dow,date) {
        
             var deferred = $q.defer();

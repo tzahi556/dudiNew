@@ -865,7 +865,7 @@
                     if (this.user.Farm_Id != 46) {
                         this.newPayment.isMasKabala = true;
                     } else {
-
+                        this.newPayment.isMasKabala = false;
                         this.newPayment.isKabala = true;
                     }
                     
@@ -1298,13 +1298,13 @@
 
                     
                     if (payments[i].doc_type == "Mas") {
-                        if (this.user.Style == "course") {
+                        if (this.user.Style == "course" || this.user.Style == "camp") {
                             total += payments[i].InvoiceSum || 0;
                         }
 
                     } else {
 
-                        if (this.user.Style == "course" && payments[i].payment_type=="check") {
+                        if ((this.user.Style == "course" || this.user.Style == "camp") && payments[i].payment_type=="check") {
                             continue;
                         }
 

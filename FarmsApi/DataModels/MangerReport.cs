@@ -80,4 +80,16 @@ namespace FarmsApi.DataModels
 
 
     }
+
+    public class DebtReport
+    {
+      
+        public string Taz { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Total { get; set; }
+    
+
+
+    }
 }

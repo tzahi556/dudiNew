@@ -191,6 +191,17 @@ namespace FarmsApi.Services
 
             return Ok(UsersService.HMOReport(fromDate, toDate));
         }
+       
+        [Authorize]
+        [Route("getReportDebt")]
+        [HttpGet]
+        public IHttpActionResult getReportDebt()
+        {
+
+            return Ok(UsersService.DebtReport());
+        }
+
+
 
 
         [Authorize]

@@ -317,7 +317,7 @@
                 if (this.user.Farm_Id != 46) {
                     this.newPayment.isMasKabala = true;
                 } else {
-
+                    this.newPayment.isMasKabala = false;
                     this.newPayment.isKabala = true;
                 }
 

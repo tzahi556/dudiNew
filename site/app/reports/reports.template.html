@@ -9,15 +9,20 @@
         <tbody>
             <tr ng-repeat="report in $ctrl.reports">
                 <td ng-click="report.callback()">{{report.name}}</td>
-               
+
             </tr>
             <tr>
                 <td style="background:#66ccff;font-weight:bold;" ng-click="$ctrl.ReportManger()">דו"ח מנהלים מפורט</td>
-               
+
             </tr>
             <tr>
 
                 <td style="background:#ff6a00;font-weight:bold;" ng-click="$ctrl.ReportHMO()">דו"ח קופות חולים</td>
+            </tr>
+
+            <tr>
+
+                <td style="background:#ff3300;font-weight:bold;" ng-click="$ctrl.ReportDebt()">דו"ח חייבים</td>
             </tr>
         </tbody>
     </table>

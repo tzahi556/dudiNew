@@ -26,7 +26,7 @@
             { id: 'notAttendedCharge', name: 'לא הגיע, לחייב', hide: true },
             { id: 'notAttendedDontCharge', name: 'לא הגיע, לא לחייב', hide: true },
             { id: 'completionReq', name: 'דרוש שיעור השלמה', hide: true },
-            { id: 'completionReqCharge', name: 'דרוש שיעור השלמה לחייב', hide: true }
+            { id: 'completionReqCharge', name: 'דרוש שיעור השלמה', hide: true }
         ],
         styles: [
             { id: 'treatment', name: 'רכיבה טיפולית' },
@@ -36,6 +36,7 @@
             { id: 'karting', name: 'קאטינג' },
             { id: 'english', name: 'אינגליש' },
             { id: 'course', name: 'קורס מדריכים' },
+            { id: 'camp', name: 'קייטנה' },
             { id: 'horseHolder', name: 'אחזקת סוס (פנסיון)' },
             { id: 'treatmentPsychological', name: 'טיפול פסיכולוגי' },
             { id: 'treatmentPsychological3-9', name: 'טיפול פסיכולוגי 3-9' },

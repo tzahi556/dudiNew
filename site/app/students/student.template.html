@@ -454,7 +454,7 @@
                                 <td>{{payment.count}}</td>
                                 <td>{{payment.InvoiceSum}}</td>
                                 <td>
-                                    <button class="btn btn-xs btn-default" ng-click="$ctrl.refundPayment(payment)">זיכוי</button>
+                                    <button class="btn btn-xs btn-default" ng-disabled="payment.canceled" ng-click="$ctrl.refundPayment(payment)">זיכוי</button>
                                     <button ng-if="!payment.InvoicePdf" class="btn btn-xs btn-default" ng-click="$ctrl.removePayment(payment)">
                                         מחיקה
                                     </button>
@@ -559,7 +559,7 @@
                                 <!--ng-change="$ctrl.countTotalByInvoiceSum()"-->
                             </div>
                             <!-- payment type -->
-                            <div class="form-group" ng-if="$ctrl.newPayment.isMasKabala || $ctrl.newPayment.isKabala || $ctrl.newPayment.isKabalaTroma || $ctrl.newPayment.isMas">
+                            <div class="form-group" ng-if="($ctrl.newPayment.isMasKabala || $ctrl.newPayment.isKabala || $ctrl.newPayment.isKabalaTroma) && !$ctrl.newPayment.isMas">
                                 <select class="form-control" ng-model="$ctrl.newPayment.payment_type" required>
                                     <option value="">צורת תשלום</option>
                                     <option value="cash">מזומן</option>
