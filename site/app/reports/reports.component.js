@@ -32,42 +32,88 @@
 
 
 
-            $.get('app/reports/ReportDebt.html?sss=' + new Date(), function (text) {
+            $.get('app/reports/ReportDebt.html?sdss=' + new Date(), function (text) {
              
                 text = text.replace("@NameHava", localStorage.getItem('FarmName'));
 
-                var TableDebt = "";
-
+                var TableDebtKlalit = "";
+                var TableDebtMacabi = "";
+                var TableDebtOther = "";
+                var TableDebtDikla = "";
 
                 usersService.reportDebt().then(function (res) {
 
                    
-                    var Count = 0;
+                    var CountKlalit = 0;
+                    var CountMacabi = 0;
+                    var CountOther = 0;
+                    var CountDikla = 0;
 
                     for (var i = 0; i < res.length; i++) {
 
-                        Count++;
+                        
+
                         var Taz = res[i].Taz;
                         var FirstName = res[i].FirstName;
                         var LastName = res[i].LastName;
                         var Total = res[i].Total;
+                        var HMO = res[i].HMO;
+                        var Style = res[i].Style;
 
-                        TableDebt += "<tr>"
-                            + "<td>" + Count.toString()
-                            + "</td><td> " + Taz
-                            + "</td><td style='text-align:right'>" + FirstName
-                            + "</td><td style='text-align:right'>" + LastName
-                            + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td ></tr>";
+                        if (Style == "treatment") {
+
+                            if (HMO == "klalit" || HMO == "klalitPlatinum") {
+                                CountKlalit++;
+                                TableDebtKlalit += "<tr>"
+                                    + "<td>" + CountKlalit.toString()
+                                    + "</td><td> " + Taz
+                                    + "</td><td style='text-align:right'>" + FirstName
+                                    + "</td><td style='text-align:right'>" + LastName
+                                    + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td ></tr>";
+
+                                  
+
+                            } else if (HMO == "maccabiGold" || HMO == "maccabiSheli") {
+                                CountMacabi++;
+                                TableDebtMacabi += "<tr>"
+                                    + "<td>" + CountMacabi.toString()
+                                    + "</td><td> " + Taz
+                                    + "</td><td style='text-align:right'>" + FirstName
+                                    + "</td><td style='text-align:right'>" + LastName
+                                    + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td ></tr>";
 
 
+                            } else if (HMO == "klalitDikla") {
+                                CountDikla++;
+                                TableDebtDikla += "<tr>"
+                                    + "<td>" + CountDikla.toString()
+                                    + "</td><td> " + Taz
+                                    + "</td><td style='text-align:right'>" + FirstName
+                                    + "</td><td style='text-align:right'>" + LastName
+                                    + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td ></tr>";
 
+
+                            }
+                        } else {
+                            CountOther++;
+                            TableDebtOther += "<tr>"
+                                + "<td>" + CountOther.toString()
+                                + "</td><td> " + Taz
+                                + "</td><td style='text-align:right'>" + FirstName
+                                + "</td><td style='text-align:right'>" + LastName
+                                + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td ></tr>";
+
+                        }
 
                     }
 
-                    text = text.replace("@TableDebt", TableDebt);
+                    text = text.replace("@TableDebtKlalit", TableDebtKlalit);
+                    text = text.replace("@TableDebtMacabi", TableDebtMacabi);
+                    text = text.replace("@TableDebtDikla", TableDebtDikla);
+                    text = text.replace("@TableDebtOther", TableDebtOther);
 
-
-
+                    
+                    
                     var blob = new Blob([text], {
                         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                     });

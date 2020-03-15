@@ -36,7 +36,7 @@
             { id: 'karting', name: 'קאטינג' },
             { id: 'english', name: 'אינגליש' },
             { id: 'course', name: 'קורס מדריכים' },
-            { id: 'camp', name: 'קייטנה' },
+            { id: 'camp', name: 'מחנה רכיבה' },
             { id: 'horseHolder', name: 'אחזקת סוס (פנסיון)' },
             { id: 'treatmentPsychological', name: 'טיפול פסיכולוגי' },
             { id: 'treatmentPsychological3-9', name: 'טיפול פסיכולוגי 3-9' },
