@@ -1085,8 +1085,8 @@
         }
 
         function _changeLessonsStatus(status, details, studentId, lessonId, isComplete, lesson, isText, officedetails) {
-         
-             
+
+           
             if (!isText && (isComplete >2)) {
                 //var ind = this.getStatusIndex(lesson);
 
@@ -1128,7 +1128,7 @@
             }
 
           
-            if (status == "completionReq" && isComplete == 0) {
+            if ((status == "completionReq" || status == "completionReqCharge")  && isComplete == 0) {
 
                 isComplete = 1;
             }
