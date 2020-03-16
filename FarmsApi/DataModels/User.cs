@@ -27,6 +27,11 @@ namespace FarmsApi.DataModels
         public string ClientNumber { get; set; }
         public string IdNumber { get; set; }
         public DateTime? BirthDate { get; set; }
+
+        public DateTime? DateForMonthlyPay { get; set; }
+
+        public double? DateForMonthlySum { get; set; }
+        
         public string ParentName2 { get; set; }
         public string ParentName { get; set; }
         public string Address { get; set; }

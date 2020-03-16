@@ -6,6 +6,9 @@ using System.Web;
 using FarmsApi.DataModels;
 using EZcountApiLib;
 using System.Configuration;
+using System.Net.Http;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace FarmsApi.Services
 {
@@ -23,7 +26,150 @@ namespace FarmsApi.Services
             //}
         }
 
-      
+        public void InsertSchedularToken()
+        {
+            string IsProduction = ConfigurationSettings.AppSettings["IsProduction"].ToString();
+            string SlikaUrlChargeToken = ConfigurationSettings.AppSettings["SlikaUrlChargeToken"].ToString();
+
+            DateTime CurrentDate = DateTime.Now;
+            int Day = CurrentDate.Day;
+            int Month = CurrentDate.Month;
+
+
+            using (var Context = new Context())
+            {
+
+                var UsersToPay = Context.Users.Where(x => x.Active == "active" &&
+                             x.DateForMonthlyPay.Value.Day == Day && x.DateForMonthlyPay.Value.Month == Month &&
+                             x.DateForMonthlySum > 0 &&
+                             x.cc_token != null && x.cc_token != ""
+                             ).ToList();
+
+                foreach (User up in UsersToPay)
+                {
+                    
+                    var Farm = Context.Farms.Where(y => y.Id == up.Farm_Id).FirstOrDefault();
+                    var Meta = JObject.Parse(Farm.Meta);
+                    var api_key = Meta["api_key"];
+                    var api_email = Meta["api_email"];
+                    var ua_uuid = Meta["ua_uuid"];
+
+
+                    var reqObjAshrai = new
+                    {
+                        api_key = api_key,
+                        developer_email = "tzahi556@gmail.com",
+                        sum = up.DateForMonthlySum,
+                        cc_token = up.cc_token,
+                        cc_4_digits = up.cc_4_digits,
+                        cc_payer_name = up.cc_payer_name,
+                        cc_payer_id =up.cc_payer_id,
+                        cc_expire_month = up.cc_expire_month,
+                        cc_expire_year = up.cc_expire_year,
+                        cc_type_id = up.cc_type_id,
+                        cc_type_name = up.cc_type_name,
+
+
+                    };
+
+                    string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
+                    var SlikaUrl = SlikaUrlChargeToken;
+                    var client = new HttpClient();
+                    HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
+                    HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
+
+                    dynamic responseToken = "";
+
+
+
+                    if (messge.IsSuccessStatusCode)
+                    {
+                        responseToken = JsonConvert.DeserializeObject(messge.Content.ReadAsStringAsync().Result);
+
+                        if (responseToken.success == "true")
+                        {
+                            DocCreation doc = new DocCreation();
+                            List<dynamic> Payment = new List<dynamic>();
+                            Payment.Add(new
+                            {
+                                payment_type = 3,
+                                date = up.DateForMonthlyPay,
+                                payment = up.DateForMonthlySum,
+
+                                cc_type = up.cc_type_id,
+                                cc_type_name = up.cc_type_name,
+                                cc_number = up.cc_4_digits,
+                                cc_deal_type =1,
+                                cc_num_of_payments = 1,
+                                cc_payment_num = 1,
+
+                            });
+
+                            var reqObj = new
+                            {
+                                api_key = api_key,
+                                api_email = api_email,
+                                ua_uuid = ua_uuid,
+
+                                developer_email = "tzahi556@gmail.com",
+                                developer_phone = "0505913817",
+                                type = 320,//קבלה חשבונית מס
+                                description = " חיוב אוטמטי " + up.DateForMonthlyPay.Value.ToString("dd/MM/yyyy"),
+                                customer_name = up.FirstName + " " + up.LastName,
+                                customer_email = up.AnotherEmail,
+                                customer_address = up.Address,
+                                comment = "מס לקוח: " + up.ClientNumber + ", ת.ז.: " + up.IdNumber,
+                               
+
+                                item = new dynamic[] {
+                                 new {
+                                    details =" חיוב אוטמטי " + up.DateForMonthlyPay.Value.ToString("dd/MM/yyyy"),
+                                    amount = 1,
+                                    price = up.DateForMonthlySum,
+                                    price_inc_vat = true
+                                 }
+
+                                },
+
+                                payment = Payment,
+                                price_total = up.DateForMonthlySum,
+                            };
+
+
+                            dynamic response = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
+
+                            // אם זה הצליח
+                            if (response[5].ToString() == "True")
+                            {
+                                Payments p = new Payments();
+                                p.Date = CurrentDate;
+                                p.doc_type = "MasKabala";
+                                p.InvoiceNum = response[2].ToString();
+                                p.InvoicePdf = response[0].ToString();
+                              
+                                p.Price = up.DateForMonthlySum;
+                                p.InvoiceDetails = " חיוב אוטמטי " + up.DateForMonthlyPay.Value.ToString("dd/MM/yyyy");
+                                p.UserId = up.Id;
+                                p.InvoiceSum = up.DateForMonthlySum;
+                                //p.lessons
+                               
+                                Context.Payments.Add(p);
+                               
+                                Context.SaveChanges();
+
+
+                            }
+
+                        }
+
+                    }
+                 
+
+                }
+            }
+        }
+
+
         public  void InsertChecksToMas()
         {
             string IsProduction = ConfigurationSettings.AppSettings["IsProduction"].ToString();
@@ -157,6 +303,7 @@ namespace FarmsApi.Services
             }
 
         }
+
         public  void AddExpenseToHorseLanders()
         {
             using (var Context = new Context())

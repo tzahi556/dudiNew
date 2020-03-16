@@ -311,7 +311,7 @@
 
                             if (ExistInstructor.indexOf(res[i].Id) == "-1") {
 
-                                // if (res[i].Id == 18458) debugger
+                               
 
                                 var ObjOfAMount = self.getTotalPerStyle(res[i].Id, res);
 

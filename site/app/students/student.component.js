@@ -261,6 +261,8 @@
 
 
             this.user.BirthDate = moment(this.user.BirthDate).startOf('day').toDate();
+            this.user.DateForMonthlyPay = moment(this.user.DateForMonthlyPay).startOf('day').toDate();
+
             this.user.Active = this.user.Active || 'active';
 
             // set default farm
@@ -1851,6 +1853,11 @@
           
                 if (this.user.BirthDate)
                     this.user.BirthDate.setHours(this.user.BirthDate.getHours() + 3);
+
+                if (this.user.DateForMonthlyPay) { 
+                    this.user.DateForMonthlyPay.setHours(this.user.DateForMonthlyPay.getHours() + 3);
+                   
+                }
                
                
 

@@ -575,7 +575,7 @@
                             <div ng-if="$ctrl.newPayment.payment_type=='check'" style="border:solid 1px gray;border-radius:10px;padding:10px;">
 
                                 <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
-                                  <label> האם חשבונית מס תצא אוטמטית בזמן הפירעון?</label> <input class=""  type="checkbox" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_auto"  />
+                                    <label> האם חשבונית מס תצא אוטמטית בזמן הפירעון?</label> <input class="" type="checkbox" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_auto" />
                                 </div>
 
                                 <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
@@ -656,6 +656,17 @@
                             <button ng-click="$ctrl.addPayment()" ng-disabled="$ctrl.disablBtn || (paymentForm.$invalid && $ctrl.getIfanyCheckValid())" type="submit" class="btn btn-success">הוספה</button>
                             <button ng-click="$ctrl.cancelToken()" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default">איפוס טוקן</button>
                             <button ng-click="$ctrl.show4($ctrl.user.cc_4_digits)" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default"> הצג 4 ספרות אחרונות</button>
+                           
+                            
+                            
+                            <div style="float:left">
+
+                                <input style="float:left;width:160px" type="number" class="form-control" ng-if="$ctrl.newPayment.payment_type=='token'" ng-model="$ctrl.user.DateForMonthlySum" placeholder="סכום" />
+                                <input style="float:left;width:160px" type="date" class="form-control" ng-if="$ctrl.newPayment.payment_type=='token'" ng-model="$ctrl.user.DateForMonthlyPay" placeholder="תאריך" />
+                                <span style="float:left;margin:5px" ng-if="$ctrl.newPayment.payment_type=='token'">חיוב חודשי לפי תאריך:</span>
+                            </div>
+
+                            
                             <span ng-if="$ctrl.user.Cost==0">עלות השיעור הינה 0, לא ניתן להוסיף תשלום</span>
                         </form>
                     </div>
