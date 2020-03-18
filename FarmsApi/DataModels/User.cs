@@ -29,9 +29,15 @@ namespace FarmsApi.DataModels
         public DateTime? BirthDate { get; set; }
 
         public DateTime? DateForMonthlyPay { get; set; }
-
         public double? DateForMonthlySum { get; set; }
+        public int? DateForMonthlySeq { get; set; }
+        public int? DateForMonthlyPrev { get; set; }
+
+
+
+        public bool Rivoni { get; set; }
         
+
         public string ParentName2 { get; set; }
         public string ParentName { get; set; }
         public string Address { get; set; }

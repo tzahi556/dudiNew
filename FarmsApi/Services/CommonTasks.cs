@@ -40,18 +40,27 @@ namespace FarmsApi.Services
             {
 
                 var UsersToPay = Context.Users.Where(x => x.Active == "active" &&
-                             x.DateForMonthlyPay.Value.Day == Day && x.DateForMonthlyPay.Value.Month == Month &&
+                             x.DateForMonthlyPay.Value.Day == Day &&
                              x.DateForMonthlySum > 0 &&
-                             x.cc_token != null && x.cc_token != ""
+                             x.DateForMonthlySeq!= x.DateForMonthlyPrev && // ההסטוריה שונה 
+                             x.cc_token != null && 
+                             x.cc_token != ""
                              ).ToList();
 
                 foreach (User up in UsersToPay)
                 {
-                    
+
+                 
+                    if (up.Rivoni) { 
+                        if (Month != 1 && Month != 4 && Month != 7 && Month != 10)
+                            continue;
+
+                    }
+
                     var Farm = Context.Farms.Where(y => y.Id == up.Farm_Id).FirstOrDefault();
                     var Meta = JObject.Parse(Farm.Meta);
-                    var api_key = Meta["api_key"];
-                    var api_email = Meta["api_email"];
+                    string api_key = Meta["api_key"].ToString();
+                    string api_email = Meta["api_email"].ToString();
                     var ua_uuid = Meta["ua_uuid"];
 
 
@@ -93,7 +102,7 @@ namespace FarmsApi.Services
                             Payment.Add(new
                             {
                                 payment_type = 3,
-                                date = up.DateForMonthlyPay,
+                                date = up.DateForMonthlyPay.Value.ToString("dd/MM/yyyy"),
                                 payment = up.DateForMonthlySum,
 
                                 cc_type = up.cc_type_id,
@@ -151,12 +160,29 @@ namespace FarmsApi.Services
                                 p.InvoiceDetails = " חיוב אוטמטי " + up.DateForMonthlyPay.Value.ToString("dd/MM/yyyy");
                                 p.UserId = up.Id;
                                 p.InvoiceSum = up.DateForMonthlySum;
-                                //p.lessons
-                               
-                                Context.Payments.Add(p);
-                               
-                                Context.SaveChanges();
 
+                                p.lessons = GetLessonsByCost(up);
+
+                                if(up.PayType == "monthCost")
+                                {
+                                    p.month = CurrentDate;
+
+                                    if (up.Rivoni)
+                                    {
+
+                                        p.untilmonth = CurrentDate.AddMonths(3);
+                                    }
+
+                                }
+                                    
+
+
+                                Context.Payments.Add(p);
+
+                                up.DateForMonthlyPrev = ((up.DateForMonthlyPrev == null) ? 0 : up.DateForMonthlyPrev) + 1;
+                                Context.Entry(up).State = System.Data.Entity.EntityState.Modified;
+
+                                Context.SaveChanges();
 
                             }
 
@@ -169,6 +195,23 @@ namespace FarmsApi.Services
             }
         }
 
+        private int? GetLessonsByCost(User up)
+        {
+            if(up.PayType== "lessonCost")
+            {
+                int lessCount =Convert.ToInt32(up.DateForMonthlySum)  / Convert.ToInt32(up.Cost);
+
+                return lessCount;
+
+
+            }
+            else
+            {
+
+                return 0;
+
+            }
+        }
 
         public  void InsertChecksToMas()
         {
@@ -207,7 +250,7 @@ namespace FarmsApi.Services
                         Payment.Add(new
                         {
                             payment_type = 2,
-                            date = uc.checks_date,
+                            date = uc.checks_date.Value.ToString("dd/MM/yyyy"),
                             payment = uc.checks_sum,
                             checks_bank_name = uc.checks_bank_name,
                             checks_number = uc.checks_number,

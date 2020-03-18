@@ -15,7 +15,8 @@ namespace FarmsApi
         protected void Application_Start(object sender, EventArgs e)
         {
             //StartMailChecker();
-            AddTask("DoStuff",3600);
+          //  AddTask("DoStuff",3600);
+            AddTask("DoStuff", 30);
         }
 
         private void AddTask(string name, int seconds)
@@ -36,7 +37,6 @@ namespace FarmsApi
             {
                 DateTime moment = DateTime.Now;
                 int day = moment.Day;
-
                 int hour = moment.Hour;
 
 
@@ -45,7 +45,10 @@ namespace FarmsApi
                     CommonTasks Tasking = new CommonTasks();
 
                     if (day == 1) Tasking.AddExpenseToHorseLanders();
+                   
                     Tasking.InsertChecksToMas();
+
+                    Tasking.InsertSchedularToken();
 
                 }
 

@@ -590,6 +590,7 @@
         function _createChildEvent(parentEvent, lessonsQty) {
 
             if (lessonsQty > 0) {
+
                 var newEvent = {
                     id: 0,
                     prevId: parentEvent.id,

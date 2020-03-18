@@ -659,11 +659,16 @@
                            
                             
                             
-                            <div style="float:left">
+                            <div style="float:left" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token">
 
-                                <input style="float:left;width:160px" type="number" class="form-control" ng-if="$ctrl.newPayment.payment_type=='token'" ng-model="$ctrl.user.DateForMonthlySum" placeholder="סכום" />
-                                <input style="float:left;width:160px" type="date" class="form-control" ng-if="$ctrl.newPayment.payment_type=='token'" ng-model="$ctrl.user.DateForMonthlyPay" placeholder="תאריך" />
-                                <span style="float:left;margin:5px" ng-if="$ctrl.newPayment.payment_type=='token'">חיוב חודשי לפי תאריך:</span>
+
+                                <label style="float:left;margin:1px">רבעוני</label><input class="" style="float:left;margin:5px" type="checkbox" ng-model="$ctrl.user.Rivoni" />
+                                <input style="float:left;width:100px" type="number" class="form-control" ng-model="$ctrl.user.DateForMonthlySeq" placeholder="מחזוריות" />
+
+                                <input style="float:left;width:100px" type="number" class="form-control" t.paymen ng-model="$ctrl.user.DateForMonthlySum" placeholder="סכום" />
+
+                                <input style="float:left;width:150px" type="date" class="form-control" ng-model="$ctrl.user.DateForMonthlyPay" placeholder="תאריך" />
+                                <label style="float:left;margin:5px">חיוב חודשי לפי תאריך:</label>
                             </div>
 
                             
@@ -770,6 +775,16 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         שיעורים
+
+
+
+
+                        <div style="float:left">
+                            <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.AddMultipleLessons()"> הוסיפי שיעורים </button>
+                            <input  style="width:70px;float:left;height:20px" type="number"  ng-model="$ctrl.lessAdd" >
+                            <label style="float:left;margin-right:3px"> מספר שיעורים להוספה: </label>
+
+                        </div>
                     </div>
                     <table class="table">
                         <thead>

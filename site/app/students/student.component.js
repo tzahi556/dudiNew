@@ -121,6 +121,9 @@
         this.setMakavDesc = _setMakavDesc.bind(this);
         this.getDayOfWeek = _getDayOfWeek.bind(this);
         this.setCheckboxForClose = _setCheckboxForClose.bind(this);
+        this.AddMultipleLessons = _AddMultipleLessons.bind(this);
+        this.createChildEvent = _createChildEvent.bind(this);
+
         
         
         
@@ -133,11 +136,73 @@
         this.newPrice = 0;
 
         this.IsHiyuvInHashlama = 0;
-        
+
+        this.lessAdd = 1;
+
+
         function _show4(ashrai4) {
 
             alert(ashrai4);
         }
+
+
+
+        function _AddMultipleLessons() {
+
+          
+
+            var lastEvent = this.lessons[this.lessons.length-1];
+
+            this.createChildEvent(lastEvent, this.lessAdd);
+
+        
+            this.initLessons();
+
+           // alert(this.lessAdd);
+        }
+
+        function _createChildEvent(parentEvent, lessonsQty) {
+
+           
+          
+            if (lessonsQty > 0) {
+
+
+               
+
+                var newEvent = {
+                    id: 0,
+                    prevId: parentEvent.id,
+                    start: moment(parentEvent.start).add(7, 'days').format('YYYY-MM-DDTHH:mm:ss'),
+                    end: moment(parentEvent.end).add(7, 'days').format('YYYY-MM-DDTHH:mm:ss'),
+                    resourceId: parentEvent.resourceId,
+                    students: [this.user.Id],
+                    lessprice: parentEvent.lessprice,
+                    statuses: [{ "StudentId": this.user.Id, "Status": "", "Details": "", "IsComplete": 1 }],
+                };
+
+
+                lessonsService.updateLesson(newEvent, false, lessonsQty).then(function (res) {
+                 
+                    if (res.Error) {
+
+                        var DateTafus = moment(res.Error).format('DD/MM/YYYY HH:mm');
+                        alert("המערכת יצרה שיעורים עד לתאריך - " + DateTafus + ", מדריך תפוס בתאריך זה ");
+                        return;
+                    }
+
+                    this.lessons.push(newEvent);
+                   
+                    this.createChildEvent(res, --lessonsQty);
+
+                }.bind(this));
+            }
+           
+        }
+
+
+
+
         function _getDayOfWeek(day) {
             var newDate = new Date(day);
             var CurrentDay = newDate.getDay();

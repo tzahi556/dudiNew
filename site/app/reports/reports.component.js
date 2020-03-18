@@ -545,9 +545,29 @@
 
             }
 
-            myObj.OneTipuli = (DateExist.filter(d => d.Count == 1)).length;
-            myObj.TwoTupuli = (DateExist.filter(d => d.Count == 2)).length;
-            myObj.ThreeUp = (DateExist.filter(d => d.Count >= 3)).length;
+
+            for (var m = 0; m < DateExist.length; m++) {
+                if (DateExist[m].Count == 1) {
+
+                    myObj.OneTipuli++;
+
+                }
+                if (DateExist[m].Count == 2) {
+
+                    myObj.TwoTupuli += 2;
+
+                }
+
+                if (DateExist[m].Count >= 3) {
+
+                    myObj.ThreeUp += DateExist[m].Count;
+
+                }
+
+            }
+            //myObj.OneTipuli = (DateExist.filter(d => d.Count == 1)).length;
+            //myObj.TwoTupuli = (DateExist.filter(d => d.Count == 2)).length;
+            //myObj.ThreeUp = (DateExist.filter(d => d.Count >= 3)).length;
 
             return myObj;
         }
