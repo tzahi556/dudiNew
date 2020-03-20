@@ -56,5 +56,18 @@ namespace FarmsApi.Services
             LessonsService.DeleteLesson(lessonId, deleteChildren);
             return Ok();
         }
+
+        [Route("getifLessonsHaveMoreOneRider/{lessonId}")]
+        [HttpGet]
+        public IHttpActionResult getifLessonsHaveMoreOneRider(int lessonId)
+        {
+           
+            return Ok(LessonsService.GetifLessonsHaveMoreOneRider(lessonId));
+        }
+
+        
+
+
+
     }
 }

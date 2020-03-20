@@ -149,7 +149,7 @@
 
 
 
-        
+
 
         function _removeLesson(lesson) {
             this.typeAddRemove = 1;
@@ -158,15 +158,15 @@
             $('#dvAppendHad').text(' הסר שיעור באופן חד פעמי ');
             $('#dvAppendTz').text(' הסר כל השיעורים עתידיים ');
             $('#modalAddRemove').modal('show');
-          
+
         }
 
         function _modalRemoveAdd(isTrue) {
             // הוספה
-            if (isTrue && this.typeAddRemove == 0) {
+            if (this.typeAddRemove == 0) {
 
                 var lastEvent = this.lessons[this.lessons.length - 1];
-                this.createChildEvent(lastEvent, this.lessAdd);
+                this.createChildEvent(lastEvent, this.lessAdd, isTrue);
                 this.initLessons();
 
             }
@@ -174,15 +174,36 @@
             // מחיקה
             if (this.typeAddRemove == 1) {//if(isTrue) // תמחק גם עתידי
 
-                lessonsService.deleteLesson(this.RemoveLess.id, isTrue).then(function (res) {
                     var i = this.lessons.length;
                     while (i--) {
                         if (this.lessons[i].id == this.RemoveLess.id || (isTrue && this.lessons[i].start >= this.RemoveLess.start)) {
-                            this.lessons.splice(i, 1);
+                           
+                            var index = this.lessons[i].students.indexOf(this.user.Id);
+
+                            this.lessons[i].students.splice(index, 1);
+
+                            if (this.lessons[i].students.length == 0) {
+                                // במידה ואין עוד אף אחד תמחוק שיעור
+                               
+                                lessonsService.deleteLesson(this.lessons[i].id, false).then(function (res) {
+                                    this.lessons.splice(i, 1);
+                                }.bind(this));
+
+
+
+                            } else { // במידה ויש עוד תוריד רק את הנוכחי
+                                lessonsService.updateLesson(this.lessons[i], false, 0).then(function (res) {
+                                    this.lessons.splice(i, 1);
+                                }.bind(this));
+                            }
+
+                           
+
+                            
                         }
                     }
                     this.initLessons();
-                }.bind(this));
+             
             }
 
             $('#modalAddRemove').modal('hide');
@@ -191,9 +212,10 @@
 
 
 
-        
+
 
         function _AddMultipleLessons() {
+
             this.typeAddRemove = 0;
             var lastEvent = this.lessons[this.lessons.length - 1];
 
@@ -205,38 +227,48 @@
             var diffdays = (moment(lastEvent.start)).diff(moment(), 'days', true);
             if (diffdays > -8) {
 
-                var studentsLength = lastEvent.students.length;
-                if (studentsLength > 1) {
+                lessonsService.getifLessonsHaveMoreOneRider(lastEvent.id).then(function (res) {
+
+                    
+
+                    if (res > 1) {
 
 
-                    $('#myModalLabel').text(' תלמיד זה נמצא בקבוצה, האם להוסיף שיעורים לכל הקבוצה? ');
-                    $('#dvAppendHad').text(' הוסף רק תלמיד נוכחי ');
-                    $('#dvAppendTz').text(' הוסף שיעורים לכל חברי הקבוצה ');
-                    $('#modalAddRemove').modal('show');
+                        $('#myModalLabel').text(' תלמיד זה נמצא בקבוצה, האם להוסיף שיעורים לכל הקבוצה? ');
+                        $('#dvAppendHad').text(' הוסף רק תלמיד נוכחי ');
+                        $('#dvAppendTz').text(' הוסף שיעורים לכל חברי הקבוצה ');
+                        $('#modalAddRemove').modal('show');
 
 
 
-                } else { 
+                    } else {
 
-                    this.createChildEvent(lastEvent, this.lessAdd);
-                    this.initLessons();
+                        this.createChildEvent(lastEvent, this.lessAdd);
+                        this.initLessons();
 
-                }
+                    }
+
+
+
+                }.bind(this));
+
             } else {
                 alert("לא ניתן להוסיף שיעורים כאשר שיעור האחרון יותר משבוע");
             }
-           
+
         }
 
-        function _createChildEvent(parentEvent, lessonsQty) {
+        function _createChildEvent(parentEvent, lessonsQty,isMultiple) {
+
             if (lessonsQty > 0) {
+
                 var newEvent = {
                     id: 0,
                     prevId: parentEvent.id,
                     start: moment(parentEvent.start).add(7, 'days').format('YYYY-MM-DDTHH:mm:ss'),
                     end: moment(parentEvent.end).add(7, 'days').format('YYYY-MM-DDTHH:mm:ss'),
                     resourceId: parentEvent.resourceId,
-                    students: [this.user.Id],
+                    students: (isMultiple) ? parentEvent.students : [this.user.Id],
                     lessprice: parentEvent.lessprice,
                     lessonpaytype: parentEvent.lessonpaytype,
                     statuses: [{ "StudentId": this.user.Id, "Status": null, "Details": "", "IsComplete": 1 }],
@@ -255,8 +287,8 @@
                     newEvent.id = res.id;
 
                     this.lessons.push(newEvent);
-                   
-                    this.createChildEvent(res, --lessonsQty);
+
+                    this.createChildEvent(res, --lessonsQty, isMultiple);
 
                 }.bind(this));
             }
@@ -838,7 +870,7 @@
 
                 if (this.lessons[i].statuses[ststIndex].IsComplete < 7) {
 
-             
+
                     var res = this.setPaid(this.lessons[i]);
                     this.lessons[i].paid = res[0];
                     this.lessons[i].lessprice = eval(res[1]);
@@ -1215,7 +1247,7 @@
 
         function _changeLessonsStatus(status, details, studentId, lessonId, isComplete, lesson, isText, officedetails) {
 
-           
+
             if (!isText && (isComplete > 2)) {
                 //var ind = this.getStatusIndex(lesson);
 
@@ -2027,7 +2059,7 @@
 
                     CheckList.push(this.newPayment.Checks[i]);
 
-                
+
                 }
 
             }

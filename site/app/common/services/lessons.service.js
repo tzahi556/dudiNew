@@ -13,7 +13,19 @@
         this.updateStudentLessonsStatuses = _updateStudentLessonsStatuses.bind(this);
         this.createNotifications = _createNotifications.bind(this);
         this.checkLowCredit = _checkLowCredit.bind(this);
+        this.getifLessonsHaveMoreOneRider = _getifLessonsHaveMoreOneRider.bind(this);
+
+
         this.HMOs = sharedValues.HMOs;
+
+        function _getifLessonsHaveMoreOneRider(lessonId) {
+          
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'lessons/getifLessonsHaveMoreOneRider/' + lessonId).then(function (res) {
+                deferred.resolve(res.data);
+            });
+            return deferred.promise;
+        }
 
         function _createNotifications(lesson) {
             for (var i in lesson.statuses) {
@@ -22,6 +34,10 @@
                 }.bind(this));
             }
         }
+
+
+
+        
 
         function _checkLowCredit(user) {
             var paidLessons = 0;

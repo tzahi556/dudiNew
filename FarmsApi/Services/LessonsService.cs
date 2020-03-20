@@ -206,6 +206,7 @@ namespace FarmsApi.Services
 
         }
 
+
         private static void PopulateReturnLessonsToComplete(JArray ReturnLessons, DataModels.Context Context, User CurrentUser, int? StudentId, string startDate, string endDate, bool IsFromCompletion)
         {
 
@@ -342,6 +343,20 @@ namespace FarmsApi.Services
             }
             return Lesson;
 
+        }
+
+
+
+        public static int GetifLessonsHaveMoreOneRider(int lessonId)
+        {
+            int res = 0;
+
+            using (var Context = new Context())
+            {
+                 res = Context.StudentLessons.Where(x=>x.Lesson_Id== lessonId).Count();
+            }
+               
+            return res;
         }
 
         public static JObject UpdateLesson(JObject Lesson, bool changeChildren, int? lessonsQty)

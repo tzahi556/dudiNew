@@ -57,6 +57,9 @@ namespace FarmsApi.Services
 
                     }
 
+
+                    AutoPayObj ap = GetAutoPayObj(up);
+
                     var Farm = Context.Farms.Where(y => y.Id == up.Farm_Id).FirstOrDefault();
                     var Meta = JObject.Parse(Farm.Meta);
                     string api_key = Meta["api_key"].ToString();
@@ -123,7 +126,7 @@ namespace FarmsApi.Services
                                 developer_email = "tzahi556@gmail.com",
                                 developer_phone = "0505913817",
                                 type = 320,//קבלה חשבונית מס
-                                description = " חיוב אוטמטי " + up.DateForMonthlyPay.Value.ToString("dd/MM/yyyy"),
+                                description = ap.InvoiceTitle,
                                 customer_name = up.FirstName + " " + up.LastName,
                                 customer_email = up.AnotherEmail,
                                 customer_address = up.Address,
@@ -132,7 +135,7 @@ namespace FarmsApi.Services
 
                                 item = new dynamic[] {
                                  new {
-                                    details =" חיוב אוטמטי " + up.DateForMonthlyPay.Value.ToString("dd/MM/yyyy"),
+                                    details =" תאריכי שיעורים: " + ap.InvoiceDates,
                                     amount = 1,
                                     price = up.DateForMonthlySum,
                                     price_inc_vat = true
@@ -157,27 +160,16 @@ namespace FarmsApi.Services
                                 p.InvoicePdf = response[0].ToString();
                               
                                 p.Price = up.DateForMonthlySum;
-                                p.InvoiceDetails = " חיוב אוטמטי " + up.DateForMonthlyPay.Value.ToString("dd/MM/yyyy");
+                                p.InvoiceDetails = " חיוב אוטמטי תאריכי שיעורים: " + ap.InvoiceDates;
                                 p.UserId = up.Id;
                                 p.InvoiceSum = up.DateForMonthlySum;
 
-                                p.lessons = GetLessonsByCost(up);
+                                p.lessons = ap.lessons;
+                                p.month = ap.month;
+                                p.untilmonth = ap.untilmonth;
+                              
 
-                                if(up.PayType == "monthCost")
-                                {
-                                    p.month = CurrentDate;
-
-                                    if (up.Rivoni)
-                                    {
-
-                                        p.untilmonth = CurrentDate.AddMonths(3);
-                                    }
-
-                                }
-                                    
-
-
-                                Context.Payments.Add(p);
+                               Context.Payments.Add(p);
 
                                 up.DateForMonthlyPrev = ((up.DateForMonthlyPrev == null) ? 0 : up.DateForMonthlyPrev) + 1;
                                 Context.Entry(up).State = System.Data.Entity.EntityState.Modified;
@@ -192,6 +184,30 @@ namespace FarmsApi.Services
                  
 
                 }
+
+
+                // זה נועד לאפס את העסק שאם ירצה להוסיף
+
+                var UsersToDeleteAuto = Context.Users.Where(x => x.Active == "active" &&
+                         x.DateForMonthlyPay.Value.Day == Day &&
+                         x.DateForMonthlySum > 0 &&
+                         x.DateForMonthlySeq == x.DateForMonthlyPrev && // ההסטוריה שונה 
+                         x.cc_token != null &&
+                         x.cc_token != ""
+                         ).ToList();
+                foreach (User upd in UsersToDeleteAuto)
+                {
+                    upd.DateForMonthlyPay = null;
+                    upd.DateForMonthlySum = null;
+                    upd.DateForMonthlySeq = null;
+                    upd.DateForMonthlyPrev = null;
+                    upd.Rivoni = false;
+                    Context.Entry(upd).State = System.Data.Entity.EntityState.Modified;
+
+                    Context.SaveChanges();
+
+                }
+
             }
         }
 
@@ -202,15 +218,81 @@ namespace FarmsApi.Services
                 int lessCount =Convert.ToInt32(up.DateForMonthlySum)  / Convert.ToInt32(up.Cost);
 
                 return lessCount;
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
+
+        private AutoPayObj GetAutoPayObj(User up)
+        {
+            DateTime CurrentDate = DateTime.Now;
+
+            AutoPayObj ap = new AutoPayObj();
+            ap.lessons = 0;
+            ap.month = null;
+            ap.untilmonth = null;
+            ap.InvoiceDates = ""; // details
+            ap.InvoiceTitle = ""; //desc
+
+            if (up.PayType == "lessonCost")
+            {
+                int lessCount = Convert.ToInt32(up.DateForMonthlySum) / Convert.ToInt32(up.Cost);
+                ap.lessons = lessCount;
+
+                ap.InvoiceTitle = "חיוב אוטמטי עבור " + lessCount.ToString() + " שיעורים ";
 
             }
             else
             {
+                ap.month = CurrentDate;
+                ap.InvoiceTitle = "חיוב אוטמטי עבור חודש אחד ";
 
-                return 0;
+                if (up.Rivoni)
+                {
+                    ap.untilmonth = CurrentDate.AddMonths(3);
+                    ap.InvoiceTitle = "חיוב אוטמטי עבור 3 חודשים ";
+                }
+                  
 
             }
+
+
+
+            using (var Context = new Context())
+            {
+                var LessonsDates = (from sl in Context.StudentLessons
+                                    join l in Context.Lessons
+                                    on sl.Lesson_Id equals l.Id
+                                    where sl.User_Id == up.Id && l.Start >= CurrentDate
+                                    select new
+                                    {
+                                        StartDate = l.Start
+                                    }).ToList();
+
+
+                for (int i = 0; i < LessonsDates.Count; i++)
+                {
+
+                    ap.InvoiceDates += "," + LessonsDates[i].StartDate.ToString("dd/MM/yy");
+
+                    if (
+                        (i + 1 == ap.lessons) || 
+                        (!up.Rivoni &&   LessonsDates[i].StartDate >  CurrentDate.AddMonths(1))  ||
+                        (up.Rivoni && LessonsDates[i].StartDate > CurrentDate.AddMonths(3))
+                        ) break;
+
+                }
+
+              
+            }
+
+
+
+
+            return ap;
         }
 
         public  void InsertChecksToMas()
@@ -477,4 +559,16 @@ class HorseBalanceRecord
     public string HorseName { get; set; }
     public double PensionPrice { get; set; }
     public double TrainingCost { get; set; }
+}
+
+
+class AutoPayObj
+{
+   
+    public int? lessons { get; set; }
+    public DateTime? month { get; set; }
+    public DateTime? untilmonth { get; set; }
+    public string InvoiceDates { get; set; }
+
+    public string InvoiceTitle { get; set; }
 }
