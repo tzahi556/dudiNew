@@ -852,7 +852,7 @@
                                 </td>
                                 <td>
                                     <i class="fa fa-check-circle-o green" ng-show="lesson.paid" aria-hidden="true"></i>
-                                    <button class="btn btn-xs btn-danger" ng-show="!lesson.paid" ng-click="$ctrl.removeLesson(lesson)">מחק</button>
+                                    <button class="btn btn-xs btn-danger" ng-show="!lesson.paid && (lesson.statuses[0].Status=='' || !lesson.statuses[0].Status) " ng-click="$ctrl.removeLesson(lesson)">מחק</button>
                                 </td>
                             </tr>
                         </tbody>

@@ -14,10 +14,15 @@
 
             <div ng-show="!$ctrl.IsInstructorBlock" style="cursor:pointer;text-align:center;"
                  ng-click="showDiv = !showDiv">
-            <span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span>&nbsp;ממתינים לשיעור השלמה</div>
+
+
+             
+
+                <span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span>&nbsp;ממתינים לשיעור השלמה
+            </div>
             <div ng-show="showDiv" class="dvContainer" style="height:550px;overflow:auto">
 
-                <div ng-repeat="lesinst in $ctrl.lessonsComplete |filter:{isInstructor:'1'}" style="width:250px">
+                <div ng-repeat="lesinst in $ctrl.lessonsComplete |filter:{isInstructor:'1'} | orderBy:['FullName']" style="width:250px">
                     <div class="fc-draggable dvDragElement" style="background-color:goldenrod" ng-click="open = !open">
                         <img ng-show="open" src="../../images/table-arrow-down.png" />
                         <img ng-show="!open" src="../../images/table-arrow-right.png" />
@@ -27,9 +32,28 @@
                     <div class="fc-draggable dvDragElement" ng-show="open"
                          ondragstart="dragStart(event)"
                          ondragover="allowDrop(event)"
-                         draggable="true" id="{{les.Id}}" ng-repeat="les in $ctrl.lessonsComplete |filter:{isInstructor:'0',InstructorName:lesinst.InstructorName}">{{les.FullName}}({{les.completionReq}})</div>
+                         draggable="true" id="{{les.Id}}" ng-repeat="les in $ctrl.lessonsComplete |filter:{isInstructor:'0',InstructorName:lesinst.InstructorName} |orderBy:['FullName','completionReq']">{{les.FullName}}({{les.completionReq}})</div>
                 </div>
             </div>
+        </div>
+
+        <div  style="float:left" ng-show="!$ctrl.IsInstructorBlock">
+
+            <div class="dvContainerSearch">
+                <input style="height:25px" type="text" name="search" class="form-control" placeholder="חיפוש תלמיד בהשלמה" ng-model="searchInput" autocomplete="off" />
+                <div ng-show="searchInput" style="border:solid 1px #ddd">
+
+                    <div ng-repeat="les in $ctrl.lessonsComplete | filter:{isInstructor:'0'} | filter:searchInput |  orderBy:['FullName','completionReq'] ">
+
+                        <div class="fc-draggable dvDragElement" 
+                         ondragstart="dragStart(event)"
+                         ondragover="allowDrop(event)"
+                         draggable="true" id="{{les.Id}}" style="cursor:pointer;border-top:1px solid #ddd;padding:5px">{{les.FullName}} ({{les.completionReq}}) </div>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -44,6 +68,19 @@
             overflow: auto;
             z-index: 5000;
             left: 20px;
+        }
+
+
+        .dvContainerSearch {
+            position: absolute;
+            background-color: white;
+            border: solid 1px gray;
+            border-radius: 10px;
+            font-weight: bold;
+            overflow: auto;
+            z-index: 5000;
+            
+            left: 220px;
         }
 
         .dvDragElement {

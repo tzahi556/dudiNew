@@ -14,7 +14,9 @@
         this.createNotifications = _createNotifications.bind(this);
         this.checkLowCredit = _checkLowCredit.bind(this);
         this.getifLessonsHaveMoreOneRider = _getifLessonsHaveMoreOneRider.bind(this);
+        this.deleteOnlyStudentLesson = _deleteOnlyStudentLesson.bind(this);
 
+        
 
         this.HMOs = sharedValues.HMOs;
 
@@ -137,6 +139,17 @@
             });
             return deferred.promise;
         }
+
+        function _deleteOnlyStudentLesson(lessonId,userId, deleteChildren) {
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'lessons/deleteOnlyStudentLesson/' + lessonId + '/' + userId + '/' + deleteChildren).then(function (res) {
+                deferred.resolve(res.data);
+            });
+            return deferred.promise;
+        }
+
+
+        
 
         function _updateLesson(lesson, changeChildren, lessonsQty) {
          

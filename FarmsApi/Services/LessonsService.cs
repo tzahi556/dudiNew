@@ -237,7 +237,7 @@ namespace FarmsApi.Services
                             inner join Lessons l on l.Id = t4.Lesson_Id
                             inner join Users ui on ui.Id = l.Instructor_Id
 
-                            where (t3.completionReq > 0) and('" + CurrentUser.Role.ToString() + "'!='instructor' or "+ CurrentUser.Id.ToString() + "=l.Instructor_Id ) and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")  order by Instructor_Id";
+                            where (t3.completionReq > 0) and('" + CurrentUser.Role.ToString() + "'!='instructor' or " + CurrentUser.Id.ToString() + "=l.Instructor_Id ) and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")  order by Instructor_Id";
 
 
                 using (var reader = cmd.ExecuteReader())
@@ -353,9 +353,9 @@ namespace FarmsApi.Services
 
             using (var Context = new Context())
             {
-                 res = Context.StudentLessons.Where(x=>x.Lesson_Id== lessonId).Count();
+                res = Context.StudentLessons.Where(x => x.Lesson_Id == lessonId).Count();
             }
-               
+
             return res;
         }
 
@@ -475,7 +475,7 @@ namespace FarmsApi.Services
             int LessonId = Lesson["id"].Value<int>();
 
             int onlyMultiple = 0;
-            if (Lesson["onlyMultiple"] !=null)
+            if (Lesson["onlyMultiple"] != null)
                 onlyMultiple = Lesson["onlyMultiple"].Value<int>();
 
             Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
@@ -492,7 +492,7 @@ namespace FarmsApi.Services
                     var StatusData = GetStatusDataFromJson(Lesson, StudentId);
                     // int isCompleteFromClient = (StatusData[2] != 0) ? 1 : 0;
 
-                    if ((StatusData[0]=="completionReq" || StatusData[0] == "completionReqCharge" ) && (StatusData[2] == "0" || StatusData[2] ==null))
+                    if ((StatusData[0] == "completionReq" || StatusData[0] == "completionReqCharge") && (StatusData[2] == "0" || StatusData[2] == null))
                     {
                         StatusData[2] = "1";
                     }
@@ -525,7 +525,7 @@ namespace FarmsApi.Services
                     //}
 
 
-                
+
 
                     if (StatusData[0] == "completion" && StatusData[2] == "2")
                     {
@@ -602,9 +602,9 @@ namespace FarmsApi.Services
 
                 Context.SaveChanges();
 
-               // if (StudentIds.Count() > 1)
+                // if (StudentIds.Count() > 1)
 
-               if(onlyMultiple == 1) AddOrRemvoveFromGroup(Context, StudentIds, LessonId);
+                if (onlyMultiple == 1) AddOrRemvoveFromGroup(Context, StudentIds, LessonId);
 
             }
         }
@@ -622,7 +622,7 @@ namespace FarmsApi.Services
 
                 //if(sl.Count()!= studentIds.Count())
                 //{
-               // קיים במערכת ולא 
+                // קיים במערכת ולא 
                 foreach (StudentLessons item in sl)
                 {
                     int studentId = item.User_Id;
@@ -811,7 +811,64 @@ namespace FarmsApi.Services
         }
 
 
+        public static JArray DeleteOnlyStudentLesson(int LessonId, int UserId, bool DeleteChildren)
+        {
 
+            try
+            {
+                List<Lesson> ChildLessons = null;
+                using (var Context = new Context())
+                {
+
+                    ChildLessons = Context.Lessons.Where(l => l.ParentId == LessonId).ToList();
+
+                    var Lesson = Context.Lessons.SingleOrDefault(l => l.Id == LessonId);
+                    if (Lesson != null)
+                    {
+                        var StudentLessonsDelete = Context.StudentLessons.Where(sl => sl.Lesson_Id == Lesson.Id && sl.User_Id == UserId);
+
+                        if (StudentLessonsDelete.FirstOrDefault().Status == "" || StudentLessonsDelete.FirstOrDefault().Status == null)
+                        {
+
+                            Context.StudentLessons.RemoveRange(StudentLessonsDelete);
+                            var StudentLessons = Context.StudentLessons.Where(sl => sl.Lesson_Id == Lesson.Id).ToList();
+                            if (StudentLessons.Count == 1)
+                                Context.Lessons.Remove(Lesson);
+
+                            Context.SaveChanges();
+                        }
+
+
+                    }
+                }
+
+
+
+
+                // Delete Children Lessons
+                if (DeleteChildren)
+                {
+                    if (ChildLessons.Count() > 0)
+                    {
+                        foreach (var ChildLesson in ChildLessons)
+                        {
+                            DeleteOnlyStudentLesson(ChildLesson.Id, UserId, DeleteChildren);
+                        }
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+            }
+
+
+            return GetLessons(UserId);
+
+        }
 
 
 

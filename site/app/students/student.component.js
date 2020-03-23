@@ -127,6 +127,7 @@
         this.modalRemoveAdd = _modalRemoveAdd.bind(this);
 
 
+
         this.show4 = _show4.bind(this);
 
         this.getRealDocType = _getRealDocType.bind(this);
@@ -139,7 +140,9 @@
 
         this.lessAdd = 1;
         this.typeAddRemove = 0;//0 הוספה 
-        this.RemoveLess;             // 1 מחיקה
+        this.RemoveLess;       // 1 מחיקה
+
+        this.parentEventStudents;
 
         function _show4(ashrai4) {
 
@@ -152,19 +155,28 @@
 
 
         function _removeLesson(lesson) {
+
+
             this.typeAddRemove = 1;
+
             this.RemoveLess = lesson;
             $('#myModalLabel').text('האם למחוק גם אירועים עתידיים? ');
             $('#dvAppendHad').text(' הסר שיעור באופן חד פעמי ');
             $('#dvAppendTz').text(' הסר כל השיעורים עתידיים ');
             $('#modalAddRemove').modal('show');
 
+
+
+
+
+
+
         }
 
         function _modalRemoveAdd(isTrue) {
             // הוספה
             if (this.typeAddRemove == 0) {
-
+             
                 var lastEvent = this.lessons[this.lessons.length - 1];
                 this.createChildEvent(lastEvent, this.lessAdd, isTrue);
                 this.initLessons();
@@ -174,45 +186,74 @@
             // מחיקה
             if (this.typeAddRemove == 1) {//if(isTrue) // תמחק גם עתידי
 
-                    var i = this.lessons.length;
-                    while (i--) {
-                        if (this.lessons[i].id == this.RemoveLess.id || (isTrue && this.lessons[i].start >= this.RemoveLess.start)) {
-                           
-                            var index = this.lessons[i].students.indexOf(this.user.Id);
-
-                            this.lessons[i].students.splice(index, 1);
-
-                            if (this.lessons[i].students.length == 0) {
-                                // במידה ואין עוד אף אחד תמחוק שיעור
-                               
-                                lessonsService.deleteLesson(this.lessons[i].id, false).then(function (res) {
-                                    this.lessons.splice(i, 1);
-                                }.bind(this));
 
 
-
-                            } else { // במידה ויש עוד תוריד רק את הנוכחי
-                                lessonsService.updateLesson(this.lessons[i], false, 0).then(function (res) {
-                                    this.lessons.splice(i, 1);
-                                }.bind(this));
-                            }
-
-                           
-
-                            
-                        }
-                    }
+                lessonsService.deleteOnlyStudentLesson(this.RemoveLess.id, this.user.Id, isTrue).then(function (res) {
+                    this.lessons = res;    
                     this.initLessons();
-             
+                }.bind(this));
+
+
+
+
+                //var fakendDate = (isTrue) ? moment(this.RemoveLess.start).add(1000, 'day').format('YYYY-MM-DD') : this.RemoveLess.end;
+                //lessonsService.getLessons(null, this.RemoveLess.start, fakendDate, null).then(function (lessons) {
+
+                //    for (var i in lessons) {
+                //        var index = lessons[i].students.indexOf(this.user.Id);
+                //        if ((lessons[i].id == this.RemoveLess.id) || (lessons[i].resourceId == this.RemoveLess.resourceId && index != "-1" && ((isTrue && lessons[i].start > this.RemoveLess.start) || (!isTrue && lessons[i].start == this.RemoveLess.start)))) {
+
+                //           debugger
+                //            lessons[i].students.splice(index, 1);
+
+                //            if (lessons[i].students.length == 0) {
+                //                // במידה ואין עוד אף אחד תמחוק שיעור
+                //                lessonsService.deleteLesson(lessons[i].id, false).then(function (res) {
+                //                    for (var m in this.lessons) {
+                //                        if (this.lessons[m].id == lessons[i].id) {
+                //                            this.lessons.splice(m, 1);
+                //                            break;
+                //                        }
+                //                    }
+
+                //                }.bind(this));
+
+
+
+                //            }
+                //            else { // במידה ויש עוד תוריד רק את הנוכחי
+                //                lessonsService.updateLesson(lessons[i], false, 0).then(function (res) {
+                //                    debugger
+                //                    for (var m in this.lessons) {
+                //                        if (this.lessons[m].id == lessons[i].id) {
+                //                            this.lessons.splice(m, 1);
+                //                            break;
+                //                        }
+                //                    }
+                //                }.bind(this));
+                //            }
+
+                //        }
+
+                //    }
+
+                //    this.initLessons();
+
+                //}.bind(this));
+
+
+
+
+
             }
+
+
+
+
 
             $('#modalAddRemove').modal('hide');
 
         }
-
-
-
-
 
         function _AddMultipleLessons() {
 
@@ -227,11 +268,21 @@
             var diffdays = (moment(lastEvent.start)).diff(moment(), 'days', true);
             if (diffdays > -8) {
 
-                lessonsService.getifLessonsHaveMoreOneRider(lastEvent.id).then(function (res) {
+                //   lessonsService.getifLessonsHaveMoreOneRider(lastEvent.id).then(function (res) {
+                lessonsService.getLessons(null, lastEvent.start, lastEvent.end, null).then(function (lessons) {
 
-                    
+                    for (var i in lessons) {
 
-                    if (res > 1) {
+                        if (lessons[i].start == lastEvent.start && lessons[i].resourceId == lastEvent.resourceId) {
+                            this.parentEventStudents = lessons[i].students;
+                            break;
+                        }
+                    }
+
+
+
+
+                    if (this.parentEventStudents.length > 1) {
 
 
                         $('#myModalLabel').text(' תלמיד זה נמצא בקבוצה, האם להוסיף שיעורים לכל הקבוצה? ');
@@ -241,7 +292,9 @@
 
 
 
-                    } else {
+                    }
+
+                    else {
 
                         this.createChildEvent(lastEvent, this.lessAdd);
                         this.initLessons();
@@ -258,7 +311,7 @@
 
         }
 
-        function _createChildEvent(parentEvent, lessonsQty,isMultiple) {
+        function _createChildEvent(parentEvent, lessonsQty, isMultiple) {
 
             if (lessonsQty > 0) {
 
@@ -268,7 +321,7 @@
                     start: moment(parentEvent.start).add(7, 'days').format('YYYY-MM-DDTHH:mm:ss'),
                     end: moment(parentEvent.end).add(7, 'days').format('YYYY-MM-DDTHH:mm:ss'),
                     resourceId: parentEvent.resourceId,
-                    students: (isMultiple) ? parentEvent.students : [this.user.Id],
+                    students: (isMultiple) ? this.parentEventStudents : [this.user.Id],
                     lessprice: parentEvent.lessprice,
                     lessonpaytype: parentEvent.lessonpaytype,
                     statuses: [{ "StudentId": this.user.Id, "Status": null, "Details": "", "IsComplete": 1 }],

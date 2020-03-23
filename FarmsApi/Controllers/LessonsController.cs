@@ -57,6 +57,15 @@ namespace FarmsApi.Services
             return Ok();
         }
 
+
+        [Route("deleteOnlyStudentLesson/{lessonId}/{userId}/{deleteChildren}")]
+        [HttpGet]
+        public IHttpActionResult DeleteOnlyStudentLesson(int lessonId, int userId, bool deleteChildren)
+        {
+          
+            return Ok(LessonsService.DeleteOnlyStudentLesson(lessonId, userId, deleteChildren));
+        }
+
         [Route("getifLessonsHaveMoreOneRider/{lessonId}")]
         [HttpGet]
         public IHttpActionResult getifLessonsHaveMoreOneRider(int lessonId)
