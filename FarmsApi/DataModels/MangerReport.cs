@@ -89,7 +89,7 @@ namespace FarmsApi.DataModels
         public string LastName { get; set; }
         public string Total { get; set; }
         public string HMO { get; set; }
-
+        public string ClientNumber { get; set; }
         public string Style { get; set; }
 
     }

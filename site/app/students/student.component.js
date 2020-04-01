@@ -60,6 +60,7 @@
         this.styles = sharedValues.styles;
         this.submit = _submit.bind(this);
         this.getInstructorName = _getInstructorName.bind(this);
+       
         this.delete = _delete.bind(this);
         this.addPayment = _addPayment.bind(this);
         this.addCheck = _addCheck.bind(this);
@@ -2131,6 +2132,12 @@
                 }
             }
         }
+
+      
+
+
+
+        
 
         function _delete() {
             if (confirm('האם למחוק את התלמיד?')) {

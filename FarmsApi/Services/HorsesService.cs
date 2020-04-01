@@ -18,7 +18,7 @@ namespace FarmsApi.Services
                 var Horses = Context.Horses.ToList();
                 if (CurrentUserFarmId != 0)
                 {
-                    Horses = Horses.Where(h => h.Farm_Id == CurrentUserFarmId).ToList();
+                    Horses = Horses.Where(h => h.Farm_Id == CurrentUserFarmId).OrderBy(x=>x.Name).ToList();
                 }
                 Horses = FilterDeleted(Horses, IncludeDeleted);
                 return Horses;

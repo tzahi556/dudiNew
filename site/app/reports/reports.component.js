@@ -15,7 +15,8 @@
         self.ReportHMO = _ReportHMO;
         self.ReportDebt = _ReportDebt;
 
-
+        self.getHebStatus = _getHebStatus;
+        self.getHebHMO = _getHebHMO;
         self.getInstructorCounter = _getInstructorCounter;
         self.getTotalPerStyle = _getTotalPerStyle;
         self.getRound = _getRound;
@@ -59,6 +60,7 @@
                         var Total = res[i].Total;
                         var HMO = res[i].HMO;
                         var Style = res[i].Style;
+                        var ClientNumber = (res[i].ClientNumber) ? res[i].ClientNumber:"";
 
                         if (Style == "treatment") {
 
@@ -66,6 +68,7 @@
                                 CountKlalit++;
                                 TableDebtKlalit += "<tr>"
                                     + "<td>" + CountKlalit.toString()
+                                    + "</td><td> " + ClientNumber
                                     + "</td><td> " + Taz
                                     + "</td><td style='text-align:right'>" + FirstName
                                     + "</td><td style='text-align:right'>" + LastName
@@ -77,6 +80,7 @@
                                 CountMacabi++;
                                 TableDebtMacabi += "<tr>"
                                     + "<td>" + CountMacabi.toString()
+                                    + "</td><td> " + ClientNumber
                                     + "</td><td> " + Taz
                                     + "</td><td style='text-align:right'>" + FirstName
                                     + "</td><td style='text-align:right'>" + LastName
@@ -87,6 +91,7 @@
                                 CountDikla++;
                                 TableDebtDikla += "<tr>"
                                     + "<td>" + CountDikla.toString()
+                                    + "</td><td> " + ClientNumber
                                     + "</td><td> " + Taz
                                     + "</td><td style='text-align:right'>" + FirstName
                                     + "</td><td style='text-align:right'>" + LastName
@@ -98,6 +103,7 @@
                             CountOther++;
                             TableDebtOther += "<tr>"
                                 + "<td>" + CountOther.toString()
+                                + "</td><td> " + ClientNumber
                                 + "</td><td> " + Taz
                                 + "</td><td style='text-align:right'>" + FirstName
                                 + "</td><td style='text-align:right'>" + LastName
@@ -128,10 +134,6 @@
 
 
         }
-
-
-
-
 
         function _ReportHMO() {
 
@@ -495,7 +497,6 @@
 
         }
 
-
         function _getTotalPerStyle(Id, res) {
 
             var myObj =
@@ -737,7 +738,6 @@
 
         }
 
-
         function _studentsReport() {
             usersService.getUsers('student').then(function (students) {
                 var data = [];
@@ -913,8 +913,10 @@
                                         new Date(lesson.end),
                                         instructorName,
                                         studentName,
-                                        status.Status,
-                                        studentHMO,
+                                        self.getHebStatus(status),
+                                        self.getHebHMO(studentHMO),
+                                        //status.Status,
+                                       // studentHMO,
                                         studentCost,
                                     ]);
                                 }
@@ -954,6 +956,73 @@
             //         });
             //     });
             // });
+        }
+
+        function _getHebStatus(status) {
+            if (status.Status =="completion" && (status.IsComplete == 4 || status.IsComplete == 6)) {
+
+                return "הגיע";
+            }
+
+
+            switch (status.Status) {
+
+                case 'attended':
+                    return 'הגיע'
+                case 'notAttended':
+                    return 'לא הגיע'
+                case 'notAttendedCharge':
+                    return 'לא הגיע לחייב'
+                case 'notAttendedDontCharge':
+                    return 'הגיע'
+                case 'completionReq':
+                case 'completionReqCharge':
+                    return 'דרוש שיעור השלמה'
+                case 'completion':
+                    return 'לא הגיע'
+                   
+
+                default:
+                    return ''
+            }
+
+
+           // return status.Status;
+           // return moment(event).isAfter(moment());
+        }
+
+        function _getHebHMO(studentHMO) {
+            switch (studentHMO) {
+
+                case 'maccabiGold':
+                    return 'מכבי זהב'
+                case 'maccabiSheli':
+                    return 'מכבי שלי'
+
+                case 'klalit':
+                    return 'כללית'
+
+                case 'klalitPlatinum':
+                    return 'כללית פלטניום'
+
+                case 'klalitDikla':
+                    return 'כללית דקלה'
+
+                case 'meuhedet':
+                    return 'מאוחדת'
+
+                case 'leumit':
+                    return 'לאומית'
+
+
+
+
+
+
+
+                default:
+                    return ''
+            }
         }
 
         function _getShoeingDate(horse) {

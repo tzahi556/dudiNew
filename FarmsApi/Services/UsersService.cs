@@ -539,12 +539,8 @@ namespace FarmsApi.Services
 
 
 
-                var Users = Context.Users.Where(u => u.Farm_Id == CurrentUserFarmId /*&& !u.Meta.Contains("notActive")*/).ToList();
-                //!u.Deleted &&
-                //(u.Role == "student" || u.Id == CurrentUser.Id) &&
-                //  Role.Contains(u.Role)
-                //    ).ToList();
-
+                var Users = Context.Users.Where(u => u.Farm_Id == CurrentUserFarmId).OrderBy(x=>x.FirstName).ToList();
+              
 
 
 

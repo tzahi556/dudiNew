@@ -788,7 +788,7 @@
 
                         </div>
                     </div>
-                    <table class="table">
+                    <table class="table" >
                         <thead>
                             <tr>
                                 <td colspan="2">
@@ -804,9 +804,10 @@
                             <tr>
                                 <th>מס</th>
                                 <th>מדריך</th>
+                                <th>סוס</th>
                                 <th>התחלה</th>
                                 <!--<th ng-if="$ctrl.user.Meta.PayType == 'lessonCost'">מחיר שיעור</th>
-                                <th ng-if="$ctrl.user.Meta.PayType != 'lessonCost'">עלות חודשית</th>-->
+    <th ng-if="$ctrl.user.Meta.PayType != 'lessonCost'">עלות חודשית</th>-->
 
                                 <th>סטטוס</th>
                                 <th>הערות  {{showDetails ? ' מדריך ' : ' משרד '}}</th>
@@ -820,10 +821,13 @@
                             <tr ng-repeat="lesson in $ctrl.lessons | orderBy:'start' | dateRange:$ctrl.dateFrom:$ctrl.dateTo " ng-class="{'set-status':$ctrl.setStatus(lesson)}">
                                 <td>{{$index+1}}</td>
                                 <td>{{$ctrl.getInstructorName(lesson.resourceId)}}</td>
+                                <td>{{lesson.horsenames[0]}}</td>
+                                
                                 <td> {{$ctrl.getDayOfWeek(lesson.start)}}  {{lesson.start | ildate: 'DD/MM/YYYY HH:mm'}}</td>
 
 
                                 <!--<td>{{lesson.lessPrice}}</td>-->
+                               
                                 <td>
 
                                     <select ng-options="status.id as status.name for status in $ctrl.lessonStatuses" ng-init="statusIndex = $ctrl.getStatusIndex(lesson)"
