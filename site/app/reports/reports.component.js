@@ -166,6 +166,11 @@
                     var StartDetails = "";
                     var StartDetailsNoPay = "";
                     var InvoiceDetails = "";
+
+                    var CountMacabi = 0;
+                    var StartDetailsMacabi = "";
+
+
                     for (var i = 0; i < res.length; i++) {
 
                         var Type = res[i].Type;
@@ -193,6 +198,10 @@
                             StartDetailsNoPay += ((StartDetailsNoPay) ? ", " : "") + Start;
                         }
 
+                        if (Type == "1") { 
+                           CountMacabi++;
+                           StartDetailsMacabi += ((StartDetailsMacabi) ? ", " : "") + Start;
+                        }
                         if (!res[i + 1] || (res[i + 1].Id != StudentId)) {
 
 
@@ -201,8 +210,8 @@
                                     + "</td><td style='text-align:right'>" + FirstName
                                     + "</td><td style='text-align:right'>" + LastName
                                     + "</td><td style='direction:ltr;text-align:right'>" + Total// פה לשים יתרת שיעורים
-                                    + "</td><td>" + Count.toString()
-                                    + "</td><td style='text-align:right'>" + StartDetails + "</td ></tr>";
+                                    + "</td><td>" + CountMacabi.toString()
+                                    + "</td><td style='text-align:right'>" + StartDetailsMacabi + "</td ></tr>";
 
                             if (Type == "2")
                                 TableKlalit += "<tr><td>" + Taz
@@ -233,6 +242,8 @@
                             InvoiceDetails = "";
                             Count = 0;
                             CountNoPay = 0;
+                            CountMacabi=0;
+                            StartDetailsMacabi = "";
                         }
 
 
@@ -961,7 +972,7 @@
         function _getHebStatus(status) {
             if (status.Status =="completion" && (status.IsComplete == 4 || status.IsComplete == 6)) {
 
-                return "הגיע";
+                return "הגיע משיעור השלמה";
             }
 
 
@@ -974,7 +985,7 @@
                 case 'notAttendedCharge':
                     return 'לא הגיע לחייב'
                 case 'notAttendedDontCharge':
-                    return 'הגיע'
+                    return 'לא הגיע לא לחייב'
                 case 'completionReq':
                 case 'completionReqCharge':
                     return 'דרוש שיעור השלמה'
