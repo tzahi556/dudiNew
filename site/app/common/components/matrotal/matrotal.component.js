@@ -6,7 +6,7 @@
         templateUrl: 'app/common/components/matrotal/matrotal.template.html',
         controller: MatrotalController,
         bindings: {
-            studentid: '=',
+            studentidmatrot: '=',
             selectedpayvalue: "=",
             students: '<',
             closeCallback: '<',
@@ -48,7 +48,9 @@
 
         this.scope.$on('matrolal.show', this.onShow);
 
-        function _onShow(event, selectedStudent,mode,user,lessonId) {
+        function _onShow(event, selectedStudent, mode, user, lessonId) {
+
+           
             this.mode = mode;
             this.user = user;
          
@@ -115,9 +117,10 @@
 
 
         function _hide() {
+
            
             // if ($(event.target).is('.event-background')) {
-            this.studentid = null;
+            this.studentidmatrot = null;
             //}
 
             //if ($(event.target).is('.event-background') || $(event.target).is('.btnClose')) {
@@ -127,7 +130,7 @@
 
         function _close(lesson) {
 
-            debugger
+            
             //studentId: studentId, lessonId: lessonId
 
             var lessnStatus = [];
@@ -141,7 +144,7 @@
              }.bind(this));
 
            
-            this.studentid = null;
+            this.studentidmatrot = null;
 
         }
 

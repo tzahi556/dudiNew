@@ -52,6 +52,9 @@
         this.modalAppendClick = _modalAppendClick.bind(this);
 
         this.IsInstructorBlock = $rootScope.IsInstructorBlock;
+
+
+        this.FarmId = localStorage.getItem('FarmId');
         this.scope.$on('event.show', this.onShow);
     }
 
@@ -208,6 +211,11 @@
     }
 
     function _onShow(event, selectedLesson, studentTemplate) {
+
+       // alert(this.FarmId );
+       // this.FarmId = localStorage.getItem('FarmId');
+
+       
         // debugger
         this.isEventHaveChild = false;
         if (selectedLesson.students.length > 0) this.isEventHaveChild = true;
@@ -546,6 +554,7 @@
     }
 
     function _openMatrotal(studentId,mode) {
+
 
         var user = this.studentDataById(studentId);
         
