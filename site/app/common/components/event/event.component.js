@@ -25,6 +25,9 @@
         this.addStudentToEvent = _addStudentToEvent.bind(this);
         this.removeStudentFromEvent = _removeStudentFromEvent.bind(this);
         this.openComments = _openComments.bind(this);
+        this.openMatrotal = _openMatrotal.bind(this);
+
+        
 
         this.createNewStudent = _createNewStudent.bind(this);
         this.studentDataById = _studentDataById.bind(this);
@@ -541,6 +544,23 @@
         //  this.scope.$broadcast('comments.show', this.selectedStudent);
         //   alert(studentId);
     }
+
+    function _openMatrotal(studentId,mode) {
+
+        var user = this.studentDataById(studentId);
+        
+
+
+        this.selectedStudentmatrot = studentId;
+        this.mode = mode;
+
+        
+        this.scope.$broadcast('matrolal.show', studentId, this.mode, user, this.event.id);
+        
+
+    }
+
+
 
     function _createNewStudent(isCreate) {
 

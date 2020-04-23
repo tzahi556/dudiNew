@@ -130,7 +130,8 @@
 
 
         this.show4 = _show4.bind(this);
-
+        this.isDateMoreToday = _isDateMoreToday.bind(this);
+        
         this.getRealDocType = _getRealDocType.bind(this);
         this.IsInstructorBlock = ($rootScope.role == "instructor") ? true : false;    // $rootScope.IsInstructorBlock;
 
@@ -150,6 +151,12 @@
             alert(ashrai4);
         }
 
+        function _isDateMoreToday(date) {
+          
+            if (moment(date) > moment()) return true;
+
+            return false;
+        }
 
 
 
@@ -2055,7 +2062,7 @@
         function _submit(isalert) {
 
 
-
+             
             if ($scope.studentForm.$valid) {
 
                 this.user.Role = 'student';
@@ -2089,7 +2096,7 @@
 
 
 
-
+                     
 
                     lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate);
                     this.user = user;

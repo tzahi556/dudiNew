@@ -29,6 +29,15 @@ namespace FarmsApi.DataModels
         public string OfficeDetails { get; set; }
         public int PrevNext { get; set; }
 
+        public string Matarot { get; set; }
+        public string Mahalak { get; set; }
+        public string HearotStatus { get; set; }
+        public string Mashov { get; set; }
+
+
+
+
+
         // id = lesson.Id,
         //prevId = lesson.ParentId,
         //start = lesson.Start,

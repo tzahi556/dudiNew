@@ -164,7 +164,14 @@ namespace FarmsApi.Services
                 {
                     if (Lesson.Id != lastId)
                     {
-                        var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails, OfficeDetails = l.OfficeDetails, IsComplete = l.IsComplete, HorseId = l.HorseId }).Distinct().ToArray();
+                        var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails,
+                            OfficeDetails = l.OfficeDetails, IsComplete = l.IsComplete, 
+                            HorseId = l.HorseId,
+                            Matarot = l.Matarot,
+                            Mahalak = l.Mahalak,
+                            HearotStatus = l.HearotStatus,
+                            Mashov = l.Mashov
+                        }).Distinct().ToArray();
                         var studentsArray = students.Select(s => s.StudentName).ToArray();
                         var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName != null).Select(l => new { HorseName = l.HorseName }).ToArray();
 
@@ -181,10 +188,23 @@ namespace FarmsApi.Services
                             lessonpaytype = Lesson.LessonPayType,
                             details = Lesson.Details,
                             students = students.Select(s => s.StudentId).ToArray(),
-                            statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId, OfficeDetails = s.OfficeDetails }).ToArray(),
+                            statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId, OfficeDetails = s.OfficeDetails,
+                                Matarot = s.Matarot,
+                                Mahalak = s.Mahalak,
+                                HearotStatus = s.HearotStatus,
+                                Mashov = s.Mashov
+                            }).ToArray(),
                             title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : ""),
                             PrevNext = Lesson.PrevNext
-                        }));
+                            //Matarot = Lesson.Matarot,
+                            //Mahalak = Lesson.Mahalak,
+                            //HearotStatus = Lesson.HearotStatus,
+                            //Mashov = Lesson.Mashov
+
+                           
+
+     
+                           }));
                     }
                     lastId = Lesson.Id;
                 }
@@ -280,6 +300,28 @@ namespace FarmsApi.Services
                         var StudentLesson = Context.StudentLessons.SingleOrDefault(sl => sl.User_Id == StudentId && sl.Lesson_Id == LessonId);
                         if (StudentLesson != null)
                         {
+        
+                            if (Status["Matarot"] != null)
+                            {
+                                StudentLesson.Matarot = Status["Matarot"].Value<string>();
+                            }
+                            if (Status["Mahalak"] != null)
+                            {
+                                StudentLesson.Mahalak = Status["Mahalak"].Value<string>();
+                            }
+                            if (Status["HearotStatus"] != null)
+                            {
+                                StudentLesson.HearotStatus = Status["HearotStatus"].Value<string>();
+                            }
+                            if (Status["Mashov"] != null)
+                            {
+                                StudentLesson.Mashov = Status["Mashov"].Value<string>();
+                            }
+
+                            //***************************************
+
+
+
                             // אם שלחתי לעדכון מחיר שיעור
                             if (Status["lessprice"] != null)
                             {
@@ -306,10 +348,6 @@ namespace FarmsApi.Services
                             {
                                 StudentLesson.OfficeDetails = Status["officedetails"].Value<string>();
                             }
-
-
-
-
 
 
                             Context.Entry(StudentLesson).State = System.Data.Entity.EntityState.Modified;

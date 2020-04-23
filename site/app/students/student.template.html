@@ -931,7 +931,109 @@
                         מטרות על
                     </div>
                     <div class="panel-body">
+
+
+
+
+
+
+
                         <textarea class="form-control" rows="7" ng-model="$ctrl.user.MatrotAl"></textarea>
+
+                        <div style="padding:3px">
+                            <table width="100%" border="1">
+                                <tr>
+                                    <td colspan="2" style="text-align:center;font-weight:bold; background:#34b7eb;padding:3px;width:100%;border:solid 1px black">
+                                        מטרות הטיפול
+
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                  
+                                    <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                                        מוטורי:
+
+                                    </td>
+
+                                    <td>
+                                        <input style="" class="form-control" type="text" ng-model="$ctrl.user.Motori">
+
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                                        תקשורתי:
+
+                                    </td>
+
+                                    <td>
+                                        <input style="" class="form-control" type="text" ng-model="$ctrl.user.Tikshorti">
+
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                                        ריגשי:
+
+                                    </td>
+
+                                    <td>
+                                        <input style="" class="form-control" type="text" ng-model="$ctrl.user.Rigshi">
+
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                                        התנהגותי:
+
+                                    </td>
+
+                                    <td>
+                                        <input style="" class="form-control" type="text" ng-model="$ctrl.user.Hitnahagoti">
+
+                                    </td>
+
+                                </tr>
+
+                            </table>
+                            <br />
+                            <table width="100%" border="1">
+                                <tr>
+                                    <th style="text-align:center;font-weight:bold; background:#34b7eb;">מס' טיפול </th>
+                                    <th style="text-align:center;font-weight:bold; background:#34b7eb;">תאריך </th>
+                                    <th style="text-align:center;font-weight:bold; background:#34b7eb;">מטפל </th>
+                                    <th style="text-align:center;font-weight:bold; background:#34b7eb;">סוס </th>
+                                    <th style="text-align:center;font-weight:bold; background:#34b7eb;">מטרות לטיפול זה </th>
+                                    <th style="text-align:center;font-weight:bold; background:#34b7eb;">מהלך </th>
+                                    <th style="text-align:center;font-weight:bold; background:#34b7eb;">הערות וסטטוס  </th>
+                                    <th style="text-align:center;font-weight:bold; background:#34b7eb;width:40%">משוב  </th>
+
+                                </tr>
+
+                                <tr ng-if="!$ctrl.isDateMoreToday(lesson.start)" ng-repeat="lesson in (filtered = ( $ctrl.lessons | orderBy:'-start' ))" <!--ng-class="{'set-status':$ctrl.setStatus(lesson)}-->">
+
+                                <td style="padding:5px; border-spacing:5px;">{{$ctrl.lessons.length - $index}}</td>
+                                <td style="padding:5px; border-spacing:5px;">{{$ctrl.getDayOfWeek(lesson.start)}}  {{lesson.start | ildate: 'DD/MM/YYYY HH:mm'}}</td>
+                                <td style="padding:5px; border-spacing:5px;">{{$ctrl.getInstructorName(lesson.resourceId)}}</td>
+                                <td style="padding:5px; border-spacing:5px;">{{lesson.horsenames[0]}}</td>
+                                <td style="padding:5px; border-spacing:5px;">{{lesson.statuses[0].Matarot}}</td>
+                                <td style="padding:5px; border-spacing:5px;">{{lesson.statuses[0].Mahalak}}</td>
+                                <td style="padding:5px; border-spacing:5px;">{{lesson.statuses[0].HearotStatus}}</td>
+                                <td style="padding:5px; border-spacing:5px;">{{lesson.statuses[0].Mashov}}</td>
+
+                                </tr>
+
+
+
+                            </table>
+
+                        </div>
 
 
                     </div>

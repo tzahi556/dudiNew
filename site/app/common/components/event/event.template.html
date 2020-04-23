@@ -25,7 +25,7 @@
 
     <comments studentid="$ctrl.selectedStudent" close-callback="$ctrl.commentClose"></comments>
     <newstudent studentid="$ctrl.createStudent" farmId="$ctrl.f" close-callback="$ctrl.createStudentClose"></newstudent>
-
+    <matrotal studentid="$ctrl.selectedStudentmatrot" mode="$ctrl.mode" close-callback="$ctrl.matrotClose"></matrotal>
     <div class="event">
 
         <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
@@ -68,8 +68,8 @@
                 </ul>
             </div>
             <!--<select class="form-control" ng-change="$ctrl.addStudentToEvent()" ng-options="student.Id as student.FirstName + ' ' + student.LastName for student in $ctrl.students | filterDeletedStudents" ng-model="$ctrl.selectedStudent">
-        <option value="">בחר תלמיד</option>
-    </select>-->
+                <option value="">בחר תלמיד</option>
+            </select>-->
         </div>
 
         <div class="form-group">
@@ -79,7 +79,7 @@
 
         <div class="form-group">
             <label> תלמידים  </label>
-            <a class="btn btn-primary btn-xs" style="float:left" ng-show="!$ctrl.IsInstructorBlock"  ng-click="$ctrl.createNewStudent(1)" href="">תלמיד חדש</a>
+            <a class="btn btn-primary btn-xs" style="float:left" ng-show="!$ctrl.IsInstructorBlock" ng-click="$ctrl.createNewStudent(1)" href="">תלמיד חדש</a>
             <a class="btn btn-success btn-xs" style="float:left;margin-left:2px" ng-show="$ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin' " ng-click="showDetails=!showDetails;$ctrl.changeToOffice(1)">{{showDetails ? 'הצג הערות מדריך':   'הצג הערות משרד'}} </a>
             <table class="table small-padding">
                 <tr ng-repeat-start="studentId in $ctrl.event.students track by $index">
@@ -119,6 +119,10 @@
 
                         <a class="btn btn-success btn-xs" ng-show="!showDetails" ng-click="$ctrl.openComments(studentId)" href="">...</a>
                         <a class="btn btn-success btn-xs" ng-show="showDetails" style="visibility:hidden" href="">...</a>
+
+                        <a class="btn btn-primary btn-xs" title="משוב לשיעור" ng-show="!showDetails" ng-click="$ctrl.openMatrotal(studentId,1)" href="">...</a>
+                        <a class="btn btn-primary btn-xs" title="מטרות הטיפול" ng-show="!showDetails" ng-click="$ctrl.openMatrotal(studentId,2)" href="">...</a>
+
                     </td>
 
 
@@ -133,7 +137,7 @@
 
         <a class="btn btn-success" ng-click="$ctrl.close()" href="">שמור</a>
         <a class="btn btn-default" ng-click="$ctrl.delete()" ng-show="!$ctrl.IsInstructorBlock" href="">מחק</a>
-        <div class="checkbox-inline" ng-show="!$ctrl.IsInstructorBlock" ><label><input type="checkbox" ng-model="$ctrl.affectChildren">כולל אירועים עתידיים</label></div>
+        <div class="checkbox-inline" ng-show="!$ctrl.IsInstructorBlock"><label><input type="checkbox" ng-model="$ctrl.affectChildren">כולל אירועים עתידיים</label></div>
     </div>
 </div>
 

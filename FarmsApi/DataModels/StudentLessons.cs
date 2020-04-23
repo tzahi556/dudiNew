@@ -21,5 +21,12 @@ namespace FarmsApi.DataModels
         public int LessonPayType { get; set; }
         public string OfficeDetails { get; set; }
 
+        public string Matarot { get; set; }
+        public string Mahalak { get; set; }
+        public string HearotStatus { get; set; }
+        public string Mashov { get; set; }
+
+
+
     }
 }

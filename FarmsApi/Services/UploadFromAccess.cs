@@ -14,25 +14,27 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 73; //71 רנצו מניס
+        public int FarmId = 79; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
+                                // 79 סוסים בכפר
         public DataSet ds = new DataSet();
 
         public Context Context = new Context();
-        public string MailPrefix = "greenfields";
+       
+        public string MailPrefix = "susimbkfar";
         // "greenfields";
 
-        public string Hava = "greenfields";
+        public string Hava = "susimbkfar";
         //"greenfields";
         //rancho
         //haniel
-        public string ExpensWorkerId = "3";
+        public string ExpensWorkerId = "0";
         //3 חוות גרין פילדס חווה אמת
         //6 חוות רנצו
         // טסט 59
-        public string HavaMacabi = "2";
+        public string HavaMacabi = "1";
         //מכבי בחווה גרין פילדס 2
         //מכבי בחווה רנצו 54
         //מכבי בחווה חניאל 2
@@ -52,7 +54,7 @@ namespace FarmsApi.Services
         public UploadFromAccess()
         {
             String connection = @"Provider=Microsoft.Jet.OLEDB.4.0;" +
-                                @"Data source=C:\Users\tzahi\Desktop\ORD\Haniel_Amir.mdb;Jet OLEDB:Database Password=diana;";
+                                @"Data source=C:\Users\tzahi\Desktop\ORD\SusimBkfar.mdb;Jet OLEDB:Database Password=diana;";
 
 
 
@@ -75,7 +77,6 @@ namespace FarmsApi.Services
                                 FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
                                 Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
                                 and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
-
                                 Order by FarmDairy.DayofRide
                   ";
 
@@ -153,9 +154,9 @@ namespace FarmsApi.Services
 
             //BuildEntityIdOnly();
             //  BuildUserRiders();
-            //   BuildUserInstructors();
+             // BuildUserInstructors();
             //  BuildLessons();
-            //   BuildStudentLessons();
+              BuildStudentLessons();
             // BuildCommitmentsLessons();
             //   BuildPayments();
 
@@ -163,7 +164,7 @@ namespace FarmsApi.Services
 
             // BuildPensionAndCourse();
             //   BuildHorses();
-            BuildFixedPhone();
+        //    BuildFixedPhone();
           //  BuildFixedBirthDate();
          //   BuildHashlama();
 
@@ -1554,6 +1555,16 @@ namespace FarmsApi.Services
                 if (style == "treatment" && finance == "8") return "meuhedet";
             }
 
+
+            // סוסים בכפר
+            if (FarmId == 79)
+            {
+                if (style == "treatment" && finance == "1") return "maccabiSheli";
+                if (style == "treatment" && finance == "2") return "klalit";
+                if (style == "treatment" && finance == "4") return "leumit";
+                if (style == "treatment" && finance == "3") return "meuhedet";
+                if (style == "treatment" && finance == "10") return "klalitDikla";
+            }
             return "";
         }
 
@@ -1576,6 +1587,14 @@ namespace FarmsApi.Services
             {
                 if (finance == "2" || finance == "3" || finance == "8" || finance == "10") return "treatment";
             }
+
+
+            // סוסים בכפר
+            if (FarmId == 79)
+            {
+                if (finance == "1" || finance == "2" || finance == "3" || finance == "4" || finance == "10") return "treatment";
+            }
+
 
 
 

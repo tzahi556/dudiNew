@@ -1,0 +1,141 @@
+﻿<div class="event-background" ng-if="$ctrl.studentid != null">
+    <div class="event" style="border: 1px gray!important;width:500px;">
+
+        <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
+
+
+        <div class="form-group">
+            <label ng-if="$ctrl.mode==1">
+                משוב לשיעור
+            </label>
+
+            <label ng-if="$ctrl.mode==2">
+                מטרות הטיפול
+            </label>
+            <hr />
+
+            <div style="padding:3px" ng-if="$ctrl.mode==2">
+                <table width="100%" border="1">
+                    <tr>
+                        <td colspan="2" style="text-align:center;font-weight:bold; background:#34b7eb;padding:3px;width:100%;border:solid 1px black">
+                            מטרות הטיפול
+
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td style="font-weight:bold;padding:5px; border-spacing:5px;width:20%">
+                            מוטורי:
+
+                        </td>
+
+                        <td style="padding:2px">
+                            <span ng-bind="$ctrl.user.Motori"></span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                            תקשורתי:
+
+                        </td>
+
+                        <td style="padding:2px">
+                            <span ng-bind="$ctrl.user.Tikshorti"></span>
+
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                            ריגשי:
+
+                        </td>
+
+                        <td style="padding:2px">
+                            <span ng-bind="$ctrl.user.Rigshi"></span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                            התנהגותי:
+
+                        </td>
+
+                        <td style="padding:2px">
+                            <span ng-bind="$ctrl.user.Hitnahagoti"></span>
+
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+
+
+            </div>
+
+
+            <div style="padding:3px" ng-if="$ctrl.mode==1">
+
+
+                <div ng-repeat="lesson in  $ctrl.lessons">
+                    <label>מס' טיפול:</label>
+                    <span style="padding:5px; border-spacing:5px;">{{$ctrl.lessons.length - $index}}</span>
+                    <span style="float:left;font-weight:bold;font-size:24px;color:blue" ng-bind="lesson.title"></span>
+
+                    <br />
+                    <label>תאריך:</label>
+                    <span style="padding:5px; border-spacing:5px;">{{$ctrl.getDayOfWeek(lesson.start)}}  {{lesson.start | ildate: 'DD/MM/YYYY HH:mm'}}</span><br />
+                    <label>מטפל:</label>
+                    <span style="padding:5px; border-spacing:5px;">{{$ctrl.getInstructorName(lesson.resourceId)}}</span><br />
+                    <label>סוס:</label>
+                    <span style="padding:5px; border-spacing:5px;">{{lesson.horsenames[0]}}</span><br />
+
+                    <label>מטרות לטיפול זה:</label>
+                    <input style="float:right" class="form-control" type="text" ng-model="lesson.statuses[0].Matarot"><br />
+
+                    <label>מהלך:</label>
+                    <input style="float:right" class="form-control" type="text" ng-model="lesson.statuses[0].Mahalak"><br />
+
+                    <label>הערות וסטטוס:</label>
+                    <input style="float:right" class="form-control" type="text" ng-model="lesson.statuses[0].HearotStatus"><br />
+                    <label>משוב:</label>
+                    <textarea class="form-control" rows="3" ng-model="lesson.statuses[0].Mashov"></textarea>
+                    <br />
+                    <a class="btn btn-success" style="float:left;" ng-if="$ctrl.mode==1" ng-click="$ctrl.close(lesson)" href="">שמור</a>
+                    <div style="clear:both"></div>
+                    <hr />
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+        <hr />
+
+       
+        <a class="btn btn-default" ng-click="$ctrl.hide()" href="">סגור</a>
+
+
+
+
+    </div>
+</div>

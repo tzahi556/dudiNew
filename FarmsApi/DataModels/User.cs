@@ -71,6 +71,11 @@ namespace FarmsApi.DataModels
         public string Intek { get; set; }
         public string MatrotAl { get; set; }
 
+        public string Motori { get; set; }
+        public string Tikshorti { get; set; }
+        public string Rigshi { get; set; }
+        public string Hitnahagoti { get; set; }
+
 
 
     }
