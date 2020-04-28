@@ -15,7 +15,7 @@
         this.checkLowCredit = _checkLowCredit.bind(this);
         this.getifLessonsHaveMoreOneRider = _getifLessonsHaveMoreOneRider.bind(this);
         this.deleteOnlyStudentLesson = _deleteOnlyStudentLesson.bind(this);
-
+        this.getSetSchedularTask = _getSetSchedularTask.bind(this);
         
 
         this.HMOs = sharedValues.HMOs;
@@ -175,6 +175,19 @@
         //}
 
       //  lessonsService.updateLessonDetails(lesson);
+
+
+
+        function _getSetSchedularTask(lessonId, resourceId, schedular,type) {
+          
+            var deferred = $q.defer();
+            $http.post(sharedValues.apiUrl + 'lessons/getSetSchedularTask/' + lessonId + "/" + resourceId + "/" + type  , schedular).then(function (res) {
+
+                deferred.resolve(res.data);
+            });
+
+            return deferred.promise;
+        }
     }
 
 })();

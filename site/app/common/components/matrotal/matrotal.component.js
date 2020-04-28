@@ -34,9 +34,24 @@
         
         this.getInstructorName = _getInstructorName.bind(this);
         this.getDayOfWeek = _getDayOfWeek.bind(this);
+        this.prevLess = _prevLess.bind(this);
 
 
-        //}.bind(this));
+        function _prevLess() {
+            
+            for (var i = 0; i < this.lessons.length; i++) {
+                if (this.selectedId != this.lessons[i].id) {
+
+                    this.selectedId = this.lessons[i].id;
+                    break;
+                }
+
+            }
+
+           
+          
+        }
+
 
         function _isDateMoreToday(date) {
           
@@ -70,12 +85,15 @@
                     if (less[i].id == lessonId) {
 
                         less[i].title = "שיעור נוכחי";
+                        less[i].showDetails = "שיעור קודם";
+                        
                         tempLessons.push(less[i]);
                        
                         if (less[i - 1]) {
 
                             tempLessons.push(less[i - 1]);
-                            less[i-1].title = "שיעור קודם";
+                            less[i - 1].title = "שיעור קודם";
+                            less[i - 1].showDetails = "שיעור הבא";
                         }
 
                     }
@@ -83,7 +101,7 @@
                 }
 
                 this.lessons = tempLessons;
-               
+                this.selectedId = this.lessons[0].id;
 
             }.bind(this));
 

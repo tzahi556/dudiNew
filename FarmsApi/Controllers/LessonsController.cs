@@ -74,7 +74,16 @@ namespace FarmsApi.Services
             return Ok(LessonsService.GetifLessonsHaveMoreOneRider(lessonId));
         }
 
-        
+
+
+       
+        [Route("getSetSchedularTask/{lessonId}/{resourceId}/{type}")]
+        [HttpPost]
+        public IHttpActionResult GetSetSchedularTask(JObject schedular, int lessonId, int resourceId,int type)
+        {
+            return Ok(LessonsService.GetSetSchedularTask(schedular, lessonId, resourceId,type));
+        }
+
 
 
 

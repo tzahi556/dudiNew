@@ -336,7 +336,7 @@
                     controllerAs: '$ctrl',
                     resolve: {
                         user: function (usersService, $stateParams) {
-                         
+                        
                            return usersService.getUser($stateParams.id);
                         },
                         lessons: function (lessonsService, $stateParams) {

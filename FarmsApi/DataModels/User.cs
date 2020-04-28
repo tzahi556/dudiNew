@@ -76,7 +76,7 @@ namespace FarmsApi.DataModels
         public string Rigshi { get; set; }
         public string Hitnahagoti { get; set; }
 
-
+        public int? IsMazkirut { get; set; }
 
     }
 }

@@ -20,6 +20,9 @@ namespace FarmsApi.DataModels
 
         public string ParentInvoicePdf { get; set; }
         public string ParentInvoiceNum { get; set; }
+        public string ZikuyNumber { get; set; }
+
+        public string ZikuyPdf { get; set; }
 
         public string InvoiceDetails { get; set; }
         public string canceled { get; set; }

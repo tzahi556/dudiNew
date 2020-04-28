@@ -73,6 +73,7 @@
             //}
         });
 
+       
         $('.calendar').fullCalendar('destroy');
         $(this.calendar).fullCalendar({
             header: {
@@ -116,7 +117,7 @@
             maxTime: '24:00',
 
             events: this.loadEvents.bind(this),
-            resourceOrder: 'id',
+            resourceOrder: '-IsMazkirut',// שיניתי מאיידי לזה בכדי להשיג מזכירות שיהיה ראשון
             resources: this.loadResources.bind(this),
 
             eventClick: this.eventClick.bind(this),
@@ -500,6 +501,7 @@
     }
 
     function _loadResources(callback) {
+      
         callback(this.resources);
 
     }

@@ -21,13 +21,61 @@
         this.eventChange = _eventChange.bind(this);
         this.eventCreate = _eventCreate.bind(this);
         this.getLastEventId = _getLastEventId.bind(this);
+        this.setAllHour = _setAllHour.bind(this);
 
+        
         this.initInstructor = function () {
            // alert(this.availablehours.length);
             this.resources = [{ id: this.user.Id, title: 'שעות עבודה' }];
             this.selfEdit = angular.fromJson(localStorage.getItem('authorizationData')).userName == this.user.Email;
+            this.user.IsMazkirut = (this.user.IsMazkirut==1) ? true : false;
+
         }.bind(this);
         this.initInstructor();
+
+
+        function _setAllHour() {
+            $('.calendar').fullCalendar('removeEventSource', this.availablehours);
+
+            if (this.user.IsMazkirut) {
+
+               
+                this.availablehours = [];
+                for (var i = 0; i < 7; i++) {
+
+
+                    var eventId = this.getLastEventId(this.availablehours) + 1;
+
+                    var event = {
+                        Id: eventId,
+                        start: '08:00',
+                        end: '24:00',
+                        dow: i,
+                        UserId: this.user.Id,
+                        resourceId: this.user.Id,
+                        newEVENT: true
+                    };
+
+                    this.availablehours.push(event);
+                }
+
+
+
+            
+                $('.calendar').fullCalendar('addEventSource', this.availablehours);
+                $('.calendar').fullCalendar('refetchEvents');
+
+
+            } else {
+
+                this.availablehours = [];
+            }
+
+
+            this.submit();
+            
+            $(".calendar").fullCalendar('refresh');
+        }
 
         function _submit() {
             if (this.scope.instructorForm.$valid) {
@@ -42,6 +90,7 @@
                 }
 
 
+                this.user.IsMazkirut = (this.user.IsMazkirut) ? "1" : "0";
 
                 usersService.updateUserMultiTables(this.user, [], [], [], [], [], this.availablehours,[],[]).then(function (user) {
                     
@@ -86,7 +135,7 @@
         }
 
         function _eventCreate(start, end, jsEvent, view, resource) {
-           
+           debugger
             var eventId = this.getLastEventId(this.availablehours) + 1;
           
             var event = {

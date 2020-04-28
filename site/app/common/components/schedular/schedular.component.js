@@ -1,0 +1,194 @@
+﻿(function () {
+
+    var app = angular.module('app');
+
+    app.component('schedular', {
+        templateUrl: 'app/common/components/schedular/schedular.template.html',
+        controller: SchedularController,
+        bindings: {
+            studentidmatrot: '=',
+            selectedpayvalue: "=",
+            students: '<',
+            closeCallback: '<',
+            deleteCallback: '<'
+        }
+    });
+
+    function SchedularController($scope, usersService, lessonsService, farmsService, sharedValues, $http, notificationsService) {
+
+        this.lessonsService = lessonsService;
+        this.usersService = usersService;
+        var self = this;
+        this.scope = $scope;
+        this.notificationsService = notificationsService;
+        this.hide = _hide.bind(this);
+        this.close = _close.bind(this);
+
+        this.onShow = _onShow.bind(this);
+        this.mode = 1;
+
+        this.lessonId = 0;
+        this.resourceId = 0;
+
+        this.isDateMoreToday = _isDateMoreToday.bind(this);
+
+        //notificationsService.getMessagesList().then(function (res) {
+        //    this.scope.messages = res;
+        
+        this.getInstructorName = _getInstructorName.bind(this);
+        this.getDayOfWeek = _getDayOfWeek.bind(this);
+      //  this.prevLess = _prevLess.bind(this);
+        this.openTask = _openTask.bind(this);
+
+        
+
+        function _openTask(type) {
+            if (type == 0) {
+                this.newSchedular = [];
+                this.newSchedular.Id = 0;
+                this.newSchedular.Title = "";
+                this.newSchedular.Desc = "";
+                this.newSchedular.EveryDay = false;
+                this.newSchedular.EveryWeek = false;
+                this.newSchedular.EveryMonth = false;
+                this.newSchedular.EndDate = "";
+                this.affectChildren = false;
+
+            } else {
+
+
+               
+                this.newSchedular = [];
+                this.newSchedular.Id = type.Id;
+                this.newSchedular.Title = type.Title;
+                this.newSchedular.Desc = type.Desc;
+                this.newSchedular.EveryDay = type.EveryDay;
+                this.newSchedular.EveryWeek = type.EveryWeek;
+                this.newSchedular.EveryMonth = type.EveryMonth;
+                this.newSchedular.EndDate = moment(type.EndDate).startOf('day').toDate();
+                this.affectChildren = false;
+
+            }
+
+
+
+
+
+
+            $('#modal').modal('show');
+          
+        }
+
+
+        function _isDateMoreToday(date) {
+          
+            if (moment(date) > moment()) return true;
+
+            return false;
+        }
+       
+
+        this.scope.$on('schedular.show', this.onShow);
+
+        function _onShow(event, lesson) {
+
+           
+            this.selectedStudentSchedular = event;
+           
+            this.lessonId = lesson.id;
+            this.resourceId = lesson.resourceId;
+
+            this.lessonsService.getSetSchedularTask(lesson.id, lesson.resourceId, null,0).then(function (res) {
+               
+                
+                this.schedulars = res;
+           
+
+            }.bind(this));
+
+
+
+        }
+
+        function _getDayOfWeek(day) {
+            var newDate = new Date(day);
+            var CurrentDay = newDate.getDay();
+            if (CurrentDay == 0) return "א'";
+            if (CurrentDay == 1) return "ב'";
+            if (CurrentDay == 2) return "ג'";
+            if (CurrentDay == 3) return "ד'";
+            if (CurrentDay == 4) return "ה'";
+            if (CurrentDay == 5) return "ו'";
+            if (CurrentDay == 6) return "ש'";
+
+            return newDate.getDay();
+        }
+
+
+        function _getInstructorName(id) {
+            for (var i in this.instructors) {
+                if (this.instructors[i].Id == id) {
+                    return this.instructors[i].FirstName + " " + this.instructors[i].LastName;
+                }
+            }
+        }
+
+
+
+        function _hide() {
+
+           
+            // if ($(event.target).is('.event-background')) {
+            this.selectedStudentSchedular = null;
+            //}
+
+            //if ($(event.target).is('.event-background') || $(event.target).is('.btnClose')) {
+            //    this.studentid = null;
+            //}
+        }
+
+        function _close(schedular, type) {
+           
+            var obj = {
+                Id: this.newSchedular.Id,
+                Title: this.newSchedular.Title,
+                Desc: this.newSchedular.Desc,
+                EveryDay: this.newSchedular.EveryDay,
+                EveryWeek: this.newSchedular.EveryWeek,
+                EveryMonth: this.newSchedular.EveryMonth,
+                EndDate: this.newSchedular.EndDate,
+                AffectChildren: this.affectChildren
+            }
+           
+
+
+            debugger
+            //if (this.newSchedular.Id == 0)
+            //    this.schedulars.push(obj);
+             
+            this.lessonsService.getSetSchedularTask(this.lessonId, this.resourceId, obj, type).then(function (res) {
+
+
+                this.schedulars = res;
+                this.closeCallback(null);
+                alert("המשימה נשמרה בהצלחה!");     
+
+             
+            }.bind(this));
+
+
+            $("#modal .close").click();
+
+
+           
+            this.selectedStudentSchedular = null;
+
+        }
+
+
+
+
+    }
+
+
+})();

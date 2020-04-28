@@ -28,6 +28,7 @@ namespace FarmsApi.DataModels
         public DbSet<Makavs> Makavs { get; set; }
 
         public DbSet<Checks> Checks { get; set; }
+        public DbSet<SchedularTasks> SchedularTasks { get; set; }
         public Context() : base("Farms") { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

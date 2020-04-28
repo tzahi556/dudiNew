@@ -319,7 +319,7 @@
             //    visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
             //}
             //sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
-
+            
             this.initResources();
             // בדיקה אם אפשר להסתדר בלי זה
             this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
@@ -518,7 +518,7 @@
 
             for (var i in this.instructors) {
 
-
+                
                 if (this.instructors[i].Show) {
 
                     //  this.resourcesIds += "," + this.instructors[i].Id;
@@ -527,7 +527,8 @@
                         id: this.instructors[i].Id,
                         title: this.instructors[i].FirstName + ' ' + this.instructors[i].LastName,
                         eventColor: this.instructors[i].EventsColor,
-                        eventTextColor: '#000'
+                        eventTextColor: '#000',
+                        IsMazkirut: this.instructors[i].IsMazkirut
                     });
 
 
@@ -556,8 +557,8 @@
         }
 
         function _eventClose(event, lessonsQty) {
-         
-            if (event.isFromChangePhone) {
+            
+            if (event && event.isFromChangePhone) {
                 this.eventChange(event);
 
             }
@@ -683,26 +684,31 @@
         }
 
         function _eventClick(event, jsEvent) {
-
+           
             var elemId = jsEvent.target.id;
             if (elemId) {
 
-                //debugger
-                //var payValue = $("#" + elemId).html().replace(")", "").replace("(", "").replace("&#x200E;", "");
-                // //var t = $.trim($("#" + elemId).html().replace("(", '').replace(")", ''));
-                //alert(eval(payValue));
+               
                 this.selectedPayValue = $("#" + elemId).text();
                 this.selectedStudent = elemId.replace("dvPaid_", "");//this.getLessonById(event.id);
 
 
                 this.scope.$broadcast('pay.show', this.selectedStudent, this.selectedPayValue);
             }
-            else {
+            else { 
                 //for event
-                this.selectedLesson = this.getLessonById(event.id);
-                // debugger
-                //alert(this.resources[0].Farm_Id);
-                this.scope.$broadcast('event.show', this.selectedLesson, this.instructors[0]);
+               
+                if (event.IsMazkirut == "1") {
+                    
+                    this.selectedStudentSchedular = event;
+
+                    this.scope.$broadcast('schedular.show', this.selectedStudentSchedular, this.instructors[0]);
+                }
+
+                else { 
+                    this.selectedLesson = this.getLessonById(event.id);
+                    this.scope.$broadcast('event.show', this.selectedLesson, this.instructors[0]);
+                }
             }
         }
 
@@ -800,6 +806,10 @@
                 }
             }
         }
+
+
+
+
 
         function _getLessonByStartAndResource(start,end, resourceId) {
            

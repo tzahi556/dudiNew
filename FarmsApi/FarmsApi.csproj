@@ -152,6 +152,7 @@
     <Compile Include="DataModels\AvailableHours.cs" />
     <Compile Include="DataModels\Makav.cs" />
     <Compile Include="DataModels\Checks.cs" />
+    <Compile Include="DataModels\SchedularTask.cs" />
     <Compile Include="DataModels\TransferResult.cs" />
     <Compile Include="DataModels\MangerReport.cs" />
     <Compile Include="DataModels\LessonsResult.cs" />

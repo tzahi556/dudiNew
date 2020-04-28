@@ -156,7 +156,7 @@ namespace FarmsApi.Services
             //  BuildUserRiders();
              // BuildUserInstructors();
             //  BuildLessons();
-              BuildStudentLessons();
+         //     BuildStudentLessons();
             // BuildCommitmentsLessons();
             //   BuildPayments();
 
@@ -164,7 +164,7 @@ namespace FarmsApi.Services
 
             // BuildPensionAndCourse();
             //   BuildHorses();
-        //    BuildFixedPhone();
+           BuildFixedPhone();
           //  BuildFixedBirthDate();
          //   BuildHashlama();
 
@@ -285,12 +285,21 @@ namespace FarmsApi.Services
                     var ParentDetalis = GetParentDetalis(RiderId);
                     if (ParentDetalis != null)
                     {
-                       
-                        nomobileFather = ParentDetalis["PhonFather"].ToString();
-                        nomobileMother = ParentDetalis["PhonMother"].ToString();
 
-                        mobileFather = ParentDetalis["mobileFather"].ToString();
-                        mobileMother = ParentDetalis["mobileMother"].ToString(); 
+                        //   nomobileFather = ParentDetalis["PhonFather"].ToString();
+                        //    nomobileMother = ParentDetalis["PhonMother"].ToString();
+
+                      
+                        PhoneNumber = ParentDetalis["mobileMother"].ToString();
+                        if (string.IsNullOrEmpty(PhoneNumber))
+                        {
+
+                            PhoneNumber = ParentDetalis["mobileFather"].ToString();
+
+                        }
+                        else { 
+                             PhoneNumber2 = ParentDetalis["mobileFather"].ToString();
+                        }
 
                     }
 
@@ -343,9 +352,7 @@ namespace FarmsApi.Services
                     }
 
                     //*******************************************
-                    //PhonHome = item["PhonHome"].ToString();
-                    //SelolarPhon = item["SelolarPhon"].ToString();
-                    //PhonAnother = item["PhonAnother"].ToString();
+                   
 
                     if (PhonHome.StartsWith("05"))
                     {
@@ -388,27 +395,7 @@ namespace FarmsApi.Services
 
 
 
-                    //if (string.IsNullOrEmpty(PhoneNumber.Trim()))
-                    //{
-                    //    PhoneNumber = (string.IsNullOrEmpty(SelolarPhon)) ? ((string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother) : SelolarPhon;
-                    //}
-
-                    //if (string.IsNullOrEmpty(PhoneNumber2.Trim()))
-                    //{
-
-                    //    if (PhoneNumber == SelolarPhon)
-                    //        PhoneNumber2 = (string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother;
-                    //    else if (PhoneNumber == PhonAnother)
-                    //        PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? PhonHome : SelolarPhon;
-                    //    else if (PhoneNumber == PhonHome)
-                    //        PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? PhonAnother : SelolarPhon;
-                    //    else
-                    //        PhoneNumber2 = (string.IsNullOrEmpty(SelolarPhon)) ? ((string.IsNullOrEmpty(PhonAnother)) ? PhonHome : PhonAnother) : SelolarPhon;
-
-
-
-                    //}
-
+                  
 
                     var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
                     if (UserEN != null)

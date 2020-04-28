@@ -48,90 +48,7 @@ namespace FarmsApi.Services
             DateTime StartDate = startDate != null ? DateTime.Parse(startDate) : DateTime.Now.Date;
             DateTime EndDate = endDate != null ? DateTime.Parse(endDate).AddDays(1) : DateTime.Now.Date.AddDays(1);
 
-            //IQueryable<Lesson> Lessons = Context.Lessons;
 
-            //var q = from lesson in Lessons
-            //        join studentin in Context.Users on lesson.Instructor_Id equals studentin.Id into joinedInstructor
-            //        from studentin in joinedInstructor.DefaultIfEmpty()
-            //        join studentLesson in Context.StudentLessons on lesson.Id equals studentLesson.Lesson_Id into joinedStudentLessons
-            //        from studentLesson in joinedStudentLessons.DefaultIfEmpty()
-            //        join student in Context.Users on studentLesson.User_Id equals student.Id into joinedStudents
-            //        from student in joinedStudents.DefaultIfEmpty()
-
-            //        where
-            //            // filter student
-            //            (studentLesson.User_Id == StudentId || StudentId == null) &&
-            //            // filter instructor צחי הוריד פילטור 
-            //            // (lesson.Instructor_Id == CurrentUser.Id || (CurrentUser.Role != "profAdmin" && CurrentUser.Role != "instructor")) &&
-
-            //            (studentin.Farm_Id == CurrentUser.Farm_Id || CurrentUser.Farm_Id == 0) &&
-            //            // (resources==null || resources.Contains(lesson.Instructor_Id.ToString())) &&
-            //            // filter by date
-            //            (StudentId != null || lesson.Start >= StartDate && lesson.End <= EndDate) &&
-            //            (
-            //              ((CurrentUser.Role == "profAdmin" || CurrentUser.Role == "instructor") && studentLesson.Status != "completionReq")
-            //               ||
-            //              (CurrentUser.Role != "profAdmin" && CurrentUser.Role != "instructor")
-
-            //            )
-
-            //        select new
-            //        {
-
-            //            id = lesson.Id,
-            //            prevId = lesson.ParentId,
-            //            start = lesson.Start,
-            //            end = lesson.End,
-            //            details = lesson.Details,
-            //            editable = true,
-            //            resourceId = lesson.Instructor_Id,
-            //            student = studentLesson != null ? (int?)studentLesson.User_Id : null,
-            //            status = studentLesson != null ? studentLesson.Status : null,
-            //            statusDetails = studentLesson != null ? studentLesson.Details : null,
-            //            isComplete = studentLesson != null ? studentLesson.IsComplete : 0,
-            //            lessprice = studentLesson.Price,
-            //            //studentName = student.FirstName + " " + student.LastName + ((IsPrice) ? "<a  style='color:" + ((student.Id < 0) ? "red" : "blue") + ";font-weight:bold;padding-right:2px;padding-left:2px;'>(<span id=dvPaid_" + studentLesson.User_Id.ToString() + ">" + -348 + "</span>)</a>" : "")
-
-            //            studentName = student.FirstName + " " + student.LastName + ((IsPrice) ? "<a style='color:" + ((student.Id < 0) ? "red" : "blue") + ";font-weight:bold'> &#x200E;(<span id=dvPaid_" + studentLesson.User_Id.ToString() + ">" + -300 + "</span>)&#x200E; </a> " : "")
-
-            //        };
-
-
-
-
-            //q = q.Distinct().OrderBy(l => l.start);
-            //var lessons = q.ToList();
-            //int lastId = 0;
-            //foreach (var Lesson in lessons)
-            //{
-            //    try
-            //    {
-            //        if (Lesson.id != lastId)
-            //        {
-            //            var students = lessons.Where(l => l.id == Lesson.id && l.student != null).Select(l => new { StudentId = l.student, Status = l.status, StudentName = l.studentName, Details = l.statusDetails, IsComplete = l.isComplete }).Distinct().ToArray();
-            //            var studentsArray = students.Select(s => s.StudentName).ToArray();
-            //            ReturnLessons.Add(JObject.FromObject(new
-            //            {
-            //                id = Lesson.id,
-            //                prevId = Lesson.prevId,
-            //                start = Lesson.start,
-            //                end = Lesson.end,
-            //                editable = true,
-            //                resourceId = Lesson.resourceId,
-            //                lessprice = Lesson.lessprice,
-            //                details = Lesson.details,
-            //                students = students.Select(s => s.StudentId).ToArray(),
-            //                statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete }).ToArray(),
-            //                title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.details : "")
-            //            }));
-            //        }
-            //        lastId = Lesson.id;
-            //    }
-            //    catch (Exception)
-            //    {
-
-            //    }
-            //}
 
             SqlParameter StudentIdPara = new SqlParameter("StudentId", (StudentId == null) ? -1 : StudentId);
             SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
@@ -164,8 +81,14 @@ namespace FarmsApi.Services
                 {
                     if (Lesson.Id != lastId)
                     {
-                        var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new { StudentId = l.User_Id, Status = l.Status, StudentName = l.StudentName, Details = l.StatusDetails,
-                            OfficeDetails = l.OfficeDetails, IsComplete = l.IsComplete, 
+                        var students = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null).Select(l => new
+                        {
+                            StudentId = l.User_Id,
+                            Status = l.Status,
+                            StudentName = l.StudentName,
+                            Details = l.StatusDetails,
+                            OfficeDetails = l.OfficeDetails,
+                            IsComplete = l.IsComplete,
                             HorseId = l.HorseId,
                             Matarot = l.Matarot,
                             Mahalak = l.Mahalak,
@@ -188,23 +111,31 @@ namespace FarmsApi.Services
                             lessonpaytype = Lesson.LessonPayType,
                             details = Lesson.Details,
                             students = students.Select(s => s.StudentId).ToArray(),
-                            statuses = students.Select(s => new { StudentId = s.StudentId, Status = s.Status, Details = s.Details, IsComplete = s.IsComplete, HorseId = s.HorseId, OfficeDetails = s.OfficeDetails,
+                            statuses = students.Select(s => new
+                            {
+                                StudentId = s.StudentId,
+                                Status = s.Status,
+                                Details = s.Details,
+                                IsComplete = s.IsComplete,
+                                HorseId = s.HorseId,
+                                OfficeDetails = s.OfficeDetails,
                                 Matarot = s.Matarot,
                                 Mahalak = s.Mahalak,
                                 HearotStatus = s.HearotStatus,
                                 Mashov = s.Mashov
                             }).ToArray(),
                             title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : ""),
-                            PrevNext = Lesson.PrevNext
+                            PrevNext = Lesson.PrevNext,
+                            IsMazkirut = Lesson.IsMazkirut
                             //Matarot = Lesson.Matarot,
                             //Mahalak = Lesson.Mahalak,
                             //HearotStatus = Lesson.HearotStatus,
                             //Mashov = Lesson.Mashov
 
-                           
 
-     
-                           }));
+
+
+                        }));
                     }
                     lastId = Lesson.Id;
                 }
@@ -300,7 +231,7 @@ namespace FarmsApi.Services
                         var StudentLesson = Context.StudentLessons.SingleOrDefault(sl => sl.User_Id == StudentId && sl.Lesson_Id == LessonId);
                         if (StudentLesson != null)
                         {
-        
+
                             if (Status["Matarot"] != null)
                             {
                                 StudentLesson.Matarot = Status["Matarot"].Value<string>();
@@ -911,5 +842,230 @@ namespace FarmsApi.Services
 
 
 
+        public static List<SchedularTasks> GetSetSchedularTask(JObject Schedular, int lessonId, int resourceId, int type)
+        {
+            using (var Context = new Context())
+            {
+
+                if (type == 0)
+                {
+                    //try
+                    //{
+
+
+                    //}
+                    //catch (Exception ex)
+                    //{
+
+                    //    return null;
+
+                    //}
+
+                }
+
+
+                if (type == 1)
+                {
+
+
+                    var Title = Schedular["Title"] != null ? Schedular["Title"].Value<string>() : "";
+                    var Desc = Schedular["Desc"] != null ? Schedular["Desc"].Value<string>() : "";
+                    var EveryDay = Schedular["EveryDay"] != null ? Schedular["EveryDay"].Value<bool>() : false;
+                    var EveryWeek = Schedular["EveryWeek"] != null ? Schedular["EveryWeek"].Value<bool>() : false;
+                    var EveryMonth = Schedular["EveryMonth"] != null ? Schedular["EveryMonth"].Value<bool>() : false;
+                    var EndDate = Schedular["EndDate"].ToString() != "" ? Schedular["EndDate"].Value<DateTime>() : (DateTime?)null;
+                    bool AffectChildren = Schedular["AffectChildren"] != null ? Schedular["AffectChildren"].Value<bool>() : false;
+
+                    Lesson CurrentLesson = Context.Lessons.Where(u => u.Id == lessonId).FirstOrDefault();
+
+                    List<Lesson> LessonsAll = new List<Lesson>();
+
+                    var LessonsAllGen = Context.Lessons.Where(x => x.Instructor_Id == resourceId && x.Id >= lessonId && (EndDate == null || (EndDate != null && x.Start < EndDate))).ToList();
+                   
+                    if (EveryDay)
+                    {
+                        LessonsAll = LessonsAllGen;
+                    }
+                    else if (EveryWeek)
+                    {
+                        foreach (Lesson item in LessonsAllGen)
+                        {
+
+                            if (item.Start.DayOfWeek == CurrentLesson.Start.DayOfWeek)
+                                LessonsAll.Add(item);
+
+                        }
+
+                    }
+                    else if (EveryMonth)
+                    {
+
+                        foreach (Lesson item in LessonsAllGen)
+                        {
+
+                            if (item.Start.Day == CurrentLesson.Start.Day)
+                                LessonsAll.Add(item);
+
+                        }
+
+                    }
+                    else
+                    {
+                        LessonsAll.Add(CurrentLesson);
+
+                    }
+
+
+
+
+
+                    int Id = Schedular["Id"] != null ? Schedular["Id"].Value<int>() : 0;
+
+                    if (Id != 0)
+                    {
+                        var SchedularTaskList = Context.SchedularTasks.Where(u => u.Id == Id).FirstOrDefault();
+                        DeleteAll(SchedularTaskList, true, Context);
+
+                    }
+
+
+
+
+                    foreach (var item in LessonsAll)
+                    {
+
+                        SchedularTasks st = new SchedularTasks();
+                        st.LessonId = item.Id;
+                        st.ResourceId = resourceId;
+                        st.Title = Title;
+                        st.Desc = Desc;
+
+                        st.EveryDay = EveryDay;
+                        st.EveryWeek = EveryWeek;
+                        st.EveryMonth = EveryMonth;
+                        st.EndDate = EndDate;
+
+                        Context.SchedularTasks.Add(st);
+                    }
+
+                    Context.SaveChanges();
+
+
+
+                    // כאן אני דואג להכניס לשיעורים את ההערות
+
+
+                    string html = @"<div style = 'border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
+                                         <div>" + Desc + @" </div>
+                                     </div>";
+
+
+
+                    foreach (var item in LessonsAll)
+                    {
+                        Lesson les = Context.Lessons.Where(u => u.Id == item.Id).FirstOrDefault();
+                        les.Details += html;
+                        Context.Entry(les).State = System.Data.Entity.EntityState.Modified;
+
+                    }
+
+                    Context.SaveChanges();
+
+
+
+
+                }
+
+
+                if (type == 2)
+                {
+                    int Id = Schedular["Id"] != null ? Schedular["Id"].Value<int>() : 0;
+                    bool AffectChildren = Schedular["AffectChildren"] != null ? Schedular["AffectChildren"].Value<bool>() : false;
+                    var SchedularTaskList = Context.SchedularTasks.Where(u => u.Id == Id).FirstOrDefault();
+                    DeleteAll(SchedularTaskList, AffectChildren, Context);
+
+
+                }
+
+
+                var SchedularTaskListRes = Context.SchedularTasks.Where(u => u.LessonId == lessonId && u.ResourceId == resourceId).ToList();
+
+                return SchedularTaskListRes;
+
+
+            }
+        }
+
+        private static void DeleteAll(SchedularTasks schedularTaskList, bool affectChildren, Context Context)
+        {
+
+            var lessonId = schedularTaskList.LessonId;
+            var resourceId = schedularTaskList.ResourceId;
+            var Title = schedularTaskList.Title;
+            var Desc = schedularTaskList.Desc;
+            var EveryDay = schedularTaskList.EveryDay;
+            var EveryWeek = schedularTaskList.EveryWeek;
+            var EveryMonth = schedularTaskList.EveryMonth;
+            var EndDate = schedularTaskList.EndDate;
+
+            Lesson CurrentLesson = Context.Lessons.Where(u => u.Id == lessonId).FirstOrDefault();
+
+            List<Lesson> LessonsAll = new List<Lesson>();
+            var LessonsAllGen = Context.Lessons.Where(x => x.Instructor_Id == resourceId && x.Id >= lessonId && (EndDate == null || (EndDate != null && x.Start < EndDate))).ToList();
+
+            if (EveryDay && affectChildren)
+            {
+                LessonsAll = LessonsAllGen;
+            }
+            else if (EveryWeek && affectChildren)
+            {
+                foreach (Lesson item in LessonsAllGen)
+                {
+
+                    if (item.Start.DayOfWeek == CurrentLesson.Start.DayOfWeek)
+                        LessonsAll.Add(item);
+
+                }
+
+            }
+            else if (EveryMonth && affectChildren)
+            {
+
+                foreach (Lesson item in LessonsAllGen)
+                {
+
+                    if (item.Start.Day == CurrentLesson.Start.Day)
+                        LessonsAll.Add(item);
+
+                }
+
+            }
+            else
+            {
+                LessonsAll.Add(CurrentLesson);
+
+            }
+
+
+            string html = @"<div style = 'border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
+                                         <div>" + Desc + @" </div>
+                                     </div>";
+
+            foreach (var item in LessonsAll)
+            {
+                var CurrentSchedularTasks = Context.SchedularTasks.Where(u => u.LessonId == item.Id && u.ResourceId == resourceId && u.Title==Title && u.Desc==Desc).FirstOrDefault();
+                if (CurrentSchedularTasks != null) Context.SchedularTasks.Remove(CurrentSchedularTasks);
+
+
+                item.Details = item.Details.Replace(html, "");
+                Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+
+            }
+
+            Context.SaveChanges();
+
+        }
     }
 }

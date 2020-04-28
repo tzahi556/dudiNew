@@ -4,6 +4,7 @@
             מדריך
         </div>
         <div class="panel-body">
+
             <div class="form-group">
                 <label>מזהה</label>
                 <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />
@@ -39,6 +40,16 @@
                     <option value="">בחר חווה</option>
                 </select>
             </div>
+
+
+            <div class="form-group">
+
+                <label><input type="checkbox" ng-model="$ctrl.user.IsMazkirut" ng-change="$ctrl.setAllHour()" /> האם מזכירות </label>
+                <label>--</label>
+                <label style="color:darkred">יש לשים לב שזה יהיה מדריך כללי לצרכים כלליים!</label>
+            </div>
+
+
             <div class="form-group">
                 <label>שעות עבודה</label>
                 <calendar events="$ctrl.availablehours"
@@ -56,3 +67,24 @@
         </div>
     </div>
 </form>
+
+
+<!--<div style="border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white">
+    <div style="font-weight:bold;text-decoration:underline">הובלת סוסים</div>
+    <div>להוציא את הסוסים לטיול יומי סתם כי בא לי</div>
+
+</div>
+
+
+<div style="border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white">
+    <div style="font-weight:bold;text-decoration:underline">הובלת סוסים</div>
+    <div>להוציא את הסוסים לטיול יומי סתם כי בא לי</div>
+
+</div>
+
+
+<div style="border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white">
+    <div style="font-weight:bold;text-decoration:underline">הובלת סוסים</div>
+    <div>להוציא את הסוסים לטיול יומי סתם כי בא לי</div>
+
+</div>-->

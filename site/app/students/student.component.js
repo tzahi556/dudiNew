@@ -60,7 +60,7 @@
         this.styles = sharedValues.styles;
         this.submit = _submit.bind(this);
         this.getInstructorName = _getInstructorName.bind(this);
-       
+
         this.delete = _delete.bind(this);
         this.addPayment = _addPayment.bind(this);
         this.addCheck = _addCheck.bind(this);
@@ -81,6 +81,7 @@
         this.setPaid = _setPaid.bind(this);
         this.getStatusIndex = _getStatusIndex.bind(this);
         this.setStatus = _setStatus.bind(this);
+        this.setStatusZikuy = _setStatusZikuy.bind(this);
         this.initLessons = _initLessons.bind(this);
         this.countAllCredits = _countAllCredits.bind(this);
         this.isNullOrEmpty = _isNullOrEmpty.bind(this);
@@ -126,12 +127,12 @@
         this.createChildEvent = _createChildEvent.bind(this);
         this.removeLesson = _removeLesson.bind(this);
         this.modalRemoveAdd = _modalRemoveAdd.bind(this);
-
+        this.getHebrewdocType = _getHebrewdocType.bind(this);
 
 
         this.show4 = _show4.bind(this);
         this.isDateMoreToday = _isDateMoreToday.bind(this);
-        
+
         this.getRealDocType = _getRealDocType.bind(this);
         this.IsInstructorBlock = ($rootScope.role == "instructor") ? true : false;    // $rootScope.IsInstructorBlock;
 
@@ -151,13 +152,22 @@
             alert(ashrai4);
         }
 
+        function _getHebrewdocType(doc_type) {
+
+            if (doc_type == 'Kabala') return 'קבלה';
+            if (doc_type == 'MasKabala') return 'חשבונית מס קבלה';
+            if (doc_type == 'Mas') return 'חשבונית מס';
+            if (doc_type == 'Zikuy') return 'חשבונית זיכוי';
+
+        }
+
+
         function _isDateMoreToday(date) {
-          
-            if (moment(date) > moment()) return true;
+
+            if (moment(date) > moment().add(1, 'day')) return true;
 
             return false;
         }
-
 
 
 
@@ -184,7 +194,7 @@
         function _modalRemoveAdd(isTrue) {
             // הוספה
             if (this.typeAddRemove == 0) {
-             
+
                 var lastEvent = this.lessons[this.lessons.length - 1];
                 this.createChildEvent(lastEvent, this.lessAdd, isTrue);
                 this.initLessons();
@@ -197,7 +207,7 @@
 
 
                 lessonsService.deleteOnlyStudentLesson(this.RemoveLess.id, this.user.Id, isTrue).then(function (res) {
-                    this.lessons = res;    
+                    this.lessons = res;
                     this.initLessons();
                 }.bind(this));
 
@@ -981,6 +991,10 @@
             return parseInt(moment(lesson.start).format('YYYYMMDD')) < parseInt(moment().format('YYYYMMDD')) && this.isNullOrEmpty(lesson.statuses[this.getStatusIndex(lesson)].Status);
         }
 
+        function _setStatusZikuy(doc_type) {
+            return doc_type == 'Zikuy';
+        }
+
         function _setPaid(lesson) {
 
 
@@ -1518,7 +1532,7 @@
 
                     // קורס מדריכם מחנה רכיבה ופנסיון מקבל הגדרה אחרת רק לפי חשבוניות מס
                     if (payments[i].doc_type == "Mas") {
-                        if (this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder" ) {
+                        if (this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder") {
                             total += payments[i].InvoiceSum || 0;
                         }
 
@@ -1814,7 +1828,7 @@
 
 
 
-            if (!newPayment.noEazi && (newPayment.isMasKabala || newPayment.isKabala || newPayment.isKabalaTroma || newPayment.isMas)) {
+            if (!newPayment.noEazi && (newPayment.isMasKabala || newPayment.isKabala || newPayment.isKabalaTroma || newPayment.isMas || newPayment.isZikuy)) {
                 newPayment.parents = [];
                 this.payments.map(function (payment) {
 
@@ -1922,9 +1936,11 @@
                         }
                     });
                     this.payments = this.payments || [];
+                    if (newPayment.isZikuy) newPayment.InvoiceSum = newPayment.InvoiceSum * -1;
                     this.payments.push(newPayment);
                     this.createNewPayment(newPayment);
                     this.submit();
+
                     this.initPaymentForm();
                     this.countAllCredits();
                 }.bind(this));
@@ -1951,6 +1967,7 @@
 
                     }
                 });
+                if (newPayment.isZikuy) newPayment.InvoiceSum = newPayment.InvoiceSum * -1;
                 this.payments.push(newPayment);
                 this.createNewPayment(newPayment);
                 this.submit();
@@ -1963,7 +1980,20 @@
         }
 
         function _createNewPayment(newPayment) {
+
+            //debugger
+            //for (var i in this.payments) {
+            //    if (this.payments[i].SelectedForInvoiceTemp) {
+            //        if (newPayment.doc_type == "Zikuy") {
+            //            this.payments[i].ZikuyNumber = newPayment.InvoiceNum;
+            //            this.payments[i].lessons = 0;
+            //        }
+            //    }
+            //}
+
+
             this.payments.map(function (payment) {
+
                 if (payment.SelectedForInvoiceTemp) {
                     newPayment.SelectedForInvoice = true;
                     if (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") {
@@ -1979,6 +2009,15 @@
                         payment.ParentInvoicePdf = newPayment.InvoicePdf;
                         payment.SelectedForInvoice = true;
                     }
+                    if (newPayment.doc_type == "Zikuy"){
+
+                        payment.ZikuyNumber = newPayment.InvoiceNum;
+                        payment.ZikuyPdf = newPayment.InvoicePdf;
+                        payment.lessons = 0;
+                        payment.count = "";
+
+
+                    }
                 }
             });
 
@@ -1989,6 +2028,7 @@
             if (pay.isMasKabala) return "MasKabala";
             if (pay.isKabala || pay.isKabalaTroma) return "Kabala";
             if (pay.isMas) return "Mas";
+            if (pay.isZikuy) return "Zikuy";
             return "";
 
         }
@@ -2005,6 +2045,11 @@
 
                 return true;
             }
+            else if ((this.newPayment.isZikuy) && (pay.doc_type != 'Zikuy' && !pay.canceled)) {
+
+                return true;
+            }
+
             else
                 return false;
         }
@@ -2062,7 +2107,7 @@
         function _submit(isalert) {
 
 
-             
+
             if ($scope.studentForm.$valid) {
 
                 this.user.Role = 'student';
@@ -2076,7 +2121,7 @@
                     this.user.DateForMonthlyPay.setHours(this.user.DateForMonthlyPay.getHours() + 3);
 
                 }
-
+              
 
 
                 usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses, [], this.makav, this.getChecsObjList()).then(function (user) {
@@ -2096,7 +2141,7 @@
 
 
 
-                     
+
 
                     lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate);
                     this.user = user;
@@ -2140,11 +2185,11 @@
             }
         }
 
-      
 
 
 
-        
+
+
 
         function _delete() {
             if (confirm('האם למחוק את התלמיד?')) {

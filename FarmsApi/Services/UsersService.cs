@@ -18,7 +18,7 @@ namespace FarmsApi.Services
 {
     public class UsersService
     {
-      
+
 
         //public static void UpdateUsers()
         //{
@@ -535,21 +535,13 @@ namespace FarmsApi.Services
                 Context.Configuration.ProxyCreationEnabled = false;
                 Context.Configuration.LazyLoadingEnabled = false;
 
-
-
-
-
-                var Users = Context.Users.Where(u => u.Farm_Id == CurrentUserFarmId).OrderBy(x=>x.FirstName).ToList();
-              
-
-
+                var Users = Context.Users.Where(u => u.Farm_Id == CurrentUserFarmId).OrderBy(x => x.FirstName).ToList();
 
                 if (CurrentUserFarmId == 0)
                 {
                     Users = Context.Users.ToList();
-                    //  Users = Context.Database.SqlQuery<User>("Select Id, Role, Email, Password, FirstName, LastName, '{}' as Meta, Deleted, Farm_Id, AccountStatus from users").ToList();  //Select(x => new User{ FirstName=x.FirstName, LastName=x.LastName}).ToList();
                 }
-                // Users = FilterByFarm(Users);
+
                 Users = FilterByUser(Users);
                 Users = FilterRole(Users, Role);
                 Users = FilterDeleted(Users, IncludeDeleted);
@@ -634,8 +626,10 @@ namespace FarmsApi.Services
             User u = UpdateUser(dataObj[0].ToObject<User>());
             if (u.Id == 0) return u;
 
+            if (u.IsMazkirut == 1 && u.Role == "instructor") ReopenLessonsByInstructorMazkirut(u);
+
             List<Payments> p = dataObj[1].ToObject<List<Payments>>();
-            int NewId= UpdatePaymentsObject(p, u);
+            int NewId = UpdatePaymentsObject(p, u);
 
             List<Files> f = dataObj[2].ToObject<List<Files>>();
             UpdateFilesObject(f, u);
@@ -673,7 +667,43 @@ namespace FarmsApi.Services
             return u;
         }
 
-        private static void UpdateChecksObject(List<Checks> objList, User u,int PaymentsId)
+        private static void ReopenLessonsByInstructorMazkirut(User u)
+        {
+            using (var Context = new Context())
+            {
+                DateTime CurrentDate = DateTime.Now;
+                int ParentId = 0;
+                var LastDay = new DateTime(DateTime.Now.Year, 12, 31,23,59,59);
+                var ExistLesson = Context.Lessons.Where(l => l.Instructor_Id == u.Id && l.Start > CurrentDate).FirstOrDefault();
+                if (ExistLesson == null)
+                {
+                  
+                    while (CurrentDate <= LastDay)
+                    {
+
+                        Lesson less = new Lesson();
+                        less.Instructor_Id = u.Id;
+                        less.Start = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, 08,00, 0);
+                        less.End = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day,23, 59,59);
+                        less.ParentId = ParentId;
+                        Context.Lessons.Add(less);
+                        Context.SaveChanges();
+                        ParentId = less.Id;
+
+
+
+                        CurrentDate = CurrentDate.AddDays(1);
+
+                    }
+
+
+
+                }
+
+            }
+
+        }
+        private static void UpdateChecksObject(List<Checks> objList, User u, int PaymentsId)
         {
             using (var Context = new Context())
             {
@@ -725,8 +755,8 @@ namespace FarmsApi.Services
                 //User u = UpdateUser(User);
 
 
-                
-             
+
+
                 Context.SaveChanges();
 
                 if (objList.Count > 0)
@@ -734,7 +764,7 @@ namespace FarmsApi.Services
                     CommonTasks Tasking = new CommonTasks();
                     Tasking.InsertChecksToMas();
                 }
-                    
+
 
 
             }
@@ -815,7 +845,7 @@ namespace FarmsApi.Services
                         Context.SaveChanges();
                         NewId = item.Id;
 
-                      
+
                     }
                     else
                     {
@@ -1141,7 +1171,7 @@ namespace FarmsApi.Services
 
 
 
-             
+
                 Context.SaveChanges();
 
 
@@ -1298,7 +1328,7 @@ namespace FarmsApi.Services
                 SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
                 SqlParameter FromDatePara = new SqlParameter("StartDate", fromDate);
                 SqlParameter ToDatePara = new SqlParameter("EndDate", toDate);
-               // SqlParameter StartDatePara = new SqlParameter("StartDate", date.Replace("_", "/"));
+                // SqlParameter StartDatePara = new SqlParameter("StartDate", date.Replace("_", "/"));
 
 
 
@@ -1318,7 +1348,7 @@ namespace FarmsApi.Services
                     Type, Farm_IdPara, FromDatePara, ToDatePara);
                     try
                     {
-                        var res = query.OrderBy(x=>x.Id).ToList();
+                        var res = query.OrderBy(x => x.Id).ToList();
                         return res;
                     }
                     catch (Exception ex)
@@ -1341,21 +1371,23 @@ namespace FarmsApi.Services
             {
                 var CurrentUser = GetCurrentUser();
 
-               
-            
+
+
                 SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
                 SqlParameter FromDatePara = new SqlParameter("FromDate", fromDate);
                 SqlParameter ToDatePara = new SqlParameter("ToDate", toDate);
 
 
-                try {  
+                try
+                {
                     var query = Context.Database.SqlQuery<HMOReport>
                     ("GetReportHMO @Farm_Id,@FromDate,@ToDate",
                     Farm_IdPara, FromDatePara, ToDatePara);
                     var res = query.ToList();
                     return res;
 
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
 
 
@@ -1377,7 +1409,7 @@ namespace FarmsApi.Services
 
 
                 SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
-               
+
 
                 try
                 {
@@ -1401,7 +1433,7 @@ namespace FarmsApi.Services
             }
         }
 
-        public static object GetTransferData(string insructorId, string dow,string date)
+        public static object GetTransferData(string insructorId, string dow, string date)
         {
             using (var Context = new Context())
             {
@@ -1413,13 +1445,13 @@ namespace FarmsApi.Services
                 SqlParameter dowPara = new SqlParameter("dow", dow);
                 SqlParameter datePara = new SqlParameter("date", date);
 
-               
+
                 var query = Context.Database.SqlQuery<TransferResult>
                 ("GetTransferData @ResourceId,@Farm_Id,@dow,@date",
                 ResourceId, Farm_IdPara, dowPara, datePara);
                 var res = query.ToList();
                 return res;
-               
+
 
 
             }
