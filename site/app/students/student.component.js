@@ -1536,7 +1536,8 @@
                             total += payments[i].InvoiceSum || 0;
                         }
 
-                    } else {
+                    }
+                    else {
 
                         if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder") && payments[i].payment_type == "check") {
                             continue;

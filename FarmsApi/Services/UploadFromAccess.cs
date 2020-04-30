@@ -14,7 +14,7 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 79; //71 רנצו מניס
+        public int FarmId = 59; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
@@ -68,7 +68,7 @@ namespace FarmsApi.Services
             ds.Tables.Add(new DataTable("Candidates"));
             ds.Tables.Add(new DataTable("Horses"));
             ds.Tables.Add(new DataTable("CustCorrespondence"));
-
+            ds.Tables.Add(new DataTable("Documents"));
 
 
             ////מקורי
@@ -109,6 +109,9 @@ namespace FarmsApi.Services
 
             string sqlKesher = @" SELECT * from CustCorrespondence where CustCorrespondence.DateofRecord >= #2019-01-01 00:00:00#";
 
+            string sqlDocuments = @" SELECT * from Documents Where CustomerId=3359";
+
+
             using (OleDbConnection conn = new OleDbConnection(connection))
             {
                 conn.Open();
@@ -140,6 +143,10 @@ namespace FarmsApi.Services
                 da.SelectCommand.CommandText = sqlKesher;
                 da.Fill(ds, "CustCorrespondence");
 
+
+                da.SelectCommand.CommandText = sqlDocuments;
+                da.Fill(ds, "Documents");
+
                 conn.Close();
 
 
@@ -154,9 +161,9 @@ namespace FarmsApi.Services
 
             //BuildEntityIdOnly();
             //  BuildUserRiders();
-             // BuildUserInstructors();
+            // BuildUserInstructors();
             //  BuildLessons();
-         //     BuildStudentLessons();
+            //     BuildStudentLessons();
             // BuildCommitmentsLessons();
             //   BuildPayments();
 
@@ -164,11 +171,78 @@ namespace FarmsApi.Services
 
             // BuildPensionAndCourse();
             //   BuildHorses();
-           BuildFixedPhone();
-          //  BuildFixedBirthDate();
-         //   BuildHashlama();
+            //   BuildFixedPhone();
+            //  BuildFixedBirthDate();
+            //   BuildHashlama();
 
             //    BuildKesher();
+
+            BuildDocuments();
+        }
+
+        private void BuildDocuments()
+        {
+            foreach (DataRow item in ds.Tables[9].Rows)
+            {
+
+
+                string DocumentTypeGiddyupp = "MasKabala";
+                string DocumentType = item["DocumentType"].ToString();
+                string RiderId = item["CustomerId"].ToString();
+                int RiderIdInt = Int32.Parse(RiderId);
+                string Remark = item["Remark"].ToString();
+                string DocumentId = item["DocumentId"].ToString();
+                string ConectedDocNumber = item["ConectedDocNumber"].ToString();
+                string Price = item["Price"].ToString();
+                string IDate = item["IDate"].ToString();
+
+
+                ConectedDocNumber = (ConectedDocNumber == "0" || ConectedDocNumber == "1") ? "" : ConectedDocNumber;
+
+
+                if (DocumentType == "2") DocumentTypeGiddyupp = "Kabala";
+                if (DocumentType == "3") DocumentTypeGiddyupp = "Mas";
+                if (DocumentType == "4" || DocumentType == "5" || DocumentType == "6") DocumentTypeGiddyupp = "Zikuy";
+
+
+                var StudentObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == RiderIdInt && x.Role == "student").FirstOrDefault();
+               
+                var invoiceUser = Context.Payments.Where(x => x.InvoiceNum == DocumentId && x.UserId == StudentObj.Id).FirstOrDefault();
+                if (invoiceUser == null && StudentObj!=null)
+                {
+                    Payments pay = new Payments();
+
+                    pay.UserId = StudentObj.Id;
+                    pay.Date =  DateTime.Parse(IDate);
+                    pay.InvoicePdf = "";
+                    pay.InvoiceNum = DocumentId;
+                    pay.ParentInvoiceNum = ConectedDocNumber;
+                    pay.InvoiceDetails = Remark;
+                    pay.doc_type = DocumentTypeGiddyupp;
+
+                    //pay.canceled = CheckifExistStr(Item["canceled"]);
+                    pay.Price =double.Parse(Price);
+                    pay.InvoiceSum = double.Parse(Price);
+
+                    pay.payment_type = "1";
+                    
+
+
+                    Context.Payments.Add(pay);
+                    Context.SaveChanges();
+
+
+                }
+                //else
+                //{
+                //    invoiceUser.Price = FixedPrice;
+                //    invoiceUser.InvoiceSum += FixedPrice;
+                //    if (WorkerID != ExpensWorkerId) invoiceUser.lessons += 1;
+                //    Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
+                //    Context.SaveChanges();
+                //}
+
+            }
         }
 
         private void BuildKesher()

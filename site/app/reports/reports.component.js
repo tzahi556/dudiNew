@@ -14,6 +14,9 @@
         self.ReportManger = _ReportManger;
         self.ReportHMO = _ReportHMO;
         self.ReportDebt = _ReportDebt;
+        self.ReportInsructor = _ReportInsructor;
+        self.sortArrayOfObjects = _sortArrayOfObjects;
+
 
         self.getHebStatus = _getHebStatus;
         self.getHebHMO = _getHebHMO;
@@ -26,7 +29,153 @@
             { name: 'רשימת סוסים + טיפולים עתידיים', callback: self.horsesReport }
         ]
 
+        function _ReportInsructor() {
 
+            function getAllStudentInDay(resourceId, Day, lessonsSort) {
+
+                var html = "";
+                var lessonsList = lessonsSort.filter(function (less) {
+                    return less.resourceId == resourceId;
+                });
+
+
+                for (var lesson of lessonsList) {
+
+                    if (moment(lesson.start).day() == Day) {
+                        debugger
+                        for (var status of lesson.statuses) {
+
+                            var student = getUser(status.StudentId);
+                            var Phone = (student.PhoneNumber) ? student.PhoneNumber : student.PhoneNumber2;
+                            html += "<div>" + getName(status.StudentId) + " " + ((Phone) ? "<div style='float:left'> - " + Phone + "</div>" : "" )  +"</div></br>";
+
+                        }
+
+                    }
+                }
+
+
+                return html;
+            }
+
+            function getUser(id) {
+                var student = {};
+                for (var user of self.users) {
+                    if (user.Id == id) {
+                        student = user;
+                        break;
+                    }
+                }
+                return student;
+            }
+
+            function getName(id) {
+                var student = getUser(id);
+                return student.FirstName + " " + student.LastName;
+            }
+
+            var deferred = $q.defer();
+            var tasks = [];
+
+            tasks.push(usersService.getUsers('student'));
+            tasks.push(usersService.getUsers('instructor'));
+            tasks.push(usersService.getUsers('profAdmin'));
+
+
+            $q.all(tasks).then(function (users) {
+
+                self.users = users.reduce(function (acc, value) { return acc.concat(value); });
+
+
+
+                $.get('app/reports/ReportInsructor.html?sss=' + new Date(), function (text) {
+
+                    text = text.replace("@NameHava", localStorage.getItem('FarmName'));
+
+                    var startOfWeek = moment().startOf('week').toDate();
+                    var endOfWeek = moment().endOf('week').toDate();
+                    lessonsService.getLessons(null, startOfWeek, endOfWeek).then(function (lessons) {
+
+                        var html = "";
+                     
+                        var lessonsSort = self.sortArrayOfObjects(lessons, "resourceId");
+
+                        var prevInstructorId = "";
+
+                        for (var lesson of lessonsSort) {
+                            if (lesson.IsMazkirut == "1") continue;
+
+                            // כאן מכניסים את הראשי עם הטבלה מדריך חדש
+                            if (lesson.resourceId != prevInstructorId) {
+
+                                html += "<div class='dvSubtitle'>"
+                                    + "       <span style='text-decoration:underline;font-size:24px'>" + getName(lesson.resourceId) + "</span><br />"
+                                    + "   </div>"
+                                    + "   <div class='dvTable'>"
+                                    + "    <table width='100%' border='1' dir='rtl' style='border-collapse: collapse;'>"
+                                    + "      <tr> "
+                                    + "          <th style='background:#42ecf5;'>ראשון</th>"
+                                    + "          <th style='background:#42ecf5;'>שני</th>"
+                                    + "          <th style='background:#42ecf5;'>שלישי</th>"
+                                    + "          <th style='background:#42ecf5;'>רביעי</th>"
+                                    + "          <th style='background:#42ecf5;'>חמישי</th>"
+                                    + "          <th style='background:#42ecf5;'>שישי</th>"
+                                    + "          <th style='background:#42ecf5;'>יום שבת</th>"
+                                    + "       </tr>"
+
+
+
+                                    + "<tr>"
+                                    + "      <tr> "
+                                    + "          <td>" + getAllStudentInDay(lesson.resourceId, 0, lessonsSort) + "</td>"
+                                    + "          <td>" + getAllStudentInDay(lesson.resourceId, 1, lessonsSort) + "</td>"
+                                    + "          <td>" + getAllStudentInDay(lesson.resourceId, 2, lessonsSort) + "</td>"
+                                    + "          <td>" + getAllStudentInDay(lesson.resourceId, 3, lessonsSort) + "</td>"
+                                    + "          <td>" + getAllStudentInDay(lesson.resourceId, 4, lessonsSort) + "</td>"
+                                    + "          <td>" + getAllStudentInDay(lesson.resourceId, 5, lessonsSort) + "</td>"
+                                    + "          <td>" + getAllStudentInDay(lesson.resourceId, 6, lessonsSort) + "</td>"
+                                    + "       </tr></table></div>";
+
+                                 
+                                prevInstructorId = lesson.resourceId;
+                            }
+
+
+                        }
+
+                        text = text.replace("@Html", html);
+
+
+
+                        var blob = new Blob([text], {
+                            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                        });
+
+
+                        saveAs(blob, "Instructors_ " + new Date() + ".html");
+
+                    });
+
+                   
+
+
+
+
+                });
+
+            })
+
+        }
+
+      
+
+
+        function _sortArrayOfObjects(arr, key) {
+
+            return arr.sort((a, b) => {
+                return a[key] - b[key];
+            });
+        }
 
         function _ReportDebt() {
 
@@ -34,7 +183,7 @@
 
 
             $.get('app/reports/ReportDebt.html?sdss=' + new Date(), function (text) {
-             
+
                 text = text.replace("@NameHava", localStorage.getItem('FarmName'));
 
                 var TableDebtKlalit = "";
@@ -44,7 +193,7 @@
 
                 usersService.reportDebt().then(function (res) {
 
-                   
+
                     var CountKlalit = 0;
                     var CountMacabi = 0;
                     var CountOther = 0;
@@ -52,7 +201,7 @@
 
                     for (var i = 0; i < res.length; i++) {
 
-                        
+
 
                         var Taz = res[i].Taz;
                         var FirstName = res[i].FirstName;
@@ -60,7 +209,7 @@
                         var Total = res[i].Total;
                         var HMO = res[i].HMO;
                         var Style = res[i].Style;
-                        var ClientNumber = (res[i].ClientNumber) ? res[i].ClientNumber:"";
+                        var ClientNumber = (res[i].ClientNumber) ? res[i].ClientNumber : "";
 
                         if (Style == "treatment") {
 
@@ -74,7 +223,7 @@
                                     + "</td><td style='text-align:right'>" + LastName
                                     + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td ></tr>";
 
-                                  
+
 
                             } else if (HMO == "maccabiGold" || HMO == "maccabiSheli") {
                                 CountMacabi++;
@@ -118,8 +267,8 @@
                     text = text.replace("@TableDebtDikla", TableDebtDikla);
                     text = text.replace("@TableDebtOther", TableDebtOther);
 
-                    
-                    
+
+
                     var blob = new Blob([text], {
                         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                     });
@@ -128,7 +277,7 @@
                     saveAs(blob, "HMODebt_ " + new Date() + ".html");
                 });
 
-              
+
             });
 
 
@@ -198,9 +347,9 @@
                             StartDetailsNoPay += ((StartDetailsNoPay) ? ", " : "") + Start;
                         }
 
-                        if (Type == "1") { 
-                           CountMacabi++;
-                           StartDetailsMacabi += ((StartDetailsMacabi) ? ", " : "") + Start;
+                        if (Type == "1") {
+                            CountMacabi++;
+                            StartDetailsMacabi += ((StartDetailsMacabi) ? ", " : "") + Start;
                         }
                         if (!res[i + 1] || (res[i + 1].Id != StudentId)) {
 
@@ -242,7 +391,7 @@
                             InvoiceDetails = "";
                             Count = 0;
                             CountNoPay = 0;
-                            CountMacabi=0;
+                            CountMacabi = 0;
                             StartDetailsMacabi = "";
                         }
 
@@ -324,7 +473,7 @@
 
                             if (ExistInstructor.indexOf(res[i].Id) == "-1") {
 
-                               
+
 
                                 var ObjOfAMount = self.getTotalPerStyle(res[i].Id, res);
 
@@ -927,7 +1076,7 @@
                                         self.getHebStatus(status),
                                         self.getHebHMO(studentHMO),
                                         //status.Status,
-                                       // studentHMO,
+                                        // studentHMO,
                                         studentCost,
                                     ]);
                                 }
@@ -970,7 +1119,7 @@
         }
 
         function _getHebStatus(status) {
-            if (status.Status =="completion" && (status.IsComplete == 4 || status.IsComplete == 6)) {
+            if (status.Status == "completion" && (status.IsComplete == 4 || status.IsComplete == 6)) {
 
                 return "הגיע משיעור השלמה";
             }
@@ -991,15 +1140,15 @@
                     return 'דרוש שיעור השלמה'
                 case 'completion':
                     return 'לא הגיע'
-                   
+
 
                 default:
                     return ''
             }
 
 
-           // return status.Status;
-           // return moment(event).isAfter(moment());
+            // return status.Status;
+            // return moment(event).isAfter(moment());
         }
 
         function _getHebHMO(studentHMO) {
