@@ -729,7 +729,7 @@
 
             var fakendDate = this.endDate;//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
-
+               
                 this.lessons = lessons;
 
 

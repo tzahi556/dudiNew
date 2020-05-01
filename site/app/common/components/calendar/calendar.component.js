@@ -113,11 +113,11 @@
 
             height: 600,//($rootScope.isPhone)?450:600,//600
 
-            minTime: '08:00',
+            minTime: '07:00',
             maxTime: '24:00',
 
             events: this.loadEvents.bind(this),
-            resourceOrder: '-IsMazkirut',// שיניתי מאיידי לזה בכדי להשיג מזכירות שיהיה ראשון
+            resourceOrder: 'IsMazkirut',// שיניתי מאיידי לזה בכדי להשיג מזכירות שיהיה ראשון
             resources: this.loadResources.bind(this),
 
             eventClick: this.eventClick.bind(this),

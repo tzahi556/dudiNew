@@ -42,7 +42,7 @@
                 for (var lesson of lessonsList) {
 
                     if (moment(lesson.start).day() == Day) {
-                        debugger
+                       
                         for (var status of lesson.statuses) {
 
                             var student = getUser(status.StudentId);
@@ -91,9 +91,10 @@
                 $.get('app/reports/ReportInsructor.html?sss=' + new Date(), function (text) {
 
                     text = text.replace("@NameHava", localStorage.getItem('FarmName'));
-
+                 
                     var startOfWeek = moment().startOf('week').toDate();
-                    var endOfWeek = moment().endOf('week').toDate();
+                    var endOfWeek = moment(startOfWeek).add(5, 'day').toDate();//
+                   
                     lessonsService.getLessons(null, startOfWeek, endOfWeek).then(function (lessons) {
 
                         var html = "";
@@ -107,6 +108,8 @@
 
                             // כאן מכניסים את הראשי עם הטבלה מדריך חדש
                             if (lesson.resourceId != prevInstructorId) {
+
+
 
                                 html += "<div class='dvSubtitle'>"
                                     + "       <span style='text-decoration:underline;font-size:24px'>" + getName(lesson.resourceId) + "</span><br />"

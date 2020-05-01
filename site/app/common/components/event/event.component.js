@@ -554,8 +554,7 @@
     }
 
     function _openMatrotal(studentId,mode) {
-
-
+       
         var user = this.studentDataById(studentId);
         
 

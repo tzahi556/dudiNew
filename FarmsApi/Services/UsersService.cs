@@ -683,7 +683,7 @@ namespace FarmsApi.Services
 
                         Lesson less = new Lesson();
                         less.Instructor_Id = u.Id;
-                        less.Start = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, 08,00, 0);
+                        less.Start = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, 07,00, 0);
                         less.End = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day,23, 59,59);
                         less.ParentId = ParentId;
                         Context.Lessons.Add(less);

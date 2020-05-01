@@ -14,7 +14,7 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 59; //71 רנצו מניס
+        public int FarmId = 79; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
@@ -22,7 +22,7 @@ namespace FarmsApi.Services
         public DataSet ds = new DataSet();
 
         public Context Context = new Context();
-       
+
         public string MailPrefix = "susimbkfar";
         // "greenfields";
 
@@ -109,7 +109,7 @@ namespace FarmsApi.Services
 
             string sqlKesher = @" SELECT * from CustCorrespondence where CustCorrespondence.DateofRecord >= #2019-01-01 00:00:00#";
 
-            string sqlDocuments = @" SELECT * from Documents Where CustomerId=3359";
+            string sqlDocuments = @" SELECT * from Documents";
 
 
             using (OleDbConnection conn = new OleDbConnection(connection))
@@ -206,41 +206,44 @@ namespace FarmsApi.Services
 
 
                 var StudentObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == RiderIdInt && x.Role == "student").FirstOrDefault();
-               
-                var invoiceUser = Context.Payments.Where(x => x.InvoiceNum == DocumentId && x.UserId == StudentObj.Id).FirstOrDefault();
-                if (invoiceUser == null && StudentObj!=null)
+
+                if (StudentObj != null)
                 {
-                    Payments pay = new Payments();
+                    var invoiceUser = Context.Payments.Where(x => x.InvoiceNum == DocumentId && x.UserId == StudentObj.Id).FirstOrDefault();
+                    if (invoiceUser == null)
+                    {
+                        Payments pay = new Payments();
 
-                    pay.UserId = StudentObj.Id;
-                    pay.Date =  DateTime.Parse(IDate);
-                    pay.InvoicePdf = "";
-                    pay.InvoiceNum = DocumentId;
-                    pay.ParentInvoiceNum = ConectedDocNumber;
-                    pay.InvoiceDetails = Remark;
-                    pay.doc_type = DocumentTypeGiddyupp;
+                        pay.UserId = StudentObj.Id;
+                        pay.Date = DateTime.Parse(IDate);
+                        pay.InvoicePdf = "";
+                        pay.InvoiceNum = DocumentId;
+                        pay.ParentInvoiceNum = ConectedDocNumber;
+                        pay.InvoiceDetails = Remark;
+                        pay.doc_type = DocumentTypeGiddyupp;
 
-                    //pay.canceled = CheckifExistStr(Item["canceled"]);
-                    pay.Price =double.Parse(Price);
-                    pay.InvoiceSum = double.Parse(Price);
+                        //pay.canceled = CheckifExistStr(Item["canceled"]);
+                        pay.Price = double.Parse(Price);
+                        pay.InvoiceSum = double.Parse(Price);
 
-                    pay.payment_type = "1";
-                    
-
-
-                    Context.Payments.Add(pay);
-                    Context.SaveChanges();
+                        pay.payment_type = "1";
 
 
+
+                        Context.Payments.Add(pay);
+                        Context.SaveChanges();
+
+
+                    }
+                    //else
+                    //{
+                    //    invoiceUser.Price = FixedPrice;
+                    //    invoiceUser.InvoiceSum += FixedPrice;
+                    //    if (WorkerID != ExpensWorkerId) invoiceUser.lessons += 1;
+                    //    Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
+                    //    Context.SaveChanges();
+                    //}
                 }
-                //else
-                //{
-                //    invoiceUser.Price = FixedPrice;
-                //    invoiceUser.InvoiceSum += FixedPrice;
-                //    if (WorkerID != ExpensWorkerId) invoiceUser.lessons += 1;
-                //    Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
-                //    Context.SaveChanges();
-                //}
 
             }
         }
@@ -353,7 +356,7 @@ namespace FarmsApi.Services
                     PhonHome = item["PhonHome"].ToString();
                     SelolarPhon = item["SelolarPhon"].ToString();
                     PhonAnother = item["PhonAnother"].ToString();
-                    
+
 
 
                     var ParentDetalis = GetParentDetalis(RiderId);
@@ -363,7 +366,7 @@ namespace FarmsApi.Services
                         //   nomobileFather = ParentDetalis["PhonFather"].ToString();
                         //    nomobileMother = ParentDetalis["PhonMother"].ToString();
 
-                      
+
                         PhoneNumber = ParentDetalis["mobileMother"].ToString();
                         if (string.IsNullOrEmpty(PhoneNumber))
                         {
@@ -371,8 +374,9 @@ namespace FarmsApi.Services
                             PhoneNumber = ParentDetalis["mobileFather"].ToString();
 
                         }
-                        else { 
-                             PhoneNumber2 = ParentDetalis["mobileFather"].ToString();
+                        else
+                        {
+                            PhoneNumber2 = ParentDetalis["mobileFather"].ToString();
                         }
 
                     }
@@ -383,8 +387,8 @@ namespace FarmsApi.Services
                     {
                         PhoneNumber = mobileFather;
                     }
-                   
-                    
+
+
                     if (mobileMother.StartsWith("05"))
                     {
                         if (string.IsNullOrEmpty(PhoneNumber))
@@ -405,7 +409,7 @@ namespace FarmsApi.Services
                             PhoneNumber = nomobileFather;
                         }
 
-                       else if (string.IsNullOrEmpty(PhoneNumber2))
+                        else if (string.IsNullOrEmpty(PhoneNumber2))
                         {
                             PhoneNumber2 = nomobileFather;
                         }
@@ -426,7 +430,7 @@ namespace FarmsApi.Services
                     }
 
                     //*******************************************
-                   
+
 
                     if (PhonHome.StartsWith("05"))
                     {
@@ -469,13 +473,13 @@ namespace FarmsApi.Services
 
 
 
-                  
+
 
                     var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
                     if (UserEN != null)
                     {
 
-                        if(!string.IsNullOrEmpty(PhoneNumber)) UserEN.PhoneNumber = PhoneNumber;
+                        if (!string.IsNullOrEmpty(PhoneNumber)) UserEN.PhoneNumber = PhoneNumber;
                         if (!string.IsNullOrEmpty(PhoneNumber2)) UserEN.PhoneNumber2 = PhoneNumber2;
                         Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
                     }
@@ -503,7 +507,7 @@ namespace FarmsApi.Services
                 string RiderId,
 
                     BirthDate = "";
-                   
+
 
 
                 foreach (DataRow item in ds.Tables[0].Rows)
@@ -518,11 +522,11 @@ namespace FarmsApi.Services
                     int RiderIdInt = Int32.Parse(RiderId);
 
                     BirthDate = item["BirthDay"].ToString();
-                   
 
 
 
-               
+
+
 
                     var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
                     if (UserEN != null)
@@ -938,8 +942,8 @@ namespace FarmsApi.Services
                     FirstName = GetRightName(item["FirstName"].ToString());
                     LastName = GetRightName(item["FamilyName"].ToString().Replace("_", ""));
                     Active = (item["Active"].ToString() == "True") ? "active" : "notActive";
-                   
-                    
+
+
                     Deleted = (Active == "active") ? false : true;
                     Address = item["Address"].ToString() + " " + item["City"].ToString();
                     IdNumber = item["IDNmber"].ToString();
@@ -1477,13 +1481,13 @@ namespace FarmsApi.Services
                                 pay.InvoiceNum = invoice;
                                 pay.InvoiceDetails = invoice + " חשבונית " + " " + UnexecutedReson;
 
-                              
+
                                 pay.Price = FixedPrice;
                                 pay.InvoiceSum = FixedPrice;
 
                                 pay.payment_type = "1";
                                 if (WorkerID != ExpensWorkerId) pay.lessons = 1;
-                              
+
 
                                 Context.Payments.Add(pay);
                                 Context.SaveChanges();

@@ -43,6 +43,7 @@
                 if (this.selectedId != this.lessons[i].id) {
 
                     this.selectedId = this.lessons[i].id;
+                   
                     break;
                 }
 
@@ -86,7 +87,7 @@
 
                         less[i].title = "שיעור נוכחי";
                         less[i].showDetails = "שיעור קודם";
-                        
+                        less[i].selectedIndex = i +1;
                         tempLessons.push(less[i]);
                        
                         if (less[i - 1]) {
@@ -94,6 +95,8 @@
                             tempLessons.push(less[i - 1]);
                             less[i - 1].title = "שיעור קודם";
                             less[i - 1].showDetails = "שיעור הבא";
+                            less[i - 1].selectedIndex = i;
+
                         }
 
                     }
@@ -102,6 +105,7 @@
 
                 this.lessons = tempLessons;
                 this.selectedId = this.lessons[0].id;
+               
 
             }.bind(this));
 

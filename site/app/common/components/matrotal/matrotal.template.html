@@ -88,7 +88,7 @@
 
                 <div ng-repeat="lesson in  $ctrl.lessons|filter:{id:$ctrl.selectedId}">
                     <label>מס' טיפול:</label>
-                    <span style="padding:5px; border-spacing:5px;">{{$ctrl.lessons.length - $index}}</span>
+                    <span style="padding:5px; border-spacing:5px;">{{lesson.selectedIndex}}</span>
                     <span style="float:left;font-weight:bold;font-size:24px;color:blue" ng-bind="lesson.title"></span>
 
                     <br />

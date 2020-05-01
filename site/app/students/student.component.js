@@ -1532,14 +1532,15 @@
 
                     // קורס מדריכם מחנה רכיבה ופנסיון מקבל הגדרה אחרת רק לפי חשבוניות מס
                     if (payments[i].doc_type == "Mas") {
-                        if (this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder") {
+                        if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder") && payments[i].payment_type == "check") {
                             total += payments[i].InvoiceSum || 0;
                         }
 
                     }
-                    else {
+                    else
+                    {
 
-                        if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder") && payments[i].payment_type == "check") {
+                        if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder") && payments[i].payment_type == "check" && (payments[i].doc_type == "Kabala")) {
                             continue;
                         }
 
