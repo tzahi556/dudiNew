@@ -847,19 +847,42 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
-                if (type == 0)
+                // עדכון האם בוצע
+                if (type == 4)
                 {
-                    //try
-                    //{
+                    int Id = Schedular["Id"] != null ? Schedular["Id"].Value<int>() : 0;
+                    bool IsExe = Schedular["IsExe"] != null ? Schedular["IsExe"].Value<bool>() : false;
+
+                    var SchedularTaskList = Context.SchedularTasks.Where(u => u.Id == Id).FirstOrDefault();
+                    SchedularTaskList.IsExe = IsExe;
+                    Context.Entry(SchedularTaskList).State = System.Data.Entity.EntityState.Modified;
+
+                    string Title = SchedularTaskList.Title;
+                    string Desc = SchedularTaskList.Desc;
+
+                   
+                    string htmlNo = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
+                                         <div>" + Desc + @"</div>
+                                     </div>";
 
 
-                    //}
-                    //catch (Exception ex)
-                    //{
+                 
+                    string htmlYes = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"<div style ='float:left'><img  src='../../../../images/approve-icon.png'/></div></div>
+                                         <div>" + Desc + @"</div>
+                                     </div>";
 
-                    //    return null;
 
-                    //}
+
+                    var Lesson = Context.Lessons.Where(x => x.Instructor_Id == resourceId && x.Id == lessonId).FirstOrDefault();
+
+                    Lesson.Details = (IsExe) ? Lesson.Details.Replace(htmlNo, htmlYes) : Lesson.Details.Replace(htmlYes, htmlNo);
+                    Context.Entry(Lesson).State = System.Data.Entity.EntityState.Modified;
+
+                    Context.SaveChanges();
+
+
 
                 }
 
@@ -944,7 +967,7 @@ namespace FarmsApi.Services
                         st.EveryWeek = EveryWeek;
                         st.EveryMonth = EveryMonth;
                         st.EndDate = EndDate;
-
+                        st.IsExe = false;
                         Context.SchedularTasks.Add(st);
                     }
 
@@ -955,9 +978,9 @@ namespace FarmsApi.Services
                     // כאן אני דואג להכניס לשיעורים את ההערות
 
 
-                    string html = @"<div style = 'border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                    string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
                                          <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
-                                         <div>" + Desc + @" </div>
+                                         <div>" + Desc + @"</div>
                                      </div>";
 
 
@@ -965,7 +988,7 @@ namespace FarmsApi.Services
                     foreach (var item in LessonsAll)
                     {
                         Lesson les = Context.Lessons.Where(u => u.Id == item.Id).FirstOrDefault();
-                        les.Details += html;
+                        les.Details += html;//.Replace("@LessId", les.Id.ToString()).Replace("@InstId", les.Instructor_Id.ToString());
                         Context.Entry(les).State = System.Data.Entity.EntityState.Modified;
 
                     }
@@ -1048,10 +1071,24 @@ namespace FarmsApi.Services
             }
 
 
-            string html = @"<div style = 'border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+            //string html = @"<div style = 'border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+            //                             <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
+            //                             <div>" + Desc + @" </div>
+            //                         </div>";
+
+
+         
+            string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
                                          <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
-                                         <div>" + Desc + @" </div>
+                                         <div>" + Desc + @"</div>
                                      </div>";
+
+            string html2 = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"<div style ='float:left'><img  src='../../../../images/approve-icon.png'/></div></div>
+                                         <div>" + Desc + @"</div>
+                                     </div>";
+
+
 
             foreach (var item in LessonsAll)
             {
@@ -1059,7 +1096,7 @@ namespace FarmsApi.Services
                 if (CurrentSchedularTasks != null) Context.SchedularTasks.Remove(CurrentSchedularTasks);
 
 
-                item.Details = item.Details.Replace(html, "");
+                item.Details = item.Details.Replace(html, "").Replace(html2, "");
                 Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
 
             }

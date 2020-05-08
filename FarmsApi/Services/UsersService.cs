@@ -626,7 +626,7 @@ namespace FarmsApi.Services
             User u = UpdateUser(dataObj[0].ToObject<User>());
             if (u.Id == 0) return u;
 
-            if (u.IsMazkirut == 1 && u.Role == "instructor") ReopenLessonsByInstructorMazkirut(u);
+            //if (u.IsMazkirut == 1 && u.Role == "instructor") ReopenLessonsByInstructorMazkirut(u);
 
             List<Payments> p = dataObj[1].ToObject<List<Payments>>();
             int NewId = UpdatePaymentsObject(p, u);

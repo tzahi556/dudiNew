@@ -1,5 +1,5 @@
 ﻿<div class="event-background" ng-if="$ctrl.selectedStudentSchedular != null">
-    <div class="event" style="border: 1px gray!important;width:600px;">
+    <div class="event" style="border: 1px gray!important;">
 
         <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
 
@@ -9,7 +9,7 @@
                 משימות ליום זה
             </label>
 
-
+            
 
             <div style="padding:3px">
                 <a class="btn btn-primary btn-xs" ng-click="$ctrl.openTask(0)" href="">משימה חדשה</a>
@@ -24,7 +24,10 @@
                             כותרת
                         </th>
                         <th>
-                            
+                            האם בוצע
+                        </th>
+                        <th>
+
                         </th>
 
 
@@ -34,6 +37,7 @@
                     <tr ng-repeat="schedular in $ctrl.schedulars">
                         <td style="padding:3px">{{$index + 1}}</td>
                         <td style="padding:3px">{{schedular.Title}}</td>
+                        <td style="padding:3px"><input class="" style="" type="checkbox" ng-model="schedular.IsExe" ng-change="$ctrl.isExec(schedular)" /></td>
                         <td style="padding:3px;text-align:center;width:15%"> <a class="btn btn-success btn-xs" ng-click="$ctrl.openTask(schedular)" href="">לפרטים</a></td>
                     </tr>
 

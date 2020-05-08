@@ -16,6 +16,8 @@ namespace FarmsApi.DataModels
         public bool EveryDay { get; set; }
         public bool EveryWeek { get; set; }
         public bool EveryMonth { get; set; }
+
+        public bool IsExe { get; set; }
         public DateTime? EndDate { get; set; }
 
     }

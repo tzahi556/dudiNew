@@ -39,8 +39,34 @@
         this.getDayOfWeek = _getDayOfWeek.bind(this);
       //  this.prevLess = _prevLess.bind(this);
         this.openTask = _openTask.bind(this);
+        this.isExec = _isExec.bind(this);
 
-        
+
+
+
+        function _isExec(schedular) {
+            var obj = {
+                Id: schedular.Id,
+                IsExe: schedular.IsExe
+              
+            }
+
+
+
+
+
+
+            this.lessonsService.getSetSchedularTask(this.lessonId, this.resourceId, obj, "4").then(function (res) {
+
+
+               // this.schedulars = res;
+                //this.closeCallback(null);
+                //alert("המשימה נשמרה בהצלחה!");
+
+
+            }.bind(this));
+           
+        }
 
         function _openTask(type) {
             if (type == 0) {
@@ -124,7 +150,6 @@
             return newDate.getDay();
         }
 
-
         function _getInstructorName(id) {
             for (var i in this.instructors) {
                 if (this.instructors[i].Id == id) {
@@ -133,11 +158,9 @@
             }
         }
 
-
-
         function _hide() {
 
-           
+            this.closeCallback(null);
             // if ($(event.target).is('.event-background')) {
             this.selectedStudentSchedular = null;
             //}
@@ -146,6 +169,9 @@
             //    this.studentid = null;
             //}
         }
+
+
+
 
         function _close(schedular, type) {
            
@@ -162,16 +188,15 @@
            
 
 
-            debugger
-            //if (this.newSchedular.Id == 0)
-            //    this.schedulars.push(obj);
+         
+            
              
             this.lessonsService.getSetSchedularTask(this.lessonId, this.resourceId, obj, type).then(function (res) {
 
 
                 this.schedulars = res;
                 this.closeCallback(null);
-                alert("המשימה נשמרה בהצלחה!");     
+             //   alert("המשימה נשמרה בהצלחה!");     
 
              
             }.bind(this));

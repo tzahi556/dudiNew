@@ -697,12 +697,11 @@
             }
             else { 
                 //for event
-               
                 if (event.IsMazkirut == "1") {
-                    
-                    this.selectedStudentSchedular = event;
 
-                    this.scope.$broadcast('schedular.show', this.selectedStudentSchedular, this.instructors[0]);
+                        this.selectedStudentSchedular = event;
+                        this.scope.$broadcast('schedular.show', this.selectedStudentSchedular, this.instructors[0]);
+                
                 }
 
                 else { 

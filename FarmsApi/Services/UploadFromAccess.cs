@@ -14,7 +14,7 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 79; //71 רנצו מניס
+        public int FarmId = 59; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
@@ -69,14 +69,28 @@ namespace FarmsApi.Services
             ds.Tables.Add(new DataTable("Horses"));
             ds.Tables.Add(new DataTable("CustCorrespondence"));
             ds.Tables.Add(new DataTable("Documents"));
+            ds.Tables.Add(new DataTable("CustMonthlyPay"));
 
 
             ////מקורי
+            //string sqlLessons = @"  
+            //                    SELECT FarmDairy.*
+            //                    FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+            //                    Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
+            //                    and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
+            //                    Order by FarmDairy.DayofRide
+            //      ";
+
+
+            ////מקורי עם מסמכים
             string sqlLessons = @"  
-                                SELECT FarmDairy.*
+                                SELECT FarmDairy.*,Documents.*,Riders.PayArrangement
                                 FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+                                LEFT JOIN Documents ON Documents.DocumentId = FarmDairy.invoice
+                             
                                 Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
-                                and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
+                                and FarmDairy.DayofRide  >= #2019-01-01 00:00:00# 
+                                and Riders.RiderId =1511
                                 Order by FarmDairy.DayofRide
                   ";
 
@@ -109,7 +123,9 @@ namespace FarmsApi.Services
 
             string sqlKesher = @" SELECT * from CustCorrespondence where CustCorrespondence.DateofRecord >= #2019-01-01 00:00:00#";
 
-            string sqlDocuments = @" SELECT * from Documents";
+            string sqlDocuments = @" SELECT * from Documents Where CustomerId=1511 and IDate >= #2019-01-01 00:00:00#";
+
+            string sqlCustMonthlyPay = @" SELECT * from CustMonthlyPay Where FromYear >= 2019";
 
 
             using (OleDbConnection conn = new OleDbConnection(connection))
@@ -147,6 +163,8 @@ namespace FarmsApi.Services
                 da.SelectCommand.CommandText = sqlDocuments;
                 da.Fill(ds, "Documents");
 
+                da.SelectCommand.CommandText = sqlCustMonthlyPay;
+                da.Fill(ds, "CustMonthlyPay");
                 conn.Close();
 
 
@@ -159,11 +177,11 @@ namespace FarmsApi.Services
         public void UpdateUsersLessons()
         {
 
-            //BuildEntityIdOnly();
+            // BuildEntityIdOnly();
             //  BuildUserRiders();
             // BuildUserInstructors();
             //  BuildLessons();
-            //     BuildStudentLessons();
+            //   BuildStudentLessons();
             // BuildCommitmentsLessons();
             //   BuildPayments();
 
@@ -176,17 +194,17 @@ namespace FarmsApi.Services
             //   BuildHashlama();
 
             //    BuildKesher();
-
+            //  BuildDocumentsPrepare();
             BuildDocuments();
         }
-
-        private void BuildDocuments()
+        private void BuildDocumentsPrepare()
         {
             foreach (DataRow item in ds.Tables[9].Rows)
             {
 
 
                 string DocumentTypeGiddyupp = "MasKabala";
+
                 string DocumentType = item["DocumentType"].ToString();
                 string RiderId = item["CustomerId"].ToString();
                 int RiderIdInt = Int32.Parse(RiderId);
@@ -212,40 +230,229 @@ namespace FarmsApi.Services
                     var invoiceUser = Context.Payments.Where(x => x.InvoiceNum == DocumentId && x.UserId == StudentObj.Id).FirstOrDefault();
                     if (invoiceUser == null)
                     {
-                        Payments pay = new Payments();
-
-                        pay.UserId = StudentObj.Id;
-                        pay.Date = DateTime.Parse(IDate);
-                        pay.InvoicePdf = "";
-                        pay.InvoiceNum = DocumentId;
-                        pay.ParentInvoiceNum = ConectedDocNumber;
-                        pay.InvoiceDetails = Remark;
-                        pay.doc_type = DocumentTypeGiddyupp;
-
-                        //pay.canceled = CheckifExistStr(Item["canceled"]);
-                        pay.Price = double.Parse(Price);
-                        pay.InvoiceSum = double.Parse(Price);
-
-                        pay.payment_type = "1";
-
-
-
-                        Context.Payments.Add(pay);
-                        Context.SaveChanges();
 
 
                     }
-                    //else
-                    //{
-                    //    invoiceUser.Price = FixedPrice;
-                    //    invoiceUser.InvoiceSum += FixedPrice;
-                    //    if (WorkerID != ExpensWorkerId) invoiceUser.lessons += 1;
-                    //    Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
-                    //    Context.SaveChanges();
-                    //}
+                    else
+                    {
+                        invoiceUser.doc_type = DocumentTypeGiddyupp;
+                        //if (invoiceUser.doc_type == "Mas" || invoiceUser.doc_type == "Zikuy")
+                        //{
+                        //    invoiceUser.lessons = null;
+                        //}
+
+                        Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
+                        Context.SaveChanges();
+                    }
                 }
 
             }
+        }
+        private void BuildDocuments()
+        {
+
+
+            foreach (DataRow item in ds.Tables[9].Rows)
+            {
+
+                try
+                {
+                    string DocumentTypeGiddyupp = "MasKabala";
+
+                    string DocumentType = item["DocumentType"].ToString();
+                    string RiderId = item["CustomerId"].ToString();
+                    int RiderIdInt = Int32.Parse(RiderId);
+                    string Remark = item["Remark"].ToString();
+                    string DocumentId = item["DocumentId"].ToString();
+                    string ConectedDocNumber = item["ConectedDocNumber"].ToString();
+                    string Price = item["Price"].ToString();
+                    string IDate = item["IDate"].ToString();
+
+
+                    ConectedDocNumber = (ConectedDocNumber == "0" || ConectedDocNumber == "1") ? "" : ConectedDocNumber;
+
+
+                    if (DocumentType == "2") DocumentTypeGiddyupp = "Kabala";
+                    if (DocumentType == "3") DocumentTypeGiddyupp = "Mas";
+                    if (DocumentType == "4" || DocumentType == "5" || DocumentType == "6") DocumentTypeGiddyupp = "Zikuy";
+
+
+                    var StudentObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == RiderIdInt && x.Role == "student").FirstOrDefault();
+
+                    if (StudentObj != null)
+                    {
+                        var invoiceUser = Context.Payments.Where(x => x.InvoiceNum == DocumentId && x.UserId == StudentObj.Id).FirstOrDefault();
+                        if (invoiceUser == null)
+                        {
+
+                            Payments pay = new Payments();
+                            pay.UserId = StudentObj.Id;
+                            pay.Date = DateTime.Parse(IDate);
+                            pay.InvoicePdf = "";
+                            pay.InvoiceNum = DocumentId;
+                            pay.ParentInvoiceNum = ConectedDocNumber;
+                            pay.InvoiceDetails = Remark;
+                            pay.doc_type = DocumentTypeGiddyupp;
+
+
+                            pay.Price = double.Parse(Price);
+                            pay.InvoiceSum = double.Parse(Price);
+
+                            //if (pay.Price==4400)
+                            //{
+
+                            //}
+
+                            pay.payment_type = "1";
+
+                            if (StudentObj.PayType == "monthCost" && DocumentTypeGiddyupp != "Mas" && DocumentTypeGiddyupp != "Zikuy")
+                            {
+                                DateTime StartTime = new DateTime();
+                                DateTime EndTime = new DateTime();
+
+                                //bool IsExist = GetIdateFromRecipt(DateTime.Parse(IDate), RiderId, ref StartTime, ref EndTime, Price);
+
+                                //if (IsExist)
+                                //{
+                                //    pay.month = StartTime;
+                                //    pay.untilmonth = EndTime;
+                                //}
+
+                                var Sl = Context.StudentLessons.Where(x => x.User_Id == StudentObj.Id).ToList();
+
+                                foreach (StudentLessons sls in Sl)
+                                {
+                                    var l = Context.Lessons.Where(x => x.Id == sls.Lesson_Id).FirstOrDefault();
+                                    bool IsExist = GetIdateFromRecipt(l.Start, RiderId, ref StartTime, ref EndTime, Price);
+                                    if (IsExist)
+                                    {
+                                        var diffMonths = (EndTime.Month + EndTime.Year * 12) - (StartTime.Month + StartTime.Year * 12);
+                                        sls.LessonPayType = 2;
+                                        sls.Price = pay.InvoiceSum / diffMonths;
+                                        Context.Entry(sls).State = System.Data.Entity.EntityState.Modified;
+
+                                        Context.SaveChanges();
+
+                                        pay.month = StartTime;
+                                        pay.untilmonth = EndTime;
+
+                                    }
+
+                                    //if (l.Start < EndTime && l.Start >= StartTime)
+                                    //{
+                                    //    var diffMonths = (EndTime.Month + EndTime.Year * 12) - (StartTime.Month + StartTime.Year * 12);
+                                    //    sls.LessonPayType = 2;
+                                    //    sls.Price = pay.InvoiceSum / diffMonths;
+                                    //    Context.Entry(sls).State = System.Data.Entity.EntityState.Modified;
+
+                                    //    Context.SaveChanges();
+
+                                    //}
+
+
+
+                                }
+
+
+
+                            }
+
+
+                            if (StudentObj.PayType != "monthCost" && DocumentTypeGiddyupp == "Kabala" && !string.IsNullOrEmpty(ConectedDocNumber))
+                            {
+
+                                var invoiceUserConectedDocNumber = Context.Payments.Where(x => x.InvoiceNum == ConectedDocNumber && x.UserId == StudentObj.Id).FirstOrDefault();
+
+                                if (invoiceUserConectedDocNumber != null && invoiceUserConectedDocNumber.doc_type == "Mas")
+                                {
+                                    pay.lessons = invoiceUserConectedDocNumber.lessons;
+
+                                    invoiceUserConectedDocNumber.lessons = null;
+                                    invoiceUserConectedDocNumber.month = null;
+                                    invoiceUserConectedDocNumber.untilmonth = null;
+
+                                    Context.Entry(invoiceUserConectedDocNumber).State = System.Data.Entity.EntityState.Modified;
+
+                                }
+
+                            }
+
+
+
+                            Context.Payments.Add(pay);
+                            Context.SaveChanges();
+
+
+                        }
+                        else
+                        {
+                            invoiceUser.doc_type = DocumentTypeGiddyupp;
+
+                            if (invoiceUser.doc_type == "Mas" || invoiceUser.doc_type == "Zikuy")
+                            {
+                                invoiceUser.lessons = null;
+
+                            }
+
+                            Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
+                            Context.SaveChanges();
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
+            }
+        }
+
+        private bool GetIdateFromRecipt(DateTime DateTimerec, string riderId, ref DateTime StartDateRef, ref DateTime EndDateRef, string Price)
+        {
+
+            bool IsExist = false;
+
+            DataRow[] DateOfrider = ds.Tables[10].Select("CustId=" + riderId);
+
+            foreach (DataRow item in DateOfrider)
+            {
+                string FromYear = item["FromYear"].ToString();
+                string FromDate = item["FromDate"].ToString();
+                string ToYear = item["ToYear"].ToString();
+                string ToDate = item["ToDate"].ToString();
+                string DocumentNumber = item["DocumentNumber"].ToString();
+
+
+                DateTime StartDate = Convert.ToDateTime("01/" + FromDate + "/" + FromYear);
+                if (ToDate == "0") ToDate = FromDate;
+                if (ToYear == "0" || ToYear == "1") ToYear = FromYear;
+
+                ToDate = (Int32.Parse(ToDate) + 1).ToString();
+                if (ToDate == "13")
+                {
+                    ToDate = "1";
+                    ToYear = (Int32.Parse(ToYear) + 1).ToString();
+
+                }
+
+                DateTime EndDate = Convert.ToDateTime("01/" + ToDate + "/" + ToYear);
+
+
+                if (DateTimerec <= EndDate && DateTimerec >= StartDate && Price == DocumentNumber)
+                {
+                    StartDateRef = StartDate;
+                    EndDateRef = EndDate;
+                    IsExist = true;
+                    break;
+                }
+
+            }
+
+
+            return IsExist;
+
         }
 
         private void BuildKesher()
@@ -735,20 +942,20 @@ namespace FarmsApi.Services
             }
 
 
-            foreach (DataRow item in ds.Tables[1].Rows)
-            {
-                string FirstName = GetRightName(item["FirstName"].ToString());
-                string LastName = GetRightName(item["FamilyName"].ToString().Replace("_", ""));
-                string WorkerID = item["WorkerID"].ToString();
-                int WorkerIDInt = Int32.Parse(WorkerID);
-                var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "instructor" && x.FirstName == FirstName && x.LastName == LastName).FirstOrDefault();
-                if (UserEN != null)
-                {
-                    UserEN.EntityId = WorkerIDInt;
-                    Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
-                }
+            //foreach (DataRow item in ds.Tables[1].Rows)
+            //{
+            //    string FirstName = GetRightName(item["FirstName"].ToString());
+            //    string LastName = GetRightName(item["FamilyName"].ToString().Replace("_", ""));
+            //    string WorkerID = item["WorkerID"].ToString();
+            //    int WorkerIDInt = Int32.Parse(WorkerID);
+            //    var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "instructor" && x.FirstName == FirstName && x.LastName == LastName).FirstOrDefault();
+            //    if (UserEN != null)
+            //    {
+            //        UserEN.EntityId = WorkerIDInt;
+            //        Context.Entry(UserEN).State = System.Data.Entity.EntityState.Modified;
+            //    }
 
-            }
+            //}
 
 
             Context.SaveChanges();
@@ -1103,11 +1310,41 @@ namespace FarmsApi.Services
                     executed = item["executed"].ToString();
                     UnexecutedReson = item["UnexecutedReson"].ToString();
 
-                    Price = item["Price"].ToString();
+                    Price = item["FarmDairy.Price"].ToString();
                     financPrecent = item["financPrecent"].ToString();
                     financier = item["financier"].ToString();
                     invoice = item["invoice"].ToString();
                     TypeForBookkeeping = item["TypeForBookkeeping"].ToString();
+
+                    string PayType = item["PayArrangement"].ToString();// הסדר תשלומים 0 = רגיל  1 = חודשי
+
+
+                    string DocumentType = item["DocumentType"].ToString();
+
+                    string Remark = item["Remark"].ToString();
+                    string DocumentId = item["DocumentId"].ToString();
+                    string ConectedDocNumber = item["ConectedDocNumber"].ToString();
+                    string DocPrice = item["Documents.Price"].ToString();
+                    string IDate = item["IDate"].ToString();
+
+                    string DocumentTypeGiddyupp = "MasKabala";
+
+                    ConectedDocNumber = (ConectedDocNumber == "0" || ConectedDocNumber == "1") ? "" : ConectedDocNumber;
+
+
+                    if (DocumentType == "2") DocumentTypeGiddyupp = "Kabala";
+                    if (DocumentType == "3") DocumentTypeGiddyupp = "Mas";
+                    if (DocumentType == "4" || DocumentType == "5" || DocumentType == "6") DocumentTypeGiddyupp = "Zikuy";
+
+
+
+
+
+
+
+
+
+
 
                     var StudentObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == RiderIdInt && x.Role == "student").FirstOrDefault();
                     var InstructorObj = Context.Users.Where(x => x.Farm_Id == FarmId && x.EntityId == WorkerIDInt && x.Role == "instructor").FirstOrDefault();
@@ -1116,27 +1353,29 @@ namespace FarmsApi.Services
                     if (StudentObj == null || InstructorObj == null) continue;
 
 
+
+
                     DateTime LessonsStart = GetDateFromAccess(DayofRide, HourofRide);
                     DateTime LessonsEnd = LessonsStart.AddMinutes(30); //GetDateFromAccess(DayofRide, HourofRide);
                                                                        //  var LessonEN = Context.Lessons.Where(x => x.Instructor_Id == InstructorObj.Id && x.Start == LessonsStart).FirstOrDefault();
 
 
 
-                    // מכניס מחיר לשיעור השלמה
-                    if (TypeofRiders == "1")
-                    {
-                        foreach (DictionaryEntry de in hs)
-                        {
-                            if (UnexecutedReson.Contains(de.Key.ToString()))
-                            {
-                                Price = de.Value.ToString();
+                    //// מכניס מחיר לשיעור השלמה
+                    //if (TypeofRiders == "1")
+                    //{
+                    //    foreach (DictionaryEntry de in hs)
+                    //    {
+                    //        if (UnexecutedReson.Contains(de.Key.ToString()))
+                    //        {
+                    //            Price = de.Value.ToString();
 
-                            }
-                        }
+                    //        }
+                    //    }
 
-                        if (Price == "0") Price = StudentObj.Cost.ToString();
+                    //    if (Price == "0") Price = StudentObj.Cost.ToString();
 
-                    }
+                    //}
 
 
                     //הוצאות נוספות
@@ -1193,24 +1432,33 @@ namespace FarmsApi.Services
                                 StudentLessons StudLess = new StudentLessons();
                                 StudLess.User_Id = StudentObj.Id;
                                 StudLess.Lesson_Id = LessId;
-                                StudLess.LessonPayType = Int32.Parse(TypeForBookkeeping) + 1;
+                                StudLess.LessonPayType = Int32.Parse(PayType) + 1;
                                 StudLess.Price = FixedPrice;
                                 StudLess.OfficeDetails = UnexecutedReson;
+
                                 if (DateTime.Now > LessonsStart)
                                 {
-
-
                                     StudLess.Status = (executed == "True") ? "attended" : "notAttended";
-                                    // אם לא הגיע ויש חשבונית שמור את המחיר והחשבונית ואם יימצא בשורות הבאות שיעור השלמה הוא יעדכן שם מחיר כי 
-                                    // כשיש שיעור השלמה המחיר הוא 0
-                                    if (StudLess.Status == "notAttended" && financier != "2" && invoice != "0" && !hs.ContainsKey(invoice))
-                                    {
 
-                                        hs.Add(invoice, FixedPrice);
-
-                                    }
+                                    if (StudLess.Status == "notAttended" && FixedPrice > 0) StudLess.Status = "notAttendedCharge";
 
                                 }
+
+                                //if (DateTime.Now > LessonsStart)
+                                //{
+
+
+                                //    StudLess.Status = (executed == "True") ? "attended" : "notAttended";
+                                //    // אם לא הגיע ויש חשבונית שמור את המחיר והחשבונית ואם יימצא בשורות הבאות שיעור השלמה הוא יעדכן שם מחיר כי 
+                                //    // כשיש שיעור השלמה המחיר הוא 0
+                                //    if (StudLess.Status == "notAttended" && financier != "2" && invoice != "0" && !hs.ContainsKey(invoice))
+                                //    {
+
+                                //        hs.Add(invoice, FixedPrice);
+
+                                //    }
+
+                                //}
 
                                 Context.StudentLessons.Add(StudLess);
                                 Context.SaveChanges();
@@ -1220,12 +1468,15 @@ namespace FarmsApi.Services
                             {
                                 StudentLessonsEN.User_Id = StudentObj.Id;
                                 StudentLessonsEN.Lesson_Id = LessonEN.Id;
-                                StudentLessonsEN.LessonPayType = Int32.Parse(TypeForBookkeeping) + 1;
+                                StudentLessonsEN.LessonPayType = Int32.Parse(PayType) + 1;
                                 StudentLessonsEN.Price = FixedPrice;
                                 StudentLessonsEN.OfficeDetails = UnexecutedReson;
                                 if (DateTime.Now > LessonsStart)
                                 {
                                     StudentLessonsEN.Status = (executed == "True") ? "attended" : "notAttended";
+
+                                    if (StudentLessonsEN.Status == "notAttended" && FixedPrice > 0) StudentLessonsEN.Status = "notAttendedCharge";
+
                                 }
                                 Context.Entry(StudentLessonsEN).State = System.Data.Entity.EntityState.Modified;
                                 Context.SaveChanges();
@@ -1241,6 +1492,7 @@ namespace FarmsApi.Services
 
                         #endregion
 
+                        // הורדתי רק לסוסים בכפר
                         #region Commitments
                         try
                         {
@@ -1313,13 +1565,15 @@ namespace FarmsApi.Services
                                 pay.InvoicePdf = "";
                                 pay.InvoiceNum = invoice;
                                 pay.InvoiceDetails = invoice + " חשבונית " + " " + UnexecutedReson;
-
+                                pay.ParentInvoiceNum = ConectedDocNumber;
+                                pay.doc_type = DocumentTypeGiddyupp;
                                 //pay.canceled = CheckifExistStr(Item["canceled"]);
-                                pay.Price = FixedPrice;
-                                pay.InvoiceSum = FixedPrice;
+                                pay.Price = double.Parse(DocPrice); //FixedPrice;
+                                pay.InvoiceSum = double.Parse(DocPrice);
 
                                 pay.payment_type = "1";
-                                if (WorkerID != ExpensWorkerId) pay.lessons = 1;
+                                // if (WorkerID != ExpensWorkerId)
+                                if (StudentObj.PayType == "lessonCost") pay.lessons = 1;
                                 //pay.month = CheckifExistDate(Item["month"]);
                                 //pay.untilmonth = CheckifExistDate(Item["untilmonth"]);
 
@@ -1331,9 +1585,18 @@ namespace FarmsApi.Services
                             }
                             else
                             {
-                                invoiceUser.Price = FixedPrice;
-                                invoiceUser.InvoiceSum += FixedPrice;
-                                if (WorkerID != ExpensWorkerId) invoiceUser.lessons += 1;
+                                //   invoiceUser.Price = FixedPrice;
+                                //   invoiceUser.InvoiceSum += FixedPrice;
+                                // if (WorkerID != ExpensWorkerId) 
+
+                                if (StudentObj.PayType == "lessonCost") invoiceUser.lessons += 1;
+
+                                invoiceUser.ParentInvoiceNum = ConectedDocNumber;
+                                invoiceUser.doc_type = DocumentTypeGiddyupp;
+
+                                invoiceUser.Price = double.Parse(DocPrice); //FixedPrice;
+                                invoiceUser.InvoiceSum = double.Parse(DocPrice);
+
                                 Context.Entry(invoiceUser).State = System.Data.Entity.EntityState.Modified;
                                 Context.SaveChanges();
                             }

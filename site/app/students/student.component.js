@@ -164,7 +164,9 @@
 
         function _isDateMoreToday(date) {
 
-            if (moment(date) > moment().add(1, 'day')) return true;
+         
+            // צחי הוסיף פילטר שלא יציג את העבר
+            if (moment(date) > moment().add(1, 'day') || moment(date) < moment('2020-05-01') ) return true;
 
             return false;
         }
