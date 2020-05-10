@@ -1,16 +1,12 @@
-﻿using System;
+﻿using EZcountApiLib;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+using System.Configuration;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
-using EZcountApiLib;
-using Newtonsoft.Json;
-using RestSharp;
-using Newtonsoft.Json.Linq;
-using System.Configuration;
 
 namespace FarmsApi.Controllers
 {
@@ -151,7 +147,7 @@ namespace FarmsApi.Controllers
                 };
 
                 string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
-                var SlikaUrl = SlikaUrlChargeToken; 
+                var SlikaUrl = SlikaUrlChargeToken;
                 var client = new HttpClient();
                 HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                 HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -282,7 +278,7 @@ namespace FarmsApi.Controllers
                 try
                 {
                     DocType = ((bool)Params.isMasKabala) ? 320 : ((bool)Params.isKabala ? 400 : ((bool)Params.isMas ? 305 : 405));
-                    if((bool)Params.isZikuy) DocType = 330;
+                    if ((bool)Params.isZikuy) DocType = 330;
                 }
                 catch (Exception ex)
                 {
@@ -323,7 +319,7 @@ namespace FarmsApi.Controllers
 
 
 
-                dynamic response = doc.execute(((IsProduction=="0")? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
+                dynamic response = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
 
                 return Ok(response);
 

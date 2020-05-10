@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace FarmsApi.DataModels
 {
@@ -61,7 +57,7 @@ namespace FarmsApi.DataModels
         public string Name { get; set; }
 
         public string Style { get; set; }
-        
+
 
     }
 
@@ -83,7 +79,7 @@ namespace FarmsApi.DataModels
 
     public class DebtReport
     {
-      
+
         public string Taz { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

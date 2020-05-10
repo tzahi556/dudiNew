@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using FarmsApi.Services;
+using System;
 using System.Web;
 using System.Web.Caching;
-using System.Web.Security;
-using System.Web.SessionState;
-using FarmsApi.Services;
 
 namespace FarmsApi
 {
@@ -15,7 +11,7 @@ namespace FarmsApi
         protected void Application_Start(object sender, EventArgs e)
         {
             //StartMailChecker();
-            AddTask("DoStuff",3600);
+            AddTask("DoStuff", 3600);
             // AddTask("DoStuff", 30);
         }
 
@@ -45,7 +41,7 @@ namespace FarmsApi
                     CommonTasks Tasking = new CommonTasks();
 
                     if (day == 1) Tasking.AddExpenseToHorseLanders();
-                   
+
                     Tasking.InsertChecksToMas();
 
                     Tasking.InsertSchedularToken();
@@ -53,7 +49,7 @@ namespace FarmsApi
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
 
@@ -93,7 +89,7 @@ namespace FarmsApi
 
                 int hour = moment.Hour;
 
-                
+
                 if (hour == 9)
                 {
                     CommonTasks Tasking = new CommonTasks();
@@ -103,7 +99,7 @@ namespace FarmsApi
 
 
                 }
-              
+
             }
             catch
             {
@@ -112,7 +108,7 @@ namespace FarmsApi
             }
             finally
             {
-              //  StartMailChecker();
+                //  StartMailChecker();
             }
         }
         protected void Session_Start(object sender, EventArgs e)

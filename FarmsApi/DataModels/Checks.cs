@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace FarmsApi.DataModels
 {
     public class Checks
     {
-     
+
         [Key, Column(Order = 0)]
         public int Id { get; set; }
         public int? UserId { get; set; }
@@ -19,6 +16,6 @@ namespace FarmsApi.DataModels
         public string checks_number { get; set; }
         public string checks_bank_name { get; set; }
         public bool checks_auto { get; set; }
-        
+
     }
 }

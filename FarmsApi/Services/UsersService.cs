@@ -1,16 +1,11 @@
 ﻿using FarmsApi.DataModels;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 
 
@@ -673,18 +668,18 @@ namespace FarmsApi.Services
             {
                 DateTime CurrentDate = DateTime.Now;
                 int ParentId = 0;
-                var LastDay = new DateTime(DateTime.Now.Year, 12, 31,23,59,59);
+                var LastDay = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59);
                 var ExistLesson = Context.Lessons.Where(l => l.Instructor_Id == u.Id && l.Start > CurrentDate).FirstOrDefault();
                 if (ExistLesson == null)
                 {
-                  
+
                     while (CurrentDate <= LastDay)
                     {
 
                         Lesson less = new Lesson();
                         less.Instructor_Id = u.Id;
-                        less.Start = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, 07,00, 0);
-                        less.End = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day,23, 59,59);
+                        less.Start = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, 07, 00, 0);
+                        less.End = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, 23, 59, 59);
                         less.ParentId = ParentId;
                         Context.Lessons.Add(less);
                         Context.SaveChanges();

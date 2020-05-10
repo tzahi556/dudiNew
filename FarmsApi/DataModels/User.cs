@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace FarmsApi.DataModels
 {
@@ -36,7 +32,7 @@ namespace FarmsApi.DataModels
 
 
         public bool Rivoni { get; set; }
-        
+
 
         public string ParentName2 { get; set; }
         public string ParentName { get; set; }

@@ -42,7 +42,7 @@
         this.isExec = _isExec.bind(this);
 
 
-
+        this.scope.$on('schedular.show', this.onShow);
 
         function _isExec(schedular) {
             var obj = {
@@ -114,20 +114,44 @@
         }
        
 
-        this.scope.$on('schedular.show', this.onShow);
+      
 
         function _onShow(event, lesson) {
 
            
-            this.selectedStudentSchedular = event;
+            this.selectedStudentSchedular = lesson;
            
             this.lessonId = lesson.id;
             this.resourceId = lesson.resourceId;
 
             this.lessonsService.getSetSchedularTask(lesson.id, lesson.resourceId, null,0).then(function (res) {
-               
-                
-                this.schedulars = res;
+
+                if (res[0]) {
+                    res = res[0];
+                    this.newSchedular = [];
+                    this.newSchedular.Id = res.Id;
+                    this.newSchedular.Title = res.Title;
+                    this.newSchedular.Desc = res.Desc;
+                    this.newSchedular.EveryDay = res.EveryDay;
+                    this.newSchedular.EveryWeek = res.EveryWeek;
+                    this.newSchedular.EveryMonth = res.EveryMonth;
+                    this.newSchedular.EndDate = moment(res.EndDate).startOf('day').toDate();
+                    this.affectChildren = false;
+                } else {
+
+                    this.newSchedular = [];
+                    this.newSchedular.Id = 0;
+                    this.newSchedular.Title = "";
+                    this.newSchedular.Desc = "";
+                    this.newSchedular.EveryDay = false;
+                    this.newSchedular.EveryWeek = false;
+                    this.newSchedular.EveryMonth = false;
+                    this.newSchedular.EndDate = "";
+                    this.affectChildren = false;
+
+
+                }
+               // this.schedulars = res;
            
 
             }.bind(this));
@@ -174,7 +198,7 @@
 
 
         function _close(schedular, type) {
-           
+           debugger
             var obj = {
                 Id: this.newSchedular.Id,
                 Title: this.newSchedular.Title,
@@ -196,17 +220,15 @@
 
                 this.schedulars = res;
                 this.closeCallback(null);
-             //   alert("המשימה נשמרה בהצלחה!");     
-
+                alert("המשימה נשמרה בהצלחה!");     
+                this.selectedStudentSchedular = null;
              
             }.bind(this));
 
 
-            $("#modal .close").click();
-
-
            
-            this.selectedStudentSchedular = null;
+           
+           // 
 
         }
 

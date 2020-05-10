@@ -1,14 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using FarmsApi.DataModels;
 using Microsoft.Owin;
-using Owin;
-using System.Web.Http;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security.OAuth;
-using Newtonsoft.Json.Linq;
-using System.Security.Claims;
+using Owin;
+using System;
 using System.Linq;
-using FarmsApi.DataModels;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 [assembly: OwinStartup(typeof(FarmsApi.Startup))]
 

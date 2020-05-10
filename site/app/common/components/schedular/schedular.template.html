@@ -1,61 +1,90 @@
 ﻿<div class="event-background" ng-if="$ctrl.selectedStudentSchedular != null">
     <div class="event" style="border: 1px gray!important;">
 
-        <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
+        <div style="padding:3px;text-align:right">
 
 
-        <div class="form-group">
-            <label>
-                משימות ליום זה
-            </label>
+            <label>כותרת:</label>
+            <input style="float:right" class="form-control" type="text" ng-model="$ctrl.newSchedular.Title"><br />
+            <label>תוכן:</label>
+            <textarea class="form-control" rows="3" ng-model="$ctrl.newSchedular.Desc"></textarea>
+            <br />
+            <div>
+                <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.newSchedular.EveryDay">כל יום</label></div>
+                <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.newSchedular.EveryWeek">כל שבוע</label></div>
+                <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.newSchedular.EveryMonth">כל חודש</label></div>
+                &nbsp; &nbsp; &nbsp; <label> עד תאריך:</label>  <input class="" type="date" ng-model="$ctrl.newSchedular.EndDate" />
 
-            
+                <div>
 
-            <div style="padding:3px">
-                <a class="btn btn-primary btn-xs" ng-click="$ctrl.openTask(0)" href="">משימה חדשה</a>
-
-
-                <table width="100%" border="1" style="margin-top:5px;">
-                    <tr style="background:#3268a8;color:white">
-                        <th>
-                            #
-                        </th>
-                        <th>
-                            כותרת
-                        </th>
-                        <th>
-                            האם בוצע
-                        </th>
-                        <th>
-
-                        </th>
-
-
-                    </tr>
-                   
-
-                    <tr ng-repeat="schedular in $ctrl.schedulars">
-                        <td style="padding:3px">{{$index + 1}}</td>
-                        <td style="padding:3px">{{schedular.Title}}</td>
-                        <td style="padding:3px"><input class="" style="" type="checkbox" ng-model="schedular.IsExe" ng-change="$ctrl.isExec(schedular)" /></td>
-                        <td style="padding:3px;text-align:center;width:15%"> <a class="btn btn-success btn-xs" ng-click="$ctrl.openTask(schedular)" href="">לפרטים</a></td>
-                    </tr>
-
-                </table>
-
+                </div>
+                <br />
             </div>
-        
+
+            <a class="btn btn-success" style="float:left;" ng-click="$ctrl.close($ctrl.newSchedular,1)" href="">שמור</a>
+            <a class="btn btn-default" style="float:left;margin-left:2px" ng-click="$ctrl.hide()" href="">סגור</a>
 
 
+            <a class="btn btn-danger" ng-click="$ctrl.close($ctrl.newSchedular,2)" href="">מחק משימה</a>
+            <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.affectChildren">כולל משימות עתידיות</label></div>
 
-
+            <div style="clear:both"></div>
 
         </div>
 
-        <hr />
+
+        <!--<div class="form-group">
+        <label>
+            משימות ליום זה
+        </label>
 
 
-        <a class="btn btn-default" ng-click="$ctrl.hide()" href="">סגור</a>
+
+        <div style="padding:3px">
+            <a class="btn btn-primary btn-xs" ng-click="$ctrl.openTask(0)" href="">משימה חדשה</a>
+
+
+            <table width="100%" border="1" style="margin-top:5px;">
+                <tr style="background:#3268a8;color:white">
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        כותרת
+                    </th>
+                    <th>
+                        האם בוצע
+                    </th>
+                    <th>
+
+                    </th>
+
+
+                </tr>
+
+
+                <tr ng-repeat="schedular in $ctrl.schedulars">
+                    <td style="padding:3px">{{$index + 1}}</td>
+                    <td style="padding:3px">{{schedular.Title}}</td>
+                    <td style="padding:3px"><input class="" style="" type="checkbox" ng-model="schedular.IsExe" ng-change="$ctrl.isExec(schedular)" /></td>
+                    <td style="padding:3px;text-align:center;width:15%"> <a class="btn btn-success btn-xs" ng-click="$ctrl.openTask(schedular)" href="">לפרטים</a></td>
+                </tr>
+
+            </table>
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+    <hr />
+
+
+    <a class="btn btn-default" ng-click="$ctrl.hide()" href="">סגור</a>-->
 
 
 

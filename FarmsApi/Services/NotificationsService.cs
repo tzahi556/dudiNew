@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Web;
 using System.Web.Script.Serialization;
 
 namespace FarmsApi.Services
@@ -195,7 +194,7 @@ namespace FarmsApi.Services
             {
                 var currentUser = UsersService.GetCurrentUser();
                 var untilDate = DateTime.Now.AddDays(7);
-                var notifications = Context.Notifications.Where(n => n.Date < untilDate && n.FarmId == currentUser.Farm_Id && n.IsDelete==false).ToList();
+                var notifications = Context.Notifications.Where(n => n.Date < untilDate && n.FarmId == currentUser.Farm_Id && n.IsDelete == false).ToList();
                 notifications = notifications.ToList().Where(n =>
                 {
                     if (n.EntityType == "lessons" && n.EntityId == currentUser.Id)

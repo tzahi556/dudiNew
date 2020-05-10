@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
-
-namespace FarmsApi.DataModels
+﻿namespace FarmsApi.DataModels
 {
     public class AvailableHours
     {
@@ -14,7 +8,7 @@ namespace FarmsApi.DataModels
         public string start { get; set; }
         public string end { get; set; }
         public string dow { get; set; }
-     
+
 
     }
 }

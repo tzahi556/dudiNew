@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace FarmsApi.DataModels
 {
@@ -17,6 +14,7 @@ namespace FarmsApi.DataModels
         public bool EveryWeek { get; set; }
         public bool EveryMonth { get; set; }
 
+        public int Days { get; set; }
         public bool IsExe { get; set; }
         public DateTime? EndDate { get; set; }
 

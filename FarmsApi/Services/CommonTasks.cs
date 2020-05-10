@@ -1,20 +1,19 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using EZcountApiLib;
+using FarmsApi.DataModels;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using FarmsApi.DataModels;
-using EZcountApiLib;
 using System.Configuration;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
-using Newtonsoft.Json;
 
 namespace FarmsApi.Services
 {
-    public  class CommonTasks
+    public class CommonTasks
     {
-        public  bool TaskDone { get; set; }
+        public bool TaskDone { get; set; }
         public CommonTasks()
         {
             //var Today = DateTime.Now;
@@ -42,16 +41,17 @@ namespace FarmsApi.Services
                 var UsersToPay = Context.Users.Where(x => x.Active == "active" &&
                              x.DateForMonthlyPay.Value.Day == Day &&
                              x.DateForMonthlySum > 0 &&
-                             x.DateForMonthlySeq!= x.DateForMonthlyPrev && // ההסטוריה שונה 
-                             x.cc_token != null && 
+                             x.DateForMonthlySeq != x.DateForMonthlyPrev && // ההסטוריה שונה 
+                             x.cc_token != null &&
                              x.cc_token != ""
                              ).ToList();
 
                 foreach (User up in UsersToPay)
                 {
 
-                 
-                    if (up.Rivoni) { 
+
+                    if (up.Rivoni)
+                    {
                         if (Month != 1 && Month != 4 && Month != 7 && Month != 10)
                             continue;
 
@@ -75,7 +75,7 @@ namespace FarmsApi.Services
                         cc_token = up.cc_token,
                         cc_4_digits = up.cc_4_digits,
                         cc_payer_name = up.cc_payer_name,
-                        cc_payer_id =up.cc_payer_id,
+                        cc_payer_id = up.cc_payer_id,
                         cc_expire_month = up.cc_expire_month,
                         cc_expire_year = up.cc_expire_year,
                         cc_type_id = up.cc_type_id,
@@ -111,7 +111,7 @@ namespace FarmsApi.Services
                                 cc_type = up.cc_type_id,
                                 cc_type_name = up.cc_type_name,
                                 cc_number = up.cc_4_digits,
-                                cc_deal_type =1,
+                                cc_deal_type = 1,
                                 cc_num_of_payments = 1,
                                 cc_payment_num = 1,
 
@@ -131,7 +131,7 @@ namespace FarmsApi.Services
                                 customer_email = up.AnotherEmail,
                                 customer_address = up.Address,
                                 comment = "מס לקוח: " + up.ClientNumber + ", ת.ז.: " + up.IdNumber,
-                               
+
 
                                 item = new dynamic[] {
                                  new {
@@ -158,7 +158,7 @@ namespace FarmsApi.Services
                                 p.doc_type = "MasKabala";
                                 p.InvoiceNum = response[2].ToString();
                                 p.InvoicePdf = response[0].ToString();
-                              
+
                                 p.Price = up.DateForMonthlySum;
                                 p.InvoiceDetails = " חיוב אוטמטי תאריכי שיעורים: " + ap.InvoiceDates;
                                 p.UserId = up.Id;
@@ -167,9 +167,9 @@ namespace FarmsApi.Services
                                 p.lessons = ap.lessons;
                                 p.month = ap.month;
                                 p.untilmonth = ap.untilmonth;
-                              
 
-                               Context.Payments.Add(p);
+
+                                Context.Payments.Add(p);
 
                                 up.DateForMonthlyPrev = ((up.DateForMonthlyPrev == null) ? 0 : up.DateForMonthlyPrev) + 1;
                                 Context.Entry(up).State = System.Data.Entity.EntityState.Modified;
@@ -181,7 +181,7 @@ namespace FarmsApi.Services
                         }
 
                     }
-                 
+
 
                 }
 
@@ -213,9 +213,9 @@ namespace FarmsApi.Services
 
         private int? GetLessonsByCost(User up)
         {
-            if(up.PayType== "lessonCost")
+            if (up.PayType == "lessonCost")
             {
-                int lessCount =Convert.ToInt32(up.DateForMonthlySum)  / Convert.ToInt32(up.Cost);
+                int lessCount = Convert.ToInt32(up.DateForMonthlySum) / Convert.ToInt32(up.Cost);
 
                 return lessCount;
             }
@@ -255,7 +255,7 @@ namespace FarmsApi.Services
                     ap.untilmonth = CurrentDate.AddMonths(3);
                     ap.InvoiceTitle = "חיוב אוטמטי עבור 3 חודשים ";
                 }
-                  
+
 
             }
 
@@ -279,14 +279,14 @@ namespace FarmsApi.Services
                     ap.InvoiceDates += "," + LessonsDates[i].StartDate.ToString("dd/MM/yy");
 
                     if (
-                        (i + 1 == ap.lessons) || 
-                        (!up.Rivoni &&   LessonsDates[i].StartDate >  CurrentDate.AddMonths(1))  ||
+                        (i + 1 == ap.lessons) ||
+                        (!up.Rivoni && LessonsDates[i].StartDate > CurrentDate.AddMonths(1)) ||
                         (up.Rivoni && LessonsDates[i].StartDate > CurrentDate.AddMonths(3))
                         ) break;
 
                 }
 
-              
+
             }
 
 
@@ -295,7 +295,7 @@ namespace FarmsApi.Services
             return ap;
         }
 
-        public  void InsertChecksToMas()
+        public void InsertChecksToMas()
         {
             string IsProduction = ConfigurationSettings.AppSettings["IsProduction"].ToString();
 
@@ -429,7 +429,7 @@ namespace FarmsApi.Services
 
         }
 
-        public  void AddExpenseToHorseLanders()
+        public void AddExpenseToHorseLanders()
         {
             using (var Context = new Context())
             {
@@ -534,7 +534,7 @@ namespace FarmsApi.Services
             //}
         }
 
-        private  void AddExpense(string Details, double Price, User user)
+        private void AddExpense(string Details, double Price, User user)
         {
             //// צחי צריך לסדר
             //try
@@ -564,7 +564,7 @@ class HorseBalanceRecord
 
 class AutoPayObj
 {
-   
+
     public int? lessons { get; set; }
     public DateTime? month { get; set; }
     public DateTime? untilmonth { get; set; }

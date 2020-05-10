@@ -130,7 +130,7 @@
 
 //                return Ok(response);
 //            }
-      
+
 //            else if ((string)Params.payment_type == "tokenBuy")
 //            {
 
@@ -183,7 +183,7 @@
 //                return Ok(responseToken);
 
 //            }
-         
+
 //            else
 //            {
 

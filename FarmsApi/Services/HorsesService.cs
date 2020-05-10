@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Web;
 
 namespace FarmsApi.Services
 {
@@ -18,7 +16,7 @@ namespace FarmsApi.Services
                 var Horses = Context.Horses.ToList();
                 if (CurrentUserFarmId != 0)
                 {
-                    Horses = Horses.Where(h => h.Farm_Id == CurrentUserFarmId).OrderBy(x=>x.Name).ToList();
+                    Horses = Horses.Where(h => h.Farm_Id == CurrentUserFarmId).OrderBy(x => x.Name).ToList();
                 }
                 Horses = FilterDeleted(Horses, IncludeDeleted);
                 return Horses;
@@ -61,28 +59,29 @@ namespace FarmsApi.Services
         {
             using (var Context = new Context())
             {
-                try {
+                try
+                {
 
                     DateTime dtStart = Convert.ToDateTime(start);
                     DateTime dtSEnd = Convert.ToDateTime(end);
 
                     var isExist = (from l in Context.Lessons
-                              join s in Context.StudentLessons
-                              on l.Id equals s.Lesson_Id
-                              where s.HorseId == id && 
-                              ((l.Start >= dtStart && l.Start < dtSEnd) || (dtStart >= l.Start && dtStart < l.End))
+                                   join s in Context.StudentLessons
+                                   on l.Id equals s.Lesson_Id
+                                   where s.HorseId == id &&
+                                   ((l.Start >= dtStart && l.Start < dtSEnd) || (dtStart >= l.Start && dtStart < l.End))
                                    select new
-                              {
-                                  ID = s.HorseId
-                                 
-                              }).ToList();
+                                   {
+                                       ID = s.HorseId
+
+                                   }).ToList();
 
 
                     return isExist.Count();
 
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
 

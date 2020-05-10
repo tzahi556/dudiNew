@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace FarmsApi.DataModels
 {
     public class Payments
     {
-     
+
         [Key, Column(Order = 0)]
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -34,11 +31,11 @@ namespace FarmsApi.DataModels
         public string doc_type { get; set; }
 
         public string doc_uuid { get; set; }
-        
+
         public int? lessons { get; set; }
         public DateTime? month { get; set; }
         public DateTime? untilmonth { get; set; }
-       
+
         public bool SelectedForInvoice { get; set; }
 
 

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace FarmsApi.DataModels
 {
@@ -15,6 +12,6 @@ namespace FarmsApi.DataModels
         public int Instructor_Id { get; set; }
         public string Details { get; set; }
 
-       
+
     }
 }

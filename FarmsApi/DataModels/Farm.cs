@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace FarmsApi.DataModels
+﻿namespace FarmsApi.DataModels
 {
     public class Farm
     {
@@ -14,6 +9,6 @@ namespace FarmsApi.DataModels
 
         public int? IsHiyuvInHashlama { get; set; }
 
-        
+
     }
 }

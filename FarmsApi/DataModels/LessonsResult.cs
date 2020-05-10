@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace FarmsApi.DataModels
 {
@@ -14,7 +10,7 @@ namespace FarmsApi.DataModels
         public DateTime? End { get; set; }
 
         public string Details { get; set; }
-      //  public bool editable { get; set; }
+        //  public bool editable { get; set; }
         public int? Instructor_Id { get; set; }
 
         public int? User_Id { get; set; }
@@ -35,7 +31,7 @@ namespace FarmsApi.DataModels
         public string Mashov { get; set; }
 
         public int? IsMazkirut { get; set; }
-        
+
 
 
 

@@ -1,10 +1,6 @@
 ﻿using FarmsApi.DataModels;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace FarmsApi.Services
@@ -154,7 +150,7 @@ namespace FarmsApi.Services
         [HttpPost]
         public IHttpActionResult UpdateUserMultiTables(JArray dataobj)
         {
-          //  return Ok(UsersService.UpdateUser(dataobj));
+            //  return Ok(UsersService.UpdateUser(dataobj));
             return Ok(UsersService.UpdateUserMultiTables(dataobj));
         }
 
@@ -179,7 +175,7 @@ namespace FarmsApi.Services
         [HttpGet]
         public IHttpActionResult getReport([FromUri] string type, [FromUri] string fromDate, [FromUri] string toDate)
         {
-           
+
             return Ok(UsersService.ManagerReport(type, fromDate, toDate));
         }
 
@@ -191,7 +187,7 @@ namespace FarmsApi.Services
 
             return Ok(UsersService.HMOReport(fromDate, toDate));
         }
-       
+
         [Authorize]
         [Route("getReportDebt")]
         [HttpGet]
@@ -210,7 +206,7 @@ namespace FarmsApi.Services
         public IHttpActionResult getTransferData([FromUri] string insructorId, [FromUri] string dow, [FromUri] string date)
         {
 
-            return Ok(UsersService.GetTransferData(insructorId, dow,date));
+            return Ok(UsersService.GetTransferData(insructorId, dow, date));
         }
 
 

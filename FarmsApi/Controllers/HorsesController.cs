@@ -1,9 +1,4 @@
 ﻿using FarmsApi.DataModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http; 
 using System.Web.Http;
 
 namespace FarmsApi.Services
@@ -58,8 +53,8 @@ namespace FarmsApi.Services
         [HttpGet]
         public IHttpActionResult Checkifhorsework(int? id = null, string start = null, string end = null)
         {
-          
-            return Ok(HorsesService.CheckIfHorseWork(id,start,end));
+
+            return Ok(HorsesService.CheckIfHorseWork(id, start, end));
         }
 
 

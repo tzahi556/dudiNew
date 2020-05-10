@@ -3,10 +3,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity.Core;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
 
 namespace FarmsApi.Services
 {
@@ -839,177 +837,233 @@ namespace FarmsApi.Services
 
         }
 
+        private static void ReopenLessonsByInstructorMazkirut(SchedularTasks Schedular, Lesson CurrentLesson, int resourceId, Context Context)
+        {
+
+            DateTime CurrentDate = DateTime.Now;
+            int ParentId = 0;
+            DateTime? LastDay = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59);
+
+            if (Schedular.EndDate != null) LastDay = Schedular.EndDate;
+            if (Schedular.Days > 0) LastDay = CurrentDate.AddDays(Schedular.Days);
+
+
+            string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                                         <div style ='font-weight:bold;text-decoration:underline'>" + Schedular.Title + @"</div>
+                                     </div>";
+
+
+            while (CurrentDate <= LastDay)
+            {
+
+                Lesson less = new Lesson();
+                less.Instructor_Id = resourceId;
+                less.Start = CurrentLesson.Start;
+                less.End = CurrentLesson.End;
+                less.Details = html;
+                less.ParentId = ParentId;
+                Context.Lessons.Add(less);
+                Context.SaveChanges();
+                ParentId = less.Id;
+
+                if (Schedular.EveryDay)
+                    CurrentDate = CurrentDate.AddDays(1);
+                else if (Schedular.EveryWeek)
+                    CurrentDate = CurrentDate.AddDays(6);
+                else if (Schedular.EveryMonth)
+                    CurrentDate = CurrentDate.AddMonths(1);
+                else if (Schedular.Days > 0)
+                    CurrentDate = CurrentDate.AddDays(1);
 
 
 
-        public static List<SchedularTasks> GetSetSchedularTask(JObject Schedular, int lessonId, int resourceId, int type)
+                Schedular.LessonId = less.Id;
+                Context.Entry(Schedular).State = System.Data.Entity.EntityState.Modified;
+                Context.SaveChanges();
+
+            }
+        }
+
+
+        public static List<SchedularTasks> GetSetSchedularTask(SchedularTasks Schedular, int lessonId, int resourceId, int type)
         {
             using (var Context = new Context())
             {
 
-                // עדכון האם בוצע
-                if (type == 4)
-                {
-                    int Id = Schedular["Id"] != null ? Schedular["Id"].Value<int>() : 0;
-                    bool IsExe = Schedular["IsExe"] != null ? Schedular["IsExe"].Value<bool>() : false;
-
-                    var SchedularTaskList = Context.SchedularTasks.Where(u => u.Id == Id).FirstOrDefault();
-                    SchedularTaskList.IsExe = IsExe;
-                    Context.Entry(SchedularTaskList).State = System.Data.Entity.EntityState.Modified;
-
-                    string Title = SchedularTaskList.Title;
-                    string Desc = SchedularTaskList.Desc;
-
-                   
-                    string htmlNo = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
-                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
-                                         <div>" + Desc + @"</div>
-                                     </div>";
-
-
-                 
-                    string htmlYes = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
-                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"<div style ='float:left'><img  src='../../../../images/approve-icon.png'/></div></div>
-                                         <div>" + Desc + @"</div>
-                                     </div>";
-
-
-
-                    var Lesson = Context.Lessons.Where(x => x.Instructor_Id == resourceId && x.Id == lessonId).FirstOrDefault();
-
-                    Lesson.Details = (IsExe) ? Lesson.Details.Replace(htmlNo, htmlYes) : Lesson.Details.Replace(htmlYes, htmlNo);
-                    Context.Entry(Lesson).State = System.Data.Entity.EntityState.Modified;
-
-                    Context.SaveChanges();
-
-
-
-                }
-
-
                 if (type == 1)
                 {
 
-
-                    var Title = Schedular["Title"] != null ? Schedular["Title"].Value<string>() : "";
-                    var Desc = Schedular["Desc"] != null ? Schedular["Desc"].Value<string>() : "";
-                    var EveryDay = Schedular["EveryDay"] != null ? Schedular["EveryDay"].Value<bool>() : false;
-                    var EveryWeek = Schedular["EveryWeek"] != null ? Schedular["EveryWeek"].Value<bool>() : false;
-                    var EveryMonth = Schedular["EveryMonth"] != null ? Schedular["EveryMonth"].Value<bool>() : false;
-                    var EndDate = Schedular["EndDate"].ToString() != "" ? Schedular["EndDate"].Value<DateTime>() : (DateTime?)null;
-                    bool AffectChildren = Schedular["AffectChildren"] != null ? Schedular["AffectChildren"].Value<bool>() : false;
-
                     Lesson CurrentLesson = Context.Lessons.Where(u => u.Id == lessonId).FirstOrDefault();
-
-                    List<Lesson> LessonsAll = new List<Lesson>();
-
-                    var LessonsAllGen = Context.Lessons.Where(x => x.Instructor_Id == resourceId && x.Id >= lessonId && (EndDate == null || (EndDate != null && x.Start < EndDate))).ToList();
-                   
-                    if (EveryDay)
-                    {
-                        LessonsAll = LessonsAllGen;
-                    }
-                    else if (EveryWeek)
-                    {
-                        foreach (Lesson item in LessonsAllGen)
-                        {
-
-                            if (item.Start.DayOfWeek == CurrentLesson.Start.DayOfWeek)
-                                LessonsAll.Add(item);
-
-                        }
-
-                    }
-                    else if (EveryMonth)
-                    {
-
-                        foreach (Lesson item in LessonsAllGen)
-                        {
-
-                            if (item.Start.Day == CurrentLesson.Start.Day)
-                                LessonsAll.Add(item);
-
-                        }
-
-                    }
-                    else
-                    {
-                        LessonsAll.Add(CurrentLesson);
-
-                    }
-
-
-
-
-
-                    int Id = Schedular["Id"] != null ? Schedular["Id"].Value<int>() : 0;
-
-                    if (Id != 0)
-                    {
-                        var SchedularTaskList = Context.SchedularTasks.Where(u => u.Id == Id).FirstOrDefault();
-                        DeleteAll(SchedularTaskList, true, Context);
-
-                    }
-
-
-
-
-                    foreach (var item in LessonsAll)
-                    {
-
-                        SchedularTasks st = new SchedularTasks();
-                        st.LessonId = item.Id;
-                        st.ResourceId = resourceId;
-                        st.Title = Title;
-                        st.Desc = Desc;
-
-                        st.EveryDay = EveryDay;
-                        st.EveryWeek = EveryWeek;
-                        st.EveryMonth = EveryMonth;
-                        st.EndDate = EndDate;
-                        st.IsExe = false;
-                        Context.SchedularTasks.Add(st);
-                    }
-
-                    Context.SaveChanges();
-
-
-
-                    // כאן אני דואג להכניס לשיעורים את ההערות
-
-
-                    string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
-                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
-                                         <div>" + Desc + @"</div>
-                                     </div>";
-
-
-
-                    foreach (var item in LessonsAll)
-                    {
-                        Lesson les = Context.Lessons.Where(u => u.Id == item.Id).FirstOrDefault();
-                        les.Details += html;//.Replace("@LessId", les.Id.ToString()).Replace("@InstId", les.Instructor_Id.ToString());
-                        Context.Entry(les).State = System.Data.Entity.EntityState.Modified;
-
-                    }
-
-                    Context.SaveChanges();
-
-
-
+                    ReopenLessonsByInstructorMazkirut(Schedular, CurrentLesson, resourceId, Context);
 
                 }
 
 
-                if (type == 2)
-                {
-                    int Id = Schedular["Id"] != null ? Schedular["Id"].Value<int>() : 0;
-                    bool AffectChildren = Schedular["AffectChildren"] != null ? Schedular["AffectChildren"].Value<bool>() : false;
-                    var SchedularTaskList = Context.SchedularTasks.Where(u => u.Id == Id).FirstOrDefault();
-                    DeleteAll(SchedularTaskList, AffectChildren, Context);
+                // עדכון האם בוצע
+                //if (type == 4)
+                //{
+                //    int Id = Schedular["Id"] != null ? Schedular["Id"].Value<int>() : 0;
+                //    bool IsExe = Schedular["IsExe"] != null ? Schedular["IsExe"].Value<bool>() : false;
+
+                //    var SchedularTaskList = Context.SchedularTasks.Where(u => u.Id == Id).FirstOrDefault();
+                //    SchedularTaskList.IsExe = IsExe;
+                //    Context.Entry(SchedularTaskList).State = System.Data.Entity.EntityState.Modified;
+
+                //    string Title = SchedularTaskList.Title;
+                //    string Desc = SchedularTaskList.Desc;
 
 
-                }
+                //    string htmlNo = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                //                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
+                //                         <div>" + Desc + @"</div>
+                //                     </div>";
+
+
+
+                //    string htmlYes = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                //                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"<div style ='float:left'><img  src='../../../../images/approve-icon.png'/></div></div>
+                //                         <div>" + Desc + @"</div>
+                //                     </div>";
+
+
+
+                //    var Lesson = Context.Lessons.Where(x => x.Instructor_Id == resourceId && x.Id == lessonId).FirstOrDefault();
+
+                //    Lesson.Details = (IsExe) ? Lesson.Details.Replace(htmlNo, htmlYes) : Lesson.Details.Replace(htmlYes, htmlNo);
+                //    Context.Entry(Lesson).State = System.Data.Entity.EntityState.Modified;
+
+                //    Context.SaveChanges();
+
+
+
+                //}
+
+
+                //if (type == 1)
+                //{
+
+
+                //    var Title = Schedular["Title"] != null ? Schedular["Title"].Value<string>() : "";
+                //    var Desc = Schedular["Desc"] != null ? Schedular["Desc"].Value<string>() : "";
+                //    var EveryDay = Schedular["EveryDay"] != null ? Schedular["EveryDay"].Value<bool>() : false;
+                //    var EveryWeek = Schedular["EveryWeek"] != null ? Schedular["EveryWeek"].Value<bool>() : false;
+                //    var EveryMonth = Schedular["EveryMonth"] != null ? Schedular["EveryMonth"].Value<bool>() : false;
+                //    var EndDate = Schedular["EndDate"].ToString() != "" ? Schedular["EndDate"].Value<DateTime>() : (DateTime?)null;
+                //    bool AffectChildren = Schedular["AffectChildren"] != null ? Schedular["AffectChildren"].Value<bool>() : false;
+
+                //    Lesson CurrentLesson = Context.Lessons.Where(u => u.Id == lessonId).FirstOrDefault();
+
+                //    List<Lesson> LessonsAll = new List<Lesson>();
+
+
+
+                //    var LessonsAllGen = Context.Lessons.Where(x => x.Instructor_Id == resourceId && x.Id >= lessonId && (EndDate == null || (EndDate != null && x.Start < EndDate))).ToList();
+
+                //    if (EveryDay)
+                //    {
+                //        LessonsAll = LessonsAllGen;
+                //    }
+                //    else if (EveryWeek)
+                //    {
+                //        foreach (Lesson item in LessonsAllGen)
+                //        {
+
+                //            if (item.Start.DayOfWeek == CurrentLesson.Start.DayOfWeek)
+                //                LessonsAll.Add(item);
+
+                //        }
+
+                //    }
+                //    else if (EveryMonth)
+                //    {
+
+                //        foreach (Lesson item in LessonsAllGen)
+                //        {
+
+                //            if (item.Start.Day == CurrentLesson.Start.Day)
+                //                LessonsAll.Add(item);
+
+                //        }
+
+                //    }
+                //    else
+                //    {
+                //        LessonsAll.Add(CurrentLesson);
+
+                //    }
+
+
+
+
+
+                //    int Id = Schedular["Id"] != null ? Schedular["Id"].Value<int>() : 0;
+
+                //    if (Id != 0)
+                //    {
+                //        var SchedularTaskList = Context.SchedularTasks.Where(u => u.Id == Id).FirstOrDefault();
+                //       // DeleteAll(SchedularTaskList, true, Context);
+
+                //    }
+
+
+
+
+                //    foreach (var item in LessonsAll)
+                //    {
+
+                //        SchedularTasks st = new SchedularTasks();
+                //        st.LessonId = item.Id;
+                //        st.ResourceId = resourceId;
+                //        st.Title = Title;
+                //        st.Desc = Desc;
+
+                //        st.EveryDay = EveryDay;
+                //        st.EveryWeek = EveryWeek;
+                //        st.EveryMonth = EveryMonth;
+                //        st.EndDate = EndDate;
+                //        st.IsExe = false;
+                //        Context.SchedularTasks.Add(st);
+                //    }
+
+                //    Context.SaveChanges();
+
+
+
+                //    // כאן אני דואג להכניס לשיעורים את ההערות
+
+
+                //    string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+                //                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
+                //                         <div>" + Desc + @"</div>
+                //                     </div>";
+
+
+
+                //    foreach (var item in LessonsAll)
+                //    {
+                //        Lesson les = Context.Lessons.Where(u => u.Id == item.Id).FirstOrDefault();
+                //        les.Details += html;//.Replace("@LessId", les.Id.ToString()).Replace("@InstId", les.Instructor_Id.ToString());
+                //        Context.Entry(les).State = System.Data.Entity.EntityState.Modified;
+
+                //    }
+
+                //    Context.SaveChanges();
+
+
+
+
+                //}
+
+
+                //if (type == 2)
+                //{
+                //    int Id = Schedular["Id"] != null ? Schedular["Id"].Value<int>() : 0;
+                //    bool AffectChildren = Schedular["AffectChildren"] != null ? Schedular["AffectChildren"].Value<bool>() : false;
+                //    var SchedularTaskList = Context.SchedularTasks.Where(u => u.Id == Id).FirstOrDefault();
+                //    DeleteAll(SchedularTaskList, AffectChildren, Context, lessonId);
+
+
+                //}
 
 
                 var SchedularTaskListRes = Context.SchedularTasks.Where(u => u.LessonId == lessonId && u.ResourceId == resourceId).ToList();
@@ -1020,86 +1074,109 @@ namespace FarmsApi.Services
             }
         }
 
-        private static void DeleteAll(SchedularTasks schedularTaskList, bool affectChildren, Context Context)
+        private static void DeleteAll(SchedularTasks schedularTaskList, bool affectChildren, Context Context, int lessonId)
         {
 
-            var lessonId = schedularTaskList.LessonId;
-            var resourceId = schedularTaskList.ResourceId;
-            var Title = schedularTaskList.Title;
-            var Desc = schedularTaskList.Desc;
-            var EveryDay = schedularTaskList.EveryDay;
-            var EveryWeek = schedularTaskList.EveryWeek;
-            var EveryMonth = schedularTaskList.EveryMonth;
-            var EndDate = schedularTaskList.EndDate;
+            var CurrentSchedularTasks = Context.SchedularTasks.Where(u => u.LessonId == lessonId).FirstOrDefault();
+
+            if (CurrentSchedularTasks != null) Context.SchedularTasks.Remove(CurrentSchedularTasks);
+
 
             Lesson CurrentLesson = Context.Lessons.Where(u => u.Id == lessonId).FirstOrDefault();
 
-            List<Lesson> LessonsAll = new List<Lesson>();
-            var LessonsAllGen = Context.Lessons.Where(x => x.Instructor_Id == resourceId && x.Id >= lessonId && (EndDate == null || (EndDate != null && x.Start < EndDate))).ToList();
+            Lesson ParentLesson = Context.Lessons.Where(u => u.ParentId == lessonId).FirstOrDefault();
 
-            if (EveryDay && affectChildren)
+            if (CurrentLesson != null) Context.Lessons.Remove(CurrentLesson);
+
+            if (affectChildren && ParentLesson != null)
             {
-                LessonsAll = LessonsAllGen;
-            }
-            else if (EveryWeek && affectChildren)
-            {
-                foreach (Lesson item in LessonsAllGen)
-                {
-
-                    if (item.Start.DayOfWeek == CurrentLesson.Start.DayOfWeek)
-                        LessonsAll.Add(item);
-
-                }
-
-            }
-            else if (EveryMonth && affectChildren)
-            {
-
-                foreach (Lesson item in LessonsAllGen)
-                {
-
-                    if (item.Start.Day == CurrentLesson.Start.Day)
-                        LessonsAll.Add(item);
-
-                }
-
-            }
-            else
-            {
-                LessonsAll.Add(CurrentLesson);
+                DeleteAll(schedularTaskList, affectChildren, Context, ParentLesson.Id);
 
             }
 
 
-            //string html = @"<div style = 'border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
-            //                             <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
-            //                             <div>" + Desc + @" </div>
-            //                         </div>";
 
+            //if (schedularTaskList != null)
+            //{
 
-         
-            string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
-                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
-                                         <div>" + Desc + @"</div>
-                                     </div>";
-
-            string html2 = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
-                                         <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"<div style ='float:left'><img  src='../../../../images/approve-icon.png'/></div></div>
-                                         <div>" + Desc + @"</div>
-                                     </div>";
+            //    //var lessonId = schedularTaskList.LessonId;
+            //    var resourceId = schedularTaskList.ResourceId;
+            //    var Title = schedularTaskList.Title;
+            //    var Desc = schedularTaskList.Desc;
+            //    var EveryDay = schedularTaskList.EveryDay;
+            //    var EveryWeek = schedularTaskList.EveryWeek;
+            //    var EveryMonth = schedularTaskList.EveryMonth;
+            //    var EndDate = schedularTaskList.EndDate;
 
 
 
-            foreach (var item in LessonsAll)
-            {
-                var CurrentSchedularTasks = Context.SchedularTasks.Where(u => u.LessonId == item.Id && u.ResourceId == resourceId && u.Title==Title && u.Desc==Desc).FirstOrDefault();
-                if (CurrentSchedularTasks != null) Context.SchedularTasks.Remove(CurrentSchedularTasks);
+            //    List<Lesson> LessonsAll = new List<Lesson>();
+            //    var LessonsAllGen = Context.Lessons.Where(x => x.Instructor_Id == resourceId && x.Id >= lessonId && (EndDate == null || (EndDate != null && x.Start < EndDate))).ToList();
+
+            //    if (EveryDay && affectChildren)
+            //    {
+            //        LessonsAll = LessonsAllGen;
+            //    }
+            //    else if (EveryWeek && affectChildren)
+            //    {
+            //        foreach (Lesson item in LessonsAllGen)
+            //        {
+
+            //            if (item.Start.DayOfWeek == CurrentLesson.Start.DayOfWeek)
+            //                LessonsAll.Add(item);
+
+            //        }
+
+            //    }
+            //    else if (EveryMonth && affectChildren)
+            //    {
+
+            //        foreach (Lesson item in LessonsAllGen)
+            //        {
+
+            //            if (item.Start.Day == CurrentLesson.Start.Day)
+            //                LessonsAll.Add(item);
+
+            //        }
+
+            //    }
+            //    else
+            //    {
+            //        LessonsAll.Add(CurrentLesson);
+
+            //    }
 
 
-                item.Details = item.Details.Replace(html, "").Replace(html2, "");
-                Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+            //    //string html = @"<div style = 'border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+            //    //                             <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
+            //    //                             <div>" + Desc + @" </div>
+            //    //                         </div>";
 
-            }
+
+
+            //    //string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+            //    //                             <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"</div>
+            //    //                             <div>" + Desc + @"</div>
+            //    //                         </div>";
+
+            //    //string html2 = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
+            //    //                             <div style ='font-weight:bold;text-decoration:underline'>" + Title + @"<div style ='float:left'><img  src='../../../../images/approve-icon.png'/></div></div>
+            //    //                             <div>" + Desc + @"</div>
+            //    //                         </div>";
+
+
+
+            //    foreach (var item in LessonsAll)
+            //    {
+            //        var CurrentSchedularTasks = Context.SchedularTasks.Where(u => u.LessonId == item.Id && u.ResourceId == resourceId && u.Title == Title && u.Desc == Desc).FirstOrDefault();
+            //        if (CurrentSchedularTasks != null) Context.SchedularTasks.Remove(CurrentSchedularTasks);
+
+            //        Context.Lessons.Remove(item);
+
+            //    }
+            //}
+            //else { Context.Lessons.Remove(CurrentLesson); }
+
 
             Context.SaveChanges();
 
