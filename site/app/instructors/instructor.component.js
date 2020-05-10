@@ -48,7 +48,7 @@
 
                     var event = {
                         Id: eventId,
-                        start: '08:00',
+                        start: '07:00',
                         end: '24:00',
                         dow: i,
                         UserId: this.user.Id,

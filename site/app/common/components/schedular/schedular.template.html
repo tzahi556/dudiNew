@@ -13,7 +13,9 @@
                 <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.newSchedular.EveryDay">כל יום</label></div>
                 <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.newSchedular.EveryWeek">כל שבוע</label></div>
                 <div class="checkbox-inline"><label><input type="checkbox" ng-model="$ctrl.newSchedular.EveryMonth">כל חודש</label></div>
-                &nbsp; &nbsp; &nbsp; <label> עד תאריך:</label>  <input class="" type="date" ng-model="$ctrl.newSchedular.EndDate" />
+
+                <div  style="float:left;"> <label> ימים:</label>  <input style="width:40px;" class="" type="number" ng-model="$ctrl.newSchedular.Days" /> </div>    <br />
+                <label> עד תאריך:</label>  <input class="" type="date" ng-model="$ctrl.newSchedular.EndDate" />
 
                 <div>
 

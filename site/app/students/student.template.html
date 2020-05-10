@@ -533,7 +533,7 @@
                                         <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc " ng-if="expense.Price!=expense.Sum">
                                             <td>
                                                 <input type="checkbox" ng-init="expense.Checked=false" ng-click="$ctrl.countTotal()"
-                                                       ng-model="expense.Checked">
+                                                       ng-model="expense.Checked" />
                                             </td>
                                             <td>
                                                 {{expense.Details}}</span>

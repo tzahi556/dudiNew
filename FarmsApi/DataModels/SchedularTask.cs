@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FarmsApi.DataModels
 {
@@ -16,6 +17,8 @@ namespace FarmsApi.DataModels
 
         public int Days { get; set; }
         public bool IsExe { get; set; }
+        [NotMapped]
+        public bool AffectChildren { get; set; }
         public DateTime? EndDate { get; set; }
 
     }

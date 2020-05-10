@@ -34,10 +34,10 @@
 
         //notificationsService.getMessagesList().then(function (res) {
         //    this.scope.messages = res;
-        
+
         this.getInstructorName = _getInstructorName.bind(this);
         this.getDayOfWeek = _getDayOfWeek.bind(this);
-      //  this.prevLess = _prevLess.bind(this);
+        //  this.prevLess = _prevLess.bind(this);
         this.openTask = _openTask.bind(this);
         this.isExec = _isExec.bind(this);
 
@@ -48,7 +48,7 @@
             var obj = {
                 Id: schedular.Id,
                 IsExe: schedular.IsExe
-              
+
             }
 
 
@@ -59,13 +59,13 @@
             this.lessonsService.getSetSchedularTask(this.lessonId, this.resourceId, obj, "4").then(function (res) {
 
 
-               // this.schedulars = res;
+                // this.schedulars = res;
                 //this.closeCallback(null);
                 //alert("המשימה נשמרה בהצלחה!");
 
 
             }.bind(this));
-           
+
         }
 
         function _openTask(type) {
@@ -83,7 +83,7 @@
             } else {
 
 
-               
+
                 this.newSchedular = [];
                 this.newSchedular.Id = type.Id;
                 this.newSchedular.Title = type.Title;
@@ -102,30 +102,30 @@
 
 
             $('#modal').modal('show');
-          
+
         }
 
 
         function _isDateMoreToday(date) {
-          
+
             if (moment(date) > moment()) return true;
 
             return false;
         }
-       
 
-      
+
+
 
         function _onShow(event, lesson) {
 
-           
+
             this.selectedStudentSchedular = lesson;
-           
+
             this.lessonId = lesson.id;
             this.resourceId = lesson.resourceId;
 
-            this.lessonsService.getSetSchedularTask(lesson.id, lesson.resourceId, null,0).then(function (res) {
-
+            this.lessonsService.getSetSchedularTask(lesson.id, lesson.resourceId, null, 0).then(function (res) {
+                debugger
                 if (res[0]) {
                     res = res[0];
                     this.newSchedular = [];
@@ -135,12 +135,16 @@
                     this.newSchedular.EveryDay = res.EveryDay;
                     this.newSchedular.EveryWeek = res.EveryWeek;
                     this.newSchedular.EveryMonth = res.EveryMonth;
+
                     this.newSchedular.EndDate = moment(res.EndDate).startOf('day').toDate();
+                    this.newSchedular.Days = res.Days;
                     this.affectChildren = false;
                 } else {
 
                     this.newSchedular = [];
                     this.newSchedular.Id = 0;
+                    this.newSchedular.Days = 0;
+
                     this.newSchedular.Title = "";
                     this.newSchedular.Desc = "";
                     this.newSchedular.EveryDay = false;
@@ -151,8 +155,8 @@
 
 
                 }
-               // this.schedulars = res;
-           
+                // this.schedulars = res;
+
 
             }.bind(this));
 
@@ -198,7 +202,7 @@
 
 
         function _close(schedular, type) {
-           debugger
+            debugger
             var obj = {
                 Id: this.newSchedular.Id,
                 Title: this.newSchedular.Title,
@@ -207,28 +211,45 @@
                 EveryWeek: this.newSchedular.EveryWeek,
                 EveryMonth: this.newSchedular.EveryMonth,
                 EndDate: this.newSchedular.EndDate,
+
+
+                Days: this.newSchedular.Days,
                 AffectChildren: this.affectChildren
             }
-           
 
 
-         
-            
-             
+
+
+
+
             this.lessonsService.getSetSchedularTask(this.lessonId, this.resourceId, obj, type).then(function (res) {
 
 
-                this.schedulars = res;
+
+                if (res[0] && res[0].Id == -1) {
+
+                    var DateTafus = res[0].Title;//     moment().format('DD/MM/YYYY HH:mm');
+
+                 
+                    alert("המערכת יצרה משימות עד לתאריך - " + DateTafus + ", מדריך תפוס בתאריך זה ");
+
+
+                } else {
+                    this.schedulars = res;
+                    alert("המשימה נשמרה בהצלחה!");
+                }
+
+
                 this.closeCallback(null);
-                alert("המשימה נשמרה בהצלחה!");     
+               
                 this.selectedStudentSchedular = null;
-             
+
             }.bind(this));
 
 
-           
-           
-           // 
+
+
+            // 
 
         }
 

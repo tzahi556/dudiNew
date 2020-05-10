@@ -56,7 +56,7 @@
         this.modalAppendClick2 = _modalAppendClick2.bind(this);
 
         this.getLessonByStartAndResource = _getLessonByStartAndResource.bind(this);
-        
+
 
         this.searchDate = new Date();
         this.lessToDrop = "";
@@ -70,19 +70,21 @@
         this.getCounter();
 
 
-        this.IsInstructorBlock= $rootScope.IsInstructorBlock;
+        this.IsInstructorBlock = $rootScope.IsInstructorBlock;
         // this.resourcesIds = "0";
         // set all instructors checkboxes checked
 
         //var visibleInstructors = sessionStorage.getItem('visibleInstructors') ? angular.fromJson(sessionStorage.getItem('visibleInstructors')) : {};
 
 
-
+        this.setExex = _setExex.bind(this);
 
         // this.reloadCalendarData();
 
         // this.filteredLessons = this.filterLessonsBySelectedInstructors();
-
+        function _setExex() {
+            alert();
+        }
 
 
         function _customDate() {
@@ -319,7 +321,7 @@
             //    visibleInstructors[this.instructors[i].Id] = this.instructors[i].Show;
             //}
             //sessionStorage.setItem('visibleInstructors', angular.toJson(visibleInstructors));
-            
+
             this.initResources();
             // בדיקה אם אפשר להסתדר בלי זה
             this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
@@ -358,7 +360,7 @@
             for (var i in this.lessons) {
 
                 //var countCompletionReq = 0;
-               
+
                 //for (var m in this.lessons[i].statuses) {
                 //    if (this.lessons[i].statuses[m].Status == 'completionReq') countCompletionReq++;
                 //}
@@ -518,7 +520,7 @@
 
             for (var i in this.instructors) {
 
-                
+
                 if (this.instructors[i].Show) {
 
                     //  this.resourcesIds += "," + this.instructors[i].Id;
@@ -557,7 +559,7 @@
         }
 
         function _eventClose(event, lessonsQty) {
-            
+
             if (event && event.isFromChangePhone) {
                 this.eventChange(event);
 
@@ -622,15 +624,15 @@
         }
 
         function _eventChange(event) {
-           
-             
 
-            var tempevent = this.getLessonByStartAndResource(moment(event.start).format('YYYY-MM-DDTHH:mm:ss') ,moment(event.end).format('YYYY-MM-DDTHH:mm:ss'), event.resourceId);
+
+
+            var tempevent = this.getLessonByStartAndResource(moment(event.start).format('YYYY-MM-DDTHH:mm:ss'), moment(event.end).format('YYYY-MM-DDTHH:mm:ss'), event.resourceId);
             if (!tempevent) {
                 this.eventToChange = event;
                 $('#modal').modal('show');
             }
-            else { 
+            else {
 
 
                 for (var i in event.students) {
@@ -640,9 +642,9 @@
 
                 this.lessonsService.deleteLesson(event.id, false).then(function (res) {
                     this.reloadLessons();
-                    
+
                 }.bind(this));
-              
+
 
                 this.eventToChange = tempevent;
                 this.eventToChange.onlyMultiple = 0;
@@ -653,12 +655,21 @@
         }
 
         function _modalClick(changeChildren) {
-           
+
+
+
+
             if (this.eventToChange) {
-                
+
+                //if (this.eventToChange.IsMazkirut == "1" && changeChildren) {
+
+                //    alert("לא ניתן להזיז אירועים עתידיים של משימות חוזרות");
+                //    return;
+                //}
+
                 var event = this.eventToChange;
                 this.eventToChange = null;
-               
+
                 this.lessonsService.updateLesson(event, changeChildren).then(function () {
                     this.createNotifications(event, 'update');
                     this.reloadLessons();
@@ -667,6 +678,7 @@
         }
 
         function _changeChildEvent(parentEvent) {
+
             var nextPrevId = parentEvent.id;
             var promises = [];
             for (var i in this.lessons) {
@@ -684,27 +696,39 @@
         }
 
         function _eventClick(event, jsEvent) {
-           
+
+            debugger
+
             var elemId = jsEvent.target.id;
             if (elemId) {
 
-               
+
                 this.selectedPayValue = $("#" + elemId).text();
                 this.selectedStudent = elemId.replace("dvPaid_", "");//this.getLessonById(event.id);
 
 
                 this.scope.$broadcast('pay.show', this.selectedStudent, this.selectedPayValue);
             }
-            else { 
+            else {
                 //for event
                 if (event.IsMazkirut == "1") {
 
+                    if (jsEvent.target.tagName == "INPUT") {
+                        if (event.details.indexOf("@simbol") == "-1") {
+                            event.details = event.details.replace("checked", "@simbol");
+                        } else {
+                            event.details = event.details.replace("@simbol", "checked");
+                        }
+                        this.updateLesson(event);
+
+                    } else {
                         this.selectedStudentSchedular = event;
                         this.scope.$broadcast('schedular.show', this.selectedStudentSchedular, this.instructors[0]);
-                
+                    }
+
                 }
 
-                else { 
+                else {
                     this.selectedLesson = this.getLessonById(event.id);
                     this.scope.$broadcast('event.show', this.selectedLesson, this.instructors[0]);
                 }
@@ -712,7 +736,7 @@
         }
 
         function _updateLesson(event) {
-            
+
             this.lessonsService.updateLesson(event).then(function (res) {
 
                 this.reloadLessons();
@@ -728,7 +752,7 @@
 
             var fakendDate = this.endDate;//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
-               
+
                 this.lessons = lessons;
 
 
@@ -810,8 +834,8 @@
 
 
 
-        function _getLessonByStartAndResource(start,end, resourceId) {
-           
+        function _getLessonByStartAndResource(start, end, resourceId) {
+
             for (var i in this.lessons) {
                 if (this.lessons[i].start == start && this.lessons[i].end == end && this.lessons[i].resourceId == resourceId) {
                     return this.lessons[i];
