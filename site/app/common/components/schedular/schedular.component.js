@@ -231,12 +231,12 @@
                     var DateTafus = res[0].Title;//     moment().format('DD/MM/YYYY HH:mm');
 
                  
-                    alert("המערכת יצרה משימות עד לתאריך - " + DateTafus + ", מדריך תפוס בתאריך זה ");
+                //    alert("המערכת יצרה משימות עד לתאריך - " + DateTafus + ", מדריך תפוס בתאריך זה ");
 
 
                 } else {
-                    this.schedulars = res;
-                    alert("המשימה נשמרה בהצלחה!");
+                   // this.schedulars = res;
+                  //  alert("המשימה נשמרה בהצלחה!");
                 }
 
 

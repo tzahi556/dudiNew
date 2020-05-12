@@ -409,6 +409,8 @@
     function _eventClick(event, jsEvent) {
 
         //if (!jsEvent.target.id) {
+
+
         this.eventClickCallback(event, jsEvent);
         this.reloadEvents();
         this.scope.$apply();

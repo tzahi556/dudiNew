@@ -350,107 +350,14 @@
         function _filterLessonsBySelectedInstructors() {
 
 
-            //alert(this.lessons.length);
-            ////031668957
-            //var diffMonth = (moment(this.endDate)).diff(moment(this.startDate), 'months', true);
-            //   if (this.resources.length == 0) return [];
-
+           
+           
             var returnLessons = [];
 
             for (var i in this.lessons) {
-
-                //var countCompletionReq = 0;
-
-                //for (var m in this.lessons[i].statuses) {
-                //    if (this.lessons[i].statuses[m].Status == 'completionReq') countCompletionReq++;
-                //}
-
-                //if (countCompletionReq != this.lessons[i].statuses.length) {
-                //    var j = this.lessons[i].statuses.length;
-                //    while (j >= 0) {
-                //        if (this.lessons[i].statuses[j] && this.lessons[i].statuses[j].Status == 'completionReq') {
-                //            this.lessons[i].statuses.splice(j, 1);
-                //           // this.lessons[i].students.splice(j, 1);
-                //        }
-                //        j--;
-                //    }
-                //}
-                //var TempArr = angular.copy(this.lessons[i].statuses);
-                //
-                // alert(1);
-
-
-
-                //רק אם יש שיעור השלמה ושיעור רגיל
-                //if (
-                //    (this.lessons[eval(i) - 1] && this.lessons[eval(i) - 1].start == this.lessons[i].start &&
-                //        this.lessons[eval(i) - 1].resourceId == this.lessons[i].resourceId)
-                //    ||
-                //    (this.lessons[eval(i) + 1] && this.lessons[eval(i) + 1].start == this.lessons[i].start &&
-                //        this.lessons[eval(i) + 1].resourceId == this.lessons[i].resourceId)
-
-                //) {
-
-
-                //    if (this.lessons[i].statuses[0] && this.lessons[i].statuses[0].Status == "completionReq")
-                //        continue;
-                //}
-
-                // אם אחד מהשלמה והשני דרוש שיעור השלמה תסיר אותו
-                //if (this.lessons[i].statuses[0] && this.lessons[i].statuses[1]) {
-                //  debugger
-                //    if (this.lessons[i].statuses[0].Status === "completionReq" && this.lessons[i].statuses[1].Status === "completion") {
-                //      //  this.lessons[i].statuses=this.lessons[i].statuses.slice(0, 1);
-                //      //  this.lessons[i].students=this.lessons[i].students.slice(0, 1);
-                //    }
-                //    if (this.lessons[i].statuses[0].Status === "completion" && this.lessons[i].statuses[1].Status === "completionReq") {
-                //        this.lessons[i].statuses = (this.lessons[i].statuses).splice(1, 1);
-                //        this.lessons[i].students = (this.lessons[i].students).splice(1, 1);
-
-                //    }
-
-                //}
-
                 for (var x in this.resources) {
                     if (this.lessons[i].resourceId == this.resources[x].id) {
 
-
-
-                        //if (this.lessons[i].start > this.endDate) {
-
-                        //   this.lessons[i] = this.getIfLessonPrevExistNew(this.lessons[i]); //this.getIfLessonPrevExist(this.lessons[i], returnLessons);// moment(this.lessons[i].start).add(-7, 'day');
-                        //   if (!this.lessons[i]) continue;
-                        // }
-
-
-                        // כל זה בדיקה שאין ביחד גם צבע אפור וגם שיעור
-                        //var isExist = false;
-
-                        //var lessstart = this.lessons[i].start;
-                        //var resourceId = this.lessons[i].resourceId;
-                        //for (var y in returnLessons) {
-                        //    if (lessstart == returnLessons[y].start && returnLessons[y].resourceId == resourceId) {
-
-                        //        for (var m in returnLessons[y].statuses) {
-
-                        //            if (returnLessons[y].statuses[m] && returnLessons[y].statuses[m].Status == "completionReq") {
-                        //                returnLessons.splice(returnLessons.indexOf(returnLessons[y]), 1);
-                        //            }
-                        //        }
-
-                        //        for (var m in this.lessons[i].statuses) {
-
-                        //            if (this.lessons[i].statuses[m] && this.lessons[i].statuses[m].Status == "completionReq") {
-                        //                isExist = true;
-
-                        //            }
-                        //        }
-
-                        //        break;
-                        //    }
-                        //}
-
-                        //if (!isExist) returnLessons.push(this.lessons[i]);
                         returnLessons.push(this.lessons[i]);
                         break;
                     }
@@ -697,7 +604,7 @@
 
         function _eventClick(event, jsEvent) {
 
-            debugger
+           
 
             var elemId = jsEvent.target.id;
             if (elemId) {
@@ -719,6 +626,7 @@
                         } else {
                             event.details = event.details.replace("@simbol", "checked");
                         }
+
                         this.updateLesson(event);
 
                     } else {
@@ -752,7 +660,7 @@
 
             var fakendDate = this.endDate;//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
-
+               
                 this.lessons = lessons;
 
 

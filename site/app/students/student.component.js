@@ -1995,6 +1995,7 @@
             //    }
             //}
 
+            var thisCtrl = this;
 
             this.payments.map(function (payment) {
 
@@ -2017,7 +2018,11 @@
 
                         payment.ZikuyNumber = newPayment.InvoiceNum;
                         payment.ZikuyPdf = newPayment.InvoicePdf;
-                        payment.lessons = 0;
+
+                        if (thisCtrl.user.PayType == "lessonCost") {
+                            var difflessons = ((payment.lessons * payment.Price)  + newPayment.InvoiceSum) / payment.Price;
+                            payment.lessons = Math.floor(difflessons);
+                        }
                         payment.count = "";
 
 
