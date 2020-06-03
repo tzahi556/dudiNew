@@ -12,7 +12,7 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 59; //71 רנצו מניס
+        public int FarmId = 79; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
@@ -70,27 +70,46 @@ namespace FarmsApi.Services
             ds.Tables.Add(new DataTable("CustMonthlyPay"));
 
 
-            ////מקורי
+            //מקורי
+            string sqlLessons = @"  
+                                SELECT FarmDairy.*
+                                FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+                                Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
+                                and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
+                                Order by FarmDairy.DayofRide
+                  ";
+
+
+            ////מקורי עם מסמכים
             //string sqlLessons = @"  
-            //                    SELECT FarmDairy.*
+            //                    SELECT FarmDairy.*,Documents.*,Riders.PayArrangement
             //                    FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+            //                    LEFT JOIN Documents ON Documents.DocumentId = FarmDairy.invoice
+
             //                    Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
-            //                    and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
+            //                    and FarmDairy.DayofRide  >= #2019-01-01 00:00:00# 
+            //                    and Riders.RiderId =1511
             //                    Order by FarmDairy.DayofRide
             //      ";
 
 
-            ////מקורי עם מסמכים
-            string sqlLessons = @"  
-                                SELECT FarmDairy.*,Documents.*,Riders.PayArrangement
-                                FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
-                                LEFT JOIN Documents ON Documents.DocumentId = FarmDairy.invoice
-                             
-                                Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
-                                and FarmDairy.DayofRide  >= #2019-01-01 00:00:00# 
-                                and Riders.RiderId =1511
-                                Order by FarmDairy.DayofRide
-                  ";
+
+            ////להביא את כל אלו של 2019 שלא פעילים ורכבו
+            //string sqlLessons = @"  
+            //                    SELECT FarmDairy.*,Documents.*,Riders.PayArrangement
+            //                    FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+            //                    LEFT JOIN Documents ON Documents.DocumentId = FarmDairy.invoice
+
+            //                    Where  (Riders.Active=False And  Riders.LastUpdate <= #2019-01-01 00:00:00#)
+            //                    and FarmDairy.DayofRide  >= #2019-01-01 00:00:00# 
+
+            //                    Order by FarmDairy.DayofRide
+            //      ";
+
+
+
+
+
 
 
 
@@ -106,6 +125,11 @@ namespace FarmsApi.Services
             //        ";
 
             string sqlRiders = @" SELECT * from Riders";
+             //string sqlRiders = @" SELECT distinct Riders.*
+             //                   FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+             //                   Where  (Riders.Active=False And  Riders.LastUpdate <= #2019-01-01 00:00:00#)
+             //                   and FarmDairy.DayofRide  >= #2019-01-01 00:00:00# 
+             //                  ";
 
             string sqlInstructor = @" SELECT * from Workers ";
 
@@ -121,7 +145,7 @@ namespace FarmsApi.Services
 
             string sqlKesher = @" SELECT * from CustCorrespondence where CustCorrespondence.DateofRecord >= #2019-01-01 00:00:00#";
 
-            string sqlDocuments = @" SELECT * from Documents Where CustomerId=1511 and IDate >= #2019-01-01 00:00:00#";
+            string sqlDocuments = @" SELECT * from Documents Where IDate >= #2019-01-01 00:00:00#";
 
             string sqlCustMonthlyPay = @" SELECT * from CustMonthlyPay Where FromYear >= 2019";
 
@@ -175,11 +199,11 @@ namespace FarmsApi.Services
         public void UpdateUsersLessons()
         {
 
-            // BuildEntityIdOnly();
-            //  BuildUserRiders();
+       //     BuildEntityIdOnly();
+          //    BuildUserRiders();
             // BuildUserInstructors();
             //  BuildLessons();
-            //   BuildStudentLessons();
+              BuildStudentLessons();
             // BuildCommitmentsLessons();
             //   BuildPayments();
 
@@ -193,7 +217,7 @@ namespace FarmsApi.Services
 
             //    BuildKesher();
             //  BuildDocumentsPrepare();
-            BuildDocuments();
+          //  BuildDocuments();
         }
         private void BuildDocumentsPrepare()
         {
@@ -452,7 +476,6 @@ namespace FarmsApi.Services
             return IsExist;
 
         }
-
         private void BuildKesher()
         {
             foreach (DataRow item in ds.Tables[8].Rows)
@@ -487,7 +510,6 @@ namespace FarmsApi.Services
 
             Context.SaveChanges();
         }
-
         private void BuildHashlama()
         {
             string RiderId, WorkerID, DayofRide, HourofRide, HorseId, TypeofRiders, financier;
@@ -525,7 +547,6 @@ namespace FarmsApi.Services
 
             Context.SaveChanges();
         }
-
         private void BuildFixedPhone()
         {
 
@@ -702,7 +723,6 @@ namespace FarmsApi.Services
             }
 
         }
-
         private void BuildFixedBirthDate()
         {
 
@@ -786,7 +806,6 @@ namespace FarmsApi.Services
 
             Context.SaveChanges();
         }
-
         private string GetHorsesOwnage(string category, string pension)
         {
             if (pension != "True")
@@ -819,7 +838,6 @@ namespace FarmsApi.Services
             //< option value = "pensionMere" > פנסיון מרעה </ option >
 
         }
-
         private string GetHorsesGender(string species)
         {
             //< option value = "male" > זכר </ option >
@@ -834,7 +852,6 @@ namespace FarmsApi.Services
             else
                 return "female";
         }
-
         private void BuildPensionAndCourse()
         {
             foreach (DataRow item in ds.Tables[0].Rows)
@@ -977,6 +994,12 @@ namespace FarmsApi.Services
                     FirstName = GetRightName(item["PrivateName"].ToString());
                     LastName = GetRightName(item["FamilyName"].ToString());
                     Active = (item["Active"].ToString() == "True") ? "active" : "notActive"; //(Active == "True") ? "active" : "notActive"; item["Active"].ToString();
+                   
+                    DateTime? LastUpdate = GetDateTimeParse(item["LastUpdate"].ToString());
+                   // if (Active == "notActive" && LastUpdate < new DateTime(2019, 01, 01)) continue;
+
+
+
                     Address = item["Address"].ToString() + " " + item["City"].ToString();
                     PhonHome = item["PhonHome"].ToString();
                     SelolarPhon = item["SelolarPhon"].ToString();
@@ -999,13 +1022,15 @@ namespace FarmsApi.Services
 
                     }
 
-                    DateTime? LastUpdate = GetDateTimeParse(item["LastUpdate"].ToString());
-
+                  
                     BirthDate = item["BirthDay"].ToString();
                     PayType = item["PayArrangement"].ToString();// הסדר תשלומים 0 = רגיל  1 = חודשי
 
                     Style = GetStyleHava(item["financier"].ToString());
                     HMO = GetHMO(Style, item["financier"].ToString());// מטבלת Organzion
+
+
+
 
                     var ParentDetalis = GetParentDetalis(RiderId);
                     if (ParentDetalis != null)
@@ -1049,7 +1074,7 @@ namespace FarmsApi.Services
 
                     }
 
-                    if (Active == "notActive" && LastUpdate < new DateTime(2019, 01, 01)) continue;
+                 
 
                     var UserEN = Context.Users.Where(x => x.Farm_Id == FarmId && x.Role == "student" && x.EntityId == RiderIdInt).FirstOrDefault();
                     if (UserEN == null)

@@ -41,13 +41,9 @@
         //alert($rootScope.IsInstructorBlock);
 
         this.scope.$on('calendar.reloadEvents', function (event, events) {
-
+          
             this.events = events;
             this.reloadEvents();
-
-
-
-
 
         }.bind(this));
 
@@ -75,6 +71,7 @@
 
        
         $('.calendar').fullCalendar('destroy');
+      
         $(this.calendar).fullCalendar({
             header: {
                 right: 'today next,prev',
@@ -117,8 +114,16 @@
             maxTime: '24:00',
 
             events: this.loadEvents.bind(this),
-            resourceOrder: 'IsMazkirut',// שיניתי מאיידי לזה בכדי להשיג מזכירות שיהיה ראשון
+        
             resources: this.loadResources.bind(this),
+           // resourceOrder: "IsMazkirut",// שיניתי מאיידי לזה בכדי להשיג מזכירות שיהיה ראשון
+
+            resourceOrder: function (a, b) {
+                return b.IsMazkirut < a.IsMazkirut ? -1 : b.IsMazkirut > a.IsMazkirut ? 1 : 0;
+            },
+
+
+
 
             eventClick: this.eventClick.bind(this),
             select: this.eventSelect.bind(this),
@@ -194,41 +199,45 @@
                 if (event.rendering != "background" && event.statuses && event.statuses.length > 0) {
 
                     var countCompletionReq = 0;
-                    
+
                     for (var i in event.statuses) {
 
-                      
-                      
+
+
                         //בלי סטטוס
                         if (!event.statuses[i].Status || event.statuses[i].Status == '') {
 
-                            $(element).addClass('warning-icon');
+                            //  $(element).addClass('warning-icon');
+
+
+
+
                         }
                         //לא הגיע 
                         else if (event.statuses[i].Status == 'notAttended') {
-                            $(element).addClass('notarrive-icon');
+                            // $(element).addClass('notarrive-icon');
                         }
 
                         //לא הגיע לא לחייב
                         else if (event.statuses[i].Status == 'notAttendedDontCharge') {
 
-                            $(element).addClass('redvi2-icon');
+                            //  $(element).addClass('redvi2-icon');
                         }
 
                         //לא הגיע  לחייב
                         else if (event.statuses[i].Status == 'notAttendedCharge') {
 
-                            $(element).addClass('redvi-icon');
+                            // $(element).addClass('redvi-icon');
                         }
 
                         // שמו אותו  כאן אבל עדיין לא הגיע
                         else if (event.statuses[i].Status == 'completion' && (event.statuses[i].IsComplete == 3 || event.statuses[i].IsComplete == 5)) {
-                            $(element).addClass('returnred-iconfloat');
+                            // $(element).addClass('returnred-iconfloat');
                         }
 
                         // שמו אותו איפה שהוא והגיע 
                         else if (event.statuses[i].Status == 'completion' && (event.statuses[i].IsComplete == 4 || event.statuses[i].IsComplete == 6)) {
-                            $(element).addClass('returngreen-iconfloat');
+                            // $(element).addClass('returngreen-iconfloat');
                         }
 
                         ////  במידה ויש דרוש שיעור השלמה על ההשלמה
@@ -239,51 +248,49 @@
                         //}
 
                         // הוגדר שהוא צריך שיעור השלמה
-                        else if ((event.statuses[i].Status == 'completionReq' || event.statuses[i].Status == 'completionReqCharge' ) && event.statuses[i].IsComplete == 1) {
-                           
+                        else if ((event.statuses[i].Status == 'completionReq' || event.statuses[i].Status == 'completionReqCharge') && event.statuses[i].IsComplete == 1) {
+
                             //$(element).css("background-color", "lightGray").css("border-color", "gray");
-                            $(element).addClass('returnred-icon');
+                            //  $(element).addClass('returnred-icon');
                             countCompletionReq++;
 
-                         
+
                         }
 
                         // שמו לו שיעור השלמה איפה שהוא
                         else if ((event.statuses[i].Status == 'completionReq' || event.statuses[i].Status == 'completionReqCharge') && event.statuses[i].IsComplete == 2) {
-                           //$(element).css("background-color", "lightGray").css("border-color", "gray");
-                          
-                            $(element).addClass('returngreen-icon');
+                            //$(element).css("background-color", "lightGray").css("border-color", "gray");
+
+                            // $(element).addClass('returngreen-icon');
                             countCompletionReq++;
                         }
 
                         else {
-                            $(element).addClass('approve-icon');
+                            //  $(element).addClass('approve-icon');
                         }
 
 
                     }
 
-
-                    //if (event.statuses && event.statuses.length == 2 && countCompletionReq == 1) {
-                         
-                    //    // event.statuses[i].Status == 'completionReq'
-
-                    //}
-
                     if (event.statuses && countCompletionReq == event.statuses.length) {
                         $(element).css("background-color", "lightGray").css("border-color", "gray");
-
-                        // במידה ויש רק שיעור השלמה תעלים את הכלס כדי שלא יעלים אותו
-                        var title = $(element).find("div div.fc-title");
-                        $(title).text($(title).text().replace(/sp_completionReq/gi, "sp_empty"));
-                        $(title).text($(title).text().replace(/sp_completionReqCharge/gi, "sp_empty"));
-                      
-
-                    } else {
-                      
-                        $(element).removeClass('returnred-icon');
-                        $(element).removeClass('returngreen-icon');
                     }
+                   
+                    //// כרגע מוריד את זה לבדוק 
+                    //if (event.statuses && countCompletionReq == event.statuses.length) {
+                    //    $(element).css("background-color", "lightGray").css("border-color", "gray");
+
+                    //    // במידה ויש רק שיעור השלמה תעלים את הכלס כדי שלא יעלים אותו
+                    //    var title = $(element).find("div div.fc-title");
+                    //    $(title).text($(title).text().replace(/sp_completionReq/gi, "sp_empty"));
+                    //    $(title).text($(title).text().replace(/sp_completionReqCharge/gi, "sp_empty"));
+                      
+
+                    //} else {
+                      
+                    //    $(element).removeClass('returnred-icon');
+                    //    $(element).removeClass('returngreen-icon');
+                    //}
                    
 
                     // שיעור אחרון
@@ -312,28 +319,30 @@
                 //} else
 
 
-                if (event.horsenames && event.horsenames.length > 0) {
+                //if (event.horsenames && event.horsenames.length > 0) {
 
-                    var horsenames = "";
-                    var prefix = "";
-                    for (var i = 0; i < event.horsenames.length; i++) {
-                        if (i != 0) prefix = ",";
-                        horsenames = horsenames + prefix + event.horsenames[i];
-                    }
+                //    var horsenames = "";
+                //    var prefix = "";
+                //    for (var i = 0; i < event.horsenames.length; i++) {
+                //        if (i != 0) prefix = ",";
+                //        horsenames = horsenames + prefix + event.horsenames[i];
+                //    }
 
 
-                    $(element).find(".fc-time span").css("float", "right").before("<span class='spHorse'> (" + horsenames + ")  </span>");
-                }
+                //    $(element).find(".fc-time span").css("float", "right").before("<span class='spHorse'> (" + horsenames + ")  </span>");
+                //}
+
+
 
 
 
             }.bind(this)
 
         });
-
-      $(".addedCalender").prependTo(".fc-right");
-
-
+      
+        $(".addedCalender").prependTo(".fc-right");
+        $("#addminusrowheight").prependTo(".fc-right");
+        
         //Scroll To End 
 
 
@@ -379,6 +388,7 @@
 
 
         this.scope.$emit('calendar.viewRender', { startDate: view.start, endDate: view.end });
+      
         this.reloadEvents();
 
 
@@ -444,9 +454,10 @@
            
             
             $(this).html(currentElement);
+         
 
-            $(this).find(".sp_completionReq").remove();
-            $(this).find(".sp_completionReqCharge").remove();
+            //$(this).find(".sp_completionReq").remove();
+            //$(this).find(".sp_completionReqCharge").remove();
         });
 
 
@@ -503,14 +514,17 @@
     }
 
     function _loadResources(callback) {
-      
+       
         callback(this.resources);
 
     }
 
     function _loadEvents(start, end, timezone, callback) {
 
+       
         callback(this.events.concat(this.backgroundEvents || []));
+
+       // $('.fc-slats td').css("height", "50px !important");
 
     }
 

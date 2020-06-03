@@ -1,7 +1,7 @@
 ﻿(function () {
 
     var app = angular.module('app');
-
+   
     app.component('lessons', {
         templateUrl: 'app/lessons/lessons.template.html',
         controller: LessonsController,
@@ -46,6 +46,7 @@
         this.getIfLessonPrevExist = _getIfLessonPrevExist.bind(this);
 
         this.customDate = _customDate.bind(this);
+        this.customFont = _customFont.bind(this);
 
         this.initResources = _initResources.bind(this);
         this.filterLessonsBySelectedInstructors = _filterLessonsBySelectedInstructors.bind(this);
@@ -81,10 +82,40 @@
 
         // this.reloadCalendarData();
 
+
+
+     
+
         // this.filteredLessons = this.filterLessonsBySelectedInstructors();
         function _setExex() {
             alert();
         }
+
+
+        function _customFont(size) {
+
+
+           
+
+
+            var ExistHeight = $('.fc-slats td').css("height").replace('px', '');
+
+            var HeightRow = (Math.floor(eval(ExistHeight)) + size);
+
+
+            $.cookie("HeightRow", HeightRow, { expires: 10000 });
+          
+           // $('.fc-slats td').css("height", eval(ExistHeight) + size + "px");
+           
+            $("<style type='text/css'> .fc-slats td{ height: " + HeightRow +"px !important;} </style>").appendTo("head");
+          
+           this.reloadCalendarData();
+          //  this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
+          //  this.scope.$broadcast('calendar.reloadBackgroundEvents', this.backgroundEvents);
+          //  this.scope.$broadcast('calendar.reloadResources', this.resources);
+
+        }
+
 
 
         function _customDate() {
@@ -96,6 +127,18 @@
         }
 
         this.scope.$on('calendar.viewRender', function (event, params) {
+
+           
+
+            if ($.cookie("HeightRow")) {
+
+                $("<style type='text/css'> .fc-slats td{ height: " + $.cookie("HeightRow") + "px !important;} </style>").appendTo("head");
+
+            }
+
+
+
+
 
             var view = $('.calendar').fullCalendar('getView');
             // debugger
@@ -498,7 +541,7 @@
         }
 
         function _createChildEvent(parentEvent, lessonsQty) {
-
+          
             if (lessonsQty > 0) {
 
                 var newEvent = {
@@ -564,15 +607,13 @@
         function _modalClick(changeChildren) {
 
 
-
-
             if (this.eventToChange) {
 
-                //if (this.eventToChange.IsMazkirut == "1" && changeChildren) {
+                if (this.eventToChange.IsMazkirut == "1" && changeChildren) {
 
-                //    alert("לא ניתן להזיז אירועים עתידיים של משימות חוזרות");
-                //    return;
-                //}
+                    alert("לא ניתן להזיז אירועים עתידיים של משימות חוזרות");
+                    return;
+                }
 
                 var event = this.eventToChange;
                 this.eventToChange = null;
@@ -660,10 +701,10 @@
 
             var fakendDate = this.endDate;//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
-               
+             
                 this.lessons = lessons;
 
-
+              
                 // בדיקת היתכנות הורדה
                 this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
                 setupTooltip();
@@ -737,9 +778,6 @@
                 }
             }
         }
-
-
-
 
 
         function _getLessonByStartAndResource(start, end, resourceId) {

@@ -3,6 +3,26 @@
         לו"ז
         <input class='form-control addedCalender' style='width:150px;' ng-model="$ctrl.searchDate" ng-change='$ctrl.customDate()' placeholder='לפי תאריך' type='date' />
 
+        <!--<div id="addminusrowheight">
+            <button type="button" class="close">+</button>
+            <button type="button" class="close">-</button>
+        </div>-->
+
+        <div id="addminusrowheight" class="fc-button-group">
+
+            <button type="button" class="fc-next-button fc-button fc-state-default fc-corner-left" ng-click='$ctrl.customFont(-5)'>
+                <span class="fc-icon fc-icon-down-triangle"></span>
+            </button>
+            <button type="button" class="fc-prev-button fc-button fc-state-default fc-corner-right" ng-click='$ctrl.customFont(5)'>
+                <span class="fc-icon fc-icon-up-triangle"></span>
+            </button>
+
+            <label style="padding:5px">גודל תצוגה</label>
+        </div>
+
+
+
+
         <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="margin-right:50px;text-decoration:underline"> פעילים - </span>
         <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="font-weight:bold;font-size:15px">{{$ctrl.activeStudent}} </span>
         <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="margin-right:50px;text-decoration:underline"> לא פעילים - </span>
@@ -16,7 +36,7 @@
                  ng-click="showDiv = !showDiv">
 
 
-             
+
 
                 <span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span>&nbsp;ממתינים לשיעור השלמה
             </div>
@@ -37,7 +57,7 @@
             </div>
         </div>
 
-        <div  style="float:left" ng-show="!$ctrl.IsInstructorBlock">
+        <div style="float:left" ng-show="!$ctrl.IsInstructorBlock">
 
             <div class="dvContainerSearch">
                 <input style="height:25px" type="text" name="search" class="form-control" placeholder="חיפוש תלמיד בהשלמה" ng-model="searchInput" autocomplete="off" />
@@ -45,10 +65,10 @@
 
                     <div ng-repeat="les in $ctrl.lessonsComplete | filter:{isInstructor:'0'} | filter:searchInput |  orderBy:['FullName','completionReq'] ">
 
-                        <div class="fc-draggable dvDragElement" 
-                         ondragstart="dragStart(event)"
-                         ondragover="allowDrop(event)"
-                         draggable="true" id="{{les.Id}}" style="cursor:pointer;border-top:1px solid #ddd;padding:5px">{{les.FullName}} ({{les.completionReq}}) </div>
+                        <div class="fc-draggable dvDragElement"
+                             ondragstart="dragStart(event)"
+                             ondragover="allowDrop(event)"
+                             draggable="true" id="{{les.Id}}" style="cursor:pointer;border-top:1px solid #ddd;padding:5px">{{les.FullName}} ({{les.completionReq}}) </div>
 
                     </div>
                 </div>
@@ -79,7 +99,6 @@
             font-weight: bold;
             overflow: auto;
             z-index: 5000;
-            
             left: 220px;
         }
 
@@ -99,7 +118,7 @@
 
         var currentStudentId = "";
         function dragStart(event) {
-          //  $(".hadPeami").hide();
+            //  $(".hadPeami").hide();
             currentStudentId = event.target.id;
         }
 
@@ -109,7 +128,7 @@
 
         function drop(event) {
 
-           // $(".hadPeami").show();
+            // $(".hadPeami").show();
             angular.element(document.getElementById('mainController')).scope().makeDrop(event, currentStudentId);
             currentStudentId = "";
 

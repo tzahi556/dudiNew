@@ -214,7 +214,7 @@
                         var Style = res[i].Style;
                         var ClientNumber = (res[i].ClientNumber) ? res[i].ClientNumber : "";
 
-                        if (Style == "treatment") {
+                        if (HMO && HMO!="") {
 
                             if (HMO == "klalit" || HMO == "klalitPlatinum") {
                                 CountKlalit++;
@@ -251,6 +251,23 @@
 
 
                             }
+
+                            else {
+                                CountOther++;
+                                TableDebtOther += "<tr>"
+                                    + "<td>" + CountOther.toString()
+                                    + "</td><td> " + ClientNumber
+                                    + "</td><td> " + Taz
+                                    + "</td><td style='text-align:right'>" + FirstName
+                                    + "</td><td style='text-align:right'>" + LastName
+                                    + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td ></tr>";
+
+                            }
+
+
+
+
+
                         } else {
                             CountOther++;
                             TableDebtOther += "<tr>"

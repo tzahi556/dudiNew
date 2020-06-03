@@ -128,7 +128,8 @@
         this.removeLesson = _removeLesson.bind(this);
         this.modalRemoveAdd = _modalRemoveAdd.bind(this);
         this.getHebrewdocType = _getHebrewdocType.bind(this);
-
+        this.isKabalaToMas = _isKabalaToMas.bind(this);
+        
 
         this.show4 = _show4.bind(this);
         this.isDateMoreToday = _isDateMoreToday.bind(this);
@@ -146,6 +147,9 @@
         this.RemoveLess;       // 1 מחיקה
 
         this.parentEventStudents;
+
+
+
 
         function _show4(ashrai4) {
 
@@ -1519,7 +1523,22 @@
 
 
         }
+        function _isKabalaToMas(InvoiceNum,ParentInvoiceNum) {
+            var payments = this.payments || [];
 
+            for (var i in payments) {
+
+                if (!payments[i].canceled) {
+
+                    if ((payments[i].InvoiceNum == ParentInvoiceNum || payments[i].ParentInvoiceNum == InvoiceNum) && payments[i].doc_type == "Kabala" && payments[i].payment_type=="check")
+
+                        return true;
+
+                }
+            }
+
+            return false;
+        }
         function _countSherit() {
 
             this.totalPay = 0;
@@ -1534,8 +1553,10 @@
 
                     // קורס מדריכם מחנה רכיבה ופנסיון מקבל הגדרה אחרת רק לפי חשבוניות מס
                     if (payments[i].doc_type == "Mas") {
-                        if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder") && payments[i].payment_type == "check") {
-                            total += payments[i].InvoiceSum || 0;
+                        if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder")) {
+                           
+                            if (this.isKabalaToMas(payments[i].InvoiceNum,payments[i].ParentInvoiceNum))
+                                  total += payments[i].InvoiceSum || 0;
                         }
 
                     }
@@ -2000,26 +2021,36 @@
             this.payments.map(function (payment) {
 
                 if (payment.SelectedForInvoiceTemp) {
-                    newPayment.SelectedForInvoice = true;
+                   // newPayment.SelectedForInvoice = true;
                     if (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") {
 
                         payment.ParentInvoiceNum = newPayment.InvoiceNum;
                         payment.ParentInvoicePdf = newPayment.InvoicePdf;
+
+                        //newPayment.ParentInvoiceNum = payment.InvoiceNum;
+                        //newPayment.ParentInvoicePdf = payment.InvoicePdf;
                         payment.SelectedForInvoice = true;
                     }
 
                     if (payment.doc_type == "Kabala" && newPayment.doc_type == "Mas") {
 
-                        payment.ParentInvoiceNum = newPayment.InvoiceNum;
-                        payment.ParentInvoicePdf = newPayment.InvoicePdf;
-                        payment.SelectedForInvoice = true;
+                        //payment.ParentInvoiceNum = newPayment.InvoiceNum;
+                        //payment.ParentInvoicePdf = newPayment.InvoicePdf;
+                        newPayment.ParentInvoiceNum = payment.InvoiceNum;
+                        newPayment.ParentInvoicePdf = payment.InvoicePdf;
+
+
+                       // payment.SelectedForInvoice = true;
+
+                        newPayment.SelectedForInvoice = true;
                     }
                     if (newPayment.doc_type == "Zikuy"){
 
                         payment.ZikuyNumber = newPayment.InvoiceNum;
                         payment.ZikuyPdf = newPayment.InvoicePdf;
 
-                        if (thisCtrl.user.PayType == "lessonCost") {
+                        // רק במידה ויש שיעורים בחשבונית שאתה מצמיד אליה זיכוי תעשה הורדת שיעורים
+                        if (thisCtrl.user.PayType == "lessonCost" && payment.lessons > 0) {
                             var difflessons = ((payment.lessons * payment.Price)  + newPayment.InvoiceSum) / payment.Price;
                             payment.lessons = Math.floor(difflessons);
                         }
@@ -2027,6 +2058,8 @@
 
 
                     }
+
+                    payment.SelectedForInvoiceTemp = false;
                 }
             });
 
@@ -2051,7 +2084,7 @@
 
             }
             else if ((this.newPayment.isMas) && pay.doc_type == 'Kabala' && !pay.SelectedForInvoice) {
-
+               
                 return true;
             }
             else if ((this.newPayment.isZikuy) && (pay.doc_type != 'Zikuy' && !pay.canceled)) {

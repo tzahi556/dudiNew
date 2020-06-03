@@ -24,7 +24,7 @@
     background-image: url(../images/notArrive.png);
     background-position: top left;
     background-repeat: no-repeat;
-    background-size: 30px 30px,30px 30px;
+    
 }
 
 .approve-icon {
@@ -37,7 +37,7 @@
     background-image: url(../images/returnred.png);
     background-position: top left;
     background-repeat: no-repeat;
-    background-size: 20px 20px;
+   
     
 }
 
@@ -48,25 +48,25 @@
     background: url(../images/returngreen.png);
     background-position: top left;
     background-repeat: no-repeat;
-    background-size: 20px 20px;
+   
 }
 
 
 
 .returnred-iconfloat {
     background: url(../images/returnred.png) ,url(../images/warning-icon.png);
-    background-position: top left 20px,top left ;
+    background-position: top left 10px,top left ;
     background-repeat: no-repeat;
-    background-size: 20px 20px,auto;
+ 
     
 }
 
 
 .returngreen-iconfloat {
     background: url(../images/returngreen.png) ,url(../images/approve-icon.png);
-    background-position: top left 20px,top left ;
+    background-position: top left 10px,top left ;
     background-repeat: no-repeat;
-    background-size: 20px 20px,auto;
+  
     
 }
 
@@ -74,22 +74,48 @@
 
 .redvi-icon {
     background-image: url(../images/approve-iconred.png),url(../images/currency.png);
-    background-position: top left 20px,top left ;
+    background-position: top left 10px,top left ;
     background-repeat: no-repeat;
-    background-size: 20px 20px,30px 30px;
+   
 
 }
 
 .redvi2-icon {
-     background-image: url(../images/approve-iconred.png),url(../images/currencyred.png);
-    background-position: top left 20px,top left ;
+    background-image: url(../images/approve-iconred.png),url(../images/currencyred.png);
+    background-position: top left 10px,top left;
     background-repeat: no-repeat;
-    background-size: 20px 20px,30px 30px;
-
 
 }
 
-.expandable-collapsed tr:nth-child(n+3){
+
+.klalit {
+    background-image: url(../images/klalit.jpg);
+    background-position: top left 10px,top left;
+    background-repeat: no-repeat;
+}
+
+
+.hmoImage {
+    position:absolute;
+    left: 30px;
+}
+
+/*.fc-agendaWeek-view tr {
+    height: 40px;
+}
+
+.fc-agendaDay-view tr {
+    height: 40px;
+}*/
+
+/*.fc-slats td{
+    height: 50px !important;
+}*/
+/*.fc-cell-content {
+    min-height: 50px;
+}*/
+
+.expandable-collapsed tr:nth-child(n+3) {
     display: none;
 }
 

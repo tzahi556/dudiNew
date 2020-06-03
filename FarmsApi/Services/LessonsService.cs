@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using Z.EntityFramework.Extensions;
+//using Z.EntityFramework.Extensions;
 
 namespace FarmsApi.Services
 {
@@ -123,7 +123,7 @@ namespace FarmsApi.Services
                                 HearotStatus = s.HearotStatus,
                                 Mashov = s.Mashov
                             }).ToArray(),
-                            title = (studentsArray.Length > 0 ? string.Join(",", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : ""),
+                            title =  (studentsArray.Length > 0 ? string.Join("", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : ""),
                             PrevNext = Lesson.PrevNext,
                             IsMazkirut = Lesson.IsMazkirut
                             //Matarot = Lesson.Matarot,
@@ -134,7 +134,7 @@ namespace FarmsApi.Services
 
 
 
-                        }));
+                        })) ;
                     }
                     lastId = Lesson.Id;
                 }
@@ -182,12 +182,12 @@ namespace FarmsApi.Services
                             Group by st.User_Id
                             )t2	 on t2.Id=t1.Id
                             )t3	
-                            inner join Users u on t3.Id = u.Id
+                            inner join Users u on t3.Id = u.Id and u.Deleted=0 and u.Active='active' 
                             inner join ( Select *,ROW_NUMBER() OVER(Partition by User_Id ORDER BY Lesson_Id desc) as RowNum from StudentLessons where Status in('completionReq','completionReqCharge')) t4 on t4.User_Id=t3.Id and t4.RowNum = 1
                             inner join Lessons l on l.Id = t4.Lesson_Id
                             inner join Users ui on ui.Id = l.Instructor_Id
 
-                            where (t3.completionReq > 0) and('" + CurrentUser.Role.ToString() + "'!='instructor' or " + CurrentUser.Id.ToString() + "=l.Instructor_Id ) and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")  order by Instructor_Id";
+                            where    (t3.completionReq > 0) and('" + CurrentUser.Role.ToString() + "'!='instructor' or " + CurrentUser.Id.ToString() + "=l.Instructor_Id ) and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")  order by Instructor_Id";
 
 
                 using (var reader = cmd.ExecuteReader())
@@ -394,9 +394,9 @@ namespace FarmsApi.Services
 
                     ChildLessonId = ChildLesson.Id;
                     ChildLesson.Instructor_Id = ParentLesson.Instructor_Id;
-                    ChildLesson.Start = new DateTime(ChildLesson.Start.Year, ChildLesson.Start.Month, ChildLesson.Start.Day, ParentLesson.Start.Hour, ParentLesson.Start.Minute, 0);
+                    ChildLesson.Start = ParentLesson.Start.AddDays(7); //new DateTime(ChildLesson.Start.Year, ChildLesson.Start.Month, ChildLesson.Start.Day, ParentLesson.Start.Hour, ParentLesson.Start.Minute, 0);
                     //ParentLesson.Start.AddDays(7); צחי הוריד ושם את זה
-                    ChildLesson.End = new DateTime(ChildLesson.End.Year, ChildLesson.End.Month, ChildLesson.End.Day, ParentLesson.End.Hour, ParentLesson.End.Minute, 0);//.AddDays(7);
+                    ChildLesson.End = ParentLesson.End.AddDays(7);//new DateTime(ChildLesson.End.Year, ChildLesson.End.Month, ChildLesson.End.Day, ParentLesson.End.Hour, ParentLesson.End.Minute, 0);//.AddDays(7);
 
                     ////add students that doesn't exists
                     //var ChildStudents = Context.StudentLessons.Where(l => l.Lesson_Id == ChildLesson.Id).ToList();
@@ -852,12 +852,13 @@ namespace FarmsApi.Services
             DateTime? LastDay = new DateTime(CurrentDate.Year, 12, 31, 23, 59, 59);
 
             if (Schedular.EndDate != null) LastDay = Schedular.EndDate;
-            if (Schedular.Days > 0) LastDay = CurrentDate.AddDays(Schedular.Days);
+            if (Schedular.Days > 0) LastDay = CurrentDate.AddDays(Schedular.Days-1);
 
 
             string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
-                                         <div style ='font-weight:bold;'>" + Schedular.Title +
-                                         @"<div style='float:right;padding-left:3px'><input type='checkbox' @simbol /></div></div></div>";
+                                      
+                                         <div style ='font-weight:bold;'><input type='checkbox' @simbol />&nbsp;" + Schedular.Title + @"</div></div>";
+
 
             // Context.Configuration.AutoDetectChangesEnabled = false;
 
@@ -940,12 +941,12 @@ namespace FarmsApi.Services
 
 
 
-            EntityFrameworkManager.DefaultEntityFrameworkPropagationValue = false;
+           // EntityFrameworkManager.DefaultEntityFrameworkPropagationValue = false;
             Context.Lessons.AddRange(lList);
             // Context.SchedularTasks.AddRange(stList);
 
-            Context.BulkSaveChanges(false);
-
+            // Context.BulkSaveChanges(false);
+            Context.SaveChanges();
             int startHour = CurrentLesson.Start.Hour;
             int startMinutes = CurrentLesson.Start.Minute;
             // int resourceId = CurrentLesson.Instructor_Id;
@@ -971,8 +972,8 @@ namespace FarmsApi.Services
 
             Context.SchedularTasks.AddRange(stList);
 
-            Context.BulkSaveChanges(false);
-
+            //  Context.BulkSaveChanges(false);
+            Context.SaveChanges();
 
 
             return "";
@@ -1046,18 +1047,24 @@ namespace FarmsApi.Services
                 var LessonsList = Context.Lessons.Where(u => u.Instructor_Id == resourceId && u.Start >= CurrentLesson.Start && u.Start.Hour == startHour && u.Start.Minute == startMinutes).ToList();
                 Context.Lessons.RemoveRange(LessonsList);
 
-                EntityFrameworkManager.DefaultEntityFrameworkPropagationValue = false;
+                //EntityFrameworkManager.DefaultEntityFrameworkPropagationValue = false;
             }
             else
             {
                 Context.Lessons.Remove(CurrentLesson);
 
-                var schedular = Context.SchedularTasks.Where(x=>x.Id== schedularTaskList.Id).FirstOrDefault();
-                Context.SchedularTasks.Remove(schedular);
+
+                if (schedularTaskList.Id != 0)
+                {
+                    var schedular = Context.SchedularTasks.Where(x => x.Id == schedularTaskList.Id).FirstOrDefault();
+                    Context.SchedularTasks.Remove(schedular);
+                }
             }
 
 
-            Context.BulkSaveChanges();
+            //   Context.BulkSaveChanges();
+
+            Context.SaveChanges();
 
             //  
             //var CurrentSchedularTasks = Context.SchedularTasks.Where(u => u.LessonId == lessonId).FirstOrDefault();
