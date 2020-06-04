@@ -465,7 +465,7 @@
         var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
         // צחי שינה כדי שיעבוד ללא הפיירבס 
-      if (iOS) {
+      if (!iOS) {
      //  if (iOS) {
             // Initialize Firebase
             var config = {
