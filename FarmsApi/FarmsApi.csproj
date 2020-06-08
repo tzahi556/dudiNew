@@ -127,6 +127,15 @@
     <Content Include="packages.config" />
     <Content Include=".editorconfig" />
     <None Include="Properties\PublishProfiles\IIS.pubxml" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Web References\KlalitAPI\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <None Include="Web References\KlalitAPI\SupplierRequest.wsdl" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -136,6 +145,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Web References\KlalitAPI\SupplierRequest.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -173,6 +183,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Services\KlalitAPI.cs" />
     <Compile Include="Services\UploadFromAccess.cs" />
     <Compile Include="Services\CommonTasks.cs" />
     <Compile Include="Services\NotificationsService.cs" />
@@ -186,9 +202,33 @@
     <Compile Include="DataModels\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Web References\KlalitAPI\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx%3fop=SendXML">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\KlalitAPI\</RelPath>
+      <UpdateFromURL>https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx%3fop=SendXML</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>FarmsApi_KlalitAPI_SupplierRequest</CachedSettingsPropName>
+    </WebReferenceUrl>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -12,6 +12,7 @@
     function NotificationsController($scope, $rootScope, $state, notificationsService) {
         this.redirect = _redirect.bind(this);
         this.isSysAdmin = localStorage.getItem("currentRole") == "sysAdmin";
+        this.role = localStorage.getItem("currentRole");
         this.delete = _delete.bind(this);
         this.update = _update.bind(this);
         this.reloadCheckUnCheck = _reloadCheckUnCheck.bind(this);

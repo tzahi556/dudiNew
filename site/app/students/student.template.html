@@ -16,7 +16,7 @@
         <form name="studentForm" ng-submit="$ctrl.submit()" novalidate>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    תלמיד
+                    {{($ctrl.role=='farmAdminHorse')?'לקוח':'תלמיד '}}  
                     <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="studentForm.$invalid">שמור</button>
                 </div>
 
@@ -69,7 +69,7 @@
                 <div class="panel-body" ng-show="!$ctrl.IsInstructorBlock">
 
                     <div class="form-group">
-                        <input type="text" name="search" class="form-control" placeholder="חיפוש תלמיד אחר" ng-model="searchInput" autocomplete="off" />
+                        <input type="text" name="search" class="form-control" placeholder="חיפוש {{($ctrl.role=='farmAdminHorse')?'לקוח':'תלמיד '}} אחר" ng-model="searchInput" autocomplete="off" />
                         <div ng-show="searchInput" style="border:solid 1px #ddd">
 
                             <div ng-repeat="s in $ctrl.students  | filter:search | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
@@ -87,7 +87,7 @@
                         <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />
                     </div>
                     <div class="form-group">
-                        <imagepicker model="$ctrl.user.Image" image-label="תמונת תלמיד" />
+                        <imagepicker model="$ctrl.user.Image" image-label="תמונת {{($ctrl.role=='farmAdminHorse')?'לקוח':'תלמיד '}}" />
                     </div>
                     <div class="form-group">
                         <label>פעיל</label>
@@ -155,7 +155,7 @@
                             <option value="">בחר חווה</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>סגנון רכיבה</label>
                         <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles"
                                 ng-model="$ctrl.user.Style"
@@ -163,14 +163,14 @@
                             <option value="">בחר סגנון רכיבה</option>
                         </select>
                     </div>
-                    <div class="form-group" ng-if="$ctrl.user.Style.indexOf('treatment')!=-1">
+                    <div class="form-group" ng-if="$ctrl.user.Style.indexOf('treatment')!=-1 && $ctrl.role!='farmAdminHorse'">
                         <label>קופ"ח</label>
                         <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs"
                                 ng-model="$ctrl.user.HMO" required>
                             <option value="">בחר קופת חולים</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>חבר נבחרת</label>
                         <select class="form-control" ng-model="$ctrl.user.TeamMember">
                             <option value="">בחר אפשרות</option>
@@ -182,7 +182,7 @@
                         <label>עלות</label>
                         <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>סוג תשלום</label>
                         <select class="form-control" ng-model="$ctrl.user.PayType" ng-change="$ctrl.changeLessonsData()" required>
                             <option value="">בחר אפשרות</option>
@@ -216,11 +216,11 @@
                     <table class="table">
                         <tbody>
 
-                            <tr style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
+                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>כמות שיעורים ששולמו סה״כ</td>
                                 <td>{{$ctrl.paidLessons}}</td>
                             </tr>
-                            <tr style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
+                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>כמות שיעורים ששולמו בשנה הנוכחית</td>
                                 <td>{{$ctrl.paidLessonsThisYear}}</td>
                             </tr>
@@ -234,41 +234,27 @@
                                 <td style="direction:ltr;text-align:right;">{{$ctrl.commitmentLessons}}</td>
                             </tr>
 
-                            <!--<tr style="background-color: #fdffe5">
-                                <td>כמות שיעורים בהתחייבות מכבי סה״כ</td>
-                                <td>{{$ctrl.commitmentLessons}}</td>
-                            </tr>-->
-                            <tr style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
+                         
+                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>יתרת שיעורים</td>
                                 <td style="direction:ltr;text-align:right;">{{$ctrl.creditPaidLessons}}</td>
                             </tr>
-                            <!--<tr style="background-color: #fdffe5">
-                                <td>סה"כ יתרה עבור שיעורים</td>
-                                <td>{{$ctrl.moneyLeft}} ש"ח</td>
-                            </tr>-->
-                            <tr style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
+                          
+                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
                                 <td>כמות חודשים שולמו</td>
                                 <td>{{$ctrl.paidMonths}}</td>
                             </tr>
-                            <tr style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
+                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
                                 <td>יתרת חודשים</td>
                                 <td><span style="display:inline-block;direction:ltr;text-align:right;"> {{$ctrl.creditPaidMonth}}</span></td>
                             </tr>
-                            <!--<tr>
-                                <td>סה"כ הוצאות אחרות</td>
-                                <td>{{$ctrl.totalExpensesNoShulam}}- ש"ח</td>
-                            </tr>-->
-                            <!--<tr style="background-color: #fdffe5" ng-show="$ctrl.user.Meta.PayType == 'lessonCost'">
-                                <td>עודף</td>
-                                <td><span style="display:inline-block;direction:ltr;text-align:right;">{{$ctrl.Sherit}}</span></td>
-                            </tr>-->
-
+                          
                             <tr>
                                 <td>סה"כ מצב חשבון</td>
                                 <td>
                                     <span style="display:inline-block;direction:ltr;text-align:right;" id="dvAccountStatus">{{$ctrl.totalExpensesNoShulam*-1 + $ctrl.unpaidLessons + $ctrl.monthlyBalance}}</span>                                    ש"ח
 
-                                    <button class="btn btn-success btn-xs" style="float:left" ng-click="showDiv = !showDiv">פירוט  </button>
+                                    <button  class="btn btn-success btn-xs" style="float:left" ng-click="showDiv = !showDiv">פירוט  </button>
 
                                 </td>
 
@@ -478,11 +464,11 @@
                                 <input class="form-control" type="date" ng-model="$ctrl.newPayment.Date" required />
                             </div>
                             <div class="form-group">
-                                <input class="form-control" ng-if="$ctrl.user.PayType == 'lessonCost'" ng-disabled="$ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy" placeholder="כמות שיעורים" min="0" ng-change="$ctrl.countTotal()"
+                                <input class="form-control" ng-if="$ctrl.user.PayType == 'lessonCost' && $ctrl.role!='farmAdminHorse'" ng-disabled="$ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy" placeholder="כמות שיעורים" min="0" ng-change="$ctrl.countTotal()"
                                        type="number" ng-model="$ctrl.newPayment.lessons" />
                             </div>
 
-                            <table width="100%" ng-if="$ctrl.user.PayType != 'lessonCost'">
+                            <table width="100%" ng-if="$ctrl.user.PayType != 'lessonCost' && $ctrl.role!='farmAdminHorse'">
                                 <tr>
                                     <td> 
                                         מחודש
@@ -679,7 +665,7 @@
                 </div>
 
                 <!-- HMO commitments -->
-                <div class="panel panel-default">
+                <div class="panel panel-default"  ng-if="$ctrl.role!='farmAdminHorse'">
                     <div class="panel-heading">
                         התחייבות קופ"ח
                     </div>
@@ -770,7 +756,7 @@
                 </div>
 
             </uib-tab>
-            <uib-tab index="1" heading="שיעורים">
+            <uib-tab index="1" heading="שיעורים"  ng-if="$ctrl.role!='farmAdminHorse'">
 
                 <!-- lessons -->
                 <div class="panel panel-default">
@@ -863,7 +849,7 @@
                 </div>
 
             </uib-tab>
-            <uib-tab index="2" heading="קבצים">
+            <uib-tab index="2" heading="קבצים"  ng-if="$ctrl.role!='farmAdminHorse'">
                 <!--student files-->
                 <div class="panel panel-default">
                     <div class="panel-heading">

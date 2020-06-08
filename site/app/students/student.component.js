@@ -137,7 +137,7 @@
         this.getRealDocType = _getRealDocType.bind(this);
         this.IsInstructorBlock = ($rootScope.role == "instructor") ? true : false;    // $rootScope.IsInstructorBlock;
 
-
+        this.role = $rootScope.role;
         this.newPrice = 0;
 
         this.IsHiyuvInHashlama = 0;
@@ -571,6 +571,7 @@
 
         function _createNotifications() {
 
+            
             // בינתיים צחי ביטל
             //var hmoMessage = '';
             //for (var hmo of this.HMOs) {
@@ -589,7 +590,7 @@
             //    var notificationText = 'יש לגבות תשלום עבור החודש הבא מ' + this.user.FirstName + ' ' + this.user.LastName;
             //}
 
-            var notificationText = ' התלמיד ' + this.user.FirstName + ' ' + this.user.LastName + ' נמצא בחובה ועליו להסדיר את התשלום '; //+ hmoMessage;
+            var notificationText = ((this.role =="farmAdminHorse")? " הלקוח " : " התלמיד ") + this.user.FirstName + ' ' + this.user.LastName + ' נמצא בחובה ועליו להסדיר את התשלום '; //+ hmoMessage;
 
             var heshbon = this.totalExpensesNoShulam * -1 + this.unpaidLessons; //+ this.monthlyBalance;
 
@@ -2161,8 +2162,9 @@
 
                 if (this.user.DateForMonthlyPay) {
                     this.user.DateForMonthlyPay.setHours(this.user.DateForMonthlyPay.getHours() + 3);
-
                 }
+
+                if (this.role == "farmAdminHorse") { this.user.Style ="horseHolder" }
               
 
 

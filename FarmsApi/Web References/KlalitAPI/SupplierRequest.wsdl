@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.comtec.co.il/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.comtec.co.il/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.comtec.co.il/">
+      <s:element name="SendXML">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="XMLInput" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendXMLResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SendXMLResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="SendXMLSoapIn">
+    <wsdl:part name="parameters" element="tns:SendXML" />
+  </wsdl:message>
+  <wsdl:message name="SendXMLSoapOut">
+    <wsdl:part name="parameters" element="tns:SendXMLResponse" />
+  </wsdl:message>
+  <wsdl:portType name="SupplierRequestSoap">
+    <wsdl:operation name="SendXML">
+      <wsdl:input message="tns:SendXMLSoapIn" />
+      <wsdl:output message="tns:SendXMLSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SupplierRequestSoap" type="tns:SupplierRequestSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SendXML">
+      <soap:operation soapAction="http://www.comtec.co.il/SendXML" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="SupplierRequestSoap12" type="tns:SupplierRequestSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SendXML">
+      <soap12:operation soapAction="http://www.comtec.co.il/SendXML" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SupplierRequest">
+    <wsdl:port name="SupplierRequestSoap" binding="tns:SupplierRequestSoap">
+      <soap:address location="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" />
+    </wsdl:port>
+    <wsdl:port name="SupplierRequestSoap12" binding="tns:SupplierRequestSoap12">
+      <soap12:address location="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

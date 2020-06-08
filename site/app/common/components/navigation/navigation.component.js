@@ -17,14 +17,16 @@
 
         function _init() {
             var role = localStorage.getItem('currentRole');
+            this.role = role;
+           // alert($rootScope.role);
             this.farms = ['sysAdmin'].indexOf(role) != -1 ? true : false;
-            this.accounting = ['sysAdmin', 'farmAdmin'].indexOf(role) != -1 ? true : false;
-            this.lessons = ['sysAdmin', 'farmAdmin', 'instructor', 'profAdmin'].indexOf(role) != -1 ? true : false;
+            this.accounting = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
+            this.lessons = ['sysAdmin', 'farmAdmin', 'instructor', 'profAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
             this.users = ['sysAdmin', 'farmAdmin'].indexOf(role) != -1 ? true : false;
             this.instructors = ['sysAdmin', 'farmAdmin', 'instructor', 'profAdmin'].indexOf(role) != -1 ? true : false;
-            this.students = ['sysAdmin', 'farmAdmin'].indexOf(role) != -1 ? true : false;
-            this.reports = ['sysAdmin', 'farmAdmin'].indexOf(role) != -1 ? true : false;
-            this.horses = ['sysAdmin', 'farmAdmin', 'profAdmin', 'stableman', 'assistant'].indexOf(role) != -1 ? true : false;
+            this.students = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
+            this.reports = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
+            this.horses = ['sysAdmin', 'farmAdmin', 'profAdmin', 'stableman', 'assistant', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
             this.files = role != null;
 
             var authData = localStorage.getItem('authorizationData');

@@ -57,6 +57,8 @@
           //  this.scope.studentTemplate.AccountStatus = 0;
 
 
+            if (this.scope.studentTemplate.BirthDate)
+                this.scope.studentTemplate.BirthDate.setHours(this.scope.studentTemplate.BirthDate.getHours() + 3);
          //   this.user.Farm_Id = this.scope.Farm_Id;
          
 

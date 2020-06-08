@@ -12,7 +12,8 @@
 
     function StudentsController(usersService, lessonsService, $scope, sharedValues, $http) {
        
-       
+        this.role = localStorage.getItem('currentRole');
+        
         var self = this;
         this.usersService = usersService;
         this.upload = _upload.bind(this);

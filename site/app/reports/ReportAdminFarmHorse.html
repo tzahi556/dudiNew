@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <style>
+        td {
+           text-align:center;
+           font-weight:bold;
+        }
+
+        .dvtitle {
+
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .dvSubtitle {
+            padding: 10px;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .dvTable {
+            padding: 10px;
+        }
+
+        th {
+         
+            background: #42ecf5;
+        }
+
+        .dvSubSubTitle {
+            border-bottom: solid 1px black;
+        }
+
+        span{
+
+            color:blue;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dvtitle">
+
+        <u> דו"ח מנהלים</u><br />
+        שם חווה - @NameHava
+        <br />
+        תאריכים - @FromDate - @ToDate
+    </div>
+
+
+
+   
+
+    <div class="dvTable">
+
+
+        <div class="dvSubtitle">
+            <br /><br />
+            <span style="text-decoration:underline">סוסים</span><br />
+            כמות סוסים: <span>@HorseCount</span><br />
+            <u>סה"כ פעילים</u>: <span>@HorseActiveCount</span>     <u>סה"כ לא פעילים</u>:<span>@HorseNotActiveCount</span><br />
+            סה"כ סוסי בית ספר:<span>@HorseSchool</span><br />
+            סה"כ סוסי פנסיון:<span>@HorsePension</span><br />
+            סה"כ סוסי חווה:<span>@HorseFarm</span><br /><br />
+            סה"כ סוסות בהריון:<span>@HorseHerion</span><br />
+            סה"כ סוסים מפורזלים:<span>@HorsePirzool</span><br />
+            סה"כ סוסים בטילוף:<span>@HorseTiluf</span><br />
+            סה"כ סוסים מעל שנתיים:<span>@HorseUp2</span><br />
+
+
+            כמות סוסים זכרים: <span>@HorseMan</span>  כמות סוסות נקבות: <span>@HorseWoman</span>     כמות סוסים מסורסים:<span>@HorseSirus</span><br /><br />
+          
+        </div>
+    </div>
+
+
+
+   
+
+    <div class="dvTable">
+        <div style="clear:both"><br /></div>
+        <div class="dvSubtitle">
+            <span style="text-decoration:underline">סיכום</span><br />
+
+
+
+            סה"כ חייבים: <span>@AllMinusCount</span>     סה"כ כסף:<span>₪</span><span> @AllMinusSum </span><br /><br />
+         
+        </div>
+    </div>
+
+
+   
+</body>
+</html>

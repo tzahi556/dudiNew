@@ -13,7 +13,8 @@
         apiUrl: API_ADDRESS,
         roles: [
             { id: 'sysAdmin', name: 'מנהל מערכת', showInUsers: true, sysAdminOnly: true, homePage: 'farms' },
-            { id: 'farmAdmin', name: 'מנהל חווה', showInUsers: true, sysAdminOnly: true, homePage: 'lessons' },
+            { id: 'farmAdmin', name: ' מנהל חווה', showInUsers: true, sysAdminOnly: true, homePage: 'lessons' },
+            { id: 'farmAdminHorse', name: 'מנהל חווה לגידול סוסים', showInUsers: true, sysAdminOnly: true, homePage: 'horses' },
             { id: 'profAdmin', name: 'מנהל מקצועי', showInUsers: true, sysAdminOnly: false, homePage: 'lessons' },
             { id: 'stableman', name: 'סייס', showInUsers: true, sysAdminOnly: false, homePage: 'horses' },
             { id: 'worker', name: 'עובד כללי', showInUsers: true, sysAdminOnly: false, homePage: 'horses' },

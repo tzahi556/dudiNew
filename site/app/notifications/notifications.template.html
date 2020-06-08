@@ -13,7 +13,7 @@
             <label for="rdoSfiCode">הכל</label>
 
             <input type="radio" name="filter" value="student" ng-model="$ctrl.filter.EntityType" >
-            <label for="rdoTitleDisc">תלמידים</label>
+            <label for="rdoTitleDisc">    {{($ctrl.role=='farmAdminHorse')?'לקוחות':' תלמידים '}}</label>
 
             <input type="radio" name="filter" value="horse" ng-model="$ctrl.filter.EntityType" >
             <label for="rdoTitleDisc">סוסים</label>

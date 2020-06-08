@@ -201,11 +201,11 @@ namespace FarmsApi.Services
                     {
                         return true;
                     }
-                    else if (n.EntityType == "horse" && "farmAdmin,profAdmin,stableman,worker".Contains(currentUser.Role))
+                    else if (n.EntityType == "horse" && "farmAdmin,farmAdminHorse,profAdmin,stableman,worker".Contains(currentUser.Role))
                     {
                         return true;
                     }
-                    else if (n.EntityType == "student" && "farmAdmin".Contains(currentUser.Role))
+                    else if (n.EntityType == "student" && (currentUser.Role).Contains("farmAdmin"))
                     {
                         return true;
                     }

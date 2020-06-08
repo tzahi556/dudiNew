@@ -19,6 +19,18 @@ namespace FarmsApi.Services
         }
 
 
+        [Route("SendKlalitApi")]
+        [HttpGet]
+        public string SendKlalitApi()
+        {
+            KlalitAPIClass uac = new KlalitAPIClass();
+            return uac.SendKlalitAPIFunc();
+           
+        }
+
+
+
+
 
         //[Route("UpdateUsers")]
         //[HttpGet]

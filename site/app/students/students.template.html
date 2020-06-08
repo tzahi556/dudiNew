@@ -1,16 +1,16 @@
 ﻿<div class="panel panel-default">
     <div class="panel-heading">
-        תלמידים
+        {{($ctrl.role=='farmAdminHorse')?'לקוחות':' תלמידים '}}
     </div>
     <div class="panel-body">
-        <a class="btn btn-success btn-xs" ui-sref="student({id:0})">תלמיד חדש</a>
+        <a class="btn btn-success btn-xs" ui-sref="student({id:0})">{{($ctrl.role=='farmAdminHorse')?'לקוח':'תלמיד '}} חדש</a>
         <button ng-click="$ctrl.upload()" class="btn btn-success btn-xs">ייבוא</button>
     </div>
 
 
 
     <uib-tabset active="active" class="tab-form-demo">
-        <uib-tab index="0" heading="פעילים - {{$ctrl.activeStudent}}" style="font-weight:bold">
+        <uib-tab ng-if="$ctrl.role!='farmAdminHorse'" index="0" heading="פעילים - {{$ctrl.activeStudent}}" style="font-weight:bold">
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -44,7 +44,7 @@
 
         </uib-tab>
 
-        <uib-tab index="1" heading="לא פעילים - {{$ctrl.notActiveStudent}}" style="font-weight:bold">
+        <uib-tab ng-if="$ctrl.role!='farmAdminHorse'" index="1" heading="לא פעילים - {{$ctrl.notActiveStudent}}" style="font-weight:bold">
             <table class="table table-hover">
                 <thead>
                     <tr>

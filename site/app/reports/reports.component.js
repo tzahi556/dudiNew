@@ -8,6 +8,8 @@
 
     function ReportsController(usersService, lessonsService, horsesService, sharedValues, $q, $rootScope) {
         var self = this;
+
+        self.role = $rootScope.role;
         self.studentsReport = _studentsReport;
         self.lessonsReport = _lessonsReport;
         self.horsesReport = _horsesReport;
@@ -28,6 +30,20 @@
             { name: 'רשימת שיעורים', callback: self.lessonsReport },
             { name: 'רשימת סוסים + טיפולים עתידיים', callback: self.horsesReport }
         ]
+
+
+        if (self.role == "farmAdminHorse") {
+
+
+            self.reports = [
+                { name: 'רשימת לקוחות כולל פרטים', callback: self.studentsReport },
+                { name: 'רשימת סוסים + טיפולים עתידיים', callback: self.horsesReport }
+            ]
+
+        }
+
+
+
 
         function _ReportInsructor() {
 
@@ -441,8 +457,8 @@
 
 
             if (!self.toDate || !self.fromDate) { alert("חובה לבחור תאריכים לדו''ח"); return; }
-
-            $.get('app/reports/Report.html?sssd=' + new Date(), function (text) {
+            var ReportFileName = (self.role == "farmAdminHorse") ?"ReportAdminFarmHorse":"Report"; 
+            $.get('app/reports/' + ReportFileName+'.html?sssd=' + new Date(), function (text) {
 
                 // var CurrentDate = self.fromDate;
                 //    if (!CurrentDate) CurrentDate = new Date();
