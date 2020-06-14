@@ -158,7 +158,7 @@
                     <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>סגנון רכיבה</label>
                         <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles"
-                                ng-model="$ctrl.user.Style"
+                                ng-model="$ctrl.user.Style" ng-change="$ctrl.user.HMO=''"
                                 required>
                             <option value="">בחר סגנון רכיבה</option>
                         </select>

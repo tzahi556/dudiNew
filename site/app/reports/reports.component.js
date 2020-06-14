@@ -226,6 +226,8 @@
                         var FirstName = res[i].FirstName;
                         var LastName = res[i].LastName;
                         var Total = res[i].Total;
+                        var TotalPayForMacabi = res[i].TotalPayForMacabi;
+
                         var HMO = res[i].HMO;
                         var Style = res[i].Style;
                         var ClientNumber = (res[i].ClientNumber) ? res[i].ClientNumber : "";
@@ -252,7 +254,10 @@
                                     + "</td><td> " + Taz
                                     + "</td><td style='text-align:right'>" + FirstName
                                     + "</td><td style='text-align:right'>" + LastName
-                                    + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td ></tr>";
+                                    + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td>"
+                                    + "</td><td style='direction:ltr;text-align:right'>" + TotalPayForMacabi + "</td></tr>";
+                                
+                            
 
 
                             } else if (HMO == "klalitDikla") {
@@ -489,8 +494,8 @@
 
                     text = text.replace("@Macbi", res[0].Macbi);
                     text = text.replace("@Clalit", res[0].Clalit);
-                    text = text.replace("@Dikla", res[0].Dikla);
-                    text = text.replace("@Leumit", res[0].Leumit);
+                    text = text.replace("@Diklla", res[0].Dikla);
+                    text = text.replace("@Leummit", res[0].Leumit);
                     text = text.replace("@Meuedet", res[0].Meuedet);
                     text = text.replace("@Other", res[0].Other);
 
@@ -505,6 +510,22 @@
                         var ExistHorses = [];
                         var FarmWorkHoursSus = 0;
 
+                        var MakabiOne = 0;
+                        var MakabiTwoUp = 0;
+
+                        var KlalitOne = 0;
+                        var KlalitTwoUp = 0;
+
+                        var DiklaOne = 0;
+                        var DiklaTwoUp = 0;
+
+                        var MeuhedetOne = 0;
+                        var MeuhedetTwoUp = 0;
+
+                        var LeumitOne = 0;
+                        var LeumitTwoUp = 0;
+                     
+
                         for (var i = 0; i < res.length; i++) {
 
                             if (ExistInstructor.indexOf(res[i].Id) == "-1") {
@@ -512,6 +533,23 @@
 
 
                                 var ObjOfAMount = self.getTotalPerStyle(res[i].Id, res);
+
+                                MakabiOne += ObjOfAMount.MakabiOne;
+                                MakabiTwoUp += ObjOfAMount.MakabiTwoUp;
+
+                                KlalitOne += ObjOfAMount.KlalitOne;
+                                KlalitTwoUp += ObjOfAMount.KlalitTwoUp;
+
+                                DiklaOne += ObjOfAMount.DiklaOne;
+                                DiklaTwoUp += ObjOfAMount.DiklaTwoUp;
+
+                                MeuhedetOne += ObjOfAMount.MeuhedetOne;
+                                MeuhedetTwoUp += ObjOfAMount.MeuhedetTwoUp;
+
+                                LeumitOne += ObjOfAMount.LeumitOne;
+                                LeumitTwoUp += ObjOfAMount.LeumitTwoUp;
+
+
 
                                 ExistInstructor.push(res[i].Id);
                                 HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName + "</td><td >" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
@@ -552,6 +590,28 @@
                         }
 
                         text = text.replace("@TableInstructor", HtmlTable);
+
+                        text = text.replace("@MakabiOne", MakabiOne);
+                        text = text.replace("@MakabiTwoUp", MakabiTwoUp);
+
+                        text = text.replace("@KlalitOne", KlalitOne);
+                        text = text.replace("@KlalitTwoUp", KlalitTwoUp);
+
+                        text = text.replace("@DiklaOne", DiklaOne);
+                        text = text.replace("@DiklaTwoUp", DiklaTwoUp);
+
+
+                        text = text.replace("@MeuhedetOne", MeuhedetOne);
+                        text = text.replace("@MeuhedetTwoUp", MeuhedetTwoUp);
+
+
+                        text = text.replace("@LeumitOne", LeumitOne);
+                        text = text.replace("@LeumitTwoUp", LeumitTwoUp);
+
+
+                 
+
+
 
                         horsesService.getHorses().then(function (horses) {
                             var HorseCount = 0,
@@ -702,7 +762,25 @@
                 ThreeUp: 0,
                 western: 0,
                 karting: 0,
-                english: 0
+                english: 0,
+
+                MakabiOne: 0,
+                MakabiTwoUp: 0,
+
+                KlalitOne: 0,
+                KlalitTwoUp: 0,
+
+                DiklaOne: 0,
+                DiklaTwoUp: 0,
+
+                MeuhedetOne: 0,
+                MeuhedetTwoUp: 0,
+
+                LeumitOne: 0,
+                LeumitTwoUp: 0
+
+
+
             }
 
             var DateExist = [];
@@ -724,7 +802,7 @@
 
                             } else {
 
-                                DateExist.push({ Date: res[i].Start, Count: 1 });
+                                DateExist.push({ Date: res[i].Start, Count: 1});
                             }
 
                         }
@@ -762,12 +840,115 @@
                 }
 
             }
-            //myObj.OneTipuli = (DateExist.filter(d => d.Count == 1)).length;
-            //myObj.TwoTupuli = (DateExist.filter(d => d.Count == 2)).length;
-            //myObj.ThreeUp = (DateExist.filter(d => d.Count >= 3)).length;
+
+
+            var DateExistHMO = [];
+            for (var i = 0; i < res.length; i++) {
+
+                if (Id == res[i].Id) {
+                   
+                    if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
+                        (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
+                    ) {
+
+                        if (res[i].Style == "treatment") {
+
+                          
+                            if (res[i].HMO == "maccabiSheli") res[i].HMO = "maccabiGold";
+                            if (res[i].HMO == "klalitPlatinum") res[i].HMO = "klalit";
+
+                            var result = DateExistHMO.filter(d => d.Date == res[i].Start && d.HMO == res[i].HMO);
+                            if (result.length > 0) {
+
+                                result[0]["Count"] += 1;
+
+                            } else {
+
+
+
+                                DateExistHMO.push({ Date: res[i].Start, Count: 1, HMO: res[i].HMO });
+                            }
+
+                        }
+
+                    }
+
+                }
+
+
+            }
+
+           
+
+            for (var m = 0; m < DateExistHMO.length; m++) {
+                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO =="maccabiGold") {
+
+                    myObj.MakabiOne++;
+
+                }
+                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "maccabiGold") {
+
+                    myObj.MakabiTwoUp += DateExistHMO[m].Count;
+
+                }
+
+
+                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "klalit") {
+
+                    myObj.KlalitOne++;
+
+                }
+                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "klalit") {
+
+                    myObj.KlalitTwoUp += DateExistHMO[m].Count;
+
+                }
+
+
+                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "klalitDikla") {
+
+                    myObj.DiklaOne++;
+
+                }
+                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "klalitDikla") {
+
+                    myObj.DiklaTwoUp += DateExistHMO[m].Count;
+
+                }
+
+
+                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "meuhedet") {
+
+                    myObj.MeuhedetOne++;
+
+                }
+                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "meuhedet") {
+
+                    myObj.MeuhedetTwoUp += DateExistHMO[m].Count;
+
+                }
+
+                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "leumit") {
+
+                    myObj.LeumitOne++;
+
+                }
+                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "leumit") {
+
+                    myObj.LeumitTwoUp += DateExistHMO[m].Count;
+
+                }
+
+
+
+            }
+
+           
 
             return myObj;
         }
+
+
 
         function _getInstructorCounter(Id, res, type) {
 

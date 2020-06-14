@@ -1187,7 +1187,7 @@
         function _countTotal() {
 
 
-
+            debugger
             self.newPayment.InvoiceSum = 0;
             self.newPayment.InvoiceDetails = '';
             if (self.newPayment.lessons || self.newPayment.month) {

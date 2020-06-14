@@ -17,17 +17,17 @@ namespace FarmsApi.Services
                 string xml = @"
 <XMLInput>
 	<ActionCode>11</ActionCode>
-	<UserName>test</UserName>
-	<Password>123456</Password>
-	<SupplierID>99425</SupplierID>
+	<UserName>sm09094</UserName>
+	<Password>kara1007</Password>
+	<SupplierID>85518</SupplierID>
 	<ClinicID>0</ClinicID>
-	<InsuredID>333570000</InsuredID>
-	<InsuredFirstName>איל</InsuredFirstName>
-	<InsuredLastName>בדיר</InsuredLastName>
+	<InsuredID>223828823</InsuredID>
+	<InsuredFirstName>לילך</InsuredFirstName>
+	<InsuredLastName>לוי</InsuredLastName>
 	<SectionCode>10022</SectionCode>
-	<CareCode>1</CareCode>
+	<CareCode>6</CareCode>
 	<CareDate>13052020</CareDate>
-	<DoctorID>99425</DoctorID>
+	<DoctorID>85518</DoctorID>
 	<OnlineServiceType>0</OnlineServiceType>
 </XMLInput>
 
@@ -38,8 +38,8 @@ namespace FarmsApi.Services
 
 
 
-                var res = kp.SendXML(xml);
-                return "גדגדגדג";
+				var res = kp.SendXML(xml);
+                return res;
 
 
             }
@@ -49,3 +49,19 @@ namespace FarmsApi.Services
       
     }
 }
+
+//<XMLInput>
+//	<ActionCode>11</ActionCode>
+//	<UserName>sm09094</UserName>
+//	<Password>kara1007</Password>
+//	<SupplierID>09094</SupplierID>
+//	<ClinicID>09094</ClinicID>
+//	<InsuredID>223828823</InsuredID>
+//	<InsuredFirstName>לילך</InsuredFirstName>
+//	<InsuredLastName>לוי</InsuredLastName>
+//	<SectionCode>10022</SectionCode>
+//	<CareCode>6</CareCode>
+//	<CareDate>13052020</CareDate>
+//	<DoctorID>85518</DoctorID>
+//	<OnlineServiceType>0</OnlineServiceType>
+//</XMLInput>

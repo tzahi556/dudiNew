@@ -58,7 +58,7 @@ namespace FarmsApi.DataModels
 
         public string Style { get; set; }
 
-
+        public string HMO { get; set; }
     }
 
     public class HMOReport
@@ -84,6 +84,8 @@ namespace FarmsApi.DataModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Total { get; set; }
+
+        public string TotalPayForMacabi { get; set; }
         public string HMO { get; set; }
         public string ClientNumber { get; set; }
         public string Style { get; set; }

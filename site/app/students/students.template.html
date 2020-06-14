@@ -10,7 +10,7 @@
 
 
     <uib-tabset active="active" class="tab-form-demo">
-        <uib-tab ng-if="$ctrl.role!='farmAdminHorse'" index="0" heading="פעילים - {{$ctrl.activeStudent}}" style="font-weight:bold">
+        <uib-tab ng-if="$ctrl.role!='farmAdminHorse'" active="true" index="0" heading="פעילים - {{$ctrl.activeStudent}}" style="font-weight:bold">
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -77,7 +77,7 @@
             </table>
         </uib-tab>
 
-        <uib-tab index="2" heading="פנסיון - {{$ctrl.pensionStudent}}" style="font-weight:bold">
+        <uib-tab index="2" ng-if="1!=2" heading="פנסיון - {{$ctrl.pensionStudent}}" style="font-weight:bold">
             <table class="table table-hover">
                 <thead>
                     <tr>
