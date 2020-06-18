@@ -619,7 +619,7 @@ namespace FarmsApi.Services
 
 
             User u = UpdateUser(dataObj[0].ToObject<User>());
-            if (u.Id == 0) return u;
+            if (u.Id == 0 || u.FirstName=="Error") return u;
 
             //if (u.IsMazkirut == 1 && u.Role == "instructor") ReopenLessonsByInstructorMazkirut(u);
 
@@ -1183,12 +1183,21 @@ namespace FarmsApi.Services
                 {
                     User.Farm_Id = 0;
                 }
-                var UserIdByEmail = GetUserIdByEmail(User.Email);
+                var UserIdByEmail = GetUserIdByEmail(User.Email, CurrentUserFarmId);
                 if (User.Id == 0 && UserIdByEmail == 0)
                 {
                     Context.Users.Add(User);
                     Context.SaveChanges();
                 }
+
+                // צחי הוסיף בכדי למנוע עדכון של ת"ז קיים לחווה מסויימת
+                if (User.Id != UserIdByEmail && UserIdByEmail != 0)
+                {
+                    User.FirstName = "Error";
+                    return User;
+                }
+
+
 
                 //// צחי שינה
                 //var Meta = JObject.Parse(User.Meta);
@@ -1247,12 +1256,12 @@ namespace FarmsApi.Services
             }
         }
 
-        public static int GetUserIdByEmail(string Email)
+        public static int GetUserIdByEmail(string Email, int CurrentUserFarmId=0)
         {
             using (var Context = new Context())
             {
-
-                var User = Context.Users.SingleOrDefault(u => u.Email.ToLower() == Email.ToLower());
+               
+                var User = Context.Users.SingleOrDefault(u => u.Email.ToLower() == Email.ToLower() && (CurrentUserFarmId==0 || u.Farm_Id== CurrentUserFarmId));
                 if (User != null)
                     return User.Id;
                 return 0;
@@ -1263,6 +1272,7 @@ namespace FarmsApi.Services
         {
             var identity = HttpContext.Current.User.Identity as ClaimsIdentity;
             var Email = identity.Claims.SingleOrDefault(c => c.Type == "sub").Value;
+
             return GetUser(GetUserIdByEmail(Email));
         }
 

@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
+using FarmsApi.Services;
 
 namespace FarmsApi.Controllers
 {
@@ -30,10 +31,25 @@ namespace FarmsApi.Controllers
             string SlikaUrlToken = ConfigurationSettings.AppSettings["SlikaUrlToken"].ToString();
             string SlikaUrlChargeToken = ConfigurationSettings.AppSettings["SlikaUrlChargeToken"].ToString();
 
+           
+            var CurrentUserFarmId = UsersService.GetCurrentUser().Farm_Id;
+            var UserIdByEmail = UsersService.GetUserIdByEmail((string)Params.customer_crn, CurrentUserFarmId);
+
+            // צחי הוסיף בכדי למנוע עדכון של ת"ז קיים לחווה מסויימת
+            if ((string)Params.UserId != UserIdByEmail.ToString() && UserIdByEmail != 0)
+            {
+                return Ok("-1");
+            }
+
+
+
+
             DocCreation doc = new DocCreation();
 
             Params.payment = Params.InvoiceSum;
             Params.payment_date = Params.Date.ToString("dd/MM/yyyy");
+
+            
 
 
             if ((string)Params.payment_type == "validate")
@@ -296,11 +312,18 @@ namespace FarmsApi.Controllers
                     developer_phone = "0505913817",
                     type = DocType,
                     description = (bool)Params.isMasKabala ? "" : (string)Params.InvoiceDetails,
-                    customer_name = (string)Params.customer_name,
+
                     customer_email = (string)Params.customer_email,
                     customer_address = (string)Params.customer_address,
                     comment = (string)Params.comment,
-                    parent = (string)Params.parents,//להכניס אמא
+                    parent = (string)Params.parents,
+
+                    customer_name = (string)Params.customer_name,
+                    customerAction = "ASSOC_CREATE",
+                    customer_crn = (string)Params.customer_crn,
+                    c_accounting_num = (string)Params.c_accounting_num,
+                    tag_id = (string)Params.tag_id,
+
                     item = new dynamic[] {
                     new {
                         details = (string)Params.InvoiceDetails,

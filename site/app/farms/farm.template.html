@@ -68,6 +68,60 @@
                 <input type="number" disabled class="form-control" ng-model="$ctrl.farm.Meta.LastInvoiceId" />
             </div>
 
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    תגים לחווה
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>תיאור תג</th>
+                            <th>מספר התג במערכת</th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="farmTag in $ctrl.farm.Meta.farmTags">
+
+                            <td><input class="table-control" type="text" ng-model="farmTag.tag_name"></td>
+                            <td><input class="table-control" type="number" ng-model="farmTag.tag_id"></td>
+                            <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeTags(farmTag)">הסר</button></td>
+                        </tr>
+                        <tr>
+
+                            <td><input class="table-control" type="text" ng-model="$ctrl.newfarmTag.tag_name"></td>
+                            <td><input class="table-control" type="number" ng-model="$ctrl.newfarmTag.tag_id"></td>
+                            <td>
+                                <button ng-click="$ctrl.addNewTag()" type="button"  class="btn btn-xs btn-success">הוספה</button>
+                            </td>
+
+                        </tr>
+
+
+
+                    </tbody>
+                </table>
+                <!--<div class="panel-footer">
+            <form name="newFarmTags">
+                <table>
+                    <tr>
+
+                        <td><input class="table-control" type="text" ng-model="$ctrl.newfarmTag.tag_name"></td>
+                        <td><input class="table-control" type="number" ng-model="$ctrl.newfarmTag.tag_id"></td>
+                        <td>
+                            <button ng-click="$ctrl.addNewTag()" ng-disabled="newFarmTags.$invalid" type="submit" class="btn btn-success">הוספה</button>
+                        </td>
+
+                    </tr>
+
+                </table>
+            </form>
+        </div>-->
+            </div>
+
+
         </div>
         <div class="panel-footer">
             <button type="submit" class="btn btn-success" ng-disabled="farmForm.$invalid">עדכון</button>
@@ -75,3 +129,5 @@
         </div>
     </div>
 </form>
+
+

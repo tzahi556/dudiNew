@@ -1093,9 +1093,17 @@
 
             for (var i in this.farms) {
                 if (this.farms[i].Id == this.user.Farm_Id) {
-
+                   
                     var farm = this.farms[i];
                     if (farm.Meta === null) return;
+
+                    //if (farm.Meta.farmTags.length > 0) {
+                    //    //alert(farm.Meta.farmTags[0].tag_name);
+
+
+
+                    //}
+
                     this.farm = farm;
                     this.showNewPayment = false;
                     this.newPayment = {};
@@ -1551,20 +1559,20 @@
             for (var i in payments) {
 
                 if (!payments[i].canceled) {
-
+                   
                     // קורס מדריכם מחנה רכיבה ופנסיון מקבל הגדרה אחרת רק לפי חשבוניות מס
                     if (payments[i].doc_type == "Mas") {
-                        if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder")) {
+                       // if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder")) {
                            
                             if (this.isKabalaToMas(payments[i].InvoiceNum,payments[i].ParentInvoiceNum))
                                   total += payments[i].InvoiceSum || 0;
-                        }
+                        //}
 
                     }
                     else
                     {
 
-                        if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder") && payments[i].payment_type == "check" && (payments[i].doc_type == "Kabala")) {
+                        if (payments[i].payment_type == "check" && (payments[i].doc_type == "Kabala")) {
                             continue;
                         }
 
@@ -1782,7 +1790,7 @@
         function _addPayment() {
 
 
-
+          //  alert(this.tag_id);
 
 
             if (this.newPayment.payment_type == 'check') {
@@ -1822,6 +1830,18 @@
             this.newPayment.customer_email = this.user.AnotherEmail;
             this.newPayment.customer_address = this.user.Address;
             this.newPayment.UserId = this.user.Id;
+
+            // הגדרות בשביל מס' לקוח
+            this.newPayment.customer_crn = this.user.IdNumber;
+            this.newPayment.c_accounting_num = this.user.ClientNumber;
+
+            // הוספת טאג 
+            this.newPayment.tag_id = this.tag_id;
+         
+
+
+
+
             this.newPayment.comment =
                 'מס לקוח: ' + (this.user.ClientNumber || "") +
                 ', ת.ז.: ' + (this.user.IdNumber || "");
@@ -1872,6 +1892,11 @@
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
+
+                    if (response.data == "-1") {
+                        alert('לא ניתן להנפיק מסמך , תעודת זהות קיימת במערכת');
+                        return;
+                    }
                     if (this.newPayment.payment_type == 'ashrai' || this.newPayment.payment_type == 'token') {
 
                         if (response.data.errMsg) {
@@ -2171,7 +2196,7 @@
                 usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses, [], this.makav, this.getChecsObjList()).then(function (user) {
 
                     if (user.FirstName == "Error") {
-                        alert('שגיאה בעת הכנסת תלמיד חדש , בדוק אם קיימת תעודת זהות במערכת');
+                        alert('שגיאה בעת עדכון תלמיד , בדוק אם קיימת תעודת זהות במערכת');
                         //user.FirstName = "";
                         return;
                     }

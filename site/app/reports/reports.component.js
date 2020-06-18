@@ -1336,9 +1336,23 @@
         }
 
         function _getHebStatus(status) {
-            if (status.Status == "completion" && (status.IsComplete == 4 || status.IsComplete == 6)) {
 
+           
+            if (status.Status == "completion" && (status.IsComplete == 4)) {
                 return "הגיע משיעור השלמה";
+            }
+
+            if (status.Status == "completion" && (status.IsComplete == 6)) {
+                return " לא הגיע,לחייב (שיעור השלמה)";
+            }
+
+
+            if (status.Status == "completion" && (status.IsComplete == 3)) {
+                return " לא הגיע (שיעור השלמה)";
+            }
+
+            if (status.Status == "completion" && (status.IsComplete == 5)) {
+                return "";
             }
 
 
