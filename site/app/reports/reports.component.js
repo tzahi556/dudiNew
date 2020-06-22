@@ -1262,6 +1262,7 @@
                         'שם תלמיד',
                         'סטטוס',
                         'קופת חולים',
+                        'סוג השיעור',
                         'עלות'
                     ]);
 
@@ -1271,7 +1272,7 @@
                     //alert(getName(lessons[0].resourceId));
 
                     for (var lesson of lessons) {
-
+                       
                         for (var status of lesson.statuses) {
                             var instructorName = getName(lesson.resourceId);
                             var student = getUser(status.StudentId);
@@ -1294,6 +1295,7 @@
                                         self.getHebHMO(studentHMO),
                                         //status.Status,
                                         // studentHMO,
+                                        (lesson.statuses.length > 1) ? 'קבוצתי' :'פרטני',
                                         studentCost,
                                     ]);
                                 }

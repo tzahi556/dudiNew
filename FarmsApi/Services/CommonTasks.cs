@@ -433,7 +433,9 @@ namespace FarmsApi.Services
         {
             using (var Context = new Context())
             {
-                var UsersH = Context.UserHorses;//.Where(x=>x.UserId== 20533).ToList();
+
+                var CurrentDate = DateTime.Now;
+                var UsersH = Context.UserHorses.Where(x=>!x.IsCancelAuto || (x.IsCancelAuto && CurrentDate > x.UntilCancelTime)).ToList();
 
                 foreach (var UserH in UsersH)
                 {

@@ -129,7 +129,7 @@
         this.modalRemoveAdd = _modalRemoveAdd.bind(this);
         this.getHebrewdocType = _getHebrewdocType.bind(this);
         this.isKabalaToMas = _isKabalaToMas.bind(this);
-        
+
 
         this.show4 = _show4.bind(this);
         this.isDateMoreToday = _isDateMoreToday.bind(this);
@@ -168,9 +168,9 @@
 
         function _isDateMoreToday(date) {
 
-         
+
             // צחי הוסיף פילטר שלא יציג את העבר
-            if (moment(date) > moment().add(1, 'day') || moment(date) < moment('2020-05-01') ) return true;
+            if (moment(date) > moment().add(1, 'day') || moment(date) < moment('2020-05-01')) return true;
 
             return false;
         }
@@ -571,7 +571,7 @@
 
         function _createNotifications() {
 
-            
+
             // בינתיים צחי ביטל
             //var hmoMessage = '';
             //for (var hmo of this.HMOs) {
@@ -590,7 +590,7 @@
             //    var notificationText = 'יש לגבות תשלום עבור החודש הבא מ' + this.user.FirstName + ' ' + this.user.LastName;
             //}
 
-            var notificationText = ((this.role =="farmAdminHorse")? " הלקוח " : " התלמיד ") + this.user.FirstName + ' ' + this.user.LastName + ' נמצא בחובה ועליו להסדיר את התשלום '; //+ hmoMessage;
+            var notificationText = ((this.role == "farmAdminHorse") ? " הלקוח " : " התלמיד ") + this.user.FirstName + ' ' + this.user.LastName + ' נמצא בחובה ועליו להסדיר את התשלום '; //+ hmoMessage;
 
             var heshbon = this.totalExpensesNoShulam * -1 + this.unpaidLessons; //+ this.monthlyBalance;
 
@@ -707,6 +707,12 @@
         function _initNewHorse() {
 
             this.userhorses = this.userhorses || [];
+            
+            for (var i in this.userhorses) {
+                this.userhorses[i].UntilCancelTime = moment(this.userhorses[i].UntilCancelTime).startOf('day').toDate();
+            }
+
+
             this.newHorse = null;
             if ($scope.newHorseForm != null) {
                 $scope.newHorseForm.$setPristine();
@@ -1093,17 +1099,9 @@
 
             for (var i in this.farms) {
                 if (this.farms[i].Id == this.user.Farm_Id) {
-                   
+
                     var farm = this.farms[i];
                     if (farm.Meta === null) return;
-
-                    //if (farm.Meta.farmTags.length > 0) {
-                    //    //alert(farm.Meta.farmTags[0].tag_name);
-
-
-
-                    //}
-
                     this.farm = farm;
                     this.showNewPayment = false;
                     this.newPayment = {};
@@ -1194,14 +1192,37 @@
 
         function _countTotal() {
 
-
-            debugger
             self.newPayment.InvoiceSum = 0;
             self.newPayment.InvoiceDetails = '';
             if (self.newPayment.lessons || self.newPayment.month) {
                 if (self.user.PayType == 'lessonCost') {
                     self.newPayment.InvoiceSum += self.newPayment.lessons * self.user.Cost;
-                    self.newPayment.InvoiceDetails += ((this.farm.Meta.IsRekivaTipulitInKabala && self.user.Style == "treatment") ? "רכיבה טיפולית - " : "") + self.newPayment.lessons + ' שיעורים ' + ((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");// "," + this.getLessonsDateNoPaid(self.newPayment.lessons);  //only for dev
+                    // self.newPayment.InvoiceDetails += ((this.farm.Meta.IsRekivaTipulitInKabala && self.user.Style == "treatment") ? "רכיבה טיפולית - " : "") + self.newPayment.lessons + ' שיעורים ' + ((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");// "," + this.getLessonsDateNoPaid(self.newPayment.lessons);  //only for dev
+
+                    if (this.farm.Meta.IsRekivaTipulitInKabala) {
+
+                        if (self.user.Style == "treatment") { 
+                       // var styleObject = sharedValues.styles.filter(x => x.id == self.user.Style);   //this.getStyleObjectfromSharedValue
+                            self.newPayment.InvoiceDetails += " תשלום עבור " + self.newPayment.lessons + " טיפולי רכיבה "; //((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
+                        }
+                        if (self.user.Style == "phizi") {
+                            // var styleObject = sharedValues.styles.filter(x => x.id == self.user.Style);   //this.getStyleObjectfromSharedValue
+                            self.newPayment.InvoiceDetails += " תשלום עבור " + self.newPayment.lessons + " טיפולי פיזוטרפיה "; //((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
+                        }
+
+                    }
+
+                    if (this.farm.Meta.IsDateInKabala) {
+
+                        self.newPayment.InvoiceDetails += "," + this.getLessonsDateNoPaid(self.newPayment.lessons);
+
+                    }
+
+
+
+
+                   
+
 
                 }
                 else {
@@ -1532,14 +1553,14 @@
 
 
         }
-        function _isKabalaToMas(InvoiceNum,ParentInvoiceNum) {
+        function _isKabalaToMas(InvoiceNum, ParentInvoiceNum) {
             var payments = this.payments || [];
 
             for (var i in payments) {
 
                 if (!payments[i].canceled) {
 
-                    if ((payments[i].InvoiceNum == ParentInvoiceNum || payments[i].ParentInvoiceNum == InvoiceNum) && payments[i].doc_type == "Kabala" && payments[i].payment_type=="check")
+                    if ((payments[i].InvoiceNum == ParentInvoiceNum || payments[i].ParentInvoiceNum == InvoiceNum) && payments[i].doc_type == "Kabala" && payments[i].payment_type == "check")
 
                         return true;
 
@@ -1559,20 +1580,19 @@
             for (var i in payments) {
 
                 if (!payments[i].canceled) {
-                   
+
                     // קורס מדריכם מחנה רכיבה ופנסיון מקבל הגדרה אחרת רק לפי חשבוניות מס
                     if (payments[i].doc_type == "Mas") {
-                       // if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder")) {
-                           
-                            if (this.isKabalaToMas(payments[i].InvoiceNum,payments[i].ParentInvoiceNum))
-                                  total += payments[i].InvoiceSum || 0;
-                        //}
+                        if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder")) {
+
+                            if (this.isKabalaToMas(payments[i].InvoiceNum, payments[i].ParentInvoiceNum))
+                                total += payments[i].InvoiceSum || 0;
+                        }
 
                     }
-                    else
-                    {
+                    else {
 
-                        if (payments[i].payment_type == "check" && (payments[i].doc_type == "Kabala")) {
+                        if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder") && payments[i].payment_type == "check" && (payments[i].doc_type == "Kabala")) {
                             continue;
                         }
 
@@ -1790,7 +1810,7 @@
         function _addPayment() {
 
 
-          //  alert(this.tag_id);
+
 
 
             if (this.newPayment.payment_type == 'check') {
@@ -1830,18 +1850,6 @@
             this.newPayment.customer_email = this.user.AnotherEmail;
             this.newPayment.customer_address = this.user.Address;
             this.newPayment.UserId = this.user.Id;
-
-            // הגדרות בשביל מס' לקוח
-            this.newPayment.customer_crn = this.user.IdNumber;
-            this.newPayment.c_accounting_num = this.user.ClientNumber;
-
-            // הוספת טאג 
-            this.newPayment.tag_id = this.tag_id;
-         
-
-
-
-
             this.newPayment.comment =
                 'מס לקוח: ' + (this.user.ClientNumber || "") +
                 ', ת.ז.: ' + (this.user.IdNumber || "");
@@ -1892,11 +1900,6 @@
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
-
-                    if (response.data == "-1") {
-                        alert('לא ניתן להנפיק מסמך , תעודת זהות קיימת במערכת');
-                        return;
-                    }
                     if (this.newPayment.payment_type == 'ashrai' || this.newPayment.payment_type == 'token') {
 
                         if (response.data.errMsg) {
@@ -2047,7 +2050,7 @@
             this.payments.map(function (payment) {
 
                 if (payment.SelectedForInvoiceTemp) {
-                   // newPayment.SelectedForInvoice = true;
+                    // newPayment.SelectedForInvoice = true;
                     if (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") {
 
                         payment.ParentInvoiceNum = newPayment.InvoiceNum;
@@ -2066,18 +2069,18 @@
                         newPayment.ParentInvoicePdf = payment.InvoicePdf;
 
 
-                       // payment.SelectedForInvoice = true;
+                        // payment.SelectedForInvoice = true;
 
                         newPayment.SelectedForInvoice = true;
                     }
-                    if (newPayment.doc_type == "Zikuy"){
+                    if (newPayment.doc_type == "Zikuy") {
 
                         payment.ZikuyNumber = newPayment.InvoiceNum;
                         payment.ZikuyPdf = newPayment.InvoicePdf;
 
                         // רק במידה ויש שיעורים בחשבונית שאתה מצמיד אליה זיכוי תעשה הורדת שיעורים
                         if (thisCtrl.user.PayType == "lessonCost" && payment.lessons > 0) {
-                            var difflessons = ((payment.lessons * payment.Price)  + newPayment.InvoiceSum) / payment.Price;
+                            var difflessons = ((payment.lessons * payment.Price) + newPayment.InvoiceSum) / payment.Price;
                             payment.lessons = Math.floor(difflessons);
                         }
                         payment.count = "";
@@ -2110,7 +2113,7 @@
 
             }
             else if ((this.newPayment.isMas) && pay.doc_type == 'Kabala' && !pay.SelectedForInvoice) {
-               
+
                 return true;
             }
             else if ((this.newPayment.isZikuy) && (pay.doc_type != 'Zikuy' && !pay.canceled)) {
@@ -2189,14 +2192,20 @@
                     this.user.DateForMonthlyPay.setHours(this.user.DateForMonthlyPay.getHours() + 3);
                 }
 
-                if (this.role == "farmAdminHorse") { this.user.Style ="horseHolder" }
-              
+                for (var i in this.userhorses) {
+                    this.userhorses[i].UntilCancelTime.setHours(this.userhorses[i].UntilCancelTime.getHours() + 3);
+                }
+
+
+
+                if (this.role == "farmAdminHorse") { this.user.Style = "horseHolder" }
+
 
 
                 usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses, [], this.makav, this.getChecsObjList()).then(function (user) {
 
                     if (user.FirstName == "Error") {
-                        alert('שגיאה בעת עדכון תלמיד , בדוק אם קיימת תעודת זהות במערכת');
+                        alert('שגיאה בעת הכנסת תלמיד חדש , בדוק אם קיימת תעודת זהות במערכת');
                         //user.FirstName = "";
                         return;
                     }

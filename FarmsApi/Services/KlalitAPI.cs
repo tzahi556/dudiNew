@@ -20,15 +20,15 @@ namespace FarmsApi.Services
 	<UserName>sm09094</UserName>
 	<Password>maya0906</Password>
 	<SupplierID>9094</SupplierID>
-	<ClinicID>9096</ClinicID>
-	<InsuredID>223828823</InsuredID>
+	<ClinicID>0</ClinicID>
+	<InsuredID>333570000</InsuredID>
 	<InsuredFirstName>איל</InsuredFirstName>
 	<InsuredLastName>בדיר</InsuredLastName>
 	<SectionCode>10022</SectionCode>
 	<CareCode>6</CareCode>
 	<CareDate>13052020</CareDate>
-	<DoctorID>13750</DoctorID>
-	<OnlineServiceType>1</OnlineServiceType>
+	<DoctorID>85518</DoctorID>
+	<OnlineServiceType>0</OnlineServiceType>
 </XMLInput>";
                 var res = kp.SendXML(xml);
                 return res;

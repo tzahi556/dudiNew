@@ -1,4 +1,6 @@
-﻿namespace FarmsApi.DataModels
+﻿using System;
+
+namespace FarmsApi.DataModels
 {
     public class UserHorses
     {
@@ -11,7 +13,9 @@
         public int? PensionPrice { get; set; }
         public int? TrainingCost { get; set; }
 
-
+        public bool IsCancelAuto { get; set; }
+     
+        public DateTime? UntilCancelTime { get; set; }
 
     }
 }

@@ -468,7 +468,7 @@
                                        type="number" ng-model="$ctrl.newPayment.lessons" />
                             </div>
 
-                            <table width="100%" ng-if="$ctrl.user.PayType != 'lessonCost' && $ctrl.role!='farmAdminHorse'">
+                            <table width="100%" ng-if="$ctrl.user.PayType != 'lessonCost' && $ctrl.role!='farmAdminHorse'" ng-hide="$ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy">
                                 <tr>
                                     <td>
                                         מחודש
@@ -1052,6 +1052,9 @@
                                 <th>בעלים</th>
                                 <th>תשלום חודשי עבור פנסיון</th>
                                 <th>עלות אימון סוס</th>
+                                <th>ביטול חיוב אוטמטי</th>
+                                <th>תאריך סיום הביטול</th>
+
                                 <th></th>
                             </tr>
                         </thead>
@@ -1062,6 +1065,11 @@
                                 <td><input type="checkbox" ng-model="horse.Owner"></td>
                                 <td><input class="table-control" type="number" ng-model="horse.PensionPrice"></td>
                                 <td><input class="table-control" type="number" ng-model="horse.TrainingCost"></td>
+
+
+
+                                <td><input class="table-control" type="checkbox" ng-model="horse.IsCancelAuto"></td>
+                                <td><input class="table-control" type="date" ng-model="horse.UntilCancelTime"></td>
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeHorse(horse)">הסר</button></td>
                             </tr>
                         </tbody>

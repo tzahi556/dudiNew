@@ -130,7 +130,7 @@ namespace FarmsApi.Services
             return Ok(UsersService.GetUserIdByEmail(email));
         }
 
-        [Authorize(Roles = "farmAdmin,sysAdmin")]
+        [Authorize(Roles = "farmAdmin,farmAdminHorse,sysAdmin")]
         [Route("deleteUser/{id}")]
         [HttpGet]
         public IHttpActionResult DeleteUser(int id)
@@ -139,7 +139,7 @@ namespace FarmsApi.Services
             return Ok();
         }
 
-        [Authorize(Roles = "farmAdmin,sysAdmin")]
+        [Authorize(Roles = "farmAdmin,farmAdminHorse,sysAdmin")]
         [Route("destroyUser")]
         [HttpGet]
         public IHttpActionResult DestroyUser([FromUri] string email)
