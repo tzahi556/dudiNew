@@ -15,11 +15,17 @@ namespace FarmsApi.Services
         }
 
         [Authorize]
-        [Route("getHorse/{id}")]
+        [Route("getHorse/{id}/{type}")]
         [HttpGet]
-        public IHttpActionResult GetHorse(int id)
+        public IHttpActionResult GetHorse(int id,int type)
         {
+            if(type==2)
+                return Ok(HorsesService.GetHorseFiles(id));
+
+
             return Ok(HorsesService.GetHorse(id));
+
+
         }
 
         [Authorize]

@@ -926,7 +926,7 @@
                     if (['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(studentsStatus) != -1) {
 
                         // במידה ומדובר בחווה שהחיוב הוא רק בעת הדרוש שיעור השלמה 
-                        if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) {
+                        if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6")  && this.IsHiyuvInHashlama == 1) {
 
                             this.lessons[i].paid = false;
                         }
@@ -1046,7 +1046,8 @@
             var studentsStatus = studentsStatusObj.Status;  //|| (['completion'].indexOf(studentsStatus) != -1 && lesson.IsComplete==4)
             if (['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(studentsStatus) != -1) {
                 // במידה ומדובר בחווה שהחיוב הוא רק בעת הדרוש שיעור השלמה 
-                if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) {
+               
+                if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6")  && this.IsHiyuvInHashlama == 1) {
 
                     return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
                 }
@@ -1337,9 +1338,9 @@
 
         function _changeLessonsStatus(status, details, studentId, lessonId, isComplete, lesson, isText, officedetails) {
 
-
+         
             if (!isText && (isComplete > 2)) {
-                //var ind = this.getStatusIndex(lesson);
+              
 
                 if (status && status != "attended" && status != "notAttended" && status != "notAttendedCharge") {
 
@@ -1372,11 +1373,15 @@
                 }
 
 
-                status = "completion";
+               
+            }
 
+            if (isComplete > 2) {
+                status = "completion";
                 lesson.statuses[0].Status = "completion";
                 lesson.statuses[0].IsComplete = isComplete;
             }
+
 
 
             if ((status == "completionReq" || status == "completionReqCharge") && isComplete == 0) {

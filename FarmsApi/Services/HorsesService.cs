@@ -39,6 +39,15 @@ namespace FarmsApi.Services
                 return Context.Horses.SingleOrDefault(u => u.Id == Id && !u.Deleted);
         }
 
+        public static HorseFiles GetHorseFiles(int Id)
+        {
+            using (var Context = new Context())
+                return Context.HorseFiles.SingleOrDefault(u => u.Id == Id);
+        }
+
+
+
+
         public static Horse UpdateHorse(Horse Horse)
         {
             using (var Context = new Context())

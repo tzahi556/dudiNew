@@ -823,17 +823,17 @@
 
                                 <!--<td>{{lesson.lessPrice}}</td>-->
                                
-                                <td>
+                            <td>
 
-                                    <select ng-options="status.id as status.name for status in $ctrl.lessonStatuses" ng-init="statusIndex = $ctrl.getStatusIndex(lesson)"
-                                            ng-model="lesson.statuses[statusIndex].Status" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,false)">
-                                        <option value=""></option>
-                                    </select>
+                                <select ng-options="status.id as status.name for status in $ctrl.lessonStatuses" ng-init="statusIndex = $ctrl.getStatusIndex(lesson)"
+                                        ng-model="lesson.statuses[statusIndex].Status" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,false)">
+                                    <option value=""></option>
+                                </select>
 
-                                    <img ng-if="lesson.statuses[statusIndex].IsComplete>2" src="../../images/replace.jpg" width="24px" />
+                                <img ng-if="lesson.statuses[statusIndex].IsComplete>2  " src="../../images/replace.jpg" width="24px" />
 
-
-                                </td>
+                              
+                            </td>
                                 <td>
                                     <!--<input style="width:90%;" type="text" ng-model="lesson.statuses[statusIndex].Details" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id)">-->
 

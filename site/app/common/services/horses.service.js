@@ -77,7 +77,7 @@
 
         
 
-        function _getHorse(id) {
+        function _getHorse(id,type) {
           
             var deferred = $q.defer();
             if (id == 0) {
@@ -86,7 +86,7 @@
                 });
             }
             else {
-                $http.get(sharedValues.apiUrl + 'horses/gethorse/' + id).then(function (res) {
+                $http.get(sharedValues.apiUrl + 'horses/gethorse/' + id + '/'+type).then(function (res) {
                     var horse = res.data;
                     horse.Meta = angular.fromJson(horse.Meta);
                     horse.Meta.BirthDate = horse.Meta.BirthDate != '' ? new Date(horse.Meta.BirthDate) : null;

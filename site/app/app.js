@@ -162,7 +162,7 @@
                     controllerAs: '$ctrl',
                     resolve: {
                         horse: function (horsesService, $stateParams) {
-                            return horsesService.getHorse($stateParams.id);
+                            return horsesService.getHorse($stateParams.id,1);
                         },
                         horses: function (horsesService) {
                             return horsesService.getHorses();

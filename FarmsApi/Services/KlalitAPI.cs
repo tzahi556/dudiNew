@@ -26,9 +26,9 @@ namespace FarmsApi.Services
 	<InsuredLastName>בדיר</InsuredLastName>
 	<SectionCode>10022</SectionCode>
 	<CareCode>6</CareCode>
-	<CareDate>13052020</CareDate>
+	<CareDate>20062020</CareDate>
 	<DoctorID>85518</DoctorID>
-	<OnlineServiceType>0</OnlineServiceType>
+	<OnlineServiceType>1</OnlineServiceType>
 </XMLInput>";
                 var res = kp.SendXML(xml);
                 return res;

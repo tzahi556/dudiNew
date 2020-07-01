@@ -22,9 +22,24 @@ namespace FarmsApi.DataModels
         public DbSet<UserHorses> UserHorses { get; set; }
         public DbSet<AvailableHours> AvailableHours { get; set; }
         public DbSet<Makavs> Makavs { get; set; }
-
         public DbSet<Checks> Checks { get; set; }
         public DbSet<SchedularTasks> SchedularTasks { get; set; }
+
+
+        public DbSet<HorseFiles> HorseFiles { get; set; }
+        public DbSet<HorseHozeFiles> HorseHozeFiles { get; set; }
+        public DbSet<HorsePundekautFiles> HorsePundekautFiles { get; set; }
+        public DbSet<HorseTreatments> HorseTreatments { get; set; }
+        public DbSet<HorseShoeings> HorseShoeings { get; set; }
+        public DbSet<HorseTilufings> HorseTilufings { get; set; }
+
+        public DbSet<HorsePregnancies> HorsePregnancies { get; set; }
+        public DbSet<HorsePregnanciesStates> HorsePregnanciesStates { get; set; }
+        public DbSet<HorseInseminations> HorseInseminations { get; set; }
+
+
+        
+
         public Context() : base("Farms") { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

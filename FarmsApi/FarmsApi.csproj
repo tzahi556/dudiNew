@@ -127,6 +127,7 @@
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
     <Content Include=".editorconfig" />
+    <Content Include="Controllers\json.json" />
     <None Include="Properties\PublishProfiles\IIS.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

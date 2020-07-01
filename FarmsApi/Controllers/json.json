@@ -1,0 +1,174 @@
+{
+  "BirthDate": "2003-09-08T21:00:00.000Z",
+  "PensionStartDate": "2003-09-08T21:00:00.000Z",
+  "Treatments": [
+    {
+      "Date": "2020-06-25T14:48:39.357Z",
+      "Details": "טיפול 100000"
+    }
+  ],
+  "Pregnancies": [
+    {
+      "Date": "2020-06-25T14:52:27.557Z",
+      "Finished": true,
+      "States": [
+        {
+          "Date": "2020-06-25T14:52:27.557Z",
+          "State": {
+            "id": "insemination",
+            "name": "הזרעה",
+            "day": 0
+          }
+        },
+        {
+          "State": {
+            "id": "ultrasound1",
+            "name": "בדיקת אולטרסאונד 1",
+            "day": 17
+          },
+          "Date": "2020-07-12T14:52:27.557Z"
+        },
+        {
+          "State": {
+            "id": "ultrasound2",
+            "name": "בדיקת אולטרסאונד 2",
+            "day": 30
+          },
+          "Date": "2020-07-25T14:52:27.557Z"
+        },
+        {
+          "State": {
+            "id": "ultrasound3",
+            "name": "בדיקת אולטרסאונד 3",
+            "day": 90
+          },
+          "Date": "2020-09-23T14:52:27.557Z"
+        },
+        {
+          "State": {
+            "id": "herpes1",
+            "name": "חיסון הרפס 1",
+            "day": 152
+          },
+          "Date": "2020-11-24T15:52:27.557Z"
+        },
+        {
+          "State": {
+            "id": "herpes2",
+            "name": "חיסון הרפס 2",
+            "day": 213
+          },
+          "Date": "2021-01-24T15:52:27.557Z"
+        },
+        {
+          "State": {
+            "id": "herpes3",
+            "name": "חיסון הרפס 3",
+            "day": 274
+          },
+          "Date": "2021-03-26T14:52:27.557Z"
+        },
+        {
+          "State": {
+            "id": "birth",
+            "name": "לידה",
+            "day": 335
+          },
+          "Date": "2021-05-26T14:52:27.557Z"
+        }
+      ],
+      "Details": "בדיקה צחי"
+    },
+    {
+      "Date": "2020-06-25T14:53:21.650Z",
+      "Finished": true,
+      "IsSurrogate": true,
+      "Father": "נתי",
+      "States": [
+        {
+          "Date": "2020-06-25T14:53:21.650Z",
+          "State": {
+            "id": "insemination",
+            "name": "הזרעה",
+            "day": 0
+          }
+        },
+        {
+          "State": {
+            "id": "cleaning",
+            "name": "שטיפה",
+            "day": 7
+          },
+          "Date": "2020-07-02T14:53:21.650Z"
+        },
+        {
+          "State": {
+            "id": "surrogatePregnancy",
+            "name": "הריון אומנת",
+            "day": 7
+          },
+          "Date": "2020-07-02T14:53:21.650Z"
+        }
+      ],
+      "Surrogate": {
+        "Id": 657,
+        "Name": "טרופר"
+      }
+    },
+    {
+      "Date": "2020-06-28T14:06:18.417Z",
+      "Finished": false,
+      "States": [
+        {
+          "Date": "2020-06-28T14:06:18.417Z",
+          "State": {
+            "id": "insemination",
+            "name": "הזרעה",
+            "day": 0
+          }
+        }
+      ]
+    }
+  ],
+  "Active": "active",
+  "Gender": "female",
+  "Ownage": "school",
+  "Vaccinations": [
+    {
+      "Date": "2020-06-25T14:48:39.357Z",
+      "Type": "flu",
+      "Details": "קורונה"
+    }
+  ],
+  "Shoeings": [
+    {
+      "Date": "2020-06-25T14:48:39.357Z",
+      "Details": "פירזול יפה",
+      "ShoerName": "צחיאל חזן",
+      "Paid": true
+    }
+  ],
+  "Tilufings": [
+    {
+      "Date": "2020-06-25T14:48:39.357Z",
+      "Details": "מטלוף",
+      "Paid": true,
+      "ShoerName": "צחיאלה חזן"
+    }
+  ],
+  "Race": "גזע טוב",
+  "Owner": "צחי",
+  "Father": "יון",
+  "Mother": "יונה",
+  "Details": "סתם בדיקה",
+  "Food": {
+    "Morning1": "דגנים",
+    "Morning2": "חלב",
+    "Lunch1": "קוסקוס",
+    "Lunch2": "עופות",
+    "Dinner1": "פירות",
+    "Dinner2": "ירקות"
+  },
+  "Files": [ "invoice_0015_1.pdf", "ProfitLossReport_2020-04-02T15_39_07_1.pdf" ],
+  "Image": "klalit_1.jpg"
+}
