@@ -6,7 +6,7 @@
 
     function HorsesService(sharedValues, $http, $q) {
 
-       
+
         this.getHorses = _getHorses;
         this.getHorsesForLessons = _getHorsesForLessons;
         this.getIfHorseWork = _getIfHorseWork;
@@ -16,9 +16,9 @@
 
 
         function _getHorses(includeDeleted) {
-         
+
             var deferred = $q.defer();
-           
+
             $http.get(sharedValues.apiUrl + 'horses/gethorses' + (includeDeleted ? '/' + includeDeleted : '')).then(function (res) {
 
                 var horses = res.data;
@@ -26,13 +26,13 @@
                     horses[i].Meta = JSON.parse(horses[i].Meta);
                 }
 
-            
+
                 deferred.resolve(horses);
             });
             return deferred.promise;
         }
 
-        
+
 
 
 
@@ -56,7 +56,7 @@
                 }
 
 
-                
+
 
                 deferred.resolve(reshorses);
             });
@@ -64,21 +64,21 @@
         }
 
         function _getIfHorseWork(id, start, end) {
-           
+
             var deferred = $q.defer();
             $http.get(sharedValues.apiUrl + 'horses/checkifhorsework/', { params: { id: id, start: start, end: end } }).then(function (res) {
-                
+
                 deferred.resolve(res.data);
             });
-          
+
 
             return deferred.promise;
         }
 
-        
 
-        function _getHorse(id,type) {
-          
+
+        function _getHorse(id, type) {
+
             var deferred = $q.defer();
             if (id == 0) {
                 $http.get(sharedValues.apiUrl + 'horses/newhorse/').then(function (res) {
@@ -86,10 +86,13 @@
                 });
             }
             else {
-                $http.get(sharedValues.apiUrl + 'horses/gethorse/' + id + '/'+type).then(function (res) {
+                $http.get(sharedValues.apiUrl + 'horses/gethorse/' + id + '/' + type).then(function (res) {
                     var horse = res.data;
-                    horse.Meta = angular.fromJson(horse.Meta);
-                    horse.Meta.BirthDate = horse.Meta.BirthDate != '' ? new Date(horse.Meta.BirthDate) : null;
+
+                    if (type == 1) {
+                        horse.Meta = angular.fromJson(horse.Meta);
+                        horse.Meta.BirthDate = horse.Meta.BirthDate != '' ? new Date(horse.Meta.BirthDate) : null;
+                    }
                     deferred.resolve(horse);
                 });
             }

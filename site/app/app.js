@@ -153,17 +153,75 @@
             url: '/horse/{id}',
             views: {
                 'main': {
-                    template: '<horse horse="$ctrl.horse" farms="$ctrl.farms" horses="$ctrl.horses"></horse>',
-                    controller: function (horse, farms, horses) {
+                    template: '<horse horse="$ctrl.horse" farms="$ctrl.farms" horses="$ctrl.horses" files="$ctrl.files"  hozefiles="$ctrl.hozefiles" pundekautfiles="$ctrl.pundekautfiles" treatments="$ctrl.treatments"  vaccinations="$ctrl.vaccinations" shoeings="$ctrl.shoeings" tilufings="$ctrl.tilufings" pregnancies="$ctrl.pregnancies"  pregnanciesstates="$ctrl.pregnanciesstates"  inseminations="$ctrl.inseminations"></horse>',
+                    controller: function (horse, farms, horses, files, hozefiles, pundekautfiles, treatments, vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations) {
                         this.horse = horse;
                         this.farms = farms;
                         this.horses = horses;
+
+                        this.files = files;
+                        this.hozefiles = hozefiles;
+                        this.pundekautfiles = pundekautfiles;
+                        this.treatments = treatments;
+
+                        this.vaccinations = vaccinations;
+                        this.shoeings = shoeings;
+                        this.tilufings = tilufings;
+                        this.pregnancies = pregnancies;
+                        this.pregnanciesstates = pregnanciesstates;
+
+                        this.inseminations = inseminations;
+                        
+                        
+                        
+                        
+                        
+
                     },
                     controllerAs: '$ctrl',
                     resolve: {
                         horse: function (horsesService, $stateParams) {
-                            return horsesService.getHorse($stateParams.id,1);
+                            return horsesService.getHorse($stateParams.id, 1);
                         },
+                        files: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 2);
+                        },
+
+                        hozefiles: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 3);
+                        },
+
+                        pundekautfiles: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 4);
+                        },
+
+
+                        treatments: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 5);
+                        },
+
+                        vaccinations: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 6);
+                        },
+                        shoeings: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 7);
+                        },
+
+                        tilufings: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 8);
+                        },
+
+                        pregnancies: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 9);
+                        },
+                        pregnanciesstates: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 10);
+                        },
+
+                        inseminations: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 11);
+                        },
+
                         horses: function (horsesService) {
                             return horsesService.getHorses();
                         },

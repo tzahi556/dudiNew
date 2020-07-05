@@ -783,11 +783,11 @@
 
 
                     // במידה ומדובר בחווה שהחיוב הוא רק בעת הדרוש שיעור השלמה 
-                    //if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) {
+                
+                    if (CurrentStatus == 'completionReq' || (this.IsHiyuvInHashlama == 1 && (studentsStatusObj.IsComplete > "3"))) continue;
 
-                    //    this.lessons[i].paid = false;
-                    //}
-                    if (CurrentStatus == 'completionReq' || (this.IsHiyuvInHashlama == 1 && (studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6"))) continue;
+
+
                     var IsPast = parseInt(moment(this.lessons[i].start).format('YYYYMMDD')) < parseInt(moment().format('YYYYMMDD'));
 
 

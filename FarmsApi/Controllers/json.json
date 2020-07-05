@@ -1,5 +1,5 @@
 {
-  "BirthDate": "2003-09-08T21:00:00.000Z",
+  "BirthDate": "2003-09-02T21:00:00.000Z",
   "PensionStartDate": "2003-09-08T21:00:00.000Z",
   "Treatments": [
     {
@@ -117,7 +117,7 @@
     },
     {
       "Date": "2020-06-28T14:06:18.417Z",
-      "Finished": false,
+      "Finished": true,
       "States": [
         {
           "Date": "2020-06-28T14:06:18.417Z",
@@ -128,6 +128,63 @@
           }
         }
       ]
+    },
+    {
+      "Date": "2020-06-29T04:55:18.070Z",
+      "Finished": true,
+      "States": [
+        {
+          "Date": "2020-06-29T04:55:18.070Z",
+          "State": {
+            "id": "insemination",
+            "name": "הזרעה",
+            "day": 0
+          }
+        },
+        {
+          "State": {
+            "id": "ultrasound1",
+            "name": "בדיקת אולטרסאונד 1",
+            "day": 17
+          },
+          "Date": "2020-07-16T04:55:18.070Z"
+        }
+      ]
+    },
+    {
+      "Date": "2020-06-29T05:07:06.839Z",
+      "Finished": true,
+      "IsSurrogate": true,
+      "States": [
+        {
+          "Date": "2020-06-29T05:07:06.839Z",
+          "State": {
+            "id": "insemination",
+            "name": "הזרעה",
+            "day": 0
+          }
+        },
+        {
+          "State": {
+            "id": "cleaning",
+            "name": "שטיפה",
+            "day": 7
+          },
+          "Date": "2020-07-06T05:07:06.839Z"
+        },
+        {
+          "State": {
+            "id": "surrogatePregnancy",
+            "name": "הריון אומנת",
+            "day": 7
+          },
+          "Date": "2020-07-06T05:07:06.839Z"
+        }
+      ],
+      "Surrogate": {
+        "Id": 608,
+        "Name": "טוויטי"
+      }
     }
   ],
   "Active": "active",
@@ -170,5 +227,5 @@
     "Dinner2": "ירקות"
   },
   "Files": [ "invoice_0015_1.pdf", "ProfitLossReport_2020-04-02T15_39_07_1.pdf" ],
-  "Image": "klalit_1.jpg"
+  "Image": null
 }

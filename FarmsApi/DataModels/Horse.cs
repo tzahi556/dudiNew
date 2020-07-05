@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FarmsApi.DataModels
 {
@@ -12,16 +13,16 @@ namespace FarmsApi.DataModels
         public bool Deleted { get; set; }
         public List<string> Meta2 { get; set; }
 
-        public DateTime ArrivedDate { get; set; }
+        public DateTime? ArrivedDate { get; set; }
 
-        public DateTime OutDate { get; set; }
+        public DateTime? OutDate { get; set; }
 
         public int? SeqNumber { get; set; }
 
         public string Shvav { get; set; }
 
-        public DateTime BirthDate { get; set; }
-        public DateTime PensionStartDate { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public DateTime? PensionStartDate { get; set; }
 
         public string Active { get; set; }
         public string Gender { get; set; }
@@ -80,10 +81,16 @@ namespace FarmsApi.DataModels
     {
         public int Id { get; set; }
         public int HorseId { get; set; }
+        public DateTime? Date { get; set; }
+
         public string Name { get; set; }
         public double? Cost { get; set; }
         public double? Discount { get; set; }
         public string FileName { get; set; }
+
+        public bool IsPaid { get; set; }
+      
+
 
     }
     /// <summary>
@@ -93,10 +100,15 @@ namespace FarmsApi.DataModels
     {
         public int Id { get; set; }
         public int HorseId { get; set; }
+        public DateTime? Date { get; set; }
+
+        public string Type { get; set; }
         public string Name { get; set; }
         public double? Cost { get; set; }
         public double? Discount { get; set; }
         public string FileName { get; set; }
+
+        public bool IsPaid { get; set; }
 
     }
 
@@ -107,12 +119,14 @@ namespace FarmsApi.DataModels
     {
         public int Id { get; set; }
         public int HorseId { get; set; }
-
+        public DateTime? Date { get; set; }
         public string Name { get; set; }
         public string ShoerName { get; set; }
         public double? Cost { get; set; }
         public double? Discount { get; set; }
         public string FileName { get; set; }
+
+        public bool IsPaid { get; set; }
 
     }
 
@@ -123,11 +137,14 @@ namespace FarmsApi.DataModels
     {
         public int Id { get; set; }
         public int HorseId { get; set; }
+        public DateTime? Date { get; set; }
         public string Name { get; set; }
         public string ShoerName { get; set; }
         public double? Cost { get; set; }
         public double? Discount { get; set; }
         public string FileName { get; set; }
+
+        public bool IsPaid { get; set; }
 
     }
 
@@ -138,19 +155,21 @@ namespace FarmsApi.DataModels
     {
         public int Id { get; set; }
         public int HorseId { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
         public bool Finished { get; set; }
 
         public bool IsSurrogate { get; set; }
 
         public int FatherHorseId { get; set; }
 
+
+        public string Father { get; set; }
+
         public int SurrogateId { get; set; }
 
-        public List<HorsePregnanciesStates> PregnanciesStates { get; set; } 
+        public string SurrogateName { get; set; }
 
-
-
+        public string Comments { get; set; }
 
     }
 
@@ -160,10 +179,10 @@ namespace FarmsApi.DataModels
         public int HorseId { get; set; }
         public int HorsePregnanciesId { get; set; }
         
-        public DateTime Date { get; set; }
-        public int id { get; set; }
-        public int name { get; set; }
-        public int day { get; set; }
+        public DateTime? Date { get; set; }
+        public string StateId { get; set; }
+        public string name { get; set; }
+        public string day { get; set; }
      
 
     }
@@ -175,7 +194,16 @@ namespace FarmsApi.DataModels
     {
         public int Id { get; set; }
         public int HorseId { get; set; }
-        public DateTime InseminationDate { get; set; }
+
+        public DateTime? HalivaDate { get; set; }
+        public DateTime? InseminationDate { get; set; }
+
+        [NotMapped]
+        public string Susa { get; set; }
+        [NotMapped]
+        public DateTime? HerionDate { get; set; }
+        [NotMapped]
+        public DateTime? LedaDate { get; set; }
 
         public int PregnanciesHorseId { get; set; }
      

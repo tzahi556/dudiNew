@@ -1256,8 +1256,9 @@
                     data.push([
                         'מס לקוח',
                         'ת.ז.',
-                        'מתאריך',
-                        'עד תאריך',
+                        'תאריך',
+                        'שעה',
+
                         'שם מדריך',
                         'שם תלמיד',
                         'סטטוס',
@@ -1283,12 +1284,22 @@
                                 var studentHMO = student.HMO;
                                 var studentCost = student.Cost;
 
+                                var startHour = (new Date(lesson.start)).toLocaleTimeString();
+                                var endHour = (new Date(lesson.end)).toLocaleTimeString();
+
+                                startHour = (startHour.indexOf(':') == 1) ? "0" + startHour.substring(0, 4) : startHour.substring(0, 5) ;
+                                endHour = (endHour.indexOf(':') == 1) ? "0" + endHour.substring(0, 4) : endHour.substring(0, 5);
+
+                            
+                               
                                 if (instructorName && studentName) {
                                     data.push([
                                         studentClientNumber,
                                         studentIdNumber,
                                         new Date(lesson.start),
-                                        new Date(lesson.end),
+                                        startHour + ' - ' + endHour,
+                                      //  startHour.substring(0, 5) + ' - ' + endHour.substring(0, 5),
+                                      //  new Date(lesson.end),
                                         instructorName,
                                         studentName,
                                         self.getHebStatus(status),
@@ -1302,7 +1313,7 @@
                             }
                         }
                     }
-                    debugger;
+                   
                     _getReport(data);
                 });
             })

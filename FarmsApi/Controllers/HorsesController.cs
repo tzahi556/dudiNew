@@ -6,6 +6,20 @@ namespace FarmsApi.Services
     [RoutePrefix("horses")]
     public class HorsesController : ApiController
     {
+
+
+        [Route("UpdateMetaHorsses")]
+        [HttpGet]
+        public string UpdateMetaHorsses()
+        {
+            HorsesService.UpdateMetaHorsses();
+            return "sdsdsdsd";
+        }
+
+
+
+
+
         [Authorize]
         [Route("getHorses/{includeDeleted?}")]
         [HttpGet]
@@ -21,6 +35,25 @@ namespace FarmsApi.Services
         {
             if(type==2)
                 return Ok(HorsesService.GetHorseFiles(id));
+            if (type == 3)
+                return Ok(HorsesService.GetHorseHozeFiles(id));
+            if (type == 4)
+                return Ok(HorsesService.GetHorsePundekautFiles(id));
+            if (type == 5)
+                return Ok(HorsesService.GetHorseTreatments(id));
+            if (type == 6)
+                return Ok(HorsesService.GetHorseVaccinations(id));
+            if (type == 7)
+                return Ok(HorsesService.GetHorseShoeings(id));
+            if (type == 8)
+                return Ok(HorsesService.GetHorseTilufings(id));
+            if (type == 9)
+                return Ok(HorsesService.GetHorsePregnancies(id));
+            if (type == 10)
+                return Ok(HorsesService.GetHorsePregnanciesStates(id));
+            if (type == 11)
+                return Ok(HorsesService.GetHorseInseminations(id));
+            
 
 
             return Ok(HorsesService.GetHorse(id));

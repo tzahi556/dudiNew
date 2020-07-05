@@ -26,16 +26,16 @@ namespace FarmsApi.DataModels
         public DbSet<SchedularTasks> SchedularTasks { get; set; }
 
 
-        public DbSet<HorseFiles> HorseFiles { get; set; }
-        public DbSet<HorseHozeFiles> HorseHozeFiles { get; set; }
-        public DbSet<HorsePundekautFiles> HorsePundekautFiles { get; set; }
-        public DbSet<HorseTreatments> HorseTreatments { get; set; }
-        public DbSet<HorseShoeings> HorseShoeings { get; set; }
-        public DbSet<HorseTilufings> HorseTilufings { get; set; }
-
-        public DbSet<HorsePregnancies> HorsePregnancies { get; set; }
-        public DbSet<HorsePregnanciesStates> HorsePregnanciesStates { get; set; }
-        public DbSet<HorseInseminations> HorseInseminations { get; set; }
+        public DbSet<HorseFiles> HorseFiles { get; set; } // type 2
+        public DbSet<HorseHozeFiles> HorseHozeFiles { get; set; }//3
+        public DbSet<HorsePundekautFiles> HorsePundekautFiles { get; set; }//4
+        public DbSet<HorseTreatments> HorseTreatments { get; set; }//5
+        public DbSet<HorseVaccinations> HorseVaccinations { get; set; }//6
+        public DbSet<HorseShoeings> HorseShoeings { get; set; }//7
+        public DbSet<HorseTilufings> HorseTilufings { get; set; }//8
+        public DbSet<HorsePregnancies> HorsePregnancies { get; set; }//9
+        public DbSet<HorsePregnanciesStates> HorsePregnanciesStates { get; set; }//10
+        public DbSet<HorseInseminations> HorseInseminations { get; set; }//11
 
 
         

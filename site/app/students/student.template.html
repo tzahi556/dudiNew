@@ -777,6 +777,7 @@
 
 
                         <div style="float:left">
+     
                             <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.AddMultipleLessons()"> הוסיפי שיעורים </button>
                             <input style="width:70px;float:left;height:20px" type="number" ng-model="$ctrl.lessAdd">
                             <label style="float:left;margin-right:3px"> מספר שיעורים להוספה: </label>
@@ -794,7 +795,16 @@
                                     עד תאריך:<br>
                                     <input type="date" ng-model="$ctrl.dateTo">
                                 </td>
-                                <td colspan="2"><br><button class="btn btn-primary" ng-click="showDetails=!showDetails;">{{showDetails ? 'הצג הערות משרד' : 'הצג הערות מדריך'}} </button></td>
+                                <td>
+
+                                </td>
+                                <td colspan="4">
+                                    <br>
+                                    <button class="btn btn-primary btn-xs" ng-click="showDetails=!showDetails;">{{showDetails ? 'הצג הערות משרד' : 'הצג הערות מדריך'}} </button>
+                                    <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.AddMultipleLessons()"> הדפסה </button>
+
+
+                                </td>
                             </tr>
                             <tr>
                                 <th>מס</th>
