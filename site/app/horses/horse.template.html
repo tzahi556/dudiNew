@@ -526,7 +526,7 @@
                                 <td>{{pregnancy.Father}}</td>
                                 <td>
                                     <a ui-sref="horse({id:pregnancy.SurrogateId})" ng-if="pregnancy.SurrogateId">אומנת: {{pregnancy.SurrogateName}}</a>
-                                    <a ui-sref="horse({id:pregnancy.Mother.Id})" ng-if="pregnancy.Mother">אם: {{pregnancy.Mother.Name}}</a>
+                                    <a ui-sref="horse({id:pregnancy.MotherId})" ng-if="pregnancy.Mother">אם: {{pregnancy.Mother}}</a>
                                 </td>
                                 <td><input type="text" ng-model="pregnancy.Comments"></td>
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removePregnancy(pregnancy)">הסר</button></td>
@@ -605,36 +605,44 @@
                                 <th>תאריך חליבה</th>
                                 <th>תאריך הזרעה</th>
                                 <th>שם סוסה</th>
-                                <th>תאריך כניסה להריון</th>
-                                <th>תאריך לידה</th>
+                                <th>מס' סידורי</th>
+                                <th>בעלים</th>
+                                <th>תאריך קליטה</th>
+                                <th>צפי משוער לידה</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="insemination in $ctrl.inseminations track by $index">
-                                <td>{{insemination.HalivaDate | ildate: 'DD/MM/YYYY'}}</td>
-                                <td>{{insemination.InseminationDate | ildate: 'DD/MM/YYYY'}}</td>
+                            <tr class="{{(insemination.HalivaDate)?'success':''}}" ng-repeat="insemination in $ctrl.inseminations track by $index">
+                                <td><span ng-if="insemination.HalivaDate">{{insemination.HalivaDate | ildate: 'DD/MM/YYYY'}}</span></td>
+                                <td><span ng-if="insemination.InseminationDate">{{insemination.InseminationDate | ildate: 'DD/MM/YYYY'}}</span></td>
 
                                 <td>{{insemination.Susa}}</td>
-                                <td>{{insemination.HerionDate | ildate: 'DD/MM/YYYY'}}</td>
-                                <td>{{insemination.LedaDate | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{insemination.SusaSiduri}}</td>
+                                <td>{{insemination.SusaOwner}}</td>
+
+                                <td><span ng-if="insemination.HerionDate">{{insemination.HerionDate | ildate: 'DD/MM/YYYY'}}</span></td>
+                                <td><span ng-if="insemination.LedaDate">{{insemination.LedaDate | ildate: 'DD/MM/YYYY'}}</span></td>
 
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeInsemination(insemination)">הסר</button></td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="panel-footer">
+                    <div class="panel-footer" style="margin-top:20px">
                         <form name="inserForm">
                             <div class="form-group">
-                                <input type="date" class="form-control" ng-model="$ctrl.newInsemination.HalivaDate" placeholder="תאריך חליבה" required />
+                                <label>תאריך חליבה</label><br />
+                                <input type="date" class="form-control" ng-model="$ctrl.newInsemination.HalivaDate" placeholder="תאריך חליבה" />
                             </div>
-                            <div class="form-group">
-                                <input type="date" class="form-control" ng-model="$ctrl.newInsemination.InseminationDate" placeholder="תאריך הזרעה"  />
-                            </div>
+                            <!--<div class="form-group">
+                                <label>תאריך הזרעה</label><br />
+                                <input type="date" class="form-control" ng-model="$ctrl.newInsemination.InseminationDate" placeholder="תאריך הזרעה" />
+                            </div>-->
 
 
                             <div class="form-group">
-                                <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.newInsemination.PregnanciesHorseId">
+                                <label>סוסה להזרעה</label><br />
+                                <select class="form-control" ng-options="sus.Id as sus.Name for sus in $ctrl.susut" ng-model="$ctrl.newInsemination.PregnanciesHorseId">
                                     <option value="">בחר סוסה</option>
                                 </select>
                             </div>

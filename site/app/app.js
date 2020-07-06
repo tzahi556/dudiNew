@@ -153,8 +153,8 @@
             url: '/horse/{id}',
             views: {
                 'main': {
-                    template: '<horse horse="$ctrl.horse" farms="$ctrl.farms" horses="$ctrl.horses" files="$ctrl.files"  hozefiles="$ctrl.hozefiles" pundekautfiles="$ctrl.pundekautfiles" treatments="$ctrl.treatments"  vaccinations="$ctrl.vaccinations" shoeings="$ctrl.shoeings" tilufings="$ctrl.tilufings" pregnancies="$ctrl.pregnancies"  pregnanciesstates="$ctrl.pregnanciesstates"  inseminations="$ctrl.inseminations"></horse>',
-                    controller: function (horse, farms, horses, files, hozefiles, pundekautfiles, treatments, vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations) {
+                    template: '<horse horse="$ctrl.horse" farms="$ctrl.farms" horses="$ctrl.horses" files="$ctrl.files"  hozefiles="$ctrl.hozefiles" pundekautfiles="$ctrl.pundekautfiles" treatments="$ctrl.treatments"  vaccinations="$ctrl.vaccinations" shoeings="$ctrl.shoeings" tilufings="$ctrl.tilufings" pregnancies="$ctrl.pregnancies"  pregnanciesstates="$ctrl.pregnanciesstates"  inseminations="$ctrl.inseminations" susut="$ctrl.susut"></horse>',
+                    controller: function (horse, farms, horses, files, hozefiles, pundekautfiles, treatments, vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations,susut) {
                         this.horse = horse;
                         this.farms = farms;
                         this.horses = horses;
@@ -171,8 +171,8 @@
                         this.pregnanciesstates = pregnanciesstates;
 
                         this.inseminations = inseminations;
-                        
-                        
+
+                        this.susut = susut;
                         
                         
                         
@@ -221,7 +221,9 @@
                         inseminations: function (horsesService, $stateParams) {
                             return horsesService.getHorse($stateParams.id, 11);
                         },
-
+                        susut: function (horsesService) {
+                            return horsesService.getSusut();
+                        },
                         horses: function (horsesService) {
                             return horsesService.getHorses();
                         },

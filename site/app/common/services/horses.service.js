@@ -13,6 +13,60 @@
         this.getHorse = _getHorse;
         this.updateHorse = _updateHorse;
         this.deleteHorse = _deleteHorse;
+        this.getSusut = _getSusut;
+
+        this.updateHorseMultiTables = _updateHorseMultiTables;
+
+        this.insertnewpregnancie = _insertnewpregnancie;
+
+
+        function _insertnewpregnancie(newpregnancie,isBuild) {
+          
+            var deferred = $q.defer();
+          
+            $http.post(sharedValues.apiUrl + 'horses/insertnewpregnancie/' + isBuild, newpregnancie).then(function (res) {
+                var horse = res.data;
+              
+                deferred.resolve(horse);
+            });
+            return deferred.promise;
+        }
+
+
+
+
+
+        function _getSusut() {
+
+            var deferred = $q.defer();
+
+            $http.get(sharedValues.apiUrl + 'horses/getSusut' ).then(function (res) {
+                var horses = res.data;
+                deferred.resolve(horses);
+            });
+            return deferred.promise;
+        }
+
+
+
+        function _updateHorseMultiTables(horse, files, hozefiles, pundekautfiles, treatments,
+            vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations) {
+
+
+            var dataobj = [horse, files, hozefiles, pundekautfiles, treatments,
+                vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations];
+            var deferred = $q.defer();
+            $http.post(sharedValues.apiUrl + 'horses/updateHorseMultiTables', angular.toJson(dataobj)).then(function (res) {
+
+                var horse = res.data;
+                deferred.resolve(horse);
+            });
+            return deferred.promise;
+
+        }
+
+
+
 
 
         function _getHorses(includeDeleted) {
@@ -22,10 +76,7 @@
             $http.get(sharedValues.apiUrl + 'horses/gethorses' + (includeDeleted ? '/' + includeDeleted : '')).then(function (res) {
 
                 var horses = res.data;
-                for (var i in horses) {
-                    horses[i].Meta = JSON.parse(horses[i].Meta);
-                }
-
+              
 
                 deferred.resolve(horses);
             });
@@ -45,9 +96,9 @@
                 var horses = res.data;
                 var reshorses = [];
                 for (var i in horses) {
-                    horses[i].Meta = JSON.parse(horses[i].Meta);
+                  //  horses[i].Meta = JSON.parse(horses[i].Meta);
 
-                    if (horses[i].Meta.Active != "active" || horses[i].Meta.Ownage != "school") {
+                    if (horses[i].Active != "active" || horses[i].Ownage != "school") {
 
                         continue;
                     }
@@ -89,10 +140,10 @@
                 $http.get(sharedValues.apiUrl + 'horses/gethorse/' + id + '/' + type).then(function (res) {
                     var horse = res.data;
 
-                    if (type == 1) {
-                        horse.Meta = angular.fromJson(horse.Meta);
-                        horse.Meta.BirthDate = horse.Meta.BirthDate != '' ? new Date(horse.Meta.BirthDate) : null;
-                    }
+                    //if (type == 1) {
+                    //    horse.Meta = angular.fromJson(horse.Meta);
+                    //    horse.Meta.BirthDate = horse.Meta.BirthDate != '' ? new Date(horse.Meta.BirthDate) : null;
+                    //}
                     deferred.resolve(horse);
                 });
             }

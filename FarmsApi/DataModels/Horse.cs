@@ -89,7 +89,8 @@ namespace FarmsApi.DataModels
         public string FileName { get; set; }
 
         public bool IsPaid { get; set; }
-      
+
+        public int? ExpensesId { get; set; }
 
 
     }
@@ -110,6 +111,8 @@ namespace FarmsApi.DataModels
 
         public bool IsPaid { get; set; }
 
+        public int? ExpensesId { get; set; }
+
     }
 
     /// <summary>
@@ -127,6 +130,8 @@ namespace FarmsApi.DataModels
         public string FileName { get; set; }
 
         public bool IsPaid { get; set; }
+
+        public int? ExpensesId { get; set; }
 
     }
 
@@ -146,6 +151,8 @@ namespace FarmsApi.DataModels
 
         public bool IsPaid { get; set; }
 
+        public int? ExpensesId { get; set; }
+
     }
 
     /// <summary>
@@ -162,7 +169,9 @@ namespace FarmsApi.DataModels
 
         public int FatherHorseId { get; set; }
 
+        public string Mother { get; set; }
 
+        public int? MotherId { get; set; }
         public string Father { get; set; }
 
         public int SurrogateId { get; set; }
@@ -198,20 +207,40 @@ namespace FarmsApi.DataModels
         public DateTime? HalivaDate { get; set; }
         public DateTime? InseminationDate { get; set; }
 
-        [NotMapped]
-        public string Susa { get; set; }
-        [NotMapped]
         public DateTime? HerionDate { get; set; }
-        [NotMapped]
         public DateTime? LedaDate { get; set; }
-
-        public int PregnanciesHorseId { get; set; }
-     
+        public int? PregnanciesHorseId { get; set; }
 
 
     }
 
-    
+    public class HorseInseminationsResult
+    {
+        public int Id { get; set; }
+        public int HorseId { get; set; }
+
+        public DateTime? HalivaDate { get; set; }
+        public DateTime? InseminationDate { get; set; }
+
+       
+        public string Susa { get; set; }
+
+      
+        public string SusaOwner { get; set; }
+
+        public int? SusaSiduri { get; set; }
+
+        
+        public DateTime? HerionDate { get; set; }
+        
+        public DateTime? LedaDate { get; set; }
+
+        public int? PregnanciesHorseId { get; set; }
+
+
+    }
+
+
 
 
 }

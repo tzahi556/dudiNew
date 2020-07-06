@@ -1,4 +1,5 @@
 ﻿using FarmsApi.DataModels;
+using Newtonsoft.Json.Linq;
 using System.Web.Http;
 
 namespace FarmsApi.Services
@@ -17,7 +18,34 @@ namespace FarmsApi.Services
         }
 
 
+        [Authorize]
+        [Route("updateHorseMultiTables")]
+        [HttpPost]
+        public IHttpActionResult UpdateUserMultiTables(JArray dataobj)
+        {
+            //  return Ok(UsersService.UpdateUser(dataobj));
+            return Ok(HorsesService.UpdateHorseMultiTables(dataobj));
+        }
 
+
+        [Authorize]
+        [Route("insertnewpregnancie/{isBuild}")]
+        [HttpPost]
+        public IHttpActionResult InsertNewPregnancie(bool isBuild, HorsePregnancies obj)
+        {
+            //  return Ok(UsersService.UpdateUser(dataobj));
+            return Ok(HorsesService.InsertNewPregnancie(isBuild,obj));
+        }
+
+
+
+        [Authorize]
+        [Route("getSusut")]
+        [HttpGet]
+        public IHttpActionResult GetSusut()
+        {
+            return Ok(HorsesService.GetSusut());
+        }
 
 
         [Authorize]

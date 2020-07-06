@@ -5,7 +5,7 @@
         return function (horses, horse) {
             var newHorses = [];
             for (var i in horses) {
-                if (horses[i].Id != horse.Id && horses[i].Meta.Gender == 'female') {
+                if (horses[i].Id != horse.Id && horses[i].Gender == 'female') {
                     newHorses.push(horses[i]);
                 }
             }
@@ -31,6 +31,7 @@
             pregnancies: '<',
             pregnanciesstates: '<',
             inseminations: '<',
+            susut: '<',
         }
     });
 
@@ -74,7 +75,7 @@
         this.addInsemination = _addInsemination.bind(this);
         this.removeInsemination = _removeInsemination.bind(this);
         this.initNewInsemination = _initNewInsemination.bind(this);
-        
+
 
         this.uploadFile = _uploadFile.bind(this);
         this.uploadFileHoze = _uploadFileHoze.bind(this);
@@ -84,7 +85,7 @@
         this.uploadFileVaccination = _uploadFileVaccination.bind(this);
         this.uploadFileShoeings = _uploadFileShoeings.bind(this);
         this.uploadFileTilufings = _uploadFileTilufings.bind(this);
-    
+
 
         this.removeFile = _removeFile.bind(this);
         this.vaccinationsHorse = sharedValues.vaccinations;
@@ -104,22 +105,22 @@
 
         function _getCurrentPreg() {
 
-           
-            var CurrentId = this.pregnancies[this.pregnancies.length-1].Id;
+
+            var CurrentId = this.pregnancies[this.pregnancies.length - 1].Id;
             var ObjArray = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === CurrentId);
 
             return ObjArray;
 
-          
+
         }
 
-        
 
-        function _getStatesByFind(id,index) {
+
+        function _getStatesByFind(id, index) {
 
             var ObjArray = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === id);
 
-            if (index==0)
+            if (index == 0)
                 return this.pregnanciesstates.filter(x => x.HorsePregnanciesId === id)[0];
 
             if (index == -1)
@@ -139,7 +140,7 @@
 
             this.horse.ArrivedDate = moment(this.horse.ArrivedDate).startOf('day').toDate();
             this.horse.OutDate = moment(this.horse.OutDate).startOf('day').toDate();
-          
+
             this.initNewTreatment();
             this.initNewVaccination();
             this.initNewShoeing();
@@ -191,8 +192,11 @@
         function _initNewInsemination() {
             this.insemination = this.insemination || [];
             this.newInsemination = {};
-            this.newInsemination.HalivaDate = new Date();
-           
+            //this.newInsemination.HalivaDate = "";
+            //this.newInsemination.InseminationDate = "";
+            //this.newInsemination.HerionDate = "";
+            //this.newInsemination.LedaDate = "";
+
             this.newInsemination.PregnanciesHorseId = "";
 
             if ($scope.inserForm != null) {
@@ -204,6 +208,47 @@
 
         function _addInsemination() {
             this.inseminations = this.inseminations || [];
+
+            //if (!this.newInsemination.HalivaDate && !this.newInsemination.InseminationDate) {
+            //    alert("חובה לבחור תאריך חליבה או הזרעה");
+            //    return;
+
+
+
+            //}
+
+
+            //if (!this.newInsemination.PregnanciesHorseId && this.newInsemination.InseminationDate) {
+            //    alert("חובה לבחור סוסה להזרעה");
+            //    return;
+            //}
+
+            if (this.newInsemination.PregnanciesHorseId && this.newInsemination.HalivaDate) {
+                alert("לא ניתן לבחור סוסה בזמן חליבה");
+                return;
+            }
+
+
+            for (var i in this.susut) {
+
+                if (this.susut[i].Id == this.newInsemination.PregnanciesHorseId) {
+
+                    this.newInsemination.Susa = this.susut[i].Name;
+                    this.newInsemination.SusaSiduri = this.susut[i].SeqNumber;
+                    this.newInsemination.SusaOwner = this.susut[i].Owner;
+
+                }
+            }
+
+
+
+            
+
+            if (this.newInsemination.HalivaDate) this.newInsemination.HalivaDate.setHours(this.newInsemination.HalivaDate.getHours() + 3);    // moment(this.newInsemination.HalivaDate).format('DD/MM/YYYY');
+            //if (this.newInsemination.InseminationDate) this.newInsemination.InseminationDate.setHours(this.newInsemination.InseminationDate.getHours() + 3); 
+            //if (this.newInsemination.HerionDate) this.newInsemination.HerionDate = moment(this.newInsemination.HerionDate).format('DD/MM/YYYY');
+            //if (this.newInsemination.LedaDate) this.newInsemination.LedaDate = moment(this.newInsemination.LedaDate).format('DD/MM/YYYY');
+
             this.inseminations.push(this.newInsemination);
             this.initNewInsemination();
         }
@@ -242,12 +287,12 @@
 
 
         function _uploadFile(file) {
-           
+
             this.files = this.files || [];
             if (file) {
-                var Obj = { "Id": 0, "HorseId": this.horse.Id, "FileName": file};
+                var Obj = { "Id": 0, "HorseId": this.horse.Id, "FileName": file };
                 this.files.push(Obj);
-              
+
             }
         }
 
@@ -273,16 +318,16 @@
 
 
 
-        function _removeFile(file,type) {
+        function _removeFile(file, type) {
             filesService.delete(file).then(function () {
-                if(type==1)
-                for (var i in this.files) {
-                 
-                    if (this.files[i].FileName == file) {
-                       
-                        this.files.splice(i, 1);
-                        break;
-                    }
+                if (type == 1)
+                    for (var i in this.files) {
+
+                        if (this.files[i].FileName == file) {
+
+                            this.files.splice(i, 1);
+                            break;
+                        }
                     }
 
                 if (type == 2)
@@ -305,11 +350,12 @@
                         }
                     }
 
-               
+
             }.bind(this));
         }
 
         function _createNotifications() {
+          
             this.addPregnancyNotification();
             this.addShoeingNotification();
             this.addVaccineNotification('flu', 'חיסון שפעת עבור סוס: ');
@@ -321,11 +367,11 @@
         }
 
         function _addPregnancyNotification() {
-            var horseBirthDate = this.horse.Meta.BirthDate;
+            var horseBirthDate = this.horse.BirthDate;
 
             var IsPregnancyStop = false;
             try {
-                var pregnancy = this.horse.Meta.Pregnancies[this.horse.Meta.Pregnancies.length - 1];
+                var pregnancy = this.pregnancies[this.pregnancies.length - 1];
                 IsPregnancyStop = pregnancy.Finished;
 
             } catch (e) {
@@ -336,7 +382,7 @@
 
             notificationsService.createNotification({
                 entityType: 'horse', entityId: this.horse.Id, group: 'pregnancy', farmId: this.horse.Farm_Id,
-                text: IsPregnancyStop || angular.isUndefined(this.newPregnancyState.State) || this.horse.Meta.Active == 'notActive' ? null : this.newPregnancyState.State.name + ' עבור סוס: ' + this.horse.Name,
+                text: IsPregnancyStop || angular.isUndefined(this.newPregnancyState.State) || this.horse.Active == 'notActive' ? null : this.newPregnancyState.State.name + ' עבור סוס: ' + this.horse.Name,
                 date: this.newPregnancyState.Date ? moment(this.newPregnancyState.Date).format('YYYY-MM-DD') : null
             });
         }
@@ -428,8 +474,8 @@
                     return 0;
             });
             for (var i in this.vaccinations) {
-                if (this.horse.Meta.Vaccinations[i].Type == id) {
-                    lastVaccination.age = Math.ceil(moment.duration(moment(this.horse.Meta.Vaccinations[i].Date).diff(this.horse.Meta.BirthDate)).asDays());
+                if (this.vaccinations[i].Type == id) {
+                    lastVaccination.age = Math.ceil(moment.duration(moment(this.vaccinations[i].Date).diff(this.horse.BirthDate)).asDays());
                     lastVaccination.times++;
                     lastVaccination.date = this.vaccinations[i].Date;
                 }
@@ -439,7 +485,7 @@
 
         function _getStates(pregnancy) {
 
-          
+
             if (pregnancy.IsSurrogate) {
                 pregnancyStates = sharedValues.pregnancyStatesSurrogate;
             }
@@ -457,22 +503,48 @@
             pregnancy.SurrogateId = pregnancy.Surrogate.Id;
             pregnancy.SurrogateName = pregnancy.Surrogate.Name;
 
-            //horsesService.getHorse(pregnancy.Surrogate.Id,1).then(function (horse) {
+
+
+
+
+            horsesService.getHorse(pregnancy.Surrogate.Id, 1).then(function (horse) {
               
-            //    if (horse.pregnancies.length > 0) {
-            //        horse.pregnancies[horse.pregnancies.length - 1].Finished = true;
-            //    }
-            //    var startDate = this.getStatesByFind(pregnancy.Id,-1).Date;
-            //    horse.pregnancies.push({
-            //        Date: startDate,
-            //        Father: pregnancy.Father,
-            //        Mother: { Id: this.horse.Id, Name: this.horse.Name },
-            //        Finished: false,
-            //        States: [{ Date: startDate, State: sharedValues.pregnancyStatesSurrogateMother[0] }]
-            //    });
-            //    horsesService.updateHorse(horse);
-            //    this.submit();
-            //}.bind(this));
+                var startDate = this.getStatesByFind(pregnancy.Id, -1).Date;
+
+                var pregnancytemp = { Date: startDate, HorseId: horse.Id, Father: pregnancy.Father, Mother: this.horse.Name, MotherId: this.horse.Id, Finished: false};
+               // var pregnancystatetemp = [{ HorsePregnanciesId: 0, Date: startDate, HorseId: this.Id, StateId: sharedValues.pregnancyStatesSurrogateMother[0].id, name: sharedValues.pregnancyStatesSurrogateMother[0].name }];
+                horsesService.insertnewpregnancie(pregnancytemp,true).then(function (pregnancy) {
+                    
+                    //var pregnancystatetemp = [{ HorsePregnanciesId: pregnancy.Id, Date: startDate, HorseId: this.Id, StateId: sharedValues.pregnancyStatesSurrogateMother[0].id, name: sharedValues.pregnancyStatesSurrogateMother[0].name }];
+
+                    //horsesService.updateHorseMultiTables(horse, [], [], [], [],
+                    //    [], [], [], [], pregnancystatetemp, []).then(function (horse) {
+                            
+                    //       // alert('נשמר בהצלחה');
+
+                    //    }.bind(this));
+                    this.submit();
+                }.bind(this));
+
+             //  
+
+
+
+               // { Date: this.newPregnancyState.Date, StateId: this.newPregnancyState.State.id, HorseId: this.Id, HorsePregnanciesId: pregnancy.Id, name: this.newPregnancyState.State.name };
+                //if (horse.pregnancies.length > 0) {
+                //    horse.pregnancies[horse.pregnancies.length - 1].Finished = true;
+                //}
+                //var startDate = this.getStatesByFind(pregnancy.Id,-1).Date;
+                //horse.pregnancies.push({
+                //    Date: startDate,
+                //    Father: pregnancy.Father,
+                //    Mother: { Id: this.horse.Id, Name: this.horse.Name },
+                //    Finished: false,
+                //    States: [{ Date: startDate, State: sharedValues.pregnancyStatesSurrogateMother[0] }]
+                //});
+                //horsesService.updateHorse(horse);
+                //this.submit();
+            }.bind(this));
         }
 
         function _stopPregnancy() {
@@ -485,7 +557,7 @@
         function _pregnancyStatus(pregnancy) {
 
             pregnancyStates = this.getStates(pregnancy);
-          
+
             if (this.getStatesByFind(pregnancy.Id, -1).StateId == pregnancyStates[pregnancyStates.length - 1].id && pregnancy.Finished) {
                 return 'success';
             }
@@ -500,13 +572,13 @@
             pregnancyStates = this.getStates(pregnancy);
 
 
-          //  pregnancy.States.push(this.newPregnancyState);
+            //  pregnancy.States.push(this.newPregnancyState);
             var Statenew = { Date: this.newPregnancyState.Date, StateId: this.newPregnancyState.State.id, HorseId: this.Id, HorsePregnanciesId: pregnancy.Id, name: this.newPregnancyState.State.name };
 
 
             this.pregnanciesstates.push(Statenew);
 
-            if (this.getStatesByFind(pregnancy.Id,-1).StateId == pregnancyStates[pregnancyStates.length - 1].id) {
+            if (this.getStatesByFind(pregnancy.Id, -1).StateId == pregnancyStates[pregnancyStates.length - 1].id) {
                 pregnancy.Finished = true;
                 if (pregnancy.IsSurrogate && pregnancy.SurrogateId != this.horse.Id) {
                     this.addSurrogatePregnancy(pregnancy);
@@ -517,7 +589,7 @@
 
         function _removePregnancyState() {
             var pregnancy = this.pregnancies[this.pregnancies.length - 1];
-            this.pregnanciesstates.splice(this.pregnanciesstates.length-1, 1);
+            this.pregnanciesstates.splice(this.pregnanciesstates.length - 1, 1);
             this.initNewPregnancyState();
         }
 
@@ -594,16 +666,17 @@
 
 
         function _initNewPregnancyState() {
-          
+
+           
             var pregnancy = this.pregnancies[this.pregnancies.length - 1];
             this.newPregnancyState = {};
             if (pregnancy) {
                 pregnancyStates = this.getStates(pregnancy);
                 for (var i in pregnancyStates) {
-                    if (pregnancyStates[i].id == this.getStatesByFind(pregnancy.Id,-1).StateId) {
+                    if (pregnancyStates[i].id == this.getStatesByFind(pregnancy.Id, -1).StateId) {
                         this.newPregnancyState.State = pregnancyStates[++i];
                         if (this.newPregnancyState.State != null) {
-                           
+
                             this.newPregnancyState.Date = moment(pregnancy.Date).add(this.newPregnancyState.State.day, 'day').toDate();
                         }
                         break;
@@ -616,24 +689,29 @@
         }
 
         function _addPregnancy() {
-           
+
             this.pregnancies = this.pregnancies || [];
             this.stopPregnancy();
-           
+
             pregnancyStates = this.getStates(this.newPregnancy);
             var startDate = this.newPregnancy.Date;
 
-            var Statenew = { Date: startDate, StateId: pregnancyStates[0].id, HorseId: this.Id, HorsePregnanciesId: 0, name: pregnancyStates[0].name};
+        
+            this.newPregnancy.HorseId = this.horse.Id;
+            horsesService.insertnewpregnancie(this.newPregnancy,false).then(function (pregnancy) {
+              
+               
+                var Statenew = { Date: startDate, StateId: pregnancyStates[0].id, HorseId: this.horse.Id, HorsePregnanciesId: pregnancy.Id, name: pregnancyStates[0].name };
+                this.pregnanciesstates.push(Statenew);
+                this.newPregnancy.Id = pregnancy.Id;
+                this.pregnancies.push(this.newPregnancy);
+                this.initNewPregnancy();
+                this.initNewPregnancyState();
 
-           
-            this.pregnanciesstates.push(Statenew);
+            }.bind(this));
 
-           // this.newPregnancy.States = [{ Date: startDate, State: pregnancyStates[0] }];
-           // this.horse.Meta.Pregnancies.push(this.newPregnancy);
-
-            this.pregnancies.push(this.newPregnancy);
-            this.initNewPregnancy();
-            this.initNewPregnancyState();
+          
+          
         }
 
         function _removePregnancy(pregnancy) {
@@ -677,16 +755,43 @@
 
 
         function _submit() {
+           
+            if (this.horse.BirthDate)
+                this.horse.BirthDate.setHours(this.horse.BirthDate.getHours() + 3);
 
-            if ($scope.horseForm.$valid) {
-                horsesService.updateHorse(this.horse).then(function (horse) {
-                    var origId = this.horse.Id;
-                    this.horse = horse;
-                    this.createNotifications();
-                    this.initHorse();
-                    alert('נשמר בהצלחה');
-                }.bind(this));
-            }
+            if (this.horse.ArrivedDate)
+                this.horse.ArrivedDate.setHours(this.horse.ArrivedDate.getHours() + 3);
+
+            if (this.horse.OutDate)
+                this.horse.OutDate.setHours(this.horse.OutDate.getHours() + 3);
+
+            horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
+                this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations).then(function (horse) {
+                //var origId = this.horse.Id;
+                //this.horse = horse;
+                 this.createNotifications();
+                //this.initHorse();
+                alert('נשמר בהצלחה');
+
+            }.bind(this));
+
+
+
+
+
+
+
+
+
+            //if ($scope.horseForm.$valid) {
+            //    horsesService.updateHorse(this.horse).then(function (horse) {
+            //        var origId = this.horse.Id;
+            //        this.horse = horse;
+            //        this.createNotifications();
+            //        this.initHorse();
+            //        alert('נשמר בהצלחה');
+            //    }.bind(this));
+            //}
         }
 
         function _delete() {

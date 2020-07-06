@@ -26,7 +26,7 @@ namespace FarmsApi.Services
 	<InsuredLastName>בדיר</InsuredLastName>
 	<SectionCode>10022</SectionCode>
 	<CareCode>6</CareCode>
-	<CareDate>23062020</CareDate>
+	<CareDate>25062020</CareDate>
 	<DoctorID>85518</DoctorID>
 	<OnlineServiceType>0</OnlineServiceType>
 </XMLInput>";
