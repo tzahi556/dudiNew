@@ -543,7 +543,7 @@
                             </tr>
                         </thead>
                         <tbody ng-click="showDiv = !showDiv" ng-repeat="pregnancy in $ctrl.pregnancies track by $index">
-                            <tr ng-class="$ctrl.pregnancyStatus(pregnancy)" >
+                            <tr style="cursor:pointer" ng-class="$ctrl.pregnancyStatus(pregnancy)" >
                                 <td>{{$ctrl.getStatesByFind(pregnancy.Id,0).Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{$ctrl.getStatesByFind(pregnancy.Id,-1).Date | ildate: 'DD/MM/YYYY'}}: {{$ctrl.getStatesByFind(pregnancy.Id,-1).name}}</td>
                                 <td>{{pregnancy.Father}}</td>

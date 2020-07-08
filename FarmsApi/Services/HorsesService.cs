@@ -13,453 +13,347 @@ namespace FarmsApi.Services
     {
         public static void UpdateMetaHorsses()
         {
-
-            using (var Context = new Context())
+            try
             {
-                // var Users = Context.Users.Where(x=>x.Id==-1).ToList();
-                var Horses = Context.Horses.ToList();
-                foreach (Horse Horsef in Horses)
+                using (var Context = new Context())
                 {
-
-                    try
+                    var Horses = Context.Horses.Where(x => x.Id == 1024).ToList();
+                    //var Horses = Context.Horses.ToList();
+                    foreach (Horse Horsef in Horses)
                     {
 
-                        // User Horsef = Context.Users.Where(x => x.Id == 50).FirstOrDefault();yyy
-
-                        var Meta = JObject.Parse(Horsef.Meta);
-
-                        #region User
-                        if (Meta["Active"].ToString() == "active")
+                        try
                         {
-                            Horsef.Active = "active";
 
-                        }
-                        else
-                        {
-                            Horsef.Active = "notActive";
-                        }
+                            // User Horsef = Context.Users.Where(x => x.Id == 50).FirstOrDefault();yyy
 
-                        if (Meta["Image"] != null)
-                        {
-                            Horsef.Image = Meta["Image"].ToString();
+                            var Meta = JObject.Parse(Horsef.Meta);
 
-                        }
-                        if (Meta["Gender"] != null)
-                        {
-                            Horsef.Gender = Meta["Gender"].ToString();
-
-                        }
-
-                        if (Meta["Ownage"] != null)
-                        {
-                            Horsef.Ownage = Meta["Ownage"].ToString();
-
-                        }
-                        if (Meta["BirthDate"] != null)
-                        {
-                            Horsef.BirthDate = CheckifExistDate(Meta["BirthDate"]);
-
-                        }
-
-                        if (Meta["PensionStartDate"] != null)
-                        {
-                            Horsef.PensionStartDate = CheckifExistDate(Meta["PensionStartDate"]);
-
-                        }
-
-
-
-                        if (Meta["Race"] != null)
-                        {
-                            Horsef.Race = Meta["Race"].ToString();
-
-                        }
-                        if (Meta["Owner"] != null)
-                        {
-                            Horsef.Owner = Meta["Owner"].ToString();
-
-                        }
-
-                        if (Meta["Father"] != null)
-                        {
-                            Horsef.Father = Meta["Father"].ToString();
-
-                        }
-                        if (Meta["Mother"] != null)
-                        {
-                            Horsef.Mother = Meta["Mother"].ToString();
-
-                        }
-
-                        if (Meta["Details"] != null)
-                        {
-                            Horsef.Details = Meta["Details"].ToString();
-
-                        }
-
-
-                        if (Meta["Food"] != null)
-                        {
-                            var Food = JObject.Parse(Meta["Food"].ToString());
-
-                            if (Food["Morning1"] != null)
-                            {
-                                Horsef.Morning1 = Food["Morning1"].ToString();
-                            }
-
-                            if (Food["Morning2"] != null)
-                            {
-                                Horsef.Morning2 = Food["Morning2"].ToString();
-                            }
-
-                            if (Food["Lunch1"] != null)
-                            {
-                                Horsef.Lunch1 = Food["Lunch1"].ToString();
-                            }
-
-                            if (Food["Lunch2"] != null)
-                            {
-                                Horsef.Lunch2 = Food["Lunch2"].ToString();
-                            }
-
-                            if (Food["Dinner1"] != null)
-                            {
-                                Horsef.Dinner1 = Food["Dinner1"].ToString();
-                            }
-
-                            if (Food["Dinner2"] != null)
-                            {
-                                Horsef.Dinner2 = Food["Dinner2"].ToString();
-                            }
-
-                        }
-
-
-
-
-
-
-
-
-                        Context.Entry(Horsef).State = System.Data.Entity.EntityState.Modified;
-
-
-                        #endregion
-
-                        //**************************************************************************
-                        if (Meta["Treatments"] != null)
-                        {
-                            foreach (var Item in Meta["Treatments"])
+                            #region User
+                            if (Meta["Active"] != null)
                             {
 
-                                HorseTreatments hs = new HorseTreatments();
-
-                                hs.HorseId = Horsef.Id;
-                                hs.Date = CheckifExistDate(Item["Date"]);
-                                hs.Name = Item["Details"].ToString();
-
-
-                                Context.HorseTreatments.Add(hs);
-                                // Context.Entry(pay).State = System.Data.Entity.EntityState.Added;
-                                //    Context.SaveChanges();
-
-                                // Item["resourceId"] = Horsef.Id;
-                            }
-                        }
-
-
-                        if (Meta["Vaccinations"] != null)
-                        {
-                            foreach (var Item in Meta["Vaccinations"])
-                            {
-
-                                HorseVaccinations hs = new HorseVaccinations();
-
-                                hs.HorseId = Horsef.Id;
-                                hs.Date = CheckifExistDate(Item["Date"]);
-                                hs.Type = Item["Type"].ToString();
-                                hs.Name = Item["Details"].ToString();
-
-
-                                Context.HorseVaccinations.Add(hs);
+                                Horsef.Active = Meta["Active"].ToString();
 
                             }
-                        }
-
-
-                        if (Meta["Shoeings"] != null)
-                        {
-                            foreach (var Item in Meta["Shoeings"])
+                            else
                             {
+                                Horsef.Active = "active";
+                            }
 
-                                HorseShoeings hs = new HorseShoeings();
-
-                                hs.HorseId = Horsef.Id;
-                                hs.Date = CheckifExistDate(Item["Date"]);
-                                hs.ShoerName = Item["ShoerName"].ToString();
-                                hs.Name = Item["Details"].ToString();
-                                hs.IsPaid = CheckifExistBool(Item["Paid"].ToString());
-
-                                Context.HorseShoeings.Add(hs);
+                            if (Meta["Image"] != null)
+                            {
+                                Horsef.Image = Meta["Image"].ToString();
 
                             }
-                        }
-
-                        if (Meta["Tilufings"] != null)
-                        {
-                            foreach (var Item in Meta["Tilufings"])
+                            if (Meta["Gender"] != null)
                             {
-
-
-
-                                HorseTilufings hs = new HorseTilufings();
-
-                                hs.HorseId = Horsef.Id;
-                                hs.Date = CheckifExistDate(Item["Date"]);
-                                hs.ShoerName = Item["ShoerName"].ToString();
-                                hs.Name = Item["Details"].ToString();
-                                hs.IsPaid = CheckifExistBool(Item["Paid"].ToString());
-
-                                Context.HorseTilufings.Add(hs);
-
-
+                                Horsef.Gender = Meta["Gender"].ToString();
 
                             }
-                        }
 
-                        if (Meta["Pregnancies"] != null)
-                        {
-                            foreach (var Item in Meta["Pregnancies"])
+                            if (Meta["Ownage"] != null)
                             {
+                                Horsef.Ownage = Meta["Ownage"].ToString();
+
+                            }
+                            if (Meta["BirthDate"] != null)
+                            {
+                                Horsef.BirthDate = CheckifExistDate(Meta["BirthDate"]);
+
+                            }
+
+                            if (Meta["PensionStartDate"] != null)
+                            {
+                                Horsef.PensionStartDate = CheckifExistDate(Meta["PensionStartDate"]);
+
+                            }
 
 
 
-                                HorsePregnancies hs = new HorsePregnancies();
+                            if (Meta["Race"] != null)
+                            {
+                                Horsef.Race = Meta["Race"].ToString();
 
-                                hs.HorseId = Horsef.Id;
-                                hs.Date = CheckifExistDate(Item["Date"]);
-                                hs.Father = CheckifExistStr(Item["Father"]);
-                                hs.Comments = CheckifExistStr(Item["Details"]);
-                                hs.IsSurrogate = CheckifExistBool(Item["IsSurrogate"]);
-                                hs.Finished = CheckifExistBool(Item["Finished"]);
+                            }
+                            if (Meta["Owner"] != null)
+                            {
+                                Horsef.Owner = Meta["Owner"].ToString();
 
-                                if (Item["Surrogate"] != null)
+                            }
+
+                            if (Meta["Father"] != null)
+                            {
+                                Horsef.Father = Meta["Father"].ToString();
+
+                            }
+                            if (Meta["Mother"] != null)
+                            {
+                                Horsef.Mother = Meta["Mother"].ToString();
+
+                            }
+
+                            if (Meta["Details"] != null)
+                            {
+                                Horsef.Details = Meta["Details"].ToString();
+
+                            }
+
+
+                            if (Meta["Food"] != null)
+                            {
+                                var Food = JObject.Parse(Meta["Food"].ToString());
+
+                                if (Food["Morning1"] != null)
                                 {
-                                    var Surrogate = JObject.Parse(Item["Surrogate"].ToString());
-                                    hs.SurrogateId = CheckifExistInt(Surrogate["Id"]);
-                                    hs.SurrogateName = Surrogate["Name"].ToString();
+                                    Horsef.Morning1 = Food["Morning1"].ToString();
+                                }
+
+                                if (Food["Morning2"] != null)
+                                {
+                                    Horsef.Morning2 = Food["Morning2"].ToString();
+                                }
+
+                                if (Food["Lunch1"] != null)
+                                {
+                                    Horsef.Lunch1 = Food["Lunch1"].ToString();
+                                }
+
+                                if (Food["Lunch2"] != null)
+                                {
+                                    Horsef.Lunch2 = Food["Lunch2"].ToString();
+                                }
+
+                                if (Food["Dinner1"] != null)
+                                {
+                                    Horsef.Dinner1 = Food["Dinner1"].ToString();
+                                }
+
+                                if (Food["Dinner2"] != null)
+                                {
+                                    Horsef.Dinner2 = Food["Dinner2"].ToString();
+                                }
+
+                            }
+
+
+                            if (Meta["Files"] != null)
+                            {
+
+                                string NewsFiles = Meta["Files"].ToString().Replace("[", "").Replace("]", "");
+
+                                string[] files = NewsFiles.Split(',');
+
+                                foreach (string item in files)
+                                {
+                                    HorseFiles hf = new HorseFiles();
+                                    hf.FileName = item;
+                                    hf.HorseId = Horsef.Id;
+                                    Context.HorseFiles.Add(hf);
 
                                 }
 
-                                Context.HorsePregnancies.Add(hs);
-                                Context.SaveChanges();
 
-                                if (Item["States"] != null)
+
+                            }
+
+
+
+
+                            Context.Entry(Horsef).State = System.Data.Entity.EntityState.Modified;
+
+
+                            #endregion
+
+                            //**************************************************************************
+                            if (Meta["Treatments"] != null)
+                            {
+                                foreach (var Item in Meta["Treatments"])
                                 {
 
-                                    //  var States = JObject.Parse(Item["States"].ToString());
-                                    foreach (var st in Item["States"])
+                                    HorseTreatments hs = new HorseTreatments();
+
+                                    hs.HorseId = Horsef.Id;
+                                    hs.Date = CheckifExistDate(Item["Date"]);
+                                    hs.Name = CheckifExistStr(Item["Details"]);
+
+
+                                    Context.HorseTreatments.Add(hs);
+                                    // Context.Entry(pay).State = System.Data.Entity.EntityState.Added;
+                                    //    Context.SaveChanges();
+
+                                    // Item["resourceId"] = Horsef.Id;
+                                }
+                            }
+
+
+                            if (Meta["Vaccinations"] != null)
+                            {
+                                foreach (var Item in Meta["Vaccinations"])
+                                {
+
+                                    HorseVaccinations hs = new HorseVaccinations();
+
+                                    hs.HorseId = Horsef.Id;
+                                    hs.Date = CheckifExistDate(Item["Date"]);
+                                    hs.Type = Item["Type"].ToString();
+                                    hs.Name = CheckifExistStr(Item["Details"]);
+
+
+                                    Context.HorseVaccinations.Add(hs);
+
+                                }
+                            }
+
+
+                            if (Meta["Shoeings"] != null)
+                            {
+                                foreach (var Item in Meta["Shoeings"])
+                                {
+
+                                    HorseShoeings hs = new HorseShoeings();
+
+                                    hs.HorseId = Horsef.Id;
+                                    hs.Date = CheckifExistDate(Item["Date"]);
+                                    hs.ShoerName = CheckifExistStr(Item["ShoerName"]);
+                                    hs.Name = CheckifExistStr(Item["Details"]);
+                                    hs.IsPaid = CheckifExistBool(Item["Paid"]);
+
+                                    Context.HorseShoeings.Add(hs);
+
+                                }
+                            }
+
+                            if (Meta["Tilufings"] != null)
+                            {
+                                foreach (var Item in Meta["Tilufings"])
+                                {
+
+
+
+                                    HorseTilufings hs = new HorseTilufings();
+
+                                    hs.HorseId = Horsef.Id;
+                                    hs.Date = CheckifExistDate(Item["Date"]);
+                                    hs.ShoerName = CheckifExistStr(Item["ShoerName"]);
+                                    hs.Name = CheckifExistStr(Item["Details"]);
+                                    hs.IsPaid = CheckifExistBool(Item["Paid"]);
+
+                                    Context.HorseTilufings.Add(hs);
+
+
+
+                                }
+                            }
+
+                            if (Meta["Pregnancies"] != null)
+                            {
+                                foreach (var Item in Meta["Pregnancies"])
+                                {
+
+
+
+                                    HorsePregnancies hs = new HorsePregnancies();
+
+                                    hs.HorseId = Horsef.Id;
+                                    hs.Date = CheckifExistDate(Item["Date"]);
+                                    hs.Father = CheckifExistStr(Item["Father"]);
+                                    hs.Comments = CheckifExistStr(Item["Details"]);
+                                    hs.IsSurrogate = CheckifExistBool(Item["IsSurrogate"]);
+                                    hs.Finished = CheckifExistBool(Item["Finished"]);
+
+                                    if (Item["Surrogate"] != null)
+                                    {
+                                        var Surrogate = JObject.Parse(Item["Surrogate"].ToString());
+                                        hs.SurrogateId = CheckifExistInt(Surrogate["Id"]);
+                                        hs.SurrogateName = CheckifExistStr(Surrogate["Name"]);
+
+                                    }
+
+
+
+                                    if (Item["Mother"] != null)
+                                    {
+                                        var Mother = JObject.Parse(Item["Mother"].ToString());
+                                        hs.MotherId = CheckifExistInt(Mother["Id"]);
+                                        hs.Mother = CheckifExistStr(Mother["Name"]);
+
+                                    }
+
+                                    Context.HorsePregnancies.Add(hs);
+                                    Context.SaveChanges();
+
+                                    if (Item["States"] != null)
                                     {
 
+                                        //  var States = JObject.Parse(Item["States"].ToString());
+                                        foreach (var st in Item["States"])
+                                        {
 
-                                        var State = JObject.Parse(st["State"].ToString());
 
-                                        HorsePregnanciesStates hss = new HorsePregnanciesStates();
-                                        hss.Date = CheckifExistDate(Item["Date"]);
-                                        hss.HorseId = Horsef.Id;
-                                        hss.HorsePregnanciesId = hs.Id;
-                                        hss.StateId = State["id"].ToString();
-                                        hss.name = State["name"].ToString();
-                                        hss.day = State["day"].ToString();
+                                            var State = JObject.Parse(st["State"].ToString());
 
-                                        Context.HorsePregnanciesStates.Add(hss);
+                                            HorsePregnanciesStates hss = new HorsePregnanciesStates();
+                                            hss.Date = CheckifExistDate(Item["Date"]);
+                                            hss.HorseId = Horsef.Id;
+                                            hss.HorsePregnanciesId = hs.Id;
+                                            hss.StateId = State["id"].ToString();
+                                            hss.name = CheckifExistStr(State["name"]);
+                                            hss.day = CheckifExistStr(State["day"]);
+
+                                            Context.HorsePregnanciesStates.Add(hss);
+
+                                        }
 
                                     }
 
                                 }
-
                             }
+
+
+
+
+
+                            Context.SaveChanges();
                         }
-
-
-
-
-                        #region Temp
-                        //#region Payments
-                        //if (Meta["Payments"] != null)
-                        //{
-                        //    foreach (var Item in Meta["Payments"])
-                        //    {
-
-                        //        Payments pay = new Payments();
-
-                        //        pay.UserId = Horsef.Id;
-                        //        pay.Date = CheckifExistDate(Item["Date"]);
-                        //        pay.InvoicePdf = CheckifExistStr(Item["InvoicePdf"]);
-                        //        pay.InvoiceNum = CheckifExistStr(Item["InvoiceNum"]);
-                        //        pay.InvoiceDetails = CheckifExistStr(Item["InvoiceDetails"]);
-
-                        //        pay.canceled = CheckifExistStr(Item["canceled"]);
-                        //        pay.Price = CheckifExistDouble(Item["Price"]);
-                        //        pay.InvoiceSum = CheckifExistDouble(Item["InvoiceSum"]);
-
-                        //        pay.payment_type = CheckifExistStr(Item["payment_type"]);
-                        //        pay.lessons = CheckifExistInt(Item["lessons"]);
-                        //        pay.month = CheckifExistDate(Item["month"]);
-                        //        pay.untilmonth = CheckifExistDate(Item["untilmonth"]);
-
-
-                        //        Context.Payments.Add(pay);
-                        //        // Context.Entry(pay).State = System.Data.Entity.EntityState.Added;
-                        //        //    Context.SaveChanges();
-
-                        //        // Item["resourceId"] = Horsef.Id;
-                        //    }
-                        //}
-
-                        //#endregion
-
-                        //#region Expenses
-                        //if (Meta["Expenses"] != null)
-                        //{
-                        //    foreach (var Item in Meta["Expenses"])
-                        //    {
-                        //        Expenses Exp = new Expenses();
-                        //        Exp.UserId = Horsef.Id;
-                        //        Exp.Date = CheckifExistDate(Item["Date"]);
-                        //        Exp.Price = CheckifExistDouble(Item["Price"]);
-                        //        Exp.Details = CheckifExistStr(Item["Details"]);
-                        //        Exp.Paid = CheckifExistStr(Item["Paid"]);
-
-                        //        Context.Expenses.Add(Exp);
-                        //        //   Context.SaveChanges();
-                        //        // Item["resourceId"] = Horsef.Id;
-                        //    }
-                        //}
-
-                        //#endregion
-
-                        //#region AvailableHours
-                        //if (Meta["AvailableHours"] != null)
-                        //{
-                        //    foreach (var Item in Meta["AvailableHours"])
-                        //    {
-                        //        AvailableHours Exp = new AvailableHours();
-                        //        Exp.UserId = Horsef.Id;
-                        //        Exp.resourceId = CheckifExistInt(Item["resourceId"]);
-                        //        Exp.start = CheckifExistStr(Item["start"]);
-                        //        Exp.end = CheckifExistStr(Item["end"]);
-
-                        //        string res = (Item["dow"].ToString()).Replace("[", "").Replace("]", "").Replace("\"", "").Trim();
-
-                        //        //  string res = Regex.Replace(Item["dow"].ToString(), "\"[^\"]*\"", string.Empty);
-                        //        Exp.dow = res;//CheckifExistStr(CheckifExistInt(res));
-
-                        //        Context.AvailableHours.Add(Exp);
-                        //        //   Context.SaveChanges();
-                        //        // Item["resourceId"] = Horsef.Id;
-                        //    }
-                        //}
-
-                        //#endregion
-
-                        //#region Commitments
-                        //if (Meta["Commitments"] != null)
-                        //{
-                        //    foreach (var Item in Meta["Commitments"])
-                        //    {
-                        //        Commitments Com = new Commitments();
-                        //        Com.UserId = Horsef.Id;
-                        //        Com.Date = (CheckifExistDate(Item["Date"]) == null) ? new DateTime(2016, 01, 01) : CheckifExistDate(Item["Date"]);
-                        //        Com.Price = CheckifExistStr(Item["Price"]);
-
-                        //        Com.HMO = CheckifExistStr(Item["HMO"]);
-                        //        Com.Qty = CheckifExistDouble(Item["Qty"]);
-                        //        Com.Number = CheckifExistStr(Item["Number"]);
-                        //        Com.canceled = CheckifExistStr(Item["canceled"]);
-                        //        Com.InvoiceSum = CheckifExistStr(Item["InvoiceSum"]);
-
-                        //        Context.Commitments.Add(Com);
-                        //        //  Context.SaveChanges();
-                        //        Item["resourceId"] = Horsef.Id;
-                        //    }
-                        //}
-
-                        //#endregion
-
-                        //#region Horses
-                        //if (Meta["Horses"] != null)
-                        //{
-                        //    foreach (var Item in Meta["Horses"])
-                        //    {
-                        //        UserHorses Uh = new UserHorses();
-                        //        Uh.UserId = Horsef.Id;
-                        //        Uh.Name = CheckifExistStr(Item["Name"]);
-                        //        Uh.Owner = CheckifExistBool(Item["Owner"]);
-
-                        //        Uh.PensionPrice = CheckifExistInt(Item["PensionPrice"]);
-                        //        Uh.TrainingCost = CheckifExistInt(Item["TrainingCost"]);
-
-
-                        //        Context.UserHorses.Add(Uh);
-                        //        //         Context.SaveChanges();
-                        //        // Item["resourceId"] = Horsef.Id;
-                        //    }
-                        //}
-
-                        //#endregion
-
-                        //#region Files
-                        //if (Meta["Files"] != null)
-                        //{
-                        //    foreach (var Item in Meta["Files"])
-                        //    {
-                        //        Files Fi = new Files();
-                        //        Fi.UserId = Horsef.Id;
-                        //        Fi.Link = CheckifExistStr(Item);
-
-                        //        Context.Files.Add(Fi);
-                        //        //    Context.SaveChanges();
-                        //        // Item["resourceId"] = Horsef.Id;
-                        //    }
-                        //}
-
-                        //#endregion
-                        #endregion
-                        Context.SaveChanges();
-                    }
-                    catch (DbEntityValidationException e)
-                    {
-                        foreach (var eve in e.EntityValidationErrors)
+                        catch (DbEntityValidationException e)
                         {
-                            //Debug.WriteLine(@"Entity of type ""{0}"" in state ""{1}"" 
-                            // has the following validation errors:",
-                            //eve.Entry.Entity.GetType().Name,
-                            // eve.Entry.State);
-                            foreach (var ve in eve.ValidationErrors)
+                            foreach (var eve in e.EntityValidationErrors)
                             {
-                                // Debug.WriteLine(@"- Property: ""{0}"", Error: ""{1}""",
-                                //  ve.PropertyName, ve.ErrorMessage);
+                                //Debug.WriteLine(@"Entity of type ""{0}"" in state ""{1}"" 
+                                // has the following validation errors:",
+                                //eve.Entry.Entity.GetType().Name,
+                                // eve.Entry.State);
+                                foreach (var ve in eve.ValidationErrors)
+                                {
+                                    // Debug.WriteLine(@"- Property: ""{0}"", Error: ""{1}""",
+                                    //  ve.PropertyName, ve.ErrorMessage);
+                                }
                             }
+                            throw;
                         }
-                        throw;
-                    }
-                    catch (DbUpdateException e)
-                    {
-                        //Add your code to inspect the inner exception and/or
-                        //e.Entries here.
-                        //Or just use the debugger.
-                        //Added this catch (after the comments below) to make it more obvious 
-                        //how this code might help this specific problem
-                    }
-                    catch (Exception e)
-                    {
+                        catch (DbUpdateException e)
+                        {
+                            //Add your code to inspect the inner exception and/or
+                            //e.Entries here.
+                            //Or just use the debugger.
+                            //Added this catch (after the comments below) to make it more obvious 
+                            //how this code might help this specific problem
+                        }
+                        catch (Exception e)
+                        {
 
+                        }
                     }
+
                 }
+            }
+            catch (Exception ex)
+            {
+
+
 
             }
-
 
         }
 
@@ -1094,7 +988,7 @@ namespace FarmsApi.Services
                         {
                             int? ExpensesId = AddToExpensesTable(item.Cost, 0, item.HorseId, f.Name, item.name, item.Date);
                             item.ExpensesId = ExpensesId;
-                           
+
                         }
 
 
@@ -1117,7 +1011,7 @@ namespace FarmsApi.Services
                     }
 
 
-                  
+
 
 
 
@@ -1335,7 +1229,7 @@ namespace FarmsApi.Services
                 return Objects;
 
             }
-           
+
         }
         public static List<HorsePregnancies> GetHorsePregnancies(int Id)
         {
