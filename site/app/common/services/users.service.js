@@ -209,7 +209,7 @@
 
         function _deleteUser(id) {
             var deferred = $q.defer();
-            debugger
+           
 
             $http.get(sharedValues.apiUrl + 'users/deleteUser/' + id).then(function (res) {
                 deferred.resolve();

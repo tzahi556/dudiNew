@@ -131,22 +131,18 @@
         function _getHorse(id, type) {
 
             var deferred = $q.defer();
-            if (id == 0) {
-                $http.get(sharedValues.apiUrl + 'horses/newhorse/').then(function (res) {
-                    deferred.resolve(res.data);
-                });
-            }
-            else {
+            //if (id == 0) {
+            //    $http.get(sharedValues.apiUrl + 'horses/newhorse/').then(function (res) {
+            //        deferred.resolve(res.data);
+            //    });
+            //}
+            //else {
                 $http.get(sharedValues.apiUrl + 'horses/gethorse/' + id + '/' + type).then(function (res) {
                     var horse = res.data;
 
-                    //if (type == 1) {
-                    //    horse.Meta = angular.fromJson(horse.Meta);
-                    //    horse.Meta.BirthDate = horse.Meta.BirthDate != '' ? new Date(horse.Meta.BirthDate) : null;
-                    //}
                     deferred.resolve(horse);
                 });
-            }
+           // }
             return deferred.promise;
         }
 

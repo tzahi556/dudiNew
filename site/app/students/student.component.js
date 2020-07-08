@@ -495,7 +495,7 @@
             this.countAllCredits();
             this.monthlyReport();
 
-
+            
 
             this.user.BirthDate = moment(this.user.BirthDate).startOf('day').toDate();
             this.user.DateForMonthlyPay = moment(this.user.DateForMonthlyPay).startOf('day').toDate();

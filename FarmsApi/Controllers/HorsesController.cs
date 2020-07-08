@@ -56,6 +56,15 @@ namespace FarmsApi.Services
             return Ok(HorsesService.GetHorses(includeDeleted));
         }
 
+
+        [Authorize]
+        [Route("newHorse")]
+        [HttpGet]
+        public IHttpActionResult NewHorse()
+        {
+            return Ok(new Horse());
+        }
+
         [Authorize]
         [Route("getHorse/{id}/{type}")]
         [HttpGet]
@@ -82,20 +91,21 @@ namespace FarmsApi.Services
             if (type == 11)
                 return Ok(HorsesService.GetHorseInseminations(id));
             
-
-
+            if(id==0)
+                return Ok(new Horse());
+          
             return Ok(HorsesService.GetHorse(id));
 
 
         }
 
-        [Authorize]
-        [Route("newHorse")]
-        [HttpGet]
-        public IHttpActionResult NewHorse()
-        {
-            return Ok(new Horse());
-        }
+        //[Authorize]
+        //[Route("newHorse")]
+        //[HttpGet]
+        //public IHttpActionResult NewHorse()
+        //{
+        //    return Ok(new Horse());
+        //}
 
         [Authorize]
         [Route("deleteHorse/{id}")]

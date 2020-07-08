@@ -18,7 +18,7 @@
                 </td>
             </tr>
             <tr ng-repeat="horse in $ctrl.horses | filter: $ctrl.filter" ui-sref="horse({id:horse.Id})">
-                <td>{{horse.Name}} <span ng-if="horse.Meta.Active == 'notActive'">(לא פעיל)</span></td>
+                <td>{{horse.Name}} <span ng-if="horse.Active == 'notActive'" style="font-weight:bold;color:red">(לא פעיל)</span></td>
             </tr>
         </tbody>
     </table>

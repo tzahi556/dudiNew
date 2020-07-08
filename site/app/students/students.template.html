@@ -101,7 +101,7 @@
                         </td>
                     </tr>
                     <tr ng-if="user.Style == 'horseHolder'" ng-repeat="user in $ctrl.users | filter:$ctrl.filter | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
-                        <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}} <span ng-if="user.Active == 'notActive'">(לא פעיל)</span></td>
+                        <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}} <span ng-if="user.Active == 'notActive'" style="font-weight:bold;color:red">(לא פעיל)</span></td>
                         <td>{{user.Email}}</td>
                     </tr>
                 </tbody>

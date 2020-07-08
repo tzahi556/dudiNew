@@ -1,4 +1,27 @@
-﻿<div class="row">
+﻿<style>
+    .leda {
+        background: #ff66cc !important;
+    }
+
+
+    .ledaFaild {
+        background: #ff3300 !important;
+    }
+
+    .haliva {
+        background: #ffff00 !important;
+    }
+
+
+   
+
+</style>
+
+
+
+
+
+<div class="row">
     <div class="col-md-4">
         <!--horse data form-->
         <form name="horseForm" ng-submit="$ctrl.submit()" novalidate>
@@ -519,8 +542,8 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr ng-class="$ctrl.pregnancyStatus(pregnancy)" ng-repeat="pregnancy in $ctrl.pregnancies track by $index">
+                        <tbody ng-click="showDiv = !showDiv" ng-repeat="pregnancy in $ctrl.pregnancies track by $index">
+                            <tr ng-class="$ctrl.pregnancyStatus(pregnancy)" >
                                 <td>{{$ctrl.getStatesByFind(pregnancy.Id,0).Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{$ctrl.getStatesByFind(pregnancy.Id,-1).Date | ildate: 'DD/MM/YYYY'}}: {{$ctrl.getStatesByFind(pregnancy.Id,-1).name}}</td>
                                 <td>{{pregnancy.Father}}</td>
@@ -531,6 +554,41 @@
                                 <td><input type="text" ng-model="pregnancy.Comments"></td>
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removePregnancy(pregnancy)">הסר</button></td>
                             </tr>
+                            <tr ng-show="showDiv">
+                                <td colspan="6" style="background:#fff778">
+
+
+                                    <div class="panel panel-default" >
+                                        <div class="panel-heading">
+                                            הסטורית שלבים הריון
+                                        </div>
+
+
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>תאריך</th>
+                                                    <th>שלב</th>
+                                                    <th>מחיר</th>
+                                                    <th>שולם</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="state in $ctrl.getCurrentPreg(pregnancy.Id) track by $index">
+                                                    <td>{{state.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                                    <td>{{state.name}}</td>
+                                                    <td>{{state.Cost}} </td>
+                                                    <td> <i class="fa fa-check-circle-o green" ng-show="state.IsPaid=='1'" aria-hidden="true"></i></td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        </div>
+                                </td>
+                            </tr>
+
+
                         </tbody>
                     </table>
                     <div class="panel-footer">
@@ -559,12 +617,17 @@
                             <tr>
                                 <th>תאריך</th>
                                 <th>שלב</th>
+                                <th>מחיר</th>
+                                <th>שולם</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="state in $ctrl.getCurrentPreg() track by $index">
                                 <td>{{state.Date | ildate: 'DD/MM/YYYY'}}</td>
-                                <td>{{state.name}}</td>
+                                <td width="50%">{{state.name}}</td>
+                                <td width="20%"><input type="number" class="form-control" ng-model="state.Cost" /></td>
+                                <td> <i class="fa fa-check-circle-o green" ng-show="state.IsPaid=='1'" aria-hidden="true"></i></td>
+
                             </tr>
                         </tbody>
                     </table>
@@ -576,6 +639,11 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" ng-model="$ctrl.newPregnancyState.State.name" placeholder="שלב" disabled required />
                             </div>
+                            <!--<div class="form-group">
+                                <input type="number" class="form-control" ng-model="$ctrl.newPregnancyState.State.Cost" placeholder="מחיר"   />
+                            </div>-->
+
+
                             <div class="form-group">
                                 <select class="form-control" ng-if="$ctrl.newPregnancyState.State.id == 'surrogatePregnancy'" ng-model="$ctrl.pregnancies[$ctrl.pregnancies.length-1].Surrogate"
                                         ng-options="{Id:horse.Id,Name:horse.Name} as horse.Name for horse in $ctrl.horses | surrogateHorse: $ctrl.horse"
@@ -609,11 +677,15 @@
                                 <th>בעלים</th>
                                 <th>תאריך קליטה</th>
                                 <th>צפי משוער לידה</th>
+                                <th>מחיר</th>
+                                <th>שולם</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="{{(insemination.HalivaDate)?'success':''}}" ng-repeat="insemination in $ctrl.inseminations track by $index">
+
+                            <!--{{(insemination.HalivaDate)?'success':''}}-->
+                            <tr  ng-class="$ctrl.getClassForinsemination(insemination)" ng-repeat="insemination in $ctrl.inseminations track by $index">
                                 <td><span ng-if="insemination.HalivaDate">{{insemination.HalivaDate | ildate: 'DD/MM/YYYY'}}</span></td>
                                 <td><span ng-if="insemination.InseminationDate">{{insemination.InseminationDate | ildate: 'DD/MM/YYYY'}}</span></td>
 
@@ -624,6 +696,8 @@
                                 <td><span ng-if="insemination.HerionDate">{{insemination.HerionDate | ildate: 'DD/MM/YYYY'}}</span></td>
                                 <td><span ng-if="insemination.LedaDate">{{insemination.LedaDate | ildate: 'DD/MM/YYYY'}}</span></td>
 
+                                <td>{{insemination.Cost}}</td>
+                                <td> <i class="fa fa-check-circle-o green" ng-show="insemination.IsPaid=='1'" aria-hidden="true"></i></td>
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeInsemination(insemination)">הסר</button></td>
                             </tr>
                         </tbody>
@@ -634,10 +708,7 @@
                                 <label>תאריך חליבה</label><br />
                                 <input type="date" class="form-control" ng-model="$ctrl.newInsemination.HalivaDate" placeholder="תאריך חליבה" />
                             </div>
-                            <!--<div class="form-group">
-                                <label>תאריך הזרעה</label><br />
-                                <input type="date" class="form-control" ng-model="$ctrl.newInsemination.InseminationDate" placeholder="תאריך הזרעה" />
-                            </div>-->
+
 
 
                             <div class="form-group">
@@ -646,8 +717,14 @@
                                     <option value="">בחר סוסה</option>
                                 </select>
                             </div>
-                           
-                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addInsemination()" ng-disabled="inserForm.$invalid">הוספת הרבעה</button>
+                            <div class="form-group">
+                                <label>מחיר </label><br />
+                                <input type="number" class="form-control" ng-model="$ctrl.newInsemination.Cost" placeholder="עלות כספית" />
+                            </div>
+
+
+
+                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addInsemination()" ng-disabled="inserForm.$invalid">הוספת הזרעה</button>
                         </form>
                     </div>
                 </div>

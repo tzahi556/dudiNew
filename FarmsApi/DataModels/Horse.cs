@@ -192,8 +192,15 @@ namespace FarmsApi.DataModels
         public string StateId { get; set; }
         public string name { get; set; }
         public string day { get; set; }
-     
 
+        [NotMapped]
+        public bool Finished { get; set; }
+
+        public double? Cost { get; set; }
+
+        public int? ExpensesId { get; set; }
+
+        public bool IsPaid { get; set; }
     }
 
     /// <summary>
@@ -210,6 +217,17 @@ namespace FarmsApi.DataModels
         public DateTime? HerionDate { get; set; }
         public DateTime? LedaDate { get; set; }
         public int? PregnanciesHorseId { get; set; }
+
+        public double? Cost { get; set; }
+
+        public int? ExpensesId { get; set; }
+
+        public int? StatusLeda { get; set; }// 0 התחלה 
+                                            //1 - לידה
+                                            //2 - הפסקת לידה
+
+        public int? PregnancId { get; set; }
+        
 
 
     }
@@ -236,8 +254,15 @@ namespace FarmsApi.DataModels
         public DateTime? LedaDate { get; set; }
 
         public int? PregnanciesHorseId { get; set; }
+        public int? StatusLeda { get; set; }
+        public bool IsPaid { get; set; }
+
+        public double? Cost { get; set; }
+
+        public int? PregnancId { get; set; }
 
 
+        
     }
 
 
