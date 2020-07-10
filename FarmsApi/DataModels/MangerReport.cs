@@ -55,10 +55,10 @@ namespace FarmsApi.DataModels
         public DateTime? OnlyDate { get; set; }
         public int? Diff { get; set; }
         public string Name { get; set; }
-
         public string Style { get; set; }
-
         public string HMO { get; set; }
+        public int? Leave { get; set; }
+        public int? StudentId { get; set; }
     }
 
     public class HMOReport

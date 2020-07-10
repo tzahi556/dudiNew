@@ -25,6 +25,12 @@ namespace FarmsApi.DataModels
         public DateTime? BirthDate { get; set; }
 
         public DateTime? DateForMonthlyPay { get; set; }
+
+        public DateTime? LeaveDate { get; set; }
+
+        public bool IsLeave { get; set; }
+        
+
         public double? DateForMonthlySum { get; set; }
         public int? DateForMonthlySeq { get; set; }
         public int? DateForMonthlyPrev { get; set; }

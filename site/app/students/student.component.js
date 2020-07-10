@@ -129,6 +129,9 @@
         this.modalRemoveAdd = _modalRemoveAdd.bind(this);
         this.getHebrewdocType = _getHebrewdocType.bind(this);
         this.isKabalaToMas = _isKabalaToMas.bind(this);
+        this.setshowDivLeave = _setshowDivLeave.bind(this);
+
+        
 
 
         this.show4 = _show4.bind(this);
@@ -147,6 +150,15 @@
         this.RemoveLess;       // 1 מחיקה
 
         this.parentEventStudents;
+
+
+        
+
+        function _setshowDivLeave() {
+
+            if (this.user.IsLeave) return true;
+            else return false;
+        }
 
 
 
@@ -495,8 +507,12 @@
             this.countAllCredits();
             this.monthlyReport();
 
-            
-
+            if (!this.user.LeaveDate) {
+                this.user.LeaveDate = moment().toDate();
+            }
+            else {
+                this.user.LeaveDate = moment(this.user.LeaveDate).startOf('day').toDate();
+            }
             this.user.BirthDate = moment(this.user.BirthDate).startOf('day').toDate();
             this.user.DateForMonthlyPay = moment(this.user.DateForMonthlyPay).startOf('day').toDate();
 
@@ -2188,6 +2204,8 @@
 
                 if (this.user.BirthDate)
                     this.user.BirthDate.setHours(this.user.BirthDate.getHours() + 3);
+                if (this.user.LeaveDate)
+                    this.user.LeaveDate.setHours(this.user.LeaveDate.getHours() + 3);
 
                 if (this.user.DateForMonthlyPay) {
                     this.user.DateForMonthlyPay.setHours(this.user.DateForMonthlyPay.getHours() + 3);

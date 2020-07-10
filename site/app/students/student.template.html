@@ -3,8 +3,6 @@
     .selected {
         background: #03fcca;
     }
-
-
 </style>
 
 <div class="row">
@@ -16,7 +14,7 @@
         <form name="studentForm" ng-submit="$ctrl.submit()" novalidate>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    {{($ctrl.role=='farmAdminHorse')?'לקוח':'תלמיד '}}  
+                    {{($ctrl.role=='farmAdminHorse')?'לקוח':'תלמיד '}}
                     <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="studentForm.$invalid">שמור</button>
                 </div>
 
@@ -96,6 +94,22 @@
                             <option value="notActive">לא פעיל</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <label><input type="checkbox"  ng-model="$ctrl.user.IsLeave" />  עזב? </label>
+                            </div>
+                            <div class="col-md-8">
+
+                                <input type="date" ng-show="$ctrl.setshowDivLeave()" name="leaveDate" class="form-control" ng-model="$ctrl.user.LeaveDate" />
+
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>מספר לקוח</label>
                         <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
@@ -170,7 +184,7 @@
                             <option value="">בחר קופת חולים</option>
                         </select>
                     </div>
-                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>חבר נבחרת</label>
                         <select class="form-control" ng-model="$ctrl.user.TeamMember">
                             <option value="">בחר אפשרות</option>
@@ -182,7 +196,7 @@
                         <label>עלות</label>
                         <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
                     </div>
-                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>סוג תשלום</label>
                         <select class="form-control" ng-model="$ctrl.user.PayType" ng-change="$ctrl.changeLessonsData()" required>
                             <option value="">בחר אפשרות</option>
@@ -216,11 +230,11 @@
                     <table class="table">
                         <tbody>
 
-                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
+                            <tr ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>כמות שיעורים ששולמו סה״כ</td>
                                 <td>{{$ctrl.paidLessons}}</td>
                             </tr>
-                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
+                            <tr ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>כמות שיעורים ששולמו בשנה הנוכחית</td>
                                 <td>{{$ctrl.paidLessonsThisYear}}</td>
                             </tr>
@@ -234,27 +248,27 @@
                                 <td style="direction:ltr;text-align:right;">{{$ctrl.commitmentLessons}}</td>
                             </tr>
 
-                         
-                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
+
+                            <tr ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>יתרת שיעורים</td>
                                 <td style="direction:ltr;text-align:right;">{{$ctrl.creditPaidLessons}}</td>
                             </tr>
-                          
-                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
+
+                            <tr ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
                                 <td>כמות חודשים שולמו</td>
                                 <td>{{$ctrl.paidMonths}}</td>
                             </tr>
-                            <tr  ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
+                            <tr ng-if="$ctrl.role!='farmAdminHorse'" style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
                                 <td>יתרת חודשים</td>
                                 <td><span style="display:inline-block;direction:ltr;text-align:right;"> {{$ctrl.creditPaidMonth}}</span></td>
                             </tr>
-                          
+
                             <tr>
                                 <td>סה"כ מצב חשבון</td>
                                 <td>
                                     <span style="display:inline-block;direction:ltr;text-align:right;" id="dvAccountStatus">{{$ctrl.totalExpensesNoShulam*-1 + $ctrl.unpaidLessons + $ctrl.monthlyBalance}}</span>                                    ש"ח
 
-                                    <button  class="btn btn-success btn-xs" style="float:left" ng-click="showDiv = !showDiv">פירוט  </button>
+                                    <button class="btn btn-success btn-xs" style="float:left" ng-click="showDiv = !showDiv">פירוט  </button>
 
                                 </td>
 
@@ -418,11 +432,11 @@
                         </thead>
                         <tbody>
                             <!--<tr ng-repeat="payment in $ctrl.payments | orderBy: 'Date':true ">שיניתי -->
-                            <tr  ng-repeat="payment in $ctrl.payments | orderByDateDesc track by $index "  ng-class="{'set-status':$ctrl.setStatusZikuy(payment.doc_type)}">
+                            <tr ng-repeat="payment in $ctrl.payments | orderByDateDesc track by $index " ng-class="{'set-status':$ctrl.setStatusZikuy(payment.doc_type)}">
 
                                 <td><input ng-if="$ctrl.setCheckboxForClose(payment)" type="checkbox" ng-click="" ng-model="payment.SelectedForInvoiceTemp" /></td>
-                              
-                            
+
+
                                 <td>{{payment.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{$ctrl.getHebrewdocType(payment.doc_type)}}</td>
 
@@ -558,7 +572,7 @@
 
 
                             <div class="form-group" ng-if="$ctrl.farm.Meta.farmTags.length>0">
-                                <select class="form-control" style="background:yellow" ng-options="tag.tag_id as tag.tag_name for tag in $ctrl.farm.Meta.farmTags" ng-model="$ctrl.tag_id" >
+                                <select class="form-control" style="background:yellow" ng-options="tag.tag_id as tag.tag_name for tag in $ctrl.farm.Meta.farmTags" ng-model="$ctrl.tag_id">
                                     <option value="">בחר תגית</option>
                                 </select>
                             </div>
@@ -675,7 +689,7 @@
                 </div>
 
                 <!-- HMO commitments -->
-                <div class="panel panel-default"  ng-if="$ctrl.role!='farmAdminHorse'">
+                <div class="panel panel-default" ng-if="$ctrl.role!='farmAdminHorse'">
                     <div class="panel-heading">
                         התחייבות קופ"ח
                     </div>
@@ -766,7 +780,7 @@
                 </div>
 
             </uib-tab>
-            <uib-tab index="1" heading="שיעורים"  ng-if="$ctrl.role!='farmAdminHorse'">
+            <uib-tab index="1" heading="שיעורים" ng-if="$ctrl.role!='farmAdminHorse'">
 
                 <!-- lessons -->
                 <div class="panel panel-default">
@@ -777,14 +791,14 @@
 
 
                         <div style="float:left">
-     
+
                             <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.AddMultipleLessons()"> הוסיפי שיעורים </button>
                             <input style="width:70px;float:left;height:20px" type="number" ng-model="$ctrl.lessAdd">
                             <label style="float:left;margin-right:3px"> מספר שיעורים להוספה: </label>
 
                         </div>
                     </div>
-                    <table class="table" >
+                    <table class="table">
                         <thead>
                             <tr>
                                 <td colspan="2">
@@ -796,7 +810,6 @@
                                     <input type="date" ng-model="$ctrl.dateTo">
                                 </td>
                                 <td>
-
                                 </td>
                                 <td colspan="4">
                                     <br>
@@ -812,7 +825,7 @@
                                 <th>סוס</th>
                                 <th>התחלה</th>
                                 <!--<th ng-if="$ctrl.user.Meta.PayType == 'lessonCost'">מחיר שיעור</th>
-    <th ng-if="$ctrl.user.Meta.PayType != 'lessonCost'">עלות חודשית</th>-->
+                                <th ng-if="$ctrl.user.Meta.PayType != 'lessonCost'">עלות חודשית</th>-->
 
                                 <th>סטטוס</th>
                                 <th>הערות  {{showDetails ? ' מדריך ' : ' משרד '}}</th>
@@ -827,23 +840,23 @@
                                 <td>{{$index+1}}</td>
                                 <td>{{$ctrl.getInstructorName(lesson.resourceId)}}</td>
                                 <td>{{lesson.horsenames[0]}}</td>
-                                
+
                                 <td> {{$ctrl.getDayOfWeek(lesson.start)}}  {{lesson.start | ildate: 'DD/MM/YYYY HH:mm'}}</td>
 
 
                                 <!--<td>{{lesson.lessPrice}}</td>-->
-                               
-                            <td>
 
-                                <select ng-options="status.id as status.name for status in $ctrl.lessonStatuses" ng-init="statusIndex = $ctrl.getStatusIndex(lesson)"
-                                        ng-model="lesson.statuses[statusIndex].Status" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,false)">
-                                    <option value=""></option>
-                                </select>
+                                <td>
 
-                                <img ng-if="lesson.statuses[statusIndex].IsComplete>2  " src="../../images/replace.jpg" width="24px" />
+                                    <select ng-options="status.id as status.name for status in $ctrl.lessonStatuses" ng-init="statusIndex = $ctrl.getStatusIndex(lesson)"
+                                            ng-model="lesson.statuses[statusIndex].Status" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id,lesson.statuses[statusIndex].IsComplete,lesson,false)">
+                                        <option value=""></option>
+                                    </select>
 
-                              
-                            </td>
+                                    <img ng-if="lesson.statuses[statusIndex].IsComplete>2  " src="../../images/replace.jpg" width="24px" />
+
+
+                                </td>
                                 <td>
                                     <!--<input style="width:90%;" type="text" ng-model="lesson.statuses[statusIndex].Details" ng-change="$ctrl.changeLessonsStatus(lesson.statuses[statusIndex].Status,lesson.statuses[statusIndex].Details,lesson.statuses[statusIndex].StudentId,lesson.id)">-->
 
@@ -869,7 +882,7 @@
                 </div>
 
             </uib-tab>
-            <uib-tab index="2" heading="קבצים"  ng-if="$ctrl.role!='farmAdminHorse'">
+            <uib-tab index="2" heading="קבצים" ng-if="$ctrl.role!='farmAdminHorse'">
                 <!--student files-->
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -955,7 +968,7 @@
 
                                 </tr>
                                 <tr>
-                                  
+
                                     <td style="font-weight:bold;padding:5px; border-spacing:5px;">
                                         מוטורי:
 
@@ -1247,7 +1260,7 @@
 
 
 
-   
+
 
 
     <div class="modal fade" id="modalAddRemove" style="z-index:50000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

@@ -524,7 +524,9 @@
 
                         var LeumitOne = 0;
                         var LeumitTwoUp = 0;
-                     
+
+                        // מעדכן את המערך של השיעורים שיהיה מפולטר לפי מדריך של שיעור אחרון
+                        self.getInstructorCounter(0, res, "FilterByLastLesson");
 
                         for (var i = 0; i < res.length; i++) {
 
@@ -565,7 +567,9 @@
                                     + "</td><td>" + ObjOfAMount.western
                                     + "</td><td>" + ObjOfAMount.karting
                                     + "</td><td>" + ObjOfAMount.english
-                                    + "</tr>"
+
+                                    + "</td><td style='background:#a83242;'>" + self.getInstructorCounter(res[i].Id, res, "IsLeave")
+                                    + "</td></tr>"
                                     ;
                             }
 
@@ -952,9 +956,45 @@
 
         function _getInstructorCounter(Id, res, type) {
 
+           
+            if (type == "FilterByLastLesson") {
+
+                res = res.sort(function (a, b) {
+                    if (a.Start < b.Start)
+                        return 1;
+                    if (a.Start > b.Start)
+                        return -1;
+                    return 0;
+                });
+
+
+                var StudentExist = [];
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (StudentExist.indexOf(res[i].StudentId) == "-1" && res[i].Leave == 1) {
+
+                        StudentExist.push(res[i].StudentId);
+                        res[i].LastLesson = true;
+                    }
+
+
+                }
+
+
+                res = res.sort(function (a, b) {
+                    if (a.Id > b.Id)
+                        return 1;
+                    if (a.Id < b.Id)
+                        return -1;
+                    return 0;
+                });
 
 
 
+
+            }
+            
             // כאן id משמש של סוס ולא מדריך
             if (type == "HourNumberHorses") {
 
@@ -973,9 +1013,6 @@
 
                 return (counter == 0) ? 0 : (counter / 60);
             }
-
-
-
 
             if (type == "DayInMonth") {
                 var DateExist = [];
@@ -1109,6 +1146,26 @@
                 }
 
                 // if (counter > 0) alert(counter);
+                return (counter == 0) ? "" : counter.toString();
+
+            }
+
+
+            if (type == "IsLeave") {
+                
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (Id == res[i].Id && res[i].LastLesson) {
+                       
+                        
+                         counter++;
+                    }
+
+
+                }
+
+
                 return (counter == 0) ? "" : counter.toString();
 
             }
