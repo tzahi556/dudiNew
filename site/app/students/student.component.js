@@ -130,9 +130,9 @@
         this.getHebrewdocType = _getHebrewdocType.bind(this);
         this.isKabalaToMas = _isKabalaToMas.bind(this);
         this.setshowDivLeave = _setshowDivLeave.bind(this);
-
+        this.printLessons = _printLessons.bind(this);
+        this.getPrint = _getPrint.bind(this);
         
-
 
         this.show4 = _show4.bind(this);
         this.isDateMoreToday = _isDateMoreToday.bind(this);
@@ -154,12 +154,72 @@
 
         
 
+        function _printLessons() {
+            if (!this.dateFrom || !this.dateTo) { alert("חובה לבחור תאריכים לדו''ח"); return; }
+          
+           // var ddd = $filter('dateRangeFilter')(self.lessons, self.dateFrom, self.dateTo);
+
+            $.get('app/students/Report.html?sssd=' + new Date(), function (text) {
+                text = text.replace("@FromDate", moment(self.dateFrom).format('DD/MM/YYYY')).replace("@ToDate", moment(self.dateTo).format('DD/MM/YYYY'));
+                text = text.replace("@StudentName", self.user.FirstName + " " + self.user.LastName);
+
+                var TableLessons = "";
+
+
+                for (var i in self.lessons) {
+
+                  
+                    TableLessons += "<tr>"
+                        + "<td>" + i.toString()
+                        + "</td><td>" + self.getInstructorName(self.lessons[i].resourceId)
+                        + "</td><td>" + self.getPrint(self.lessons[i].horsenames[0])
+                        + "</td><td>" + self.getDayOfWeek(self.lessons[i].start) + " " + moment(self.lessons[i].start).format('DD/MM/YYYY')
+                        + "</td><td style='text-align:right'>" + self.getPrint(self.lessons[i].statuses[0].Status, 1) + " " + ((self.lessons[i].statuses[0].IsComplete > 2) ? " (משיעור השלמה)" : "")
+                        + "</td><td>" + self.getPrint(self.lessons[i].statuses[0].OfficeDetails)
+                        + "</td><td>" + self.getPrint(self.lessons[i].lessprice)
+                        + "</td><td>" + ((self.lessons[i].paid) ?' שולם ':"") + "</td></tr>";
+
+                   
+                }
+
+                text = text.replace("@TableLessons", TableLessons);
+
+                var blob = new Blob([text], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                });
+
+
+                saveAs(blob, " שיעורים " + new Date() + ".html");
+
+            });
+         
+        }
+
+       
+        function _getPrint(val,type) {
+            if (type == 1) {
+
+                for (var i in this.lessonStatuses) {
+                    if (this.lessonStatuses[i].id == val)
+                        return this.lessonStatuses[i].name;
+                }
+               
+
+
+
+            }
+            if (!val) return "";
+            else return val;
+        }
+
+
+
+
         function _setshowDivLeave() {
 
             if (this.user.IsLeave) return true;
             else return false;
         }
-
 
 
 
