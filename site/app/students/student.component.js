@@ -49,7 +49,8 @@
         };
     });
 
-    function StudentController(farmsService, usersService, lessonsService, filesService, sharedValues, $scope, $rootScope, $state, notificationsService, $http) {
+    function StudentController(farmsService, usersService, lessonsService, filesService, sharedValues, $scope, $rootScope,
+        $state, notificationsService, $http, $filter) {
 
         var self = this;
         this.scope = $scope;
@@ -156,8 +157,7 @@
 
         function _printLessons() {
             if (!this.dateFrom || !this.dateTo) { alert("חובה לבחור תאריכים לדו''ח"); return; }
-          
-           // var ddd = $filter('dateRangeFilter')(self.lessons, self.dateFrom, self.dateTo);
+           
 
             $.get('app/students/Report.html?sssd=' + new Date(), function (text) {
                 text = text.replace("@FromDate", moment(self.dateFrom).format('DD/MM/YYYY')).replace("@ToDate", moment(self.dateTo).format('DD/MM/YYYY'));
@@ -166,7 +166,7 @@
                 var TableLessons = "";
 
 
-                for (var i in self.lessons) {
+                for (var i in $filter('dateRange')(self.lessons, self.dateFrom, self.dateTo)) {
 
                   
                     TableLessons += "<tr>"
