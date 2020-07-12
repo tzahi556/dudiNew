@@ -6,6 +6,9 @@ namespace FarmsApi.DataModels
     {
         public int? ActiveUser { get; set; }
         public int? notActiveUser { get; set; }
+        public int? ActivePension { get; set; }
+        public int? notActivePension { get; set; }
+
         public int? instructorUser { get; set; }
         public int? AllMinusCount { get; set; }
         public int? AllMinusSum { get; set; }

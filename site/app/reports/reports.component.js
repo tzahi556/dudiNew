@@ -487,6 +487,12 @@
 
                     text = text.replace("@ActiveUser", res[0].ActiveUser);
                     text = text.replace("@notActiveUser", res[0].notActiveUser);
+                    text = text.replace("@ActivePension", res[0].ActivePension);
+                    text = text.replace("@notActivePension", res[0].notActivePension);
+
+
+
+
                     text = text.replace("@instructorUser", res[0].instructorUser);
                     text = text.replace("@AllMinusCount", res[0].AllMinusCount);
                     text = text.replace("@AllMinusSum", (res[0].AllMinusSum));

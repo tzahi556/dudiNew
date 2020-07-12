@@ -95,7 +95,7 @@
         function _customFont(size) {
 
 
-           
+            
 
 
             var ExistHeight = $('.fc-slats td').css("height").replace('px', '');

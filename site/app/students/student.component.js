@@ -152,6 +152,8 @@
 
         this.parentEventStudents;
 
+        this.StudentTotalLessons = 0;
+
 
         
 
@@ -980,6 +982,10 @@
                 }
 
                 // this.calcLessonsReport();
+
+
+
+
                 if (this.lessons[i].statuses[ststIndex].Status == "attended") this.getStatusLengthFrom1 += 1;
                 if (this.lessons[i].statuses[ststIndex].Status == "notAttendedCharge") this.getStatusLengthFrom2 += 1;
                 if (this.lessons[i].statuses[ststIndex].Status == "notAttended") this.getStatusLengthFrom3 += 1;
@@ -1052,6 +1058,9 @@
                         }
 
                         if (!isExist) this.lessReport.push(lprice);
+
+
+                        this.StudentTotalLessons += 1;
                         //**************************************
                     }
 
