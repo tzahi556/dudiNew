@@ -224,7 +224,7 @@
         function _addInsemination() {
             this.inseminations = this.inseminations || [];
 
-            debugger
+           // debugger
             //if (!this.newInsemination.HalivaDate && !this.newInsemination.InseminationDate) {
             //    alert("חובה לבחור תאריך חליבה או הזרעה");
             //    return;
@@ -239,11 +239,11 @@
             //    return;
             //}
 
-            if (this.newInsemination.Cost && this.newInsemination.HalivaDate) {
-                alert("תשלום רק בהזרעה");
-                this.newInsemination.Cost = "";
-                return;
-            }
+            //if (this.newInsemination.Cost && this.newInsemination.HalivaDate) {
+            //    alert("תשלום רק בהזרעה");
+            //    this.newInsemination.Cost = "";
+            //    return;
+            //}
 
 
 

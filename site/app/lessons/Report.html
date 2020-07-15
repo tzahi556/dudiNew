@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+
+
+    <title></title>
+    <meta charset="utf-8" />
+
+
+
+    <style>
+
+        td {
+            font-size: 13px;
+            font-weight:bold;
+        }
+
+        .dvtitle {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 5px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .dvLesson {
+            font-family: Arial, Helvetica, sans-serif;
+            border-radius: 5px;
+            
+        }
+
+        .dvTable {
+            padding: 10px;
+        }
+
+        th {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .dvSubSubTitle {
+            border-bottom: solid 1px black;
+        }
+
+        span {
+            color: blue;
+        }
+
+         .dvStatus{
+             float:left;
+              font-size:10px;
+                font-weight:normal;
+
+            }
+
+         .dvTime{
+              font-size:10px;
+             
+
+         }
+
+
+
+        @media print {
+
+
+            body {
+                -webkit-print-color-adjust: exact !important;
+            }
+
+            td {
+                font-size: 13px;
+                 font-weight:bold;
+            }
+
+            .dvtitle {
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+                padding: 5px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            .dvLesson {
+                font-family: Arial, Helvetica, sans-serif;
+                border-radius: 5px;
+            }
+
+            .dvStatus {
+                float: left;
+                font-size: 10px;
+                 font-weight:normal;
+            }
+
+            .dvTable {
+                padding: 10px;
+            }
+
+            th {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            .dvSubSubTitle {
+                border-bottom: solid 1px black;
+            }
+
+            span {
+                color: blue;
+            }
+
+
+               .dvTime{
+              font-size:10px;
+              
+
+         }
+
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dvtitle">
+
+        <u>לוח שיעורים יומי - @FromDate</u>
+
+    </div>
+
+
+    @TableLessons
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

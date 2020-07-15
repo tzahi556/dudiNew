@@ -1,4 +1,7 @@
-﻿    <div class="panel panel-default">
+﻿
+<link href="../../node_modules/fullcalendar/dist/fullcalendar.print.css" rel="stylesheet" media="print" />
+
+<div class="panel panel-default">
     <div class="panel-heading ">
         לו"ז
         <input class='form-control addedCalender' style='width:150px;' ng-model="$ctrl.searchDate" ng-change='$ctrl.customDate()' placeholder='לפי תאריך' type='date' />
@@ -9,6 +12,7 @@
         </div>-->
 
         <div id="addminusrowheight" class="fc-button-group">
+            <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'" ng-click="$ctrl.printLessons()"> הדפסה </button>
 
             <button type="button" class="fc-next-button fc-button fc-state-default fc-corner-left" ng-click='$ctrl.customFont(-5)'>
                 <span class="fc-icon fc-icon-down-triangle"></span>
@@ -218,3 +222,8 @@
         </div>
     </div>
 </div>
+
+
+
+
+

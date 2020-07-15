@@ -758,7 +758,8 @@ namespace FarmsApi.Services
 
                     if (item.Id == 0)
                     {
-                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, item.Name, item.Date);
+                        string name = " פירזול ";
+                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId,f.Name,name, item.Date);
                         item.ExpensesId = ExpensesId;
                         Context.HorseShoeings.Add(item);
 
@@ -811,7 +812,8 @@ namespace FarmsApi.Services
 
                     if (item.Id == 0)
                     {
-                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, item.Name, item.Date);
+                        string name = " טילוף ";
+                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name,name, item.Date);
                         item.ExpensesId = ExpensesId;
                         Context.HorseTilufings.Add(item);
 

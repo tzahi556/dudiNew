@@ -1,7 +1,7 @@
 ﻿(function () {
 
     var app = angular.module('app');
-   
+
     app.component('lessons', {
         templateUrl: 'app/lessons/lessons.template.html',
         controller: LessonsController,
@@ -57,8 +57,11 @@
         this.modalAppendClick2 = _modalAppendClick2.bind(this);
 
         this.getLessonByStartAndResource = _getLessonByStartAndResource.bind(this);
+        this.getLessonsByInstructorAndTime = _getLessonsByInstructorAndTime.bind(this);
 
+        
 
+        this.printLessons = _printLessons.bind(this);
         this.searchDate = new Date();
         this.lessToDrop = "";
 
@@ -77,16 +80,218 @@
 
         //var visibleInstructors = sessionStorage.getItem('visibleInstructors') ? angular.fromJson(sessionStorage.getItem('visibleInstructors')) : {};
 
-
+        this.viewCalenderType = "agendaDay";
         this.setExex = _setExex.bind(this);
 
         // this.reloadCalendarData();
+      
+
+        function _printLessons() {
 
 
 
-     
 
-        // this.filteredLessons = this.filterLessonsBySelectedInstructors();
+
+
+            var prevInstructorId = "";
+            var HeaderTemplate = "<table width='100%' border='1' dir='rtl' style='border-collapse:collapse; table-layout:fixed;' ><tr><th style='width:5%'>שעה</th>";
+            var BodyTemplate = "";
+
+
+            var InstructArray = [];
+
+            for (var i in this.instructors) {
+
+                if (prevInstructorId != this.instructors[i].Id) {
+
+                    if (this.instructors[i].Show) {
+
+                      
+                        HeaderTemplate += "<th style=''>" + this.instructors[i].FirstName + " " + this.instructors[i].LastName + "</th>";
+                        InstructArray.push(this.instructors[i].Id);
+
+
+                    }
+
+                    prevInstructorId = this.instructors[i].Id;
+
+                  //  BodyTemplate += "<tr><td>9:00</td><td>אלון שוסטר </br> </td></tr>";
+
+                }
+
+
+                
+               // this.getLessonsByInstructorAndTime(prevInstructorId, "7:15")
+              
+
+
+
+
+            }
+
+
+            var quarterHours = ["00", "15", "30", "45"];
+            var times = [];
+            for (var i = 7; i < 24; i++) {
+                for (var j = 0; j < 4; j++) {
+                    var hour = i.toString();
+                    if (i < 10)
+                        hour = "0" + hour;
+
+                    var CurrentTime = hour + ":" + quarterHours[j];
+
+                    BodyTemplate += "<tr><td>" + CurrentTime + "</td>";
+
+
+                    for (var m in InstructArray) {
+
+                        var CurrentLessons = this.lessons.filter(x => moment(x.start).format("HH:mm") == CurrentTime && x.resourceId == InstructArray[m]);
+
+
+                       
+                        //    , range = moment().range(startDate, endDate);
+
+                        //range.contains(date); 
+
+
+
+                        if (CurrentLessons.length != 0) {
+                          
+                            var startDate = moment(CurrentLessons[0].start)
+                                , endDate = moment(CurrentLessons[0].end)
+
+                           
+                            var diffMiniuts = (endDate.startOf('minute')).diff(startDate.startOf('minute'), 'minutes', true);
+                            
+                            var lessonTime = diffMiniuts / 15;
+
+
+                            var currentInstructor = this.instructors.filter(n => n.Id == InstructArray[m]);
+
+
+                            BodyTemplate += "<td valign='top' class='dvLesson'  rowspan='" + lessonTime + "' style='text-align:right;background:" + currentInstructor[0].EventsColor +"'>" + this.getLessonsByInstructorAndTime(CurrentLessons[0]) + "</td>";
+                        } else {
+
+
+                            var time = moment(this.searchDate).toDate();  // This will return a copy of the Date that the moment uses
+
+                            time.setHours(i);
+                            time.setMinutes(quarterHours[j]);
+                          
+                            
+                            var Tafus = this.lessons.filter(x => moment(x.start) < time && moment(x.end) > time && x.resourceId == InstructArray[m]);
+                            if(Tafus.length==0)
+                            BodyTemplate += "<td></td>";
+
+                        }
+                        
+                    }
+
+
+                    BodyTemplate += "</tr>";
+
+                    
+                }
+            }
+
+
+            var self = this;
+            $.get('app/lessons/Report.html?sssd=' + new Date(), function (text) {
+                text = text.replace("@FromDate", moment(self.searchDate).format('DD/MM/YYYY'));
+                text = text.replace("@TableLessons", HeaderTemplate + BodyTemplate + "</table>");
+               // text = text.replace("@TableLessons", CurrentHtml);
+                var blob = new Blob([text], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                });
+
+
+                saveAs(blob, " לוח שיעורים " + new Date() + ".html");
+
+            });
+
+        }
+
+
+        function _getLessonsByInstructorAndTime(less) {
+
+
+
+           var starttime = moment(less.start).format("HH:mm");
+           var endtime = moment(less.end).format("HH:mm");
+           var res = "<div>";
+
+            res += "<div class='dvTime'>" + starttime + "-" + endtime +"</div>";
+
+            for (var i in less.students) {
+
+                for (var x in this.students) {
+
+                    if (less.students[i] == this.students[x].Id) {
+
+                       
+                        var status = less.statuses.filter(n => n.StudentId == this.students[x].Id);
+                        var statusName = "";
+                        if (status.length > 0) {
+                           
+                            switch (status[0].Status) {
+
+                                case 'attended':
+                                    statusName = 'הגיע'
+                                    break;
+                                case 'notAttended':
+                                    statusName = 'לא הגיע'
+                                    break;
+                                case 'notAttendedCharge':
+                                    statusName = 'לא הגיע לחייב'
+                                    break;
+                                case 'notAttendedDontCharge':
+                                    statusName = 'לא הגיע לא לחייב'
+                                    break;
+                                case 'completionReq':
+                                case 'completionReqCharge':
+                                    statusName = 'השלמה'
+                                    break;
+                                default:
+                                    statusName = '';
+                                    break;
+
+                              
+                            }
+
+
+                            if (status[0].Status == 'completion') {
+                                if ((status.IsComplete == 4)) {
+                                    statusName = 'הגיע';
+                                }
+
+                                if ((status.IsComplete == 6)) {
+                                    statusName = 'לא הגיע לחייב'
+                                }
+
+
+                                if ((status.IsComplete == 3)) {
+                                    statusName = 'לא הגיע'
+                                }
+
+                               
+
+                            }
+
+                          //  statusName =(status[0].Status);
+
+                        }
+
+                        res += this.students[x].FirstName + " " + this.students[x].LastName +"<div class='dvStatus'>" + statusName+"</div>" +  "</br>";
+                    }
+                }
+
+            }
+
+            return res + "</div>";
+
+        }
+
+        
         function _setExex() {
             alert();
         }
@@ -95,7 +300,7 @@
         function _customFont(size) {
 
 
-            
+
 
 
             var ExistHeight = $('.fc-slats td').css("height").replace('px', '');
@@ -104,15 +309,15 @@
 
 
             $.cookie("HeightRow", HeightRow, { expires: 10000 });
-          
-           // $('.fc-slats td').css("height", eval(ExistHeight) + size + "px");
-           
-            $("<style type='text/css'> .fc-slats td{ height: " + HeightRow +"px !important;} </style>").appendTo("head");
-          
-           this.reloadCalendarData();
-          //  this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
-          //  this.scope.$broadcast('calendar.reloadBackgroundEvents', this.backgroundEvents);
-          //  this.scope.$broadcast('calendar.reloadResources', this.resources);
+
+            // $('.fc-slats td').css("height", eval(ExistHeight) + size + "px");
+
+            $("<style type='text/css'> .fc-slats td{ height: " + HeightRow + "px !important;} </style>").appendTo("head");
+
+            this.reloadCalendarData();
+            //  this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
+            //  this.scope.$broadcast('calendar.reloadBackgroundEvents', this.backgroundEvents);
+            //  this.scope.$broadcast('calendar.reloadResources', this.resources);
 
         }
 
@@ -128,7 +333,7 @@
 
         this.scope.$on('calendar.viewRender', function (event, params) {
 
-           
+
 
             if ($.cookie("HeightRow")) {
 
@@ -141,10 +346,7 @@
 
 
             var view = $('.calendar').fullCalendar('getView');
-            // debugger
-            //  alert("The view's title is " + view.title);
-
-            //  alert();
+            this.viewCalenderType = view.type;
 
             this.startDate = moment(params.startDate).format('YYYY-MM-DD');
 
@@ -393,8 +595,8 @@
         function _filterLessonsBySelectedInstructors() {
 
 
-           
-           
+
+
             var returnLessons = [];
 
             for (var i in this.lessons) {
@@ -541,7 +743,7 @@
         }
 
         function _createChildEvent(parentEvent, lessonsQty) {
-          
+
             if (lessonsQty > 0) {
 
                 var newEvent = {
@@ -645,7 +847,7 @@
 
         function _eventClick(event, jsEvent) {
 
-           
+
 
             var elemId = jsEvent.target.id;
             if (elemId) {
@@ -697,14 +899,13 @@
 
 
 
-            //  
+            //  צחי שינה הוריד עוד יום
+            var fakendDate = moment(this.endDate).add(-1, 'days').format('YYYY-MM-DD');//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
 
-            var fakendDate = this.endDate;//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
             this.lessonsService.getLessons(null, this.startDate, fakendDate, null).then(function (lessons) {
-             
+
                 this.lessons = lessons;
 
-              
                 // בדיקת היתכנות הורדה
                 this.scope.$broadcast('calendar.reloadEvents', this.filterLessonsBySelectedInstructors());
                 setupTooltip();
