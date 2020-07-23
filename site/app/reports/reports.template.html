@@ -11,7 +11,7 @@
                 <td ng-click="report.callback()">{{report.name}}</td>
 
             </tr>
-            <tr>
+            <tr ng-if="$ctrl.role!='farmAdminHorse'">
                 <td style="background:#66ccff;font-weight:bold;" ng-click="$ctrl.ReportManger()">דו"ח מנהלים מפורט</td>
 
             </tr>

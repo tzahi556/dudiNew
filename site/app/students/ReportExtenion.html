@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <style>
+        td {
+           text-align:center;
+           font-weight:bold;
+        }
+
+        .dvtitle {
+
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .dvSubtitle {
+            padding: 10px;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .dvTable {
+            padding: 10px;
+        }
+
+        th {
+         
+            background: #42ecf5;
+        }
+
+        .dvSubSubTitle {
+            border-bottom: solid 1px black;
+        }
+
+        span{
+
+            color:blue;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dvtitle">
+
+        <u> דו"ח הוצאות אחרות לתלמיד</u><br />
+        שם תלמיד - @StudentName
+     
+    </div>
+
+
+
+   
+  
+    <div class="dvTable">
+
+        <table width="100%" border="1" dir="rtl" style="border-collapse: collapse;">
+
+            <tr>
+                <th style="background:#42ecf5;">#</th>
+                <th style="background:#42ecf5;">תאריך</th>
+                <th style="background:#42ecf5;">תיאור</th>
+                <th style="background:#42ecf5;">מסמך תשלום</th>
+                <th style="background:#42ecf5;">מחיר</th>
+                <th style="background:#42ecf5;">סכום</th>
+            </tr>
+
+            @TableExtenion
+
+        </table>
+
+    </div>
+
+   
+</body>
+</html>

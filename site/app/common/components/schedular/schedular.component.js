@@ -125,7 +125,7 @@
             this.resourceId = lesson.resourceId;
 
             this.lessonsService.getSetSchedularTask(lesson.id, lesson.resourceId, null, 0).then(function (res) {
-                debugger
+               
                 if (res[0]) {
                     res = res[0];
                     this.newSchedular = [];
@@ -202,7 +202,10 @@
 
 
         function _close(schedular, type) {
-            debugger
+
+           
+            if (this.newSchedular.EndDate)  this.newSchedular.EndDate.setHours(this.newSchedular.EndDate.getHours() + 3);
+
             var obj = {
                 Id: this.newSchedular.Id,
                 Title: this.newSchedular.Title,
@@ -213,11 +216,12 @@
                 EndDate: this.newSchedular.EndDate,
 
 
+
                 Days: this.newSchedular.Days,
                 AffectChildren: this.affectChildren
             }
 
-
+           
 
 
 

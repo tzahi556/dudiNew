@@ -66,6 +66,19 @@ namespace FarmsApi.Services
         {
             return Ok(UsersService.getuseruserhorsesbyuserid(id));
         }
+
+
+        [Authorize]
+        [Route("getAllFarmsuseruserhorses")]
+        [HttpGet]
+        public IHttpActionResult getAllFarmsuseruserhorses()
+        {
+            return Ok(UsersService.getAllFarmsuseruserhorses());
+        }
+
+
+
+
         [Authorize]
         [Route("getuserfilesbyuserid/{id?}")]
         [HttpGet]

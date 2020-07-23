@@ -466,6 +466,30 @@ namespace FarmsApi.Services
             }
         }
 
+
+        public static List<UserHorses> getAllFarmsuseruserhorses()
+        {
+            using (var Context = new Context())
+            {
+                var CurrentUserFarmId = GetCurrentUser().Farm_Id;
+
+                var UserHorsesList = from uh in Context.UserHorses
+                           join u in Context.Users on uh.UserId equals u.Id
+                           where u.Farm_Id == CurrentUserFarmId
+                           select uh;
+
+
+
+
+
+                return UserHorsesList.ToList();
+            }
+        }
+
+
+
+
+
         public static List<Files> getuserfilesbyuserid(int? Id)
         {
             using (var Context = new Context())

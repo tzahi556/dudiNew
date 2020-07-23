@@ -13,7 +13,7 @@ namespace FarmsApi
             //StartMailChecker();
             AddTask("DoStuff", 3600);
             // AddTask("DoStuff", 30);
-        }
+        }   
 
         private void AddTask(string name, int seconds)
         {

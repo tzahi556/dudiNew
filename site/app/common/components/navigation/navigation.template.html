@@ -1,7 +1,7 @@
 ﻿<div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav">
    
-        <li data-ui-sref-active="active" ng-if="$ctrl.lessons"><a ui-sref="lessons">{{($ctrl.role==='farmAdminHorse' ? 'יומן':'שיבוץ שיעורים')}}       </a></li>
+        <li data-ui-sref-active="active" ng-if="$ctrl.lessons"><a ui-sref="lessons">{{($ctrl.role==='farmAdminHorse' || $ctrl.role==='stableman' || $ctrl.role==='worker'? 'יומן':'שיבוץ שיעורים')}}       </a></li>
         <li data-ui-sref-active="active" ng-if="$ctrl.farms"><a ui-sref="farms">חוות</a></li>
         <li data-ui-sref-active="active" ng-if="$ctrl.users"><a ui-sref="users">משתמשים</a></li>
         <li data-ui-sref-active="active" ng-if="$ctrl.instructors"><a ui-sref="instructors">מדריכים</a></li>

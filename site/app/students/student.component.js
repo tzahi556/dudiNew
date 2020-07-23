@@ -131,6 +131,9 @@
         this.getHebrewdocType = _getHebrewdocType.bind(this);
         this.isKabalaToMas = _isKabalaToMas.bind(this);
         this.setshowDivLeave = _setshowDivLeave.bind(this);
+        this.printExtention = _printExtention.bind(this);
+
+
         this.printLessons = _printLessons.bind(this);
         this.getPrint = _getPrint.bind(this);
         
@@ -157,6 +160,41 @@
 
         
 
+        function _printExtention() {
+            $.get('app/students/ReportExtenion.html?sssd=' + new Date(), function (text) {
+                text = text.replace("@StudentName", self.user.FirstName + " " + self.user.LastName);
+
+                var TableExtenion = "";
+
+
+              
+
+                for (var i in self.expenses) {
+
+                    TableExtenion += "<tr>"
+                        + "<td>" + (eval(i)+1).toString()
+                         + "</td><td>" + moment(self.expenses[i].Date).format('DD/MM/YYYY') 
+                          + "</td><td>" + ((self.expenses[i].Details)?self.expenses[i].Details:"")
+                           + "</td><td>" + ((self.expenses[i].Paid)?self.expenses[i].Paid:"")
+                             + "</td><td>" + ((self.expenses[i].Price)?self.expenses[i].Price: "")
+                               + "</td><td>" + ((self.expenses[i].Sum)?self.expenses[i].Sum : "") + "</td></tr>";
+
+
+                }
+
+                text = text.replace("@TableExtenion", TableExtenion);
+
+                var blob = new Blob([text], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                });
+
+
+                saveAs(blob, " הוצאות אחרות " + new Date() + ".html");
+
+            });
+
+        }
+
         function _printLessons() {
             if (!this.dateFrom || !this.dateTo) { alert("חובה לבחור תאריכים לדו''ח"); return; }
            
@@ -168,18 +206,19 @@
                 var TableLessons = "";
 
 
-                for (var i in $filter('dateRange')(self.lessons, self.dateFrom, self.dateTo)) {
+                var datesLessons = $filter('dateRange')(self.lessons, self.dateFrom, self.dateTo);
 
-                  
+                for (var i in datesLessons) {
+                   
                     TableLessons += "<tr>"
                         + "<td>" + i.toString()
-                        + "</td><td>" + self.getInstructorName(self.lessons[i].resourceId)
-                        + "</td><td>" + self.getPrint(self.lessons[i].horsenames[0])
-                        + "</td><td>" + self.getDayOfWeek(self.lessons[i].start) + " " + moment(self.lessons[i].start).format('DD/MM/YYYY')
-                        + "</td><td style='text-align:right'>" + self.getPrint(self.lessons[i].statuses[0].Status, 1) + " " + ((self.lessons[i].statuses[0].IsComplete > 2) ? " (משיעור השלמה)" : "")
-                        + "</td><td>" + self.getPrint(self.lessons[i].statuses[0].OfficeDetails)
-                        + "</td><td>" + self.getPrint(self.lessons[i].lessprice)
-                        + "</td><td>" + ((self.lessons[i].paid) ?' שולם ':"") + "</td></tr>";
+                        + "</td><td>" + self.getInstructorName(datesLessons[i].resourceId)
+                        + "</td><td>" + self.getPrint(datesLessons[i].horsenames[0])
+                        + "</td><td>" + self.getDayOfWeek(datesLessons[i].start) + " " + moment(datesLessons[i].start).format('DD/MM/YYYY')
+                        + "</td><td style='text-align:right'>" + self.getPrint(datesLessons[i].statuses[0].Status, 1) + " " + ((datesLessons[i].statuses[0].IsComplete > 2) ? " (משיעור השלמה)" : "")
+                        + "</td><td>" + self.getPrint(datesLessons[i].statuses[0].OfficeDetails)
+                        + "</td><td>" + self.getPrint(datesLessons[i].lessprice)
+                        + "</td><td>" + ((datesLessons[i].paid) ?' שולם ':"") + "</td></tr>";
 
                    
                 }
@@ -960,6 +999,10 @@
 
             this.results = [];
             this.newPrice = 0;
+
+            
+            this.StudentTotalLessons = 0;
+
             for (var i in this.lessons) {
 
 
@@ -1622,6 +1665,7 @@
 
 
         }
+
         function _isKabalaToMas(InvoiceNum, ParentInvoiceNum) {
             var payments = this.payments || [];
 
@@ -1629,17 +1673,21 @@
 
                 if (!payments[i].canceled) {
 
-                    if ((payments[i].InvoiceNum == ParentInvoiceNum || payments[i].ParentInvoiceNum == InvoiceNum) && payments[i].doc_type == "Kabala" && payments[i].payment_type == "check")
+                    if ((payments[i].InvoiceNum == ParentInvoiceNum || payments[i].ParentInvoiceNum == InvoiceNum)
+                        && payments[i].doc_type == "Kabala"
+                        && payments[i].payment_type == "check")
 
                         return true;
 
                 }
             }
 
+          
             return false;
         }
         function _countSherit() {
 
+           
             this.totalPay = 0;
             var total = 0;
             var totalLessons = 0;
@@ -2168,7 +2216,17 @@
                         if (thisCtrl.user.PayType == "lessonCost" && payment.lessons > 0) {
                             var difflessons = ((payment.lessons * payment.Price) + newPayment.InvoiceSum) / payment.Price;
                             payment.lessons = Math.floor(difflessons);
+                        } else {
+
+                            payment.month = null;
+                            payment.untilmonth = null;
+
                         }
+
+
+
+
+
                         payment.count = "";
 
 
@@ -2299,15 +2357,20 @@
                     //    alert(this.lessonToUpdate[i].details);
                     //}
 
+                    usersService.getPaymentsByUserId(user.Id).then(function (payments) {
+                       
+                        this.payments = payments;
 
+                        this.createNotifications();
+                        this.initStudent();
 
+                    }.bind(this));
+                   
 
 
                     lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate);
                     this.user = user;
 
-                    this.createNotifications();
-                    this.initStudent();
                     if (!isalert) alert('נשמר בהצלחה');
                 }.bind(this));
             }
@@ -2319,8 +2382,13 @@
             try {
 
 
+
+
+
                 for (var i in this.newPayment.Checks) {
 
+
+                   
                     this.newPayment.Checks[i].checks_date = moment(this.newPayment.Checks[i].checks_date).format("YYYY-MM-DD");
 
                     CheckList.push(this.newPayment.Checks[i]);

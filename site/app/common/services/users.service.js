@@ -17,10 +17,17 @@
 
         this.getPaymentsByUserId = _getPaymentsByUserId;
         this.getUserUserhorsesByUserId = _getUserUserhorsesByUserId;
+        this.getAllFarmsuseruserhorses = _getAllFarmsuseruserhorses;
+
+
+
+        
         this.getUserFilesByUserId = _getUserFilesByUserId;
         this.getUserCommitmentsByUserId = _getUserCommitmentsByUserId;
         this.getUserUserMakavByUserId = _getUserUserMakavByUserId;
-        
+
+
+
         this.getAvailablehours = _getAvailablehours;
         this.getTransferData = _getTransferData;
 
@@ -114,6 +121,20 @@
             });
             return deferred.promise;
         }
+
+        function _getAllFarmsuseruserhorses() {
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'users/getAllFarmsuseruserhorses').then(function (res) {
+                var horses = res.data;
+
+                deferred.resolve(horses);
+            });
+            return deferred.promise;
+        }
+
+
+
+
 
         function _getUserFilesByUserId(id) {
             var deferred = $q.defer();

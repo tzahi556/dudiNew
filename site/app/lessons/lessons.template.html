@@ -12,7 +12,7 @@
         </div>-->
 
         <div id="addminusrowheight" class="fc-button-group">
-            <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'" ng-click="$ctrl.printLessons()"> הדפסה </button>
+            <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker'" ng-click="$ctrl.printLessons()"> הדפסה </button>
 
             <button type="button" class="fc-next-button fc-button fc-state-default fc-corner-left" ng-click='$ctrl.customFont(-5)'>
                 <span class="fc-icon fc-icon-down-triangle"></span>
@@ -27,16 +27,16 @@
 
 
 
-        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='farmAdminHorse' " style="margin-right:50px;text-decoration:underline"> פעילים - </span>
-        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='farmAdminHorse'" style="font-weight:bold;font-size:15px">{{$ctrl.activeStudent}} </span>
-        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='farmAdminHorse'" style="margin-right:50px;text-decoration:underline"> לא פעילים - </span>
-        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='farmAdminHorse'" style="font-weight:bold;font-size:15px">{{$ctrl.notActiveStudent}}</span>
-        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="margin-right:50px;text-decoration:underline"> פנסיון - </span>
-        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin'" style="font-weight:bold;font-size:15px">{{$ctrl.pensionStudent}}</span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='farmAdminHorse'   && $ctrl.role!='stableman'  && $ctrl.role!='worker'" style="margin-right:50px;text-decoration:underline"> פעילים - </span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='farmAdminHorse'   && $ctrl.role!='stableman'  && $ctrl.role!='worker'" style="font-weight:bold;font-size:15px">{{$ctrl.activeStudent}} </span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='farmAdminHorse'   && $ctrl.role!='stableman'  && $ctrl.role!='worker'" style="margin-right:50px;text-decoration:underline"> לא פעילים - </span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='farmAdminHorse'   && $ctrl.role!='stableman'  && $ctrl.role!='worker'" style="font-weight:bold;font-size:15px">{{$ctrl.notActiveStudent}}</span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='stableman'  && $ctrl.role!='worker'" style="margin-right:50px;text-decoration:underline"> פנסיון - </span>
+        <span ng-show="$ctrl.role!='instructor' && $ctrl.role!='profAdmin' && $ctrl.role!='stableman'  && $ctrl.role!='worker'" style="font-weight:bold;font-size:15px">{{$ctrl.pensionStudent}}</span>
         <div style="float:left">
             <div id="mainController"></div>
 
-            <div ng-show="!$ctrl.IsInstructorBlock && $ctrl.role!='farmAdminHorse'" style="cursor:pointer;text-align:center;"
+            <div ng-show="!$ctrl.IsInstructorBlock && $ctrl.role!='farmAdminHorse'   && $ctrl.role!='stableman'  && $ctrl.role!='worker'" style="cursor:pointer;text-align:center;"
                  ng-click="showDiv = !showDiv">
 
 
@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div style="float:left" ng-show="!$ctrl.IsInstructorBlock && $ctrl.role!='farmAdminHorse' ">
+        <div style="float:left" ng-show="!$ctrl.IsInstructorBlock && $ctrl.role!='farmAdminHorse'   && $ctrl.role!='stableman'  && $ctrl.role!='worker' ">
 
             <div class="dvContainerSearch">
                 <input style="height:25px" type="text" name="search" class="form-control" placeholder="חיפוש תלמיד בהשלמה" ng-model="searchInput" autocomplete="off" />

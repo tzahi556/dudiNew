@@ -868,7 +868,7 @@ namespace FarmsApi.Services
             //Context.Entry(CurrentLesson).State = System.Data.Entity.EntityState.Modified;
 
 
-            while (CurrentDate <= LastDay)
+            while (CurrentDate.Date <= LastDay.Value.Date)
             {
 
                 var StartDate = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, CurrentLesson.Start.Hour, CurrentLesson.Start.Minute, 0);

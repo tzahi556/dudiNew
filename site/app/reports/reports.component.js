@@ -25,6 +25,9 @@
         self.getInstructorCounter = _getInstructorCounter;
         self.getTotalPerStyle = _getTotalPerStyle;
         self.getRound = _getRound;
+
+        self.getPartaniK = _getPartaniK;
+        
         self.reports = [
             { name: 'רשימת תלמידים כולל פרטים', callback: self.studentsReport },
             { name: 'רשימת שיעורים', callback: self.lessonsReport },
@@ -33,8 +36,8 @@
 
 
         if (self.role == "farmAdminHorse") {
-
-
+           
+           
             self.reports = [
                 { name: 'רשימת לקוחות כולל פרטים', callback: self.studentsReport },
                 { name: 'רשימת סוסים + טיפולים עתידיים', callback: self.horsesReport }
@@ -1179,48 +1182,134 @@
         }
 
         function _studentsReport() {
+
+            function getActiveHeb(name) {
+
+            
+                var res = "פעיל";
+
+                if (name == "notActive") res = "לא פעיל";
+
+                return res;
+
+            };
+
+            function getHorsesByUserId(UserId) {
+                var res = "";
+                var first = true;
+                for (var x in self.reportHorses) {
+
+                    if (self.reportHorses[x].UserId == UserId) {
+
+                        var sValue = ((first)?"":"," ) + self.reportHorses[x].Name ;
+                        res += sValue; 
+
+                        first = false;
+
+                    }
+
+                } 
+
+
+                return res;
+            };
+
+            if (self.role == "farmAdminHorse") {
+                usersService.getAllFarmsuseruserhorses().then(function (horses) {
+                 
+                    self.reportHorses = horses;
+                });
+
+            }
+
+
             usersService.getUsers('student').then(function (students) {
                 var data = [];
-                data.push([
-                    'מס לקוח',
-                    'פעיל',
-                    'ת.ז.',
-                    'שם פרטי',
-                    'שם משפחה',
-                    'כתובת',
-                    'טלפון',
-                    'טלפון 2',
-                    'אימייל',
-                    'הורה 1',
-                    'הורה 2',
-                    'תאריך לידה',
-                    'סגנון רכיבה',
-                    'חבר נבחרת',
-                    'קופ״ח',
-                    'סוג תשלום',
-                    'עלות',
-                ]);
-                students.forEach(function (student) {
+
+                if (self.role == "farmAdminHorse") {
+
+
+
                     data.push([
-                        student.ClientNumber,
-                        student.Active,
-                        student.IdNumber,
-                        student.FirstName,
-                        student.LastName,
-                        student.Address,
-                        student.PhoneNumber,
-                        student.PhoneNumber2,
-                        student.AnotherEmail,
-                        student.ParentName,
-                        student.ParentName2,
-                        student.BirthDate ? new Date(student.BirthDate) : null,
-                        student.Style,
-                        student.TeamMember,
-                        student.HMO,
-                        student.PayType,
-                        student.Cost,
+                        'מס לקוח',
+                        'פעיל',
+                        'ת.ז.',
+                        'שם פרטי',
+                        'שם משפחה',
+                        'כתובת',
+                        'טלפון',
+                        'טלפון 2',
+                        'אימייל',
+                        ' סוס ',
+                        
                     ]);
-                });
+                    students.forEach(function (student) {
+                        data.push([
+                            student.ClientNumber,
+                            getActiveHeb(student.Active),
+                            student.IdNumber,
+                            student.FirstName,
+                            student.LastName,
+                            student.Address,
+                            student.PhoneNumber,
+                            student.PhoneNumber2,
+                            student.AnotherEmail,
+                            getHorsesByUserId(student.Id)
+                            //student.ParentName,
+                            //student.ParentName2,
+                            //student.BirthDate ? new Date(student.BirthDate) : null,
+                            //student.Style,
+                            //student.TeamMember,
+                            //student.HMO,
+                            //student.PayType,
+                            //student.Cost,
+                        ]);
+                    });
+
+                } else { 
+
+                    data.push([
+                        'מס לקוח',
+                        'פעיל',
+                        'ת.ז.',
+                        'שם פרטי',
+                        'שם משפחה',
+                        'כתובת',
+                        'טלפון',
+                        'טלפון 2',
+                        'אימייל',
+                        'הורה 1',
+                        'הורה 2',
+                        'תאריך לידה',
+                        'סגנון רכיבה',
+                        'חבר נבחרת',
+                        'קופ״ח',
+                        'סוג תשלום',
+                        'עלות',
+                    ]);
+                    students.forEach(function (student) {
+                        data.push([
+                            student.ClientNumber,
+                            getActiveHeb(student.Active),
+                            student.IdNumber,
+                            student.FirstName,
+                            student.LastName,
+                            student.Address,
+                            student.PhoneNumber,
+                            student.PhoneNumber2,
+                            student.AnotherEmail,
+                            student.ParentName,
+                            student.ParentName2,
+                            student.BirthDate ? new Date(student.BirthDate) : null,
+                            student.Style,
+                            student.TeamMember,
+                            student.HMO,
+                            student.PayType,
+                            student.Cost,
+                        ]);
+                    });
+
+                }
                 _getReport(data);
             });
         }
@@ -1369,7 +1458,9 @@
                                         self.getHebHMO(studentHMO),
                                         //status.Status,
                                         // studentHMO,
-                                        (lesson.statuses.length > 1) ? 'קבוצתי' :'פרטני',
+
+                                        self.getPartaniK(lesson.statuses),
+                                       // (lesson.statuses.length > 1) ? 'קבוצתי' :'פרטני',
                                         studentCost,
                                     ]);
                                 }
@@ -1381,34 +1472,28 @@
                 });
             })
 
-            // usersService.getUsers('student').then(function (students) {
-            //     self.users = self.users || [];
-            //     self.users = self.users.concat(students);
-            //     usersService.getUsers('instructor').then(function (instructors) {
-            //         self.users = self.users.concat(instructors);
-            //         lessonsService.getLessons(null, self.fromDate, self.toDate).then(function (lessons) {
-            //             var data = [];
-            //             data.push([
-            //                 'מתאריך',
-            //                 'עד תאריך',
-            //                 'שם מדריך',
-            //                 'שם תלמיד',
-            //                 'סטטוס',
-            //             ]);
-            //             for (var lesson of lessons) {
-            //                 for (var status of lesson.statuses)
-            //                     data.push([
-            //                         new Date(lesson.start),
-            //                         new Date(lesson.end),
-            //                         getName(lesson.resourceId),
-            //                         getName(status.StudentId),
-            //                         status.Status,
-            //                     ]);
-            //             }
-            //             _getReport(data);
-            //         });
-            //     });
-            // });
+      
+        }
+
+        function _getPartaniK(statuses) {
+
+            var count = 0;
+            for (var i in statuses) {
+
+                if (statuses[i].Status == "attended" || statuses[i].Status == "notAttendedCharge") {
+
+                    count++;
+
+                }
+
+            }
+
+
+            if (count > 1) return 'קבוצתי';
+
+            else return 'פרטני';
+
+
         }
 
         function _getHebStatus(status) {
@@ -1641,7 +1726,7 @@
                 return ws;
             }
             var ws = sheet_from_array_of_arrays(data);
-
+           
             /* TEST: add worksheet to workbook */
             wb.SheetNames.push(ws_name);
             wb.Sheets[ws_name] = ws;

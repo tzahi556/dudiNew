@@ -30,7 +30,7 @@ namespace FarmsApi.Services
 	<DoctorID>85518</DoctorID>
 	<OnlineServiceType>0</OnlineServiceType>
 </XMLInput>";
-                var res = kp.SendXML(xml);
+                var res = kp.SendXML(xml); //203700003 //203700007
                 return res;
 
 

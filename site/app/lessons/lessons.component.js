@@ -670,12 +670,28 @@
             this.resources = [];
             //   this.resourcesIds = "0";
 
+
+            if (this.role == "stableman" || this.role == "worker") {
+              
+
+                for (var i = this.instructors.length - 1; i >= 0; i--) {
+                    if (this.instructors[i].IsMazkirut != 1) {
+                        this.instructors.splice(i, 1);
+                    }
+                }
+
+            }
+
+
+
             for (var i in this.instructors) {
 
 
+               
+
                 if (this.instructors[i].Show) {
 
-                    //  this.resourcesIds += "," + this.instructors[i].Id;
+                    
 
                     this.resources.push({
                         id: this.instructors[i].Id,
