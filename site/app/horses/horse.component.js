@@ -87,7 +87,7 @@
         this.uploadFileTilufings = _uploadFileTilufings.bind(this);
 
         this.getClassForinsemination = _getClassForinsemination.bind(this);
-
+        this.role = localStorage.getItem('currentRole');
 
         this.removeFile = _removeFile.bind(this);
         this.vaccinationsHorse = sharedValues.vaccinations;
