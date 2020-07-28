@@ -53,9 +53,24 @@ namespace FarmsApi.Services
         public IHttpActionResult UpdateFarmInvoice(Farm farm)
         {
             return Ok();
-            //var Farm = FarmsService.GetFarm(farm.Id);
-            //Farm.Meta = farm.Meta;
-            //return Ok(FarmsService.UpdateFarm(farm));
+           
+        }
+
+        [Authorize]
+        [Route("getMangerFarm")]
+        [HttpGet]
+        public IHttpActionResult GetMangerFarm()
+        {
+            return Ok(FarmsService.GetMangerFarm());
+        }
+
+
+        [Authorize]
+        [Route("getMangerInstructorFarm")]
+        [HttpGet]
+        public IHttpActionResult GetMangerInstructorFarm()
+        {
+            return Ok(FarmsService.GetMangerInstructorFarm());
         }
     }
 }

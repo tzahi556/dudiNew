@@ -131,6 +131,37 @@
             }
         });
 
+
+        $stateProvider.state('farmmanager', {
+            url: '/farmmanager/',
+            views: {
+                'main': {
+                    template: '<farmmanager farmmanager="$ctrl.farmmanager" farminstructors="$ctrl.farminstructors"></farmmanager>',
+                    controller: function (farmmanager, farminstructors) {
+                       
+                        this.farmmanager = farmmanager;
+                        this.farminstructors = farminstructors;
+
+
+                    },
+                    controllerAs: '$ctrl',
+                    resolve: {
+                        farmmanager: function (farmsService, $stateParams) {
+                            
+                            return farmsService.getMangerFarm();
+                        },
+                        farminstructors: function (farmsService, $stateParams) {
+
+                            return farmsService.getMangerInstructorFarm();
+                        }
+
+
+                        
+                    }
+                }
+            }
+        });
+
         $stateProvider.state('horses', {
             url: '/horses/',
             views: {

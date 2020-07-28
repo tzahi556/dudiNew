@@ -1,0 +1,83 @@
+﻿<form name="farmmangerForm" ng-submit="$ctrl.submit()" novalidate>
+   
+    
+        <div class="col-md-3">
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  מדריכים
+                  <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="farmmangerForm.$invalid">שמור</button>
+              </div>
+            <div class="panel-body">
+
+             
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <!--<th>מס' </th>-->
+                                <th>שם מדריך</th>
+                                <th>מספר  בכללית</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="instructor in $ctrl.farminstructors track by $index">
+                                <!--<td>{{instructor.Id}}</td>-->
+                                <td>{{instructor.InstructorName}}</td>
+                                <td><input type="text" class="form-control" ng-model="instructor.ClalitNumber" /></td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                
+                <!--<a target="_blank" class="btn btn-primary"  href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a><br /><br />
+    <a target="_blank" class="btn btn-primary" href="//drive.google.com">Google Drive</a><br /><br />
+    <a target="_blank" class="btn btn-primary" href="//www.dropbox.com">DropBox</a>-->
+            </div>
+            <div class="panel-footer">
+                <button type="submit" class="btn btn-success" ng-disabled="farmmangerForm.$invalid">עדכון</button>
+                <button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
+            </div>
+        </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    דיווחי תביעה לכללית
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-2 form-group">
+                        <label>שם משתמש</label>
+                        <input type="text" name="UserName" class="form-control" ng-model="$ctrl.UserName" required />
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label>סיסמא</label>
+                        <input type="text" name="Password" class="form-control" ng-model="$ctrl.Password" required />
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label>קוד ספק</label>
+                        <input type="text" name="SupplierID" class="form-control" ng-model="$ctrl.SupplierID" required />
+                    </div>
+
+                    <div class="col-md-2 form-group">
+                        <label>קוד טיפול</label>
+                        <input type="text" name="SectionCode" class="form-control" ng-model="$ctrl.SectionCode" required />
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label>קוד יחידה</label>
+                        <input type="text" name="CareCode" class="form-control" ng-model="$ctrl.CareCode" required />
+                    </div>
+
+                    <div class="col-md-2 form-group">
+                        <label></label>
+                        <button type="submit" class="btn btn-success" ng-disabled="farmmangerForm.$invalid">שדר דיווח לכללית</button>
+                    </div>
+
+                </div>
+             </div>
+            </div>
+            
+            
+            </form>
+
+

@@ -1,6 +1,6 @@
 ﻿<div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav">
-   
+
         <li data-ui-sref-active="active" ng-if="$ctrl.lessons"><a ui-sref="lessons">{{($ctrl.role==='farmAdminHorse' || $ctrl.role==='stableman' || $ctrl.role==='worker'? 'יומן':'שיבוץ שיעורים')}}       </a></li>
         <li data-ui-sref-active="active" ng-if="$ctrl.farms"><a ui-sref="farms">חוות</a></li>
         <li data-ui-sref-active="active" ng-if="$ctrl.users"><a ui-sref="users">משתמשים</a></li>
@@ -8,9 +8,12 @@
         <li data-ui-sref-active="active" ng-if="$ctrl.students"><a ui-sref="students">{{($ctrl.role==='farmAdminHorse' ? 'לקוחות':'תלמידים')}} </a></li>
         <li data-ui-sref-active="active" ng-if="$ctrl.reports"><a ui-sref="reports">דוחות</a></li>
         <li data-ui-sref-active="active" ng-if="$ctrl.horses"><a ui-sref="horses">סוסים</a></li>
-        <li><a target="_blank" ng-if="$ctrl.accounting" href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a></li>
+
+        <li data-ui-sref-active="active" ng-if="$ctrl.farmmanager"><a ui-sref="farmmanager">ניהול חווה</a></li>
+
+        <!--<li><a target="_blank" ng-if="$ctrl.accounting" href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a></li>
         <li><a target="_blank" ng-if="$ctrl.files" href="//drive.google.com">Google Drive</a></li>
-        <li><a target="_blank" ng-if="$ctrl.files" href="//www.dropbox.com">DropBox</a></li>
+        <li><a target="_blank" ng-if="$ctrl.files" href="//www.dropbox.com">DropBox</a></li>-->
     </ul>
     <ul ng-if="$ctrl.username" class="nav navbar-nav navbar-left">
         <li data-ui-sref-active="active"><a ui-sref="contact">יצירת קשר</a></li>

@@ -165,6 +165,8 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DataModels\AvailableHours.cs" />
+    <Compile Include="DataModels\FarmManager.cs" />
+    <Compile Include="DataModels\FarmInstructors.cs" />
     <Compile Include="DataModels\Makav.cs" />
     <Compile Include="DataModels\Checks.cs" />
     <Compile Include="DataModels\SchedularLesson.cs" />

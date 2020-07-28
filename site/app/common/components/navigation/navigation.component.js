@@ -27,6 +27,8 @@
             this.students = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
             this.reports = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
             this.horses = ['sysAdmin', 'farmAdmin', 'profAdmin', 'stableman', "worker", 'assistant', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
+
+            this.farmmanager = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
             this.files = role != null;
 
             var authData = localStorage.getItem('authorizationData');

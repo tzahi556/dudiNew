@@ -44,6 +44,42 @@ namespace FarmsApi.Services
                 return Context.Farms.SingleOrDefault(u => u.Id == Id);
         }
 
+        public static FarmManagers GetMangerFarm()
+        {
+            using (var Context = new Context())
+            {
+                var CurrentUser = UsersService.GetCurrentUser();
+
+                return Context.FarmManagers.SingleOrDefault(u => u.FarmId == CurrentUser.Farm_Id);
+
+            }
+                
+        }
+
+        public static IEnumerable<FarmInstructors> GetMangerInstructorFarm()
+        {
+            using (var Context = new Context())
+            {
+                var CurrentUser = UsersService.GetCurrentUser();
+                var CurrentUserFarmId = CurrentUser.Farm_Id;
+
+                var InstructorList = from u in Context.Users
+                                     from um in Context.FarmInstructors.Where(x=>x.UserId==u.Id).DefaultIfEmpty()//  on u.Id equals um.UserId
+                                     where u.Role== "instructor" && u.Farm_Id == CurrentUserFarmId && !u.Deleted && u.IsMazkirut!=1
+                                     select new {Id=u.Id, ClalitNumber =um.ClalitNumber, UserId=u.Id, InstructorName = u.FirstName + " " + u.LastName };
+
+
+                var l = InstructorList.ToList().Select(x => new FarmInstructors { Id = x.Id, ClalitNumber = x.ClalitNumber, UserId = x.UserId, InstructorName = x.InstructorName });
+
+                return l;
+
+            }
+
+        }
+
+
+
+
         public static Farm UpdateFarm(Farm Farm)
         {
             using (var Context = new Context())

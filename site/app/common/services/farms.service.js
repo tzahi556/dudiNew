@@ -9,6 +9,10 @@
         this.getFarm = _getFarm;
         this.updateFarm = _updateFarm;
         this.deleteFarm = _deleteFarm;
+        this.getMangerFarm = _getMangerFarm;
+        this.getMangerInstructorFarm = _getMangerInstructorFarm;
+
+        
 
         function _getFarms(includeDeleted) {
             var deferred = $q.defer();
@@ -24,6 +28,34 @@
             return deferred.promise;
         }
 
+
+        function _getMangerFarm() {
+            var deferred = $q.defer();
+
+
+            $http.get(sharedValues.apiUrl + 'farms/getMangerFarm').then(function (res) {
+                var farmmanger = res.data;
+               
+                deferred.resolve(farmmanger);
+            });
+            return deferred.promise;
+        }
+        function _getMangerInstructorFarm() {
+            var deferred = $q.defer();
+
+
+            $http.get(sharedValues.apiUrl + 'farms/getMangerInstructorFarm').then(function (res) {
+               
+                var farminstructors = res.data;
+
+                deferred.resolve(farminstructors);
+            });
+            return deferred.promise;
+        }
+
+
+
+
         function _getFarm(id) {
             var deferred = $q.defer();
             if (id == 0) {
@@ -33,6 +65,8 @@
             }
             else {
                 $http.get(sharedValues.apiUrl + 'farms/getfarm/' + id).then(function (res) {
+
+                   
                     var farm = res.data;
                     farm.Meta = angular.fromJson(farm.Meta);
                     deferred.resolve(farm);

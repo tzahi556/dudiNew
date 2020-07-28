@@ -37,8 +37,9 @@ namespace FarmsApi.DataModels
         public DbSet<HorsePregnanciesStates> HorsePregnanciesStates { get; set; }//10
         public DbSet<HorseInseminations> HorseInseminations { get; set; }//11
 
+        public DbSet<FarmManagers> FarmManagers { get; set; }
+        public DbSet<FarmInstructors> FarmInstructors { get; set; }
 
-        
 
         public Context() : base("Farms") { }
 
