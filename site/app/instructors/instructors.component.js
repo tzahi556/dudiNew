@@ -11,7 +11,10 @@
     });
 
     function InstructorsController() {
+        var role = localStorage.getItem('currentRole');
 
+       
+        this.role = role;
     }
 
 })();

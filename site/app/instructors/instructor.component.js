@@ -22,7 +22,7 @@
         this.eventCreate = _eventCreate.bind(this);
         this.getLastEventId = _getLastEventId.bind(this);
         this.setAllHour = _setAllHour.bind(this);
-
+         this.role = localStorage.getItem('currentRole');
         
         this.initInstructor = function () {
            // alert(this.availablehours.length);

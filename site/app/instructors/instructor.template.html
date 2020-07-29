@@ -1,7 +1,7 @@
 ﻿<form name="instructorForm" ng-submit="$ctrl.submit()" novalidate>
     <div class="panel panel-default">
         <div class="panel-heading">
-            מדריך
+            {{($ctrl.role==='farmAdminHorse'?'עובד':'מדריך')}}
         </div>
         <div class="panel-body">
 
