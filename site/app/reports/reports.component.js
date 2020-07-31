@@ -1080,6 +1080,7 @@
 
                         if (res[i].Status == "attended" || (res[i].Status == "completion" && res[i].IsComplete == 4)) {
                             DateExist.push(res[i].Start);
+                            if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך
                             counter++;
                         }
 
@@ -1124,6 +1125,7 @@
 
                         if (res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && res[i].IsComplete == 6)) {
                             DateExist.push(res[i].Start);
+                            if (res[i].Leave==1) continue;// אם עזב לא להחשיב למדריך
                             counter++;
                         }
 
@@ -1161,13 +1163,11 @@
 
 
             if (type == "IsLeave") {
-                
+                debugger
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
                     if (Id == res[i].Id && res[i].LastLesson) {
-                       
-                        
                          counter++;
                     }
 
