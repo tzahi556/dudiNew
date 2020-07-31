@@ -28,7 +28,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     סוס
-                    <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="horseForm.$invalid" ng-show="$ctrl.role!='worker'">עדכון</button>
+                    <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="horseForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">עדכון</button>
                 </div>
                 <div class="panel-body">
                     <div class="form-group">
@@ -96,7 +96,10 @@
                         </div>
                         <div class="col-md-6">
                             <label>בעלים</label>
-                            <input type="text" class="form-control" ng-model="$ctrl.horse.Owner" />
+
+                            <input type="text" class="form-control" ng-model="$ctrl.horse.Owner" ng-disabled="true" />
+                            <a ng-if="$ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" class="" ui-sref="student({id:$ctrl.horse.OwnerId})">{{$ctrl.horse.Owner}} </a>
+
                         </div>
 
 
@@ -160,7 +163,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="panel-footer" ng-show="$ctrl.role!='worker'">
+                <div class="panel-footer" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">
                     <button type="submit" class="btn btn-success" ng-disabled="horseForm.$invalid">עדכון</button>
                     <button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
                 </div>
@@ -602,7 +605,7 @@
                             <div class="form-group">
                                 <label><input type="checkbox" ng-model="$ctrl.newPregnancy.IsSurrogate"> הריון אומנת</label>
                             </div>
-                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addPregnancy()" ng-disabled="pregnancyForm.$invalid" ng-show="$ctrl.role!='worker'">הוספת הריון</button>
+                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addPregnancy()" ng-disabled="pregnancyForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת הריון</button>
                         </form>
                     </div>
                 </div>
@@ -651,9 +654,9 @@
                                     <option value="">בחר אם פונדקאית</option>
                                 </select>
                             </div>
-                            <button type="submit" ng-show="$ctrl.role!='worker'" class="btn btn-success" ng-click="$ctrl.addPregnancyState()" ng-disabled="pregnancyStateForm.$invalid">עבור שלב</button>
-                            <button type="button" ng-show="$ctrl.role!='worker'" class="btn btn-default" ng-click="$ctrl.stopPregnancy()">סיום הריון</button>
-                            <button type="button" ng-show="$ctrl.role!='worker'" class="btn btn-default" ng-click="$ctrl.removePregnancyState()" ng-disabled="$ctrl.getCurrentPreg().length <= 1">מחיקת שלב</button>
+                            <button type="submit" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'" class="btn btn-success" ng-click="$ctrl.addPregnancyState()" ng-disabled="pregnancyStateForm.$invalid">עבור שלב</button>
+                            <button type="button" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'" class="btn btn-default" ng-click="$ctrl.stopPregnancy()">סיום הריון</button>
+                            <button type="button" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'" class="btn btn-default" ng-click="$ctrl.removePregnancyState()" ng-disabled="$ctrl.getCurrentPreg().length <= 1">מחיקת שלב</button>
                         </form>
                     </div>
                 </div>
@@ -724,7 +727,7 @@
 
 
 
-                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addInsemination()" ng-disabled="inserForm.$invalid" ng-show="$ctrl.role!='worker'">הוספת הזרעה</button>
+                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addInsemination()" ng-disabled="inserForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת הזרעה</button>
                         </form>
                     </div>
                 </div>

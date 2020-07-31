@@ -41,12 +41,21 @@
                 </select>
             </div>
 
+            <div class="form-group" ng-show="$ctrl.role==='farmAdminHorse'">
+                <label>תפקיד</label>
+                <select class="form-control" ng-model="$ctrl.user.SubRole" >
+                    <option value="">בחר תפקיד</option>
+                    <option value="worker">עובד כללי</option>
+                    <option value="stableman">סייס</option>
+                </select>
+            </div>
+
 
             <div class="form-group">
 
                 <label><input type="checkbox" ng-model="$ctrl.user.IsMazkirut" ng-change="$ctrl.setAllHour()" /> האם מזכירות </label>
                 <label>--</label>
-                <label style="color:darkred">יש לשים לב שזה יהיה מדריך כללי לצרכים כלליים!</label>
+                <label style="color:darkred">יש לשים לב שזה יהיה  כללי לצרכים כלליים!</label>
             </div>
 
 

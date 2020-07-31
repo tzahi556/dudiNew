@@ -22,13 +22,15 @@
         this.eventCreate = _eventCreate.bind(this);
         this.getLastEventId = _getLastEventId.bind(this);
         this.setAllHour = _setAllHour.bind(this);
-         this.role = localStorage.getItem('currentRole');
+        this.role = localStorage.getItem('currentRole');
         
         this.initInstructor = function () {
            // alert(this.availablehours.length);
             this.resources = [{ id: this.user.Id, title: 'שעות עבודה' }];
             this.selfEdit = angular.fromJson(localStorage.getItem('authorizationData')).userName == this.user.Email;
-            this.user.IsMazkirut = (this.user.IsMazkirut==1) ? true : false;
+            this.user.IsMazkirut = (this.user.IsMazkirut == 1) ? true : false;
+
+           // this.user.SubRole = (this.user.SubRole) ? this.user.SubRole : "worker";
 
         }.bind(this);
         this.initInstructor();

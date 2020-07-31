@@ -100,7 +100,7 @@
                         <div class="row">
 
                             <div class="col-md-4">
-                                <label><input type="checkbox"  ng-model="$ctrl.user.IsLeave" />  עזב? </label>
+                                <label><input type="checkbox" ng-model="$ctrl.user.IsLeave" />  עזב? </label>
                             </div>
                             <div class="col-md-8">
 
@@ -113,6 +113,11 @@
                     <div class="form-group">
                         <label>מספר לקוח</label>
                         <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
+                    </div>
+
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
+                        <label>שם ארגון</label>
+                        <input type="text" name="Organzion" class="form-control" ng-model="$ctrl.user.Organzion" />
                     </div>
                     <div class="form-group">
                         <label>שם פרטי </label>
@@ -154,15 +159,7 @@
                         <label>אימייל</label>
                         <input type="email" name="email" class="form-control" ng-model="$ctrl.user.AnotherEmail" />
                     </div>
-                    <!--<div class="form-group">
-                        <label>אימייל</label>
-                        <input type="email" name="email" class="form-control" ng-model="$ctrl.user.Email" ng-model-options="{updateOn:'blur'}" required email-exists="$ctrl.user.Id" />
-                        <span ng-show="studentForm.email.$error.emailExists">אימייל תפוס</span>
-                    </div>
-                    <div class="form-group">
-                        <label>סיסמה</label>
-                        <input type="text" name="password" class="form-control" ng-model="$ctrl.user.Password" required />
-                    </div>-->
+                   
                     <div class="form-group" ng-if="$ctrl.farms.length > 1">
                         <label>חווה</label>
                         <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.user.Farm_Id" required>
@@ -177,6 +174,9 @@
                             <option value="">בחר סגנון רכיבה</option>
                         </select>
                     </div>
+
+
+
                     <div class="form-group" ng-if="$ctrl.user.Style.indexOf('treatment')!=-1 && $ctrl.role!='farmAdminHorse'">
                         <label>קופ"ח</label>
                         <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs"
@@ -192,6 +192,19 @@
                             <option value="no">לא</option>
                         </select>
                     </div>
+
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
+                        <label>מדריך קבוע</label>
+                        <select class="form-control" ng-options="instructor.Id as instructor.FirstName + ' ' +instructor.LastName  for instructor in $ctrl.instructors|filter:{IsMazkirut:0}"
+                                ng-model="$ctrl.user.MainInstructorId"
+                               >
+                            <option value="">בחר מדריך</option>
+                        </select>
+                    </div>
+
+
+
+
                     <div class="form-group">
                         <label>עלות</label>
                         <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
@@ -817,7 +830,7 @@
                                     <br>
                                     <button class="btn btn-primary btn-xs" ng-click="showDetails=!showDetails;">{{showDetails ? 'הצג הערות משרד' : 'הצג הערות מדריך'}} </button>
                                     <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printLessons()"> הדפסה </button>
-
+                                    <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-click="$ctrl.printExcel()"> Excel </button>
 
                                 </td>
                             </tr>
@@ -1086,7 +1099,7 @@
                         <tbody>
                             <tr ng-repeat="horse in $ctrl.userhorses">
                                 <td>{{horse.HorseId}}</td>
-                                <td>{{horse.Name}}</td>
+                                <td><a class="" ui-sref="horse({id:horse.HorseId})"> {{horse.Name}}</a></td>
                                 <td><input type="checkbox" ng-model="horse.Owner"></td>
                                 <td><input class="table-control" type="number" ng-model="horse.PensionPrice"></td>
                                 <td><input class="table-control" type="number" ng-model="horse.TrainingCost"></td>

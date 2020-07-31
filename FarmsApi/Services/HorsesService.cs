@@ -1149,7 +1149,19 @@ namespace FarmsApi.Services
         {
 
             using (var Context = new Context())
-                return Context.Horses.SingleOrDefault(u => u.Id == Id && !u.Deleted);
+            {
+                SqlParameter TypePara = new SqlParameter("Type",7);
+                SqlParameter HorseIdPara = new SqlParameter("HorseId", Id);
+                var query = Context.Database.SqlQuery<Horse>
+                ("GetHorseObject  @Type,@HorseId", TypePara, HorseIdPara);
+                var Objects = query.ToList();
+                return Objects[0];
+
+            }
+
+
+            //using (var Context = new Context())
+            //    return Context.Horses.SingleOrDefault(u => u.Id == Id && !u.Deleted);
         }
 
         public static List<HorseFiles> GetHorseFiles(int Id)

@@ -88,6 +88,7 @@
 
         this.getClassForinsemination = _getClassForinsemination.bind(this);
         this.role = localStorage.getItem('currentRole');
+        this.subrole = localStorage.getItem('currentSubRole');
 
         this.removeFile = _removeFile.bind(this);
         this.vaccinationsHorse = sharedValues.vaccinations;
@@ -152,8 +153,8 @@
             this.horse.ArrivedDate = moment(this.horse.ArrivedDate).startOf('day').toDate();
             this.horse.OutDate = moment(this.horse.OutDate).startOf('day').toDate();
            
-
-            debugger
+            
+          
 
 
             this.initNewTreatment();

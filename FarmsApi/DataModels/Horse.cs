@@ -28,6 +28,9 @@ namespace FarmsApi.DataModels
         public string Gender { get; set; }
         public string Ownage { get; set; }
         public string Race { get; set; }
+        
+        public int? OwnerId { get; set; }
+        
         public string Owner { get; set; }
         public string Father { get; set; }
         public string Mother { get; set; }

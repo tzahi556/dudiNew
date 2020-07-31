@@ -578,7 +578,7 @@
                     $rootScope.$broadcast('fcmToken', token);
                 })
                 .catch(function (err) {
-                    debugger
+                    
                     console.log('Unable to get permission to notify.', err);
                 });
 

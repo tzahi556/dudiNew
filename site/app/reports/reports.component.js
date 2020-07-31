@@ -1421,8 +1421,7 @@
 
 
 
-                    //alert(lessons[0].resourceId);
-                    //alert(getName(lessons[0].resourceId));
+                    
 
                     for (var lesson of lessons) {
                        
@@ -1450,17 +1449,11 @@
                                         studentIdNumber,
                                         new Date(lesson.start),
                                         startHour + ' - ' + endHour,
-                                      //  startHour.substring(0, 5) + ' - ' + endHour.substring(0, 5),
-                                      //  new Date(lesson.end),
                                         instructorName,
                                         studentName,
                                         self.getHebStatus(status),
                                         self.getHebHMO(studentHMO),
-                                        //status.Status,
-                                        // studentHMO,
-
                                         self.getPartaniK(lesson.statuses),
-                                       // (lesson.statuses.length > 1) ? 'קבוצתי' :'פרטני',
                                         studentCost,
                                     ]);
                                 }

@@ -8,6 +8,7 @@ namespace FarmsApi.DataModels
         [Key]
         public int Id { get; set; }
         public string Role { get; set; }
+        public string SubRole { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string FirstName { get; set; }
@@ -79,6 +80,11 @@ namespace FarmsApi.DataModels
         public string Hitnahagoti { get; set; }
 
         public int? IsMazkirut { get; set; }
+        public int? MainInstructorId { get; set; }
+
+        public string Organzion { get; set; }
+
+
 
     }
 }

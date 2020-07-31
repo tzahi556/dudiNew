@@ -66,6 +66,7 @@
         this.lessToDrop = "";
 
         this.role = localStorage.getItem('currentRole');
+        this.subrole = localStorage.getItem('currentSubRole');
         //   this.FarmInstractorPolicy = localStorage.getItem('FarmInstractorPolicy');
         this.activeStudent = 0;
         this.notActiveStudent = 0;
