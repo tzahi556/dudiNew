@@ -2050,10 +2050,6 @@
 
         function _addPayment() {
 
-
-            //  alert(this.tag_id);
-
-
             if (this.newPayment.payment_type == 'check') {
                 var TotalSumFromChecks = 0;
                 for (var i in this.newPayment.Checks) {
@@ -2087,7 +2083,7 @@
             this.disablBtn = true;
 
             var UserTypePaid = this.user.PayType;
-            this.newPayment.customer_name = this.user.FirstName + ' ' + this.user.LastName;
+            this.newPayment.customer_name = (this.user.Organzion ? (this.user.Organzion + "-"):"") +   this.user.FirstName + ' ' + this.user.LastName;
             this.newPayment.customer_email = this.user.AnotherEmail;
             this.newPayment.customer_address = this.user.Address;
             this.newPayment.UserId = this.user.Id;

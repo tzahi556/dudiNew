@@ -870,6 +870,8 @@
 
                                     <img ng-if="lesson.statuses[statusIndex].IsComplete>2  " src="../../images/replace.jpg" width="24px" />
 
+                                   
+                                    <span ng-if="$ctrl.user.IsLeave==1 && ($ctrl.user.LeaveDate | ildate: 'DD/MM/YYYY')==(lesson.start | ildate: 'DD/MM/YYYY')" style="color:crimson;font-weight:bold">(עזב)</span>
 
                                 </td>
                                 <td>
