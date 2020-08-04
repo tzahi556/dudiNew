@@ -371,7 +371,22 @@ namespace FarmsApi.Services
                         };
 
 
+
+                        Logs lg = new Logs();
+                        lg.Type = 2;// החזרת צק
+                        lg.TimeStamp = DateTime.Now;
+                        lg.Request = reqObj.ToString();
+                        lg.StudentId = uc.UserId;
+                        lg.UserId = UsersService.GetCurrentUser().Id;
+
+
+
                         dynamic response = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
+                       
+                        lg.Response = response.ToString();
+                        Context.Logs.Add(lg);
+
+                        Context.SaveChanges();
 
                         // אם זה הצליח
                         if (response[5].ToString() == "True")
@@ -394,6 +409,18 @@ namespace FarmsApi.Services
                             //  Context.SaveChanges();
                             PaymentUser.SelectedForInvoice = true;
                             Context.Entry(PaymentUser).State = System.Data.Entity.EntityState.Modified;
+
+
+                            lg = new Logs();
+                            lg.Type = 4; // חשבונית חדשה חשבונית אצלינו
+                            lg.TimeStamp = DateTime.Now;
+                            lg.Request = p.InvoiceNum;
+                            lg.StudentId = uc.UserId;
+                            lg.UserId = UsersService.GetCurrentUser().Id;
+                            lg.Response = p.InvoicePdf;
+                            Context.Logs.Add(lg);
+
+
                             Context.SaveChanges();
 
 

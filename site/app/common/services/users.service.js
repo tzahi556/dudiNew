@@ -60,7 +60,11 @@
             return deferred.promise;
         }
 
-        function _getUser(id) {
+        function _getUser(id, isForCartis) {
+          
+            if (!isForCartis) isForCartis = false;
+
+           
             var deferred = $q.defer();
             if (id == 0) {
                 $http.get(sharedValues.apiUrl + 'users/newuser/').then(function (res) {
@@ -69,17 +73,25 @@
                 });
             }
             else {
-                $http.get(sharedValues.apiUrl + 'users/getuser/' + (id || '')).then(function (res) {
-                    var user = res.data;
-                   
-                    // הישן
-                    //var user = res.data;
-                    //user.Meta = angular.fromJson(user.Meta);
+
+                if (isForCartis) {
+                    $http.get(sharedValues.apiUrl + 'users/getsetUserEnter/' + isForCartis + '/' + (id || '')).then(function (res) {
+                        var user = res.data;
+                        deferred.resolve(user);
+                    });
 
 
+                } else {
+                    $http.get(sharedValues.apiUrl + 'users/getUser/' + (id || '')).then(function (res) {
+                        var user = res.data;
+                        deferred.resolve(user);
+                    });
 
-                    deferred.resolve(user);
-                });
+
+                }
+
+
+              
             }
             return deferred.promise;
         }

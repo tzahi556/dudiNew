@@ -159,7 +159,7 @@
 
         this.StudentTotalLessons = 0;
 
-
+      // alert(this.user.IsTafus);
         
 
         function _printExtention() {
@@ -721,7 +721,7 @@
         // init student
         this.initStudent = function () {
 
-
+            if (this.user.IsTafus) { alert("כרטיס תלמיד זה פתוח במקום אחר,לא ניתן לעבוד על אותו כרטיס במקביל")};
             //  this.migration();
             this.initPaymentForm();
             this.initCommitmentForm();
@@ -2443,11 +2443,14 @@
 
 
 
-            if ($scope.studentForm.$valid) {
+            if ($scope.studentForm.$valid && !this.user.IsTafus) {
 
                 this.user.Role = 'student';
                 this.user.Email = this.user.IdNumber;
                 this.user.Password = this.user.IdNumber;
+
+
+                this.user.IsTafus = false;
 
                 if (this.user.BirthDate)
                     this.user.BirthDate.setHours(this.user.BirthDate.getHours() + 3);

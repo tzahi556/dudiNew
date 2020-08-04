@@ -1058,6 +1058,7 @@
                         if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
                         ) {
                             DateExist.push(res[i].Start);
+                            if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך  
                             counter += res[i].Diff;
                         }
 

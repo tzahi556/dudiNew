@@ -84,7 +84,9 @@ namespace FarmsApi.DataModels
 
         public string Organzion { get; set; }
 
+        public bool IsTafus { get; set; }
 
+        public int? CurrentUserId { get; set; }
 
     }
 }

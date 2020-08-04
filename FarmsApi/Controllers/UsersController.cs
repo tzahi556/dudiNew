@@ -128,6 +128,16 @@ namespace FarmsApi.Services
         }
 
         [Authorize]
+        [Route("getsetUserEnter/{isForCartis}/{id?}")]
+        [HttpGet]
+        public IHttpActionResult GetSetUserEnter(int? id = null, bool isForCartis = false)
+        {
+            return Ok(UsersService.GetSetUserEnter(id, isForCartis));
+        }
+
+
+
+        [Authorize]
         [Route("newUser")]
         [HttpGet]
         public IHttpActionResult NewUser()

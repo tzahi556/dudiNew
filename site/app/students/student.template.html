@@ -5,8 +5,8 @@
     }
 </style>
 
-<div class="row">
-    <div class="col-md-3">
+<div class="row" ng-show="!$ctrl.user.IsTafus">
+    <div class="col-md-3" >
         <comments studentid="$ctrl.selectedStudent" close-callback="$ctrl.commentClose"></comments>
 
         <reportMonth studentid="$ctrl.selectedStudentForReport"></reportMonth>

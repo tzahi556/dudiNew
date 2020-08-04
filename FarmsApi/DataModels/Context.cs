@@ -39,7 +39,7 @@ namespace FarmsApi.DataModels
 
         public DbSet<FarmManagers> FarmManagers { get; set; }
         public DbSet<FarmInstructors> FarmInstructors { get; set; }
-
+        public DbSet<Logs> Logs { get; set; }
 
         public Context() : base("Farms") { }
 

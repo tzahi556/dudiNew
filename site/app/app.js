@@ -427,8 +427,8 @@
                     controllerAs: '$ctrl',
                     resolve: {
                         user: function (usersService, $stateParams) {
-                        
-                           return usersService.getUser($stateParams.id);
+                            
+                           return usersService.getUser($stateParams.id,true);
                         },
                         lessons: function (lessonsService, $stateParams) {
                             return lessonsService.getLessons($stateParams.id);

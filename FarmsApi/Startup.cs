@@ -62,6 +62,24 @@ namespace FarmsApi
                         return;
                     }
 
+
+                    var users = Context.Users.Where(x=>x.CurrentUserId==user.Id).ToList();
+                    users.ForEach(a =>
+                    {
+                        a.IsTafus = false;
+                        a.CurrentUserId = null;
+                        Context.Entry(a).State = System.Data.Entity.EntityState.Modified;
+                    });
+
+
+                    //users.IsTafus = false;
+                    //users.CurrentUserId = null;
+                  
+                    Context.SaveChanges();
+                  
+
+
+
                     var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                     identity.AddClaim(new Claim("sub", user.Email));
                     identity.AddClaim(new Claim(ClaimTypes.Role, user.Role));

@@ -11,9 +11,11 @@ using System.Web;
 
 namespace FarmsApi.Services
 {
+
+
     public class UsersService
     {
-
+       // public static List<int> UsersEnter;
 
         //public static void UpdateUsers()
         //{
@@ -637,6 +639,68 @@ namespace FarmsApi.Services
             }
         }
 
+        public static User GetSetUserEnter(int? Id, bool isForCartis = false)
+        {
+          
+            
+            using (var Context = new Context())
+            {
+                if (Id.HasValue)
+                {
+                    User us = Context.Users.SingleOrDefault(u => u.Id == Id.Value && !u.Deleted);
+                    if (isForCartis)
+                    {
+
+                        if (us != null) //&& us.CurrentUserId != GetCurrentUser().Id)
+                        {
+
+                            //var users = Context.Users.Where(x => x.CurrentUserId == user.Id).ToList();
+
+                            //users.ForEach(a =>
+                            //{
+                            //    a.IsTafus = false;
+                            //    a.CurrentUserId = null;
+                            //});
+
+
+
+                            //Context.SaveChanges();
+
+                            // אם לא תפוס  תתפוס
+                            if (!us.IsTafus)
+                            {
+                                us.IsTafus = true;
+                                us.CurrentUserId = GetCurrentUser().Id;
+                                Context.Entry(us).State = System.Data.Entity.EntityState.Modified;
+                                Context.SaveChanges();
+
+                                us.IsTafus = false;
+
+                            }
+                            else
+                            {
+                                // אם תפוס אבל אותו משתמש תחזיר שלא תפוס
+                               if(us.CurrentUserId == GetCurrentUser().Id)
+                                us.IsTafus = false;
+
+                            }
+
+                        }
+
+
+                    }
+                    return us;
+                }
+                else
+                {
+                    var CurrentUserId = GetCurrentUser().Id;
+                    return Context.Users.SingleOrDefault(u => u.Id == CurrentUserId);
+                }
+
+            }
+        }
+
+
 
         public static User UpdateUserMultiTables(JArray dataObj)
         {
@@ -860,6 +924,19 @@ namespace FarmsApi.Services
 
                     if (item.Id == 0)
                     {
+
+                        Logs lg = new Logs();
+                        lg.Type = 4; // חשבונית חדשה חשבונית
+                        lg.TimeStamp = DateTime.Now;
+                        lg.Request = item.InvoiceNum;
+                        lg.StudentId = item.UserId;
+                        lg.UserId = GetCurrentUser().Id;
+                        lg.Response = item.InvoicePdf;
+                        Context.Logs.Add(lg);
+                       // Context.SaveChanges();
+
+
+
                         Context.Payments.Add(item);
                         Context.SaveChanges();
                         NewId = item.Id;
@@ -884,6 +961,24 @@ namespace FarmsApi.Services
 
                     foreach (Payments item in differenceQuery)
                     {
+                        // מחיקת צקים שמוצמדים לחשבונית
+                        var ChecksList = Context.Checks.Where(x => x.PaymentsId == item.Id).ToList();
+                        ChecksList.ForEach(a =>
+                        {
+                           
+                            Context.Entry(a).State = System.Data.Entity.EntityState.Deleted;
+                        });
+
+
+                        Logs lg = new Logs();
+                        lg.Type = 3; // מחיקת חשבונית
+                        lg.TimeStamp = DateTime.Now;
+                        lg.Request = item.InvoiceNum;
+                        lg.StudentId = item.UserId;
+                        lg.UserId = GetCurrentUser().Id;
+                        lg.Response = item.InvoicePdf;
+                        Context.Logs.Add(lg);
+                        Context.SaveChanges();
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                         // Context.SaveChanges();
                     }

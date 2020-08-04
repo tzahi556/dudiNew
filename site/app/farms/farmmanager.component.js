@@ -23,7 +23,7 @@
 
 
         function init() {
-
+          //  alert();
          //   alert(self.farminstructors.length);
            
             //self.farm.Meta = self.farm.Meta || {};
