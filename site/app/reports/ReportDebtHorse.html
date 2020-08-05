@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <style>
+        td {
+            text-align: center;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+      
+
+        .dvtitle {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .dvSubtitle {
+            padding: 10px;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .dvTable {
+            padding: 10px;
+        }
+
+        th {
+            background: #42ecf5;
+        }
+
+        .dvSubSubTitle {
+            border-bottom: solid 1px black;
+        }
+
+        span {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dvtitle">
+
+        <u> דו"ח  חייבים</u><br />
+        שם חווה - @NameHava
+        <br />
+    </div>
+
+   
+  
+
+
+   
+
+    <div class="dvSubtitle">
+
+
+        <span style="text-decoration:underline;font-size:24px">רשימת חייבים</span><br />
+
+    </div>
+
+    <div class="dvTable">
+
+        <table width="100%" border="1" dir="rtl" style="border-collapse: collapse;">
+            <tr>
+                <th style="background:#42ecf5;">#</th>
+                <th style="background:#42ecf5;">מספר לקוח</th>
+                <th style="background:#42ecf5;">ת.ז</th>
+                <th style="background:#42ecf5;">שם פרטי</th>
+                <th style="background:#42ecf5;">שם משפחה</th>
+                <th style="background:#42ecf5;">סכום חובה</th>
+
+            </tr>
+
+            @TableDebtOther
+
+        </table>
+
+    </div>
+
+  
+
+</body>
+</html>

@@ -12,6 +12,11 @@ namespace FarmsApi.DataModels
         public string Details { get; set; }
         public string Paid { get; set; }
 
+        public double? Discount { get; set; }
+        public int? ZikuyNumber { get; set; }
+        public double? BeforePrice { get; set; }
+        
+
 
     }
 }

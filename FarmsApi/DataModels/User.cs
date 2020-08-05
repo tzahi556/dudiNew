@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FarmsApi.DataModels
 {
@@ -87,6 +88,8 @@ namespace FarmsApi.DataModels
         public bool IsTafus { get; set; }
 
         public int? CurrentUserId { get; set; }
+        
+        public string TofesName { get; set; }
 
     }
 }

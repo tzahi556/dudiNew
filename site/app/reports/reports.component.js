@@ -204,7 +204,7 @@
 
 
 
-            $.get('app/reports/ReportDebt.html?sdss=' + new Date(), function (text) {
+            $.get('app/reports/ReportDebt' + ((self.role =="farmAdminHorse")?"Horse":"")+'.html?sdss=' + new Date(), function (text) {
 
                 text = text.replace("@NameHava", localStorage.getItem('FarmName'));
 
@@ -1417,7 +1417,8 @@
                         'סטטוס',
                         'קופת חולים',
                         'סוג השיעור',
-                        'עלות'
+                        'עלות',
+                        'הערות משרד'
                     ]);
 
 
@@ -1442,7 +1443,7 @@
                                 startHour = (startHour.indexOf(':') == 1) ? "0" + startHour.substring(0, 4) : startHour.substring(0, 5) ;
                                 endHour = (endHour.indexOf(':') == 1) ? "0" + endHour.substring(0, 4) : endHour.substring(0, 5);
 
-                            
+                           
                                
                                 if (instructorName && studentName) {
                                     data.push([
@@ -1455,7 +1456,8 @@
                                         self.getHebStatus(status),
                                         self.getHebHMO(studentHMO),
                                         self.getPartaniK(lesson.statuses),
-                                        studentCost,
+                                        lesson.lessprice,
+                                        status.OfficeDetails,
                                     ]);
                                 }
                             }

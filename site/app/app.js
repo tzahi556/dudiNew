@@ -3,7 +3,7 @@
     var app = angular.module('app', ['ui.router', 'angular-loading-bar', 'ui.bootstrap']);
 
     app.config(function ($urlRouterProvider, $stateProvider) {
-
+       
         $urlRouterProvider.otherwise(function ($inject) {
             $state = $inject.get('$state');
             usersService = $inject.get('usersService');
@@ -14,6 +14,7 @@
             }
             for (var i in roles) {
                 if (roles[i].id == role) {
+                   
                     $state.go(roles[i].homePage);
                 }
             }
@@ -26,7 +27,9 @@
                     template: '<login return-url="$ctrl.returnUrl"></login>'
                 },
                 controller: function ($stateParams) {
+
                     this.returnUrl = $stateParams.returnUrl;
+                   
                 }
             }
         });

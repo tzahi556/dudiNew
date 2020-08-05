@@ -669,8 +669,10 @@ namespace FarmsApi.Services
                             // אם לא תפוס  תתפוס
                             if (!us.IsTafus)
                             {
+                                User u = GetCurrentUser();
                                 us.IsTafus = true;
-                                us.CurrentUserId = GetCurrentUser().Id;
+                                us.CurrentUserId = u.Id;
+                                us.TofesName = u.FirstName + " " + u.LastName;
                                 Context.Entry(us).State = System.Data.Entity.EntityState.Modified;
                                 Context.SaveChanges();
 
@@ -911,6 +913,7 @@ namespace FarmsApi.Services
         private static int UpdatePaymentsObject(List<Payments> objList, User u)
         {
             int NewId = 0;
+            Payments NewPayment = null;
             using (var Context = new Context())
             {
 
@@ -933,13 +936,12 @@ namespace FarmsApi.Services
                         lg.UserId = GetCurrentUser().Id;
                         lg.Response = item.InvoicePdf;
                         Context.Logs.Add(lg);
-                       // Context.SaveChanges();
-
-
+                      
 
                         Context.Payments.Add(item);
-                        Context.SaveChanges();
-                        NewId = item.Id;
+                        NewPayment = item;
+                        //Context.SaveChanges();
+                     //   NewId = item.Id;
 
 
                     }
@@ -962,12 +964,12 @@ namespace FarmsApi.Services
                     foreach (Payments item in differenceQuery)
                     {
                         // מחיקת צקים שמוצמדים לחשבונית
-                        var ChecksList = Context.Checks.Where(x => x.PaymentsId == item.Id).ToList();
-                        ChecksList.ForEach(a =>
-                        {
+                        //var ChecksList = Context.Checks.Where(x => x.PaymentsId == item.Id).ToList();
+                        //ChecksList.ForEach(a =>
+                        //{
                            
-                            Context.Entry(a).State = System.Data.Entity.EntityState.Deleted;
-                        });
+                        //    Context.Entry(a).State = System.Data.Entity.EntityState.Deleted;
+                        //});
 
 
                         Logs lg = new Logs();
@@ -978,12 +980,12 @@ namespace FarmsApi.Services
                         lg.UserId = GetCurrentUser().Id;
                         lg.Response = item.InvoicePdf;
                         Context.Logs.Add(lg);
-                        Context.SaveChanges();
+                     //   Context.SaveChanges();
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
-                        // Context.SaveChanges();
+                      
                     }
 
-                    Context.SaveChanges();
+                   
 
                 }
                 catch (Exception ex)
@@ -992,7 +994,9 @@ namespace FarmsApi.Services
 
                 }
 
+                Context.SaveChanges();
 
+                if (NewPayment != null) NewId = NewPayment.Id;
 
                 return NewId;
 

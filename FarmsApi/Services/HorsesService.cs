@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace FarmsApi.Services
 {
@@ -642,6 +643,7 @@ namespace FarmsApi.Services
 
                     foreach (HorseTreatments item in differenceQuery)
                     {
+                        DeleteFromExpensive(item.ExpensesId,item.IsPaid);
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -656,6 +658,28 @@ namespace FarmsApi.Services
 
                 Context.SaveChanges();
 
+
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="expensesId"></param>
+        /// <param name="isPaid"></param>
+        private static void DeleteFromExpensive(int? ExpensesId, bool IsPaid)
+        {
+            if(ExpensesId!=null && !IsPaid)
+            {
+                using (var Context = new Context())
+                {
+                    var Expensive = Context.Expenses.SingleOrDefault(x => x.Id == ExpensesId && x.Paid==null);
+
+                    if (Expensive != null)
+                    {
+                        Context.Entry(Expensive).State = System.Data.Entity.EntityState.Deleted;
+                        Context.SaveChanges();
+                    }
+                }
 
             }
         }
@@ -678,7 +702,7 @@ namespace FarmsApi.Services
 
 
                     Expenses e = new Expenses();
-                    e.Details = " תשלום עבור " + name + " לסוס/ה " + horsename + " (" + horseId.ToString() + ")  בתאריך " + dt.ToString("dd/MM/yy");
+                    e.Details = " תשלום עבור " + name + " לסוס/ה " + horsename + " בתאריך " + dt.ToString("dd/MM/yy");
                     e.Price = (cost ?? 0) - (discount ?? 0);
                     e.UserId = uh.UserId;
                     e.Date = date;
@@ -728,6 +752,7 @@ namespace FarmsApi.Services
 
                     foreach (HorseVaccinations item in differenceQuery)
                     {
+                        DeleteFromExpensive(item.ExpensesId, item.IsPaid);
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -782,6 +807,7 @@ namespace FarmsApi.Services
 
                     foreach (HorseShoeings item in differenceQuery)
                     {
+                        DeleteFromExpensive(item.ExpensesId, item.IsPaid);
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -836,6 +862,7 @@ namespace FarmsApi.Services
 
                     foreach (HorseTilufings item in differenceQuery)
                     {
+                        DeleteFromExpensive(item.ExpensesId, item.IsPaid);
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -882,6 +909,7 @@ namespace FarmsApi.Services
 
                     foreach (HorsePregnancies item in differenceQuery)
                     {
+                      
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -1331,7 +1359,21 @@ namespace FarmsApi.Services
                 if (Horse.Id == 0)
                     Context.Horses.Add(Horse);
                 else
+                {
+                    // כאשר לא פעיל תמחק את הסוס מהתלמידים
+                    if(Horse.Active== "notActive")
+                    {
+                        var uhs = Context.UserHorses.Where(y=>y.HorseId== Horse.Id).ToList();
+                        uhs.ForEach(a =>
+                        {
+                            Context.Entry(a).State = System.Data.Entity.EntityState.Deleted;
+                        });
+
+
+                    }
                     Context.Entry(Horse).State = System.Data.Entity.EntityState.Modified;
+                }
+                   
 
                 Context.SaveChanges();
                 return Horse;
