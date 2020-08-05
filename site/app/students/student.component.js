@@ -902,6 +902,10 @@
 
             this.newExpense.Price = this.newExpense.BeforePrice;// - this.newExpense.Discount;
 
+
+            this.newExpense.Price = (this.newExpense.IsZikuy) ? this.newExpense.Price * -1 : this.newExpense.Price;
+            this.newExpense.BeforePrice = (this.newExpense.IsZikuy) ? this.newExpense.BeforePrice * -1 : this.newExpense.BeforePrice;
+
             this.expenses.push(this.newExpense);
             this.initNewExpense();
             this.countAllCredits();
@@ -909,6 +913,9 @@
             for (var i in this.expenses) {
 
                 this.expenses[i].SelectedForZikuy = false;
+
+                
+
 
             }
 
