@@ -626,7 +626,7 @@
 
 
 
-                        horsesService.getHorses().then(function (horses) {
+                        horsesService.getHorsesReport(1).then(function (horses) {
                             var HorseCount = 0,
                                 HorseActiveCount = 0,
                                 HorseNotActiveCount = 0,
@@ -645,23 +645,24 @@
 
 
                             horses.forEach(function (horse) {
-
+                              
                                 HorseCount++;
 
-                                if (horse.Meta.Active == "active") {
+                               
+                                if (horse.Active == "active") {
 
                                     HorseActiveCount++;
 
 
-                                    if (horse.Meta.Ownage == "pension" ||
-                                        horse.Meta.Ownage == "pensionEnglish" ||
-                                        horse.Meta.Ownage == "pensionMaravi" ||
-                                        horse.Meta.Ownage == "pensionKating" ||
-                                        horse.Meta.Ownage == "pensionMere"
+                                    if (horse.Ownage == "pension" ||
+                                        horse.Ownage == "pensionEnglish" ||
+                                        horse.Ownage == "pensionMaravi" ||
+                                        horse.Ownage == "pensionKating" ||
+                                        horse.Ownage == "pensionMere"
 
                                     )
                                         HorsePension++;
-                                    else if (horse.Meta.Ownage == "school") {
+                                    else if (horse.Ownage == "school") {
                                         HorseSchool++;
 
                                         // מנצל את העובדה של הלופ ולכן
@@ -672,32 +673,38 @@
 
                                     }
 
-                                    else if (horse.Meta.Ownage == "farm")
+                                    else if (horse.Ownage == "farm")
                                         HorseFarm++;
 
 
-                                    if (horse.Meta.Gender == "male")
+                                    if (horse.Gender == "male")
                                         HorseMan++;
-                                    else if (horse.Meta.Gender == "female")
+                                    else if (horse.Gender == "female")
                                         HorseWoman++;
-                                    else if (horse.Meta.Gender == "castrated")
+                                    else if (horse.Gender == "castrated")
                                         HorseSirus++;
 
+                                    if (moment() > moment(horse.BirthDate).add(2, 'Y')) HorseUp2++;
 
-                                    if (horse.Meta.Shoeings && horse.Meta.Shoeings.length > 0) HorsePirzool++;
-                                    if (horse.Meta.Tilufings && horse.Meta.Tilufings.length > 0) HorseTiluf++;
+                                    if (horse.IsShoeings) HorsePirzool++;
+                                    if (horse.IsTilufings) HorseTiluf++;
+                                    if (horse.IsHerion) HorseHerion++;
 
-                                    if (moment() > moment(horse.Meta.BirthDate).add(2, 'Y')) HorseUp2++;
 
-                                    if (horse.Meta.Pregnancies && horse.Meta.Pregnancies.length > 0) {
+                                    //if (Shoeings && horse.Meta.Shoeings.length > 0) HorsePirzool++;
+                                    //if (horse.Meta.Tilufings && horse.Meta.Tilufings.length > 0) HorseTiluf++;
 
-                                        var pregnancy = horse.Meta.Pregnancies[horse.Meta.Pregnancies.length - 1];
-                                        var PregnancyName = pregnancy.States[pregnancy.States.length - 1].State.name;
-                                        if (PregnancyName != 'לידה' && !pregnancy.Finished) {
-                                            HorseHerion++;
-                                        }
+                                    //
 
-                                    }
+                                    //if (horse.Meta.Pregnancies && horse.Meta.Pregnancies.length > 0) {
+
+                                    //    var pregnancy = horse.Meta.Pregnancies[horse.Meta.Pregnancies.length - 1];
+                                    //    var PregnancyName = pregnancy.States[pregnancy.States.length - 1].State.name;
+                                    //    if (PregnancyName != 'לידה' && !pregnancy.Finished) {
+                                    //        HorseHerion++;
+                                    //    }
+
+                                    //}
 
 
 
@@ -720,7 +727,7 @@
                             text = text.replace("@HorseMan", HorseMan);
                             text = text.replace("@HorseWoman", HorseWoman);
                             text = text.replace("@HorseSirus", HorseSirus);
-
+                           
 
                             text = text.replace("@HorseSchoolPercent", self.getRound((FarmWorkHoursSus / (ExistHorses.length * daysInMonth * 4)) * 100));
 
@@ -757,6 +764,8 @@
 
 
         }
+
+       
 
         function _getRound(number) {
 
@@ -1164,7 +1173,7 @@
 
 
             if (type == "IsLeave") {
-                debugger
+                
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
@@ -1315,64 +1324,7 @@
             });
         }
 
-        function _horsesReport() {
-            horsesService.getHorses().then(function (horses) {
-                var data = [];
-                data.push([
-                    'פעיל',
-                    'שם',
-                    'גזע',
-                    'מין',
-                    'בעלים',
-                    'אב סוס',
-                    'אם סוס',
-                    'שיוך סוס',
-                    'הערות',
-                    'תאריך לידה',
-                    'אוכל בוקר',
-                    'אוכל בוקר',
-                    'אוכל צהריים',
-                    'אוכל צהריים',
-                    'אוכל ערב',
-                    'אוכל ערב',
-                    'חיסון שפעת',
-                    'חיסון קדחת הנילוס',
-                    'חיסון טטנוס',
-                    'חיסון כלבת',
-                    'חיסון הרפס',
-                    'תילוע',
-                    'פירזול',
-                ]);
-                horses.forEach(function (horse) {
-                    data.push([
-                        horse.Meta.Active,
-                        horse.Name,
-                        horse.Meta.Race,
-                        horse.Meta.Gender,
-                        horse.Meta.Owner,
-                        horse.Meta.Father,
-                        horse.Meta.Mother,
-                        horse.Meta.Ownage,
-                        horse.Meta.Details,
-                        horse.Meta.BirthDate ? new Date(horse.Meta.BirthDate) : null,
-                        horse.Meta.Food && horse.Meta.Food.Morning1 ? horse.Meta.Food.Morning1 : null,
-                        horse.Meta.Food && horse.Meta.Food.Morning2 ? horse.Meta.Food.Morning2 : null,
-                        horse.Meta.Food && horse.Meta.Food.Lunch1 ? horse.Meta.Food.Lunch1 : null,
-                        horse.Meta.Food && horse.Meta.Food.Lunch2 ? horse.Meta.Food.Lunch2 : null,
-                        horse.Meta.Food && horse.Meta.Food.Dinner1 ? horse.Meta.Food.Dinner1 : null,
-                        horse.Meta.Food && horse.Meta.Food.Dinner2 ? horse.Meta.Food.Dinner2 : null,
-                        _getVaccineDate('flu', horse),
-                        _getVaccineDate('nile', horse),
-                        _getVaccineDate('tetanus', horse),
-                        _getVaccineDate('rabies', horse),
-                        _getVaccineDate('herpes', horse),
-                        _getVaccineDate('worming', horse),
-                        _getShoeingDate(horse)
-                    ]);
-                });
-                _getReport(data);
-            });
-        }
+       
 
         function _lessonsReport() {
 
@@ -1573,24 +1525,91 @@
             }
         }
 
+
+        function _horsesReport() {
+            horsesService.getHorsesReport(2).then(function (horses) {
+                var data = [];
+                data.push([
+                    'פעיל',
+                    'שם',
+                    'גזע',
+                    'מין',
+                    'בעלים',
+                    'אב סוס',
+                    'אם סוס',
+                    'שיוך סוס',
+                    'הערות',
+                    'תאריך לידה',
+                    'אוכל בוקר',
+                    'אוכל בוקר',
+                    'אוכל צהריים',
+                    'אוכל צהריים',
+                    'אוכל ערב',
+                    'אוכל ערב',
+                    'חיסון שפעת',
+                    'חיסון קדחת הנילוס',
+                    'חיסון טטנוס',
+                    'חיסון כלבת',
+                    'חיסון הרפס',
+                    'תילוע',
+                    'פירזול',
+                ]);
+                horses.forEach(function (horse) {
+                    data.push([
+                        (horse.Active == "notActive")? "לא פעיל":"פעיל",
+                        horse.Name,
+                        horse.Race,
+                        horse.Gender,
+                        horse.Owner,
+                        horse.Father,
+                        horse.Mother,
+                        horse.Ownage,
+                        horse.Details,
+                        horse.BirthDate ? new Date(horse.BirthDate) : null,
+                        horse.Morning1,
+                        horse.Morning2,
+
+                        horse.Lunch1,
+                        horse.Lunch2,
+
+                        horse.Dinner1,
+                        horse.Dinner2,
+
+                      
+                        _getVaccineDate('flu', horse),
+                        _getVaccineDate('nile', horse),
+                        _getVaccineDate('tetanus', horse),
+                        _getVaccineDate('rabies', horse),
+                        _getVaccineDate('herpes', horse),
+                        _getVaccineDate('worming', horse),
+                        _getShoeingDate(horse)
+                    ]);
+                });
+                _getReport(data);
+            });
+        }
+
+
+
         function _getShoeingDate(horse) {
 
-            var horseBirthDate = horse.Meta.BirthDate;
+            var horseBirthDate = horse.BirthDate;
             var shoeingDate = null;
-            var hasLastShoeing = (typeof (horse.Meta.Shoeings) !== "undefined" && horse.Meta.Shoeings.length > 0);
+           // var hasLastShoeing = (typeof (horse.Meta.Shoeings) !== "undefined" && horse.Meta.Shoeings.length > 0);
             var first = moment(horseBirthDate).add(sharedValues.shoeing.first, 'days');
 
-            if (hasLastShoeing) {
-                horse.Meta.Shoeings = horse.Meta.Shoeings.sort(function (a, b) {
-                    if (new Date(a.Date) > new Date(b.Date))
-                        return 1;
-                    else if (new Date(a.Date) < new Date(b.Date))
-                        return -1;
-                    else
-                        return 0;
-                });
-                var lastShoeing = horse.Meta.Shoeings[horse.Meta.Shoeings.length - 1];
-                shoeingDate = moment(lastShoeing.Date).add(sharedValues.shoeing.interval, 'days');
+            if (horse.shoeings) {
+
+                //horse.Meta.Shoeings = horse.Meta.Shoeings.sort(function (a, b) {
+                //    if (new Date(a.Date) > new Date(b.Date))
+                //        return 1;
+                //    else if (new Date(a.Date) < new Date(b.Date))
+                //        return -1;
+                //    else
+                //        return 0;
+                //});
+               // var lastShoeing = horse.Meta.Shoeings[horse.Meta.Shoeings.length - 1];
+                shoeingDate = moment(horse.shoeingsLastDate).add(sharedValues.shoeing.interval, 'days');
             }
             else if (_isFuture(first)) {
                 shoeingDate = first;
@@ -1600,9 +1619,10 @@
         }
 
         function _getVaccineDate(vaccineName, horse) {
-            var horseBirthDate = horse.Meta.BirthDate;
+            var horseBirthDate = horse.BirthDate;
             var horseAge = moment().diff(moment(horseBirthDate), 'years');
             var vaccine = _getVaccination(vaccineName);
+
             var lastVaccination = _getLastVaccination(vaccineName, horse);
             var vaccineDate = null;
             var first = vaccine.first ? moment(horseBirthDate).add(vaccine.first, 'days') : null;
@@ -1634,22 +1654,19 @@
             function _getLastVaccination(id, horse) {
                 var lastVaccination = {};
                 lastVaccination.times = 0;
-                if (horse.Meta.Vaccinations) {
-                    horse.Meta.Vaccinations.sort(function (a, b) {
-                        if (new Date(a.Date) > new Date(b.Date))
-                            return 1;
-                        else if (new Date(a.Date) < new Date(b.Date))
-                            return -1;
-                        else
-                            return 0;
-                    });
-                    for (var i in horse.Meta.Vaccinations) {
-                        if (horse.Meta.Vaccinations[i].Type == id) {
-                            lastVaccination.age = Math.ceil(moment.duration(moment(horse.Meta.Vaccinations[i].Date).diff(horse.Meta.BirthDate)).asDays());
+
+             
+                if (horse[id]) {
+
+                   
+                      var Date = id + "LastDate";
+                  //  for (var i in horse.Meta.Vaccinations) {
+                       // if (horse[id]) {
+                            lastVaccination.age = Math.ceil(moment.duration(moment(horse[Date]).diff(horse.BirthDate)).asDays());
                             lastVaccination.times++;
-                            lastVaccination.date = horse.Meta.Vaccinations[i].Date;
-                        }
-                    }
+                            lastVaccination.date = horse[Date];
+                        //}
+                   // }
                 }
                 return lastVaccination;
             }

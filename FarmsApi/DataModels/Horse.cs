@@ -42,7 +42,59 @@ namespace FarmsApi.DataModels
         public string Dinner1 { get; set; }
         public string Dinner2 { get; set; }
         public string Image { get; set; }
+        [NotMapped]
+        public bool IsShoeings { get; set; }
+        [NotMapped]
+        public bool IsTilufings { get; set; }
+        [NotMapped]
+        public bool IsHerion { get; set; }
+        [NotMapped]
 
+
+
+        public DateTime? fluLastDate { get; set; }
+        [NotMapped]
+        public bool flu { get; set; }
+        [NotMapped]
+        public DateTime? nileLastDate { get; set; }
+        [NotMapped]
+        public bool nile { get; set; }
+        [NotMapped]
+        public DateTime? tetanusLastDate { get; set; }
+        [NotMapped]
+        public bool tetanus { get; set; }
+        [NotMapped]
+        public DateTime? rabiesLastDate { get; set; }
+        [NotMapped]
+        public bool rabies { get; set; }
+
+        [NotMapped]
+        public DateTime? herpesLastDate { get; set; }
+        [NotMapped]
+        public bool herpes { get; set; }
+        [NotMapped]
+        public DateTime? wormingLastDate { get; set; }
+        [NotMapped]
+        public bool worming { get; set; }
+
+
+        [NotMapped]
+        public DateTime? shoeingsLastDate { get; set; }
+        [NotMapped]
+        public bool shoeings { get; set; }
+
+        //public DateTime? wormingLastDate { get; set; }
+        //[NotMapped]
+        //public bool worming { get; set; }
+
+
+        //_getVaccineDate('flu', horse),
+        //                _getVaccineDate('nile', horse),
+        //                _getVaccineDate('tetanus', horse),
+        //                _getVaccineDate('rabies', horse),
+        //                _getVaccineDate('herpes', horse),
+        //                _getVaccineDate('worming', horse),
+        //                _getShoeingDate(horse)
 
         //Morning1    nvarchar(MAX)   Checked
         //Morning2    nvarchar(MAX)   Checked

@@ -38,6 +38,8 @@ namespace FarmsApi.DataModels
 
         public bool SelectedForInvoice { get; set; }
 
+        public bool Deleted { get; set; }
+
 
     }
 }

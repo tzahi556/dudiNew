@@ -643,7 +643,7 @@ namespace FarmsApi.Services
 
                     foreach (HorseTreatments item in differenceQuery)
                     {
-                        DeleteFromExpensive(item.ExpensesId,item.IsPaid);
+                        DeleteFromExpensive(item.ExpensesId, item.IsPaid);
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -668,11 +668,11 @@ namespace FarmsApi.Services
         /// <param name="isPaid"></param>
         private static void DeleteFromExpensive(int? ExpensesId, bool IsPaid)
         {
-            if(ExpensesId!=null && !IsPaid)
+            if (ExpensesId != null && !IsPaid)
             {
                 using (var Context = new Context())
                 {
-                    var Expensive = Context.Expenses.SingleOrDefault(x => x.Id == ExpensesId && x.Paid==null);
+                    var Expensive = Context.Expenses.SingleOrDefault(x => x.Id == ExpensesId && x.Paid == null);
 
                     if (Expensive != null)
                     {
@@ -703,6 +703,8 @@ namespace FarmsApi.Services
 
                     Expenses e = new Expenses();
                     e.Details = " תשלום עבור " + name + " לסוס/ה " + horsename + " בתאריך " + dt.ToString("dd/MM/yy");
+                    e.BeforePrice = (cost ?? 0) ;
+                    e.Discount = (discount ?? 0);
                     e.Price = (cost ?? 0) - (discount ?? 0);
                     e.UserId = uh.UserId;
                     e.Date = date;
@@ -784,7 +786,7 @@ namespace FarmsApi.Services
                     if (item.Id == 0)
                     {
                         string name = " פירזול ";
-                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId,f.Name,name, item.Date);
+                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
                         item.ExpensesId = ExpensesId;
                         Context.HorseShoeings.Add(item);
 
@@ -839,7 +841,7 @@ namespace FarmsApi.Services
                     if (item.Id == 0)
                     {
                         string name = " טילוף ";
-                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name,name, item.Date);
+                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
                         item.ExpensesId = ExpensesId;
                         Context.HorseTilufings.Add(item);
 
@@ -909,7 +911,7 @@ namespace FarmsApi.Services
 
                     foreach (HorsePregnancies item in differenceQuery)
                     {
-                      
+
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -1163,6 +1165,155 @@ namespace FarmsApi.Services
             }
         }
 
+
+        public static List<Horse> GetHorsesReport(int type)
+        {
+            using (var Context = new Context())
+            {
+
+
+                if (type == 1)
+                {
+
+                    var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
+                    var Horses = Context.Horses.ToList();
+                    if (CurrentHorsefarmId != 0)
+                    {
+                        Horses = Horses.Where(h => h.Farm_Id == CurrentHorsefarmId).OrderBy(x => x.Name).ToList();
+
+                        foreach (Horse item in Horses)
+                        {
+
+                            if (item.Gender == "female")
+                            {
+                                List<HorsePregnanciesStates> Pregnancies = GetHorsePregnanciesStates(item.Id).OrderByDescending(x => x.Date).ToList();
+
+                                if (Pregnancies.Count > 0 && !Pregnancies[0].Finished && Pregnancies[0].StateId != "birth")
+                                {
+                                    item.IsHerion = true;
+                                }
+                            }
+
+                            List<HorseShoeings> Shoeings = GetHorseShoeings(item.Id).OrderByDescending(x => x.Date).ToList();
+
+                            if (Shoeings.Count > 0)
+                            {
+                                item.IsShoeings = true;
+                            }
+
+                            List<HorseTilufings> Tilufings = GetHorseTilufings(item.Id).OrderByDescending(x => x.Date).ToList();
+
+                            if (Tilufings.Count > 0)
+                            {
+                                item.IsTilufings = true;
+                            }
+
+
+
+                        }
+
+
+                    }
+
+                    return Horses;
+
+
+                }
+                else
+                {
+
+                    var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
+                    var Horses = Context.Horses.ToList();
+                    if (CurrentHorsefarmId != 0)
+                    {
+                        Horses = Horses.Where(h => h.Farm_Id == CurrentHorsefarmId).OrderBy(x => x.Name).ToList();
+
+                        foreach (Horse item in Horses)
+                        {
+
+                            //List<HorseShoeings> Shoeings = GetHorseShoeings(item.Id).OrderByDescending(x => x.Date).ToList();
+
+                            //if (Shoeings.Count > 0)
+                            //{
+                            //    item.IsShoeings = true;
+                            //}
+
+                            List<HorseVaccinations> Vaccinations = GetHorseVaccinations(item.Id).OrderBy(x => x.Date).ToList();
+                            foreach (var vac in Vaccinations)
+                            {
+                                if (vac.Type == "flu")
+                                {
+                                    item.flu = true;
+                                    item.fluLastDate = vac.Date;
+
+                                }
+
+                                if (vac.Type == "nile")
+                                {
+                                    item.nile = true;
+                                    item.nileLastDate = vac.Date;
+
+                                }
+
+                                if (vac.Type == "tetanus")
+                                {
+                                    item.tetanus = true;
+                                    item.tetanusLastDate = vac.Date;
+
+                                }
+
+                                if (vac.Type == "rabies")
+                                {
+                                    item.rabies = true;
+                                    item.rabiesLastDate = vac.Date;
+
+                                }
+
+                                if (vac.Type == "herpes")
+                                {
+                                    item.herpes = true;
+                                    item.herpesLastDate = vac.Date;
+
+                                }
+
+                                if (vac.Type == "worming")
+                                {
+                                    item.worming = true;
+                                    item.wormingLastDate = vac.Date;
+
+                                }
+
+                            }
+
+                            List<HorseShoeings> Shoeings = GetHorseShoeings(item.Id).OrderBy(x => x.Date).ToList();
+                            foreach (var vac in Shoeings)
+                            {
+                               
+                                    item.shoeings = true;
+                                    item.shoeingsLastDate = vac.Date;
+                            
+                            }
+
+
+
+
+                        }
+
+
+                    }
+
+                    return Horses;
+
+
+
+
+                }
+            }
+        }
+
+
+
+
         private static List<Horse> FilterDeleted(List<Horse> Horses, bool IncludeDeleted)
         {
             if (IncludeDeleted)
@@ -1178,7 +1329,7 @@ namespace FarmsApi.Services
 
             using (var Context = new Context())
             {
-                SqlParameter TypePara = new SqlParameter("Type",7);
+                SqlParameter TypePara = new SqlParameter("Type", 7);
                 SqlParameter HorseIdPara = new SqlParameter("HorseId", Id);
                 var query = Context.Database.SqlQuery<Horse>
                 ("GetHorseObject  @Type,@HorseId", TypePara, HorseIdPara);
@@ -1361,9 +1512,9 @@ namespace FarmsApi.Services
                 else
                 {
                     // כאשר לא פעיל תמחק את הסוס מהתלמידים
-                    if(Horse.Active== "notActive")
+                    if (Horse.Active == "notActive")
                     {
-                        var uhs = Context.UserHorses.Where(y=>y.HorseId== Horse.Id).ToList();
+                        var uhs = Context.UserHorses.Where(y => y.HorseId == Horse.Id).ToList();
                         uhs.ForEach(a =>
                         {
                             Context.Entry(a).State = System.Data.Entity.EntityState.Deleted;
@@ -1373,7 +1524,7 @@ namespace FarmsApi.Services
                     }
                     Context.Entry(Horse).State = System.Data.Entity.EntityState.Modified;
                 }
-                   
+
 
                 Context.SaveChanges();
                 return Horse;

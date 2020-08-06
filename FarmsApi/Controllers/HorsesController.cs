@@ -55,7 +55,17 @@ namespace FarmsApi.Services
         {
             return Ok(HorsesService.GetHorses(includeDeleted));
         }
+        [Authorize]
+        [Route("getHorsesReport/{type}")]
+        [HttpGet]
+        public IHttpActionResult GetHorsesReport(int type)
+        {
+            return Ok(HorsesService.GetHorsesReport(type));
+        }
 
+
+
+        
 
         [Authorize]
         [Route("newHorse")]

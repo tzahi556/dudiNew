@@ -449,8 +449,8 @@ namespace FarmsApi.Services
         {
             using (var Context = new Context())
             {
-
-                var PaymentsList = Context.Payments.Where(u => u.UserId == Id).ToList();
+                // הוספתי שליפה ללא המחוקים
+                var PaymentsList = Context.Payments.Where(u => u.UserId == Id && !u.Deleted).ToList();
 
                 return PaymentsList;
             }
@@ -980,8 +980,11 @@ namespace FarmsApi.Services
                         lg.UserId = GetCurrentUser().Id;
                         lg.Response = item.InvoicePdf;
                         Context.Logs.Add(lg);
-                     //   Context.SaveChanges();
-                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+
+
+                        //שיניתי ממחיקה לשמירה
+                        item.Deleted = true;
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
                       
                     }
 

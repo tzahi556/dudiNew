@@ -310,7 +310,7 @@ namespace FarmsApi.Services
                 foreach (var uc in UsersChecks)
                 {
                     var User = Context.Users.Where(y => y.Id == uc.UserId).FirstOrDefault();
-                    var PaymentUser = Context.Payments.Where(y => y.Id == uc.PaymentsId).FirstOrDefault();
+                    var PaymentUser = Context.Payments.Where(y => y.Id == uc.PaymentsId && !y.Deleted).FirstOrDefault();
                     var Farm = Context.Farms.Where(y => y.Id == User.Farm_Id).FirstOrDefault();
                     var Meta = JObject.Parse(Farm.Meta);
                     var api_key = Meta["api_key"];
@@ -484,6 +484,7 @@ namespace FarmsApi.Services
                         ex.Id = 0;
                         ex.Date = DateTime.Now;
                         ex.Price = (PensionPrice ?? 0) + (TrainingCost ?? 0);
+                        ex.BeforePrice = (PensionPrice ?? 0) + (TrainingCost ?? 0);
                         ex.UserId = UserH.UserId;
                         string MonthPay = DateTime.Now.Month.ToString();
                         string YearPay = DateTime.Now.Year.ToString();

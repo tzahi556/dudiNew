@@ -14,6 +14,8 @@
         this.updateHorse = _updateHorse;
         this.deleteHorse = _deleteHorse;
         this.getSusut = _getSusut;
+        this.getHorsesReport = _getHorsesReport;
+        
 
         this.updateHorseMultiTables = _updateHorseMultiTables;
 
@@ -66,7 +68,21 @@
         }
 
 
+      
 
+        function _getHorsesReport(type) {
+
+            var deferred = $q.defer();
+
+            $http.get(sharedValues.apiUrl + 'horses/getHorsesReport' + "/" + type).then(function (res) {
+
+                var horses = res.data;
+
+
+                deferred.resolve(horses);
+            });
+            return deferred.promise;
+        }
 
 
         function _getHorses(includeDeleted) {
@@ -137,7 +153,10 @@
             //    });
             //}
             //else {
-                $http.get(sharedValues.apiUrl + 'horses/gethorse/' + id + '/' + type).then(function (res) {
+
+           
+            $http.get(sharedValues.apiUrl + 'horses/gethorse/' + id + '/' + type).then(function (res) {
+                    
                     var horse = res.data;
 
                     deferred.resolve(horse);

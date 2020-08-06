@@ -136,11 +136,13 @@
 
         this.printLessons = _printLessons.bind(this);
         this.printExcel = _printExcel.bind(this);
+        this.printExcelExpensive = _printExcelExpensive.bind(this);
+
         
         this.getPrint = _getPrint.bind(this);
         this.changeExpense = _changeExpense.bind(this);
         this.setExpensiveZikuy = _setExpensiveZikuy.bind(this);
-
+        this.getExpensesAfterZikuy = _getExpensesAfterZikuy.bind(this);
         
         
         this.show4 = _show4.bind(this);
@@ -179,11 +181,14 @@
                 for (var i in self.expenses) {
 
                     TableExtenion += "<tr>"
-                        + "<td>" + (eval(i)+1).toString()
-                         + "</td><td>" + moment(self.expenses[i].Date).format('DD/MM/YYYY') 
+                        + "<td>" + ((self.expenses[i].Id) ? self.expenses[i].Id : "")
+                        + "</td><td>" + ((self.expenses[i].ZikuyNumber) ? self.expenses[i].ZikuyNumber : "")
+                          + "</td><td>" + moment(self.expenses[i].Date).format('DD/MM/YYYY') 
                           + "</td><td>" + ((self.expenses[i].Details)?self.expenses[i].Details:"")
-                           + "</td><td>" + ((self.expenses[i].Paid)?self.expenses[i].Paid:"")
-                             + "</td><td>" + ((self.expenses[i].Price)?self.expenses[i].Price: "")
+                        + "</td><td>" + ((self.expenses[i].BeforePrice) ? self.expenses[i].BeforePrice : "")
+                        + "</td><td>" + ((self.expenses[i].Discount) ? self.expenses[i].Discount : "")
+                          + "</td><td>" + ((self.expenses[i].Price) ? self.expenses[i].Price : "")
+                          + "</td><td>" + ((self.expenses[i].Paid) ? self.expenses[i].Paid : "")
                                + "</td><td>" + ((self.expenses[i].Sum)?self.expenses[i].Sum : "") + "</td></tr>";
 
 
@@ -245,6 +250,45 @@
             });
 
 
+        }
+
+
+        function _printExcelExpensive() {
+           
+
+            var data = [];
+            data.push([
+                '#',
+                'זיכוי',
+                'תאריך',
+                'תיאור',
+                'עלות',
+                'הנחה',
+                'עלות סופית',
+                'שולם',
+
+            ]);
+
+            for (var i in this.expenses) {
+               // var index = (parseInt(i) + 1);
+                data.push([
+
+
+
+                    ((self.expenses[i].Id) ? self.expenses[i].Id : ""),
+                    ((self.expenses[i].ZikuyNumber) ? self.expenses[i].ZikuyNumber : ""),
+                    moment(self.expenses[i].Date).format('DD/MM/YYYY'),
+                    ((self.expenses[i].Details) ? self.expenses[i].Details : ""),
+                    ((self.expenses[i].BeforePrice) ? self.expenses[i].BeforePrice : "") ,
+                    ((self.expenses[i].Discount) ? self.expenses[i].Discount : ""),
+                    ((self.expenses[i].Price) ? self.expenses[i].Price : ""),
+                    ((self.expenses[i].Paid) ? self.expenses[i].Paid : ""),
+                    ((self.expenses[i].Sum) ? self.expenses[i].Sum : ""), 
+
+                ]);
+
+            }
+            _getReport(data);
         }
 
         function _printExcel() {
@@ -1495,7 +1539,7 @@
 
 
         function _countTotal() {
-
+          
             self.newPayment.InvoiceSum = 0;
             self.newPayment.InvoiceDetails = '';
             if (self.newPayment.lessons || self.newPayment.month) {
@@ -1827,6 +1871,39 @@
             this.totalExpensesNoShulam = total;
 
         }
+
+
+        //הוצאות אחרות
+        function _getExpensesAfterZikuy() {
+           
+            var TempExpenses =this.expenses || [];
+
+            
+            for (var i in TempExpenses) {
+                var exp = TempExpenses[i];
+
+                if (!exp.ZikuyNumber) {
+
+                    for (var y in TempExpenses) {
+                        var ZikuyNumber = TempExpenses[y].ZikuyNumber;
+                        if (ZikuyNumber == exp.Id) {
+                            TempExpenses[i].Price = TempExpenses[i].Price + TempExpenses[y].Price;
+                        }
+
+                    }
+
+                }
+            }
+
+
+           
+            return TempExpenses;
+        }
+
+
+
+
+        
 
         function _countPaidLessons() {
 
