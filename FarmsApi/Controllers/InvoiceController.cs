@@ -332,7 +332,7 @@ namespace FarmsApi.Controllers
                         developer_email = "tzahi556@gmail.com",
                         developer_phone = "0505913817",
                         type = DocType,
-                        description = (bool)Params.isMasKabala ? "" : (string)Params.InvoiceDetails,
+                        description = "",//(bool)Params.isMasKabala ? "" : (string)Params.InvoiceDetails,
 
                         customer_email = (string)Params.customer_email,
                         customer_address = (string)Params.customer_address,

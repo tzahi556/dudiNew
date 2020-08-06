@@ -310,7 +310,7 @@ namespace FarmsApi.Services
                 foreach (var uc in UsersChecks)
                 {
                     var User = Context.Users.Where(y => y.Id == uc.UserId).FirstOrDefault();
-                    var PaymentUser = Context.Payments.Where(y => y.Id == uc.PaymentsId && !y.Deleted).FirstOrDefault();
+                    var PaymentUser = Context.Payments.Where(y => y.Id == uc.PaymentsId && !y.Deleted && y.ZikuyNumber==null).FirstOrDefault();
                     var Farm = Context.Farms.Where(y => y.Id == User.Farm_Id).FirstOrDefault();
                     var Meta = JObject.Parse(Farm.Meta);
                     var api_key = Meta["api_key"];

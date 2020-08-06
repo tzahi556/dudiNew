@@ -730,7 +730,7 @@ namespace FarmsApi.Services
                                 {
 
 
-                                    cmd.CommandText = "   UPDATE StudentLessons SET IsComplete = 1 "
+                                    cmd.CommandText = " UPDATE StudentLessons SET IsComplete = 1 "
                                                       + "  WHERE Lesson_Id = (SELECT top 1 Lesson_Id FROM StudentLessons WHERE Lesson_Id < " + LessonId + "  and User_Id = " + StudentId
                                                       + "  and Status in('completionReq','completionReqCharge') and IsComplete=2 order by Lesson_Id desc) and User_Id = " + StudentId;
 
@@ -745,12 +745,7 @@ namespace FarmsApi.Services
 
                             }
                         }
-                        //if (Lesson["students"] != null)
-                        //{
-                        //    var StudentIds = Lesson["students"].Values<int>().ToList();
-                        //    var StatusData = GetStatusDataFromJson(Lesson, StudentId);
-                        //    bool isCompleteFromClient = (StatusData[2] == "True") ? true : false;
-                        //}
+                    
                         Context.StudentLessons.RemoveRange(StudentLessons);
 
                         // Delete Lesson
