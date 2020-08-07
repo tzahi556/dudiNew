@@ -944,6 +944,8 @@
             //    this.newExpense.Details = 'פנסיון';
             //}
 
+
+         
             this.newExpense.Price = this.newExpense.BeforePrice;// - this.newExpense.Discount;
 
 
@@ -951,17 +953,28 @@
             this.newExpense.BeforePrice = (this.newExpense.IsZikuy) ? this.newExpense.BeforePrice * -1 : this.newExpense.BeforePrice;
 
             this.expenses.push(this.newExpense);
-            this.initNewExpense();
-            this.countAllCredits();
+
+        
+
+          
 
             for (var i in this.expenses) {
-
+               
                 this.expenses[i].SelectedForZikuy = false;
 
-                
+                if (typeof (this.newExpense.ZikuyNumber) != "undefined" && this.expenses[i].Id == this.newExpense.ZikuyNumber) {
+
+                   
+
+                    this.expenses[i].ZikuySum = this.newExpense.Price;
+                }
 
 
             }
+
+
+            this.initNewExpense();
+            this.countAllCredits();
 
 
 
@@ -979,9 +992,10 @@
         }
 
         function _setExpensiveZikuy(expense) {
-         
-            this.newExpense.ZikuyNumber = expense.Id;
 
+        
+            this.newExpense.ZikuyNumber = expense.Id;
+            
             this.countExpenses();
 
         }
@@ -1599,7 +1613,7 @@
             if (this.expenses !== undefined) {
                 for (var expense of this.expenses.filter(function (expense) { return expense.Checked && expense.Price != expense.Sum })) {
 
-                    self.newPayment.InvoiceSum += expense.Price - ((!expense.Sum) ? 0 : expense.Sum);
+                    self.newPayment.InvoiceSum += expense.Price + ((!expense.ZikuySum) ? 0 : expense.ZikuySum) - ((!expense.Sum) ? 0 : expense.Sum);
                     self.newPayment.InvoiceDetails += ', ' + expense.Details;
                 }
             }

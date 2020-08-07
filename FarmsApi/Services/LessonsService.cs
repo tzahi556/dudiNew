@@ -34,7 +34,6 @@ namespace FarmsApi.Services
             }
             return ReturnLessons;
         }
-
         private static void PopulateReturnLessons(JArray ReturnLessons, DataModels.Context Context, User CurrentUser, int? StudentId, string startDate, string endDate, bool IsFromCompletion)
         {
             bool IsPrice = false;
@@ -123,7 +122,7 @@ namespace FarmsApi.Services
                                 HearotStatus = s.HearotStatus,
                                 Mashov = s.Mashov
                             }).ToArray(),
-                            title =  (studentsArray.Length > 0 ? string.Join("", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : ""),
+                            title = (studentsArray.Length > 0 ? string.Join("", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : ""),
                             PrevNext = Lesson.PrevNext,
                             IsMazkirut = Lesson.IsMazkirut
                             //Matarot = Lesson.Matarot,
@@ -134,7 +133,7 @@ namespace FarmsApi.Services
 
 
 
-                        })) ;
+                        }));
                     }
                     lastId = Lesson.Id;
                 }
@@ -155,7 +154,6 @@ namespace FarmsApi.Services
 
 
         }
-
 
         private static void PopulateReturnLessonsToComplete(JArray ReturnLessons, DataModels.Context Context, User CurrentUser, int? StudentId, string startDate, string endDate, bool IsFromCompletion)
         {
@@ -294,11 +292,6 @@ namespace FarmsApi.Services
 
 
         }
-
-
-
-
-
         public static JObject UpdateLessonDetails(JObject Lesson)
         {
             int LessonId = Lesson["id"].Value<int>();
@@ -312,8 +305,6 @@ namespace FarmsApi.Services
             return Lesson;
 
         }
-
-
 
         public static int GetifLessonsHaveMoreOneRider(int lessonId)
         {
@@ -422,7 +413,15 @@ namespace FarmsApi.Services
                     //    }
 
                     //}
+                    foreach (var sl in ParentStudents)
+                    {
+                        InsertIntoLog(ChildLesson.Id, 2, Context, sl);
+                    }
+
                 }
+
+                //צחי
+
                 Context.SaveChanges();
             }
 
@@ -454,10 +453,6 @@ namespace FarmsApi.Services
 
             Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
 
-            //}catch(Exception ex)
-            //{
-
-            //}
             if (Lesson["students"] != null)
             {
                 var StudentIds = Lesson["students"].Values<int>().ToList();
@@ -568,7 +563,9 @@ namespace FarmsApi.Services
 
                     }
 
-                    Context.StudentLessons.Add(new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]), HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]), OfficeDetails = StatusData[4] });
+                    StudentLessons sl = new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]), HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]), OfficeDetails = StatusData[4] };
+                    Context.StudentLessons.Add(sl);
+                    InsertIntoLog(LessonId, 2, Context, sl);
 
 
                 }
@@ -582,8 +579,6 @@ namespace FarmsApi.Services
 
             }
         }
-
-
 
         private static void AddOrRemvoveFromGroup(Context context, List<int> studentIds, int lessonId)
         {
@@ -605,6 +600,8 @@ namespace FarmsApi.Services
 
                     if (!exists)
                     {
+                        InsertIntoLog(item.Lesson_Id, 4, context, item);
+
                         context.StudentLessons.Remove(item);
                     }
 
@@ -616,8 +613,10 @@ namespace FarmsApi.Services
                     var studentInSystem = context.StudentLessons.Where(x => x.Lesson_Id == l.Id && x.User_Id == itemStudId).FirstOrDefault();
                     if (studentInSystem == null)
                     {
-                        context.StudentLessons.Add(new StudentLessons() { Lesson_Id = l.Id, User_Id = itemStudId, Status = "", Details = "", IsComplete = 0, HorseId = null, OfficeDetails = "" });
 
+                        var slin = new StudentLessons() { Lesson_Id = l.Id, User_Id = itemStudId, Status = "", Details = "", IsComplete = 0, HorseId = null, OfficeDetails = "" };
+                        context.StudentLessons.Add(slin);
+                        InsertIntoLog(l.Id, 2, context, slin);
                     }
 
                 }
@@ -658,6 +657,34 @@ namespace FarmsApi.Services
             Context.Lessons.Add(newLesson);
             Context.SaveChanges();
             Lesson["id"] = newLesson.Id;
+            InsertIntoLog(newLesson.Id, 1, Context, null);
+            Context.SaveChanges();
+
+
+
+
+        }
+
+        private static void InsertIntoLog(int LessonId, int Type, Context context, StudentLessons sl = null)
+        {
+            var Lesson = context.Lessons.Where(x => x.Id == LessonId).FirstOrDefault();
+
+            LogsLessons lg = new LogsLessons();
+            lg.Type = Type;
+            lg.TimeStamp = DateTime.Now;
+            lg.LessonDate = Lesson.Start;
+            lg.LessonId = LessonId;
+            lg.Instructor_Id = Lesson.Instructor_Id;
+            if (sl != null)
+            {
+                lg.StudentId = sl.User_Id;
+                lg.Status = sl.Status;
+            }
+
+            lg.UserId = UsersService.GetCurrentUser().Id;
+
+            context.LogsLessons.Add(lg);
+
         }
 
         private static bool IsNewLesson(JObject Lesson)
@@ -745,11 +772,14 @@ namespace FarmsApi.Services
 
                             }
                         }
-                    
+
                         Context.StudentLessons.RemoveRange(StudentLessons);
+
 
                         // Delete Lesson
                         Context.Lessons.Remove(Lesson);
+
+                        InsertIntoLog(Lesson.Id, 5, Context, null);
                         Context.SaveChanges();
                     }
                 }
@@ -847,7 +877,7 @@ namespace FarmsApi.Services
             DateTime? LastDay = new DateTime(CurrentDate.Year, 12, 31, 23, 59, 59);
 
             if (Schedular.EndDate != null) LastDay = Schedular.EndDate;
-            if (Schedular.Days > 0) LastDay = CurrentDate.AddDays(Schedular.Days-1);
+            if (Schedular.Days > 0) LastDay = CurrentDate.AddDays(Schedular.Days - 1);
 
 
             string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
@@ -912,7 +942,7 @@ namespace FarmsApi.Services
                 else if (Schedular.Days > 0)
                     CurrentDate = CurrentDate.AddDays(1);
                 else
-                    CurrentDate =((DateTime)LastDay).AddDays(1);
+                    CurrentDate = ((DateTime)LastDay).AddDays(1);
 
                 //SchedularTasks st = new SchedularTasks();
                 //st.LessonId = less.Id;
@@ -936,7 +966,7 @@ namespace FarmsApi.Services
 
 
 
-           // EntityFrameworkManager.DefaultEntityFrameworkPropagationValue = false;
+            // EntityFrameworkManager.DefaultEntityFrameworkPropagationValue = false;
             Context.Lessons.AddRange(lList);
             // Context.SchedularTasks.AddRange(stList);
 
