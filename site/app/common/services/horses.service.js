@@ -52,11 +52,11 @@
 
 
         function _updateHorseMultiTables(horse, files, hozefiles, pundekautfiles, treatments,
-            vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations) {
+            vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations,hozims) {
 
 
             var dataobj = [horse, files, hozefiles, pundekautfiles, treatments,
-                vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations];
+                vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations, hozims];
             var deferred = $q.defer();
             $http.post(sharedValues.apiUrl + 'horses/updateHorseMultiTables', angular.toJson(dataobj)).then(function (res) {
 
@@ -84,7 +84,6 @@
             return deferred.promise;
         }
 
-
         function _getHorses(includeDeleted) {
 
             var deferred = $q.defer();
@@ -98,10 +97,6 @@
             });
             return deferred.promise;
         }
-
-
-
-
 
         function _getHorsesForLessons(includeDeleted) {
 

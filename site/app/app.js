@@ -187,8 +187,8 @@
             url: '/horse/{id}',
             views: {
                 'main': {
-                    template: '<horse horse="$ctrl.horse" farms="$ctrl.farms" horses="$ctrl.horses" files="$ctrl.files"  hozefiles="$ctrl.hozefiles" pundekautfiles="$ctrl.pundekautfiles" treatments="$ctrl.treatments"  vaccinations="$ctrl.vaccinations" shoeings="$ctrl.shoeings" tilufings="$ctrl.tilufings" pregnancies="$ctrl.pregnancies"  pregnanciesstates="$ctrl.pregnanciesstates"  inseminations="$ctrl.inseminations" susut="$ctrl.susut"></horse>',
-                    controller: function (horse, farms, horses, files, hozefiles, pundekautfiles, treatments, vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations,susut) {
+                    template: '<horse horse="$ctrl.horse" farms="$ctrl.farms" horses="$ctrl.horses" files="$ctrl.files"  hozefiles="$ctrl.hozefiles" pundekautfiles="$ctrl.pundekautfiles" treatments="$ctrl.treatments"  vaccinations="$ctrl.vaccinations" shoeings="$ctrl.shoeings" tilufings="$ctrl.tilufings" pregnancies="$ctrl.pregnancies"  pregnanciesstates="$ctrl.pregnanciesstates"  inseminations="$ctrl.inseminations" susut="$ctrl.susut" hozims="$ctrl.hozims"></horse>',
+                    controller: function (horse, farms, horses, files, hozefiles, pundekautfiles, treatments, vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations,susut,hozims) {
                         this.horse = horse;
                         this.farms = farms;
                         this.horses = horses;
@@ -207,6 +207,8 @@
                         this.inseminations = inseminations;
 
                         this.susut = susut;
+
+                        this.hozims = hozims;
                         
                         
                         
@@ -254,6 +256,10 @@
 
                         inseminations: function (horsesService, $stateParams) {
                             return horsesService.getHorse($stateParams.id, 11);
+                        },
+
+                        hozims: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 12);
                         },
                         susut: function (horsesService) {
                             return horsesService.getSusut();

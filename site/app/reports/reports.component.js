@@ -1408,7 +1408,7 @@
                                         self.getHebStatus(status),
                                         self.getHebHMO(studentHMO),
                                         self.getPartaniK(lesson.statuses),
-                                        lesson.lessprice,
+                                        status.LessPrice,
                                         status.OfficeDetails,
                                     ]);
                                 }

@@ -881,10 +881,24 @@
                 if (event.IsMazkirut == "1") {
 
                     if (jsEvent.target.tagName == "INPUT") {
+                        //במידה ויש 
                         if (event.details.indexOf("@simbol") == "-1") {
                             event.details = event.details.replace("checked", "@simbol");
+
+                            event.details = event.details.replace($(jsEvent.target).attr("title"), "עדיין לא בוצע");
+
+                          
+                           // alert($(jsEvent.target).attr("title"));
+
                         } else {
                             event.details = event.details.replace("@simbol", "checked");
+
+                           
+                            let current_datetime = new Date();
+                            var month = current_datetime.getMonth() + 1;
+                            let formatted_date = current_datetime.getDate() + "/" + ((month<10)?("0" + month):month) + "/" + current_datetime.getFullYear() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();
+                           
+                            event.details = event.details.replace("עדיין לא בוצע", formatted_date);
                         }
 
                         this.updateLesson(event);

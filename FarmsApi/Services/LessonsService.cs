@@ -91,7 +91,8 @@ namespace FarmsApi.Services
                             Matarot = l.Matarot,
                             Mahalak = l.Mahalak,
                             HearotStatus = l.HearotStatus,
-                            Mashov = l.Mashov
+                            Mashov = l.Mashov,
+                            LessPrice = l.Price
                         }).Distinct().ToArray();
                         var studentsArray = students.Select(s => s.StudentName).ToArray();
                         var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName != null).Select(l => new { HorseName = l.HorseName }).ToArray();
@@ -120,7 +121,10 @@ namespace FarmsApi.Services
                                 Matarot = s.Matarot,
                                 Mahalak = s.Mahalak,
                                 HearotStatus = s.HearotStatus,
-                                Mashov = s.Mashov
+                                Mashov = s.Mashov,
+                                LessPrice = s.LessPrice
+                               
+
                             }).ToArray(),
                             title = (studentsArray.Length > 0 ? string.Join("", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : ""),
                             PrevNext = Lesson.PrevNext,
@@ -270,6 +274,9 @@ namespace FarmsApi.Services
                                 StudentLesson.Details = Status["details"].Value<string>();
 
                                 StudentLesson.IsComplete = Status["isComplete"].Value<int>();
+
+
+                                InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס מהכרטיס  " + StudentLesson.IsComplete, StudentLesson);
                             }
 
                             if (Status["officedetails"] != null)
@@ -279,8 +286,13 @@ namespace FarmsApi.Services
 
 
                             Context.Entry(StudentLesson).State = System.Data.Entity.EntityState.Modified;
+
+                           
                         }
                     }
+
+
+
                     Context.SaveChanges();
                 }
             }
@@ -415,7 +427,7 @@ namespace FarmsApi.Services
                     //}
                     foreach (var sl in ParentStudents)
                     {
-                        InsertIntoLog(ChildLesson.Id, 2, Context, sl);
+                        InsertIntoLog(ChildLesson.Id, 2, Context, "עדכון שעורים נלווים", sl);
                     }
 
                 }
@@ -565,7 +577,7 @@ namespace FarmsApi.Services
 
                     StudentLessons sl = new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]), HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]), OfficeDetails = StatusData[4] };
                     Context.StudentLessons.Add(sl);
-                    InsertIntoLog(LessonId, 2, Context, sl);
+                    InsertIntoLog(LessonId, 2, Context," עדכון סטטוס  " + StatusData[2], sl);
 
 
                 }
@@ -600,7 +612,7 @@ namespace FarmsApi.Services
 
                     if (!exists)
                     {
-                        InsertIntoLog(item.Lesson_Id, 4, context, item);
+                        InsertIntoLog(item.Lesson_Id, 4, context,"הורדת תלמיד מקבוצה", item);
 
                         context.StudentLessons.Remove(item);
                     }
@@ -616,7 +628,7 @@ namespace FarmsApi.Services
 
                         var slin = new StudentLessons() { Lesson_Id = l.Id, User_Id = itemStudId, Status = "", Details = "", IsComplete = 0, HorseId = null, OfficeDetails = "" };
                         context.StudentLessons.Add(slin);
-                        InsertIntoLog(l.Id, 2, context, slin);
+                        InsertIntoLog(l.Id, 3, context, "הוספת תלמיד לקבוצה", slin);
                     }
 
                 }
@@ -657,7 +669,7 @@ namespace FarmsApi.Services
             Context.Lessons.Add(newLesson);
             Context.SaveChanges();
             Lesson["id"] = newLesson.Id;
-            InsertIntoLog(newLesson.Id, 1, Context, null);
+            InsertIntoLog(newLesson.Id, 1, Context,"שיעור חדש", null);
             Context.SaveChanges();
 
 
@@ -665,7 +677,7 @@ namespace FarmsApi.Services
 
         }
 
-        private static void InsertIntoLog(int LessonId, int Type, Context context, StudentLessons sl = null)
+        private static void InsertIntoLog(int LessonId, int Type, Context context,string Details, StudentLessons sl = null)
         {
             var Lesson = context.Lessons.Where(x => x.Id == LessonId).FirstOrDefault();
 
@@ -675,6 +687,7 @@ namespace FarmsApi.Services
             lg.LessonDate = Lesson.Start;
             lg.LessonId = LessonId;
             lg.Instructor_Id = Lesson.Instructor_Id;
+            lg.Details = Details;
             if (sl != null)
             {
                 lg.StudentId = sl.User_Id;
@@ -779,7 +792,7 @@ namespace FarmsApi.Services
                         // Delete Lesson
                         Context.Lessons.Remove(Lesson);
 
-                        InsertIntoLog(Lesson.Id, 5, Context, null);
+                        InsertIntoLog(Lesson.Id, 5, Context,"מחיקת שיעור", null);
                         Context.SaveChanges();
                     }
                 }
@@ -882,7 +895,7 @@ namespace FarmsApi.Services
 
             string html = @"<div style='border:solid 1px gray;border-radius:5px;padding:2px;margin-bottom:2px;background:white'>
                                       
-                                         <div style ='font-weight:bold;'><input type='checkbox' @simbol />&nbsp;" + Schedular.Title + @"</div></div>";
+                                         <div style ='font-weight:bold;'><input type='checkbox' @simbol title='עדיין לא בוצע' />&nbsp;" + Schedular.Title + @"</div></div>";
 
 
             // Context.Configuration.AutoDetectChangesEnabled = false;

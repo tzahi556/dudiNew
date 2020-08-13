@@ -32,6 +32,7 @@
             pregnanciesstates: '<',
             inseminations: '<',
             susut: '<',
+            hozims: '<',
         }
     });
 
@@ -71,6 +72,12 @@
         this.removeTreatment = _removeTreatment.bind(this);
         this.initNewTreatment = _initNewTreatment.bind(this);
 
+        this.addHozims = _addHozims.bind(this);
+        this.removeHozims = _removeHozims.bind(this);
+        this.initNewHozims = _initNewHozims.bind(this);
+        this.getHozim = _getHozim.bind(this);
+        
+
 
         this.addInsemination = _addInsemination.bind(this);
         this.removeInsemination = _removeInsemination.bind(this);
@@ -92,6 +99,9 @@
 
         this.removeFile = _removeFile.bind(this);
         this.vaccinationsHorse = sharedValues.vaccinations;
+
+        this.hozimTypes = sharedValues.hozimTypes;
+
         this.uploadsUri = sharedValues.apiUrl + '/uploads/'
         this.scope = $scope;
 
@@ -102,6 +112,9 @@
         //}.bind(this));
 
         // init
+
+
+       
 
         this.getStatesByFind = _getStatesByFind.bind(this);
         this.getCurrentPreg = _getCurrentPreg.bind(this);
@@ -166,6 +179,8 @@
             this.initNewPregnancyState();
 
             this.initNewInsemination();
+
+            this.initNewHozims();
 
             this.horse.Active = this.horse.Active || 'active';
 
@@ -642,6 +657,10 @@
             }
         }
 
+
+
+
+
         function _initNewShoeing() {
             this.newShoeing = {};
             this.newShoeing.Date = new Date();
@@ -722,13 +741,15 @@
         }
 
         function _addPregnancy() {
-
+           
             this.pregnancies = this.pregnancies || [];
             this.stopPregnancy();
 
             pregnancyStates = this.getStates(this.newPregnancy);
             var startDate = this.newPregnancy.Date;
 
+
+            //alert(this.newPregnancy.HozimId);
 
             this.newPregnancy.HorseId = this.horse.Id;
             horsesService.insertnewpregnancie(this.newPregnancy, false).then(function (pregnancy) {
@@ -805,8 +826,56 @@
             }
         }
 
+       
 
 
+
+        function _addHozims() {
+            this.hozims = this.hozims || [];
+
+            this.hozims.push(this.newHozim);
+            this.initNewHozims();
+        }
+
+        function _removeHozims(hozim) {
+            for (var i in this.hozims) {
+                if (this.hozims[i] == hozim) {
+                    this.hozims.splice(i, 1);
+                }
+            }
+        }
+
+        function _initNewHozims() {
+            this.newHozim = {};
+            this.newHozim.Date = new Date();
+
+            this.newHozim.Type = "";
+            this.newHozim.FatherHorseId = "";
+            this.newHozim.Cost = "";
+            this.newHozim.CostFather = "";
+            this.newHozim.CostHava = "";
+
+            if ($scope.hozimsForm != null) {
+                $scope.hozimsForm.$setPristine();
+            }
+        }
+
+        function _getHozim() {
+
+            for (var i in this.hozims) {
+
+               // if (this.hozims.length>0)debugger
+                this.hozims[i].TypeName = this.hozimTypes.filter(x => x.id == this.hozims[i].Type)[0].name;
+                this.hozims[i].FatherName = this.horses.filter(x => x.Id == this.hozims[i].FatherHorseId)[0].Name;
+                this.hozims[i].Date = moment(this.hozims[i].Date);
+
+            }
+
+
+
+            return this.hozims;
+        }
+        
 
         function _submit(isWithoutalert) {
 
@@ -820,7 +889,7 @@
                 this.horse.OutDate.setHours(this.horse.OutDate.getHours() + 3);
 
             horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
-                this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations).then(function (horse) {
+                this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations,this.hozims).then(function (horse) {
                     //var origId = this.horse.Id;
                     //this.horse = horse;
                     this.createNotifications();

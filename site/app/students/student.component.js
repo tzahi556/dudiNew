@@ -1569,7 +1569,7 @@
                         }
                         if (self.user.Style == "phizi") {
                             // var styleObject = sharedValues.styles.filter(x => x.id == self.user.Style);   //this.getStyleObjectfromSharedValue
-                            self.newPayment.InvoiceDetails += " תשלום עבור " + self.newPayment.lessons + " טיפולי פיזוטרפיה "; //((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
+                            self.newPayment.InvoiceDetails += " תשלום עבור " + self.newPayment.lessons + " טיפולי פיזותרפיה "; //((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
                         }
 
                     }

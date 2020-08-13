@@ -338,15 +338,40 @@
         }
 
         function _countTotal() {
-          
-           
 
             self.newPayment.InvoiceSum = 0;
             self.newPayment.InvoiceDetails = '';
             if (self.newPayment.lessons || self.newPayment.month) {
+
+               
                 if (self.user.PayType == 'lessonCost') {
                     self.newPayment.InvoiceSum += self.newPayment.lessons * self.user.Cost;
-                    self.newPayment.InvoiceDetails += ((this.farm.Meta.IsRekivaTipulitInKabala && self.user.Style == "treatment") ? "רכיבה טיפולית - " : "") + self.newPayment.lessons + ' שיעורים ' + ((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
+                    // self.newPayment.InvoiceDetails += ((this.farm.Meta.IsRekivaTipulitInKabala && self.user.Style == "treatment") ? "רכיבה טיפולית - " : "") + self.newPayment.lessons + ' שיעורים ' + ((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");// "," + this.getLessonsDateNoPaid(self.newPayment.lessons);  //only for dev
+
+                    if (this.farm.Meta.IsRekivaTipulitInKabala) {
+
+                        if (self.user.Style == "treatment") {
+                            // var styleObject = sharedValues.styles.filter(x => x.id == self.user.Style);   //this.getStyleObjectfromSharedValue
+                            self.newPayment.InvoiceDetails += " תשלום עבור " + self.newPayment.lessons + " טיפולי רכיבה "; //((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
+                        }
+                        if (self.user.Style == "phizi") {
+                            // var styleObject = sharedValues.styles.filter(x => x.id == self.user.Style);   //this.getStyleObjectfromSharedValue
+                            self.newPayment.InvoiceDetails += " תשלום עבור " + self.newPayment.lessons + " טיפולי פיזותרפיה "; //((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
+                        }
+
+                    }
+
+                    if (this.farm.Meta.IsDateInKabala) {
+
+                        self.newPayment.InvoiceDetails += "," + this.getLessonsDateNoPaid(self.newPayment.lessons);
+
+                    }
+
+
+
+
+
+
 
                 }
                 else {
@@ -361,11 +386,6 @@
 
                         }
 
-                        //else {
-
-                        //    diffMonth += 1;
-                        //}
-
                         self.newPayment.InvoiceSum += self.user.Cost * ((diffMonth == 0) ? 1 : diffMonth);
                         self.newPayment.InvoiceDetails += 'חודש ' + moment(self.newPayment.month).format('DD/MM/YYYY') + ' עד חודש ' + moment(self.newPayment.untilmonth).format('DD/MM/YYYY');
 
@@ -377,20 +397,13 @@
 
                 }
             }
-
             if (this.expenses !== undefined) {
-                for (var expense of this.expenses.filter(function (expense) { return expense.Checked })) {
+                for (var expense of this.expenses.filter(function (expense) { return expense.Checked && expense.Price != expense.Sum })) {
 
-                    self.newPayment.InvoiceSum += expense.Price - ((!expense.Sum) ? 0 : expense.Sum);
+                    self.newPayment.InvoiceSum += expense.Price + ((!expense.ZikuySum) ? 0 : expense.ZikuySum) - ((!expense.Sum) ? 0 : expense.Sum);
                     self.newPayment.InvoiceDetails += ', ' + expense.Details;
                 }
             }
-            //if (self.expenses !== undefined) {
-            //    for (var expense of this.expenses.filter(function (expense) { return !expense.Paid && expense.Checked })) {
-            //        self.newPayment.InvoiceSum += expense.Price;
-            //        self.newPayment.InvoiceDetails += ', ' + expense.Details;
-            //    }
-            //}
 
         }
 
@@ -577,28 +590,55 @@
         }
 
         function _addPayment() {
+
+
+           
+
             this.disablBtn = true;
+
             var UserTypePaid = this.user.PayType;
-            this.newPayment.customer_name = this.user.FirstName + ' ' + this.user.LastName;
+            this.newPayment.customer_name = (this.user.Organzion ? (this.user.Organzion + "-") : "") + this.user.FirstName + ' ' + this.user.LastName;
             this.newPayment.customer_email = this.user.AnotherEmail;
             this.newPayment.customer_address = this.user.Address;
+            this.newPayment.UserId = this.user.Id;
+
+            // הגדרות בשביל מס' לקוח
+            this.newPayment.customer_crn = this.user.IdNumber;
+            this.newPayment.c_accounting_num = this.user.ClientNumber;
+
+            // הוספת טאג 
+            this.newPayment.tag_id = this.tag_id;
+
+
+            this.newPayment.isZikuy = false;
+
+
             this.newPayment.comment =
                 'מס לקוח: ' + (this.user.ClientNumber || "") +
                 ', ת.ז.: ' + (this.user.IdNumber || "");
 
 
-
             var newPayment = angular.copy(this.newPayment);
             newPayment.cc_type_name = this.getccTypeName(this.newPayment.cc_type);
-
-
+            newPayment.doc_type = "MasKabala";// this.getRealDocType(newPayment);//(newPayment.isMasKabala) ? "MasKabala" : ((newPayment.isKabala || newPayment.isKabalaTroma) ? "Kabala" : "");
 
             var TempSum = newPayment.InvoiceSum;
-            if (newPayment.isMasKabala || newPayment.isKabala || newPayment.isKabalaTroma) {
+
+           
+
+
+
+            if (newPayment.isMasKabala) {
+
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
-                    if (this.newPayment.payment_type == 'ashrai') {
+
+                    if (response.data == "-1") {
+                        alert('לא ניתן להנפיק מסמך , תעודת זהות קיימת במערכת');
+                        return;
+                    }
+                    if (this.newPayment.payment_type == 'ashrai' || this.newPayment.payment_type == 'token') {
 
                         if (response.data.errMsg) {
                             alert("תקלה בסליקת האשראי!");
@@ -615,16 +655,22 @@
                         left = left > 0 ? left / 2 : 0;
                         if (response.data.url && !this.payWin) {
                             this.payWin = true;
+
+                            //response.data.url
+                            //http://localhost:52476/closeToken.html
+                            http://localhost:52476/index.html#/closetoken
+
+                            // var testUrl = "http://localhost:52476/index.html#/closetoken?aa=55&UserId="+this.user.Id+"&cc_token=4cf8e168-261e-4613-8d20-000332986b24&cc_type_id=2&cc_type_name=%D7%95%D7%99%D7%96%D7%94+%D7%9B.%D7%90.%D7%9C.&cc_4_digits=0000&cc_payer_name=Card+Owner&cc_payer_id=040617649&cc_expire_month=10&cc_expire_year=2021&success=1";
                             var payWind = window.open(response.data.url, "Upload Chapter content", "width=600,height=600" + ",top=" + top + ",left=" + left);
 
                             var timer = setInterval(function () {
+
+
                                 if (payWind.closed) {
+
                                     $scope.$ctrl.payWin = false;
                                     clearInterval(timer);
-
                                     $scope.$ctrl.winPayClose();
-                                    // this.winPayClose();
-
                                 }
                             }, 1000);
 
@@ -634,18 +680,35 @@
 
                     }
 
-                    if (response.data.errMsg) {
-                        alert("תקלה בהפקת חשבוניות!");
-                        return;
-                    }
+                    //if (this.newPayment.payment_type == 'tokenBuy') {
+
+                    //    if (!response.data.success) {
+
+                    //        alert("תקלה בחיוב הטוקן!");
+                    //        return;
+                    //    }
+
+                    //    this.newPayment.payment_type = 'token';
+                    //}
+
+                    //if (response.data.errMsg) {
+
+                    //    alert("תקלה בהפקת חשבוניות!");
+                    //    return;
+                    //}
+
+
 
 
                     newPayment.InvoiceNum = response.data.doc_number;
                     newPayment.InvoicePdf = response.data.pdf_link;
                     newPayment.doc_uuid = response.data.doc_uuid;
 
+
+
+
                     this.expenses.map(function (expense) {
-                        if (expense.Checked) { //&& !expense.Paid !צחי הוריד בינתיים
+                        if (expense.Checked && expense.Price != expense.Sum) { //&& !expense.Paid !צחי הוריד בינתיים
 
                             expense.Paid = newPayment.InvoiceNum;
                             expense.Sum = (!expense.Sum) ? 0 : expense.Sum;
@@ -664,29 +727,24 @@
 
                         }
                     });
-
-
-
                     this.payments = this.payments || [];
+                   // if (newPayment.isZikuy) newPayment.InvoiceSum = newPayment.InvoiceSum * -1;
                     this.payments.push(newPayment);
-                    this.unpaidLessons =eval(this.unpaidLessons) + eval(newPayment.InvoiceSum);
-                    this.initPaymentForm();
-
-                    //  this.countAllCredits(true);
+                   // this.createNewPayment(newPayment);
                     this.submit();
 
+                    this.initPaymentForm();
+                    this.countAllCredits();
                 }.bind(this));
-            } else {
+            }
+
+            else {
 
                 this.payments = this.payments || [];
-                //  newPayment.ExpenseSum = 0;
-
                 this.expenses.map(function (expense) {
-                    if (expense.Checked) { //&& !expense.Paid !צחי הוריד בינתיים
-
+                    if (expense.Checked && expense.Price != expense.Sum) { //&& !expense.Paid !צחי הוריד בינתיים
                         expense.Paid = newPayment.InvoiceNum;
                         expense.Sum = (!expense.Sum) ? 0 : expense.Sum;
-
                         var Diff = expense.Price - expense.Sum;
 
                         if (TempSum >= Diff) {
@@ -701,20 +759,22 @@
 
                     }
                 });
-
-
+                if (newPayment.isZikuy) newPayment.InvoiceSum = newPayment.InvoiceSum * -1;
                 this.payments.push(newPayment);
-                this.unpaidLessons = eval(this.unpaidLessons) + eval(newPayment.InvoiceSum);
+               // this.createNewPayment(newPayment);
+                this.submit();
+
                 this.initPaymentForm();
-                // this.countAllCredits(true);
-                 this.submit();
+                this.countAllCredits();
             }
+
+
         }
 
         function _submit() {
             this.studentid = null;
          
-            usersService.updateUserMultiTables(this.user, this.payments, [], [], this.expenses, [], [],[]).then(function (user) {
+            usersService.updateUserMultiTables(this.user, this.payments, [], [], this.expenses,[],[],[]).then(function (user) {
               
                 this.user = user;
                
@@ -723,34 +783,7 @@
             }.bind(this));
 
           
-          //  this.studentId = null;
           
-           
-            //this.user.Role = 'student';
-            //this.user.Email = this.user.IdNumber;
-            //this.user.Password = this.user.IdNumber;
-
-
-            //this.user.AccountStatus = this.totalExpenses * -1 + this.unpaidLessons + this.monthlyBalance;
-
-
-            //var totalFromExpenses = 0;
-            //var totalFromExpensesMinus = 0;
-
-            //usersService.updateUser(this.user).then(function (user) {
-
-            //    this.user = user;
-            //    this.closeCallback("", "");
-            //    // this.createNotifications();
-            //    // this.initStudent();
-            //    alert('נשמר בהצלחה');
-
-
-
-
-
-            //}.bind(this));
-            //this.studentid = null;
         }
     }
 

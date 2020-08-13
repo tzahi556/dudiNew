@@ -449,10 +449,67 @@ namespace FarmsApi.Services
             List<HorseInseminations> hti = dataObj[10].ToObject<List<HorseInseminations>>();
             UpdateHorseInseminationsObject(hti, h);
 
+
+            List<HorseHozims> hzm = dataObj[11].ToObject<List<HorseHozims>>();
+            UpdateHorseHozimsObject(hzm, h);
+
             return h;
         }
 
+        private static void UpdateHorseHozimsObject(List<HorseHozims> objList, Horse f)
+        {
+            using (var Context = new Context())
+            {
 
+                foreach (HorseHozims item in objList)
+                {
+
+                    item.HorseId = f.Id;
+
+                    if (item.Id == 0)
+                    {
+                        //string name = " פירזול ";
+                        //int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
+                        //item.ExpensesId = ExpensesId;
+                        Context.HorseHozims.Add(item);
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    var result = Context.HorseHozims.Where(p => p.HorseId == f.Id).ToList();
+                    IEnumerable<HorseHozims> differenceQuery = result.Except(objList);
+
+                    foreach (HorseHozims item in differenceQuery)
+                    {
+                        //DeleteFromExpensive(item.ExpensesId, item.IsPaid);
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
+                Context.SaveChanges();
+
+
+            }
+        }
 
         private static void UpdateHorseFilesObject(List<HorseFiles> objList, Horse f)
         {
@@ -1409,6 +1466,24 @@ namespace FarmsApi.Services
             //using (var Context = new Context())
             //    return Context.HorseShoeings.Where(u => u.HorseId == Id).ToList();
         }
+
+
+        public static List<HorseHozims> GetHorseHozims(int Id)
+        {
+            using (var Context = new Context())
+            {
+                SqlParameter TypePara = new SqlParameter("Type", 12);
+                SqlParameter HorseIdPara = new SqlParameter("HorseId", Id);
+                var query = Context.Database.SqlQuery<HorseHozims>
+                ("GetHorseObject  @Type,@HorseId", TypePara, HorseIdPara);
+                var Objects = query.ToList();
+                return Objects;
+
+            }
+          
+        }
+
+        
 
         public static List<HorseTilufings> GetHorseTilufings(int Id)
         {

@@ -100,8 +100,11 @@ namespace FarmsApi.Services
                 return Ok(HorsesService.GetHorsePregnanciesStates(id));
             if (type == 11)
                 return Ok(HorsesService.GetHorseInseminations(id));
-            
-            if(id==0)
+
+            if (type == 12)
+                return Ok(HorsesService.GetHorseHozims(id));
+
+            if (id==0)
                 return Ok(new Horse());
           
             return Ok(HorsesService.GetHorse(id));

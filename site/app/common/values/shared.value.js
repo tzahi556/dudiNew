@@ -21,6 +21,17 @@
             { id: 'instructor', name: 'מדריך', showInUsers: false, sysAdminOnly: true, homePage: 'lessons' },
             { id: 'student', name: 'תלמיד', showInUsers: false, sysAdminOnly: true, homePage: 'lessons' },
         ],
+
+
+        hozimTypes: [
+            { id: '1', name: 'הקפצה', hide: false },
+            { id: '2', name: 'זירמה קפואה', hide: false },
+            { id: '3', name: 'חליבה', hide: true }
+          
+        ],
+
+
+
         lessonStatuses: [
             { id: 'attended', name: 'הגיע', hide: false },
             { id: 'notAttended', name: 'לא הגיע', hide: false },
@@ -38,7 +49,7 @@
             { id: 'english', name: 'אינגליש' },
             { id: 'course', name: 'קורס מדריכים' },
             { id: 'camp', name: 'מחנה רכיבה' },
-            { id: 'phizi', name: 'פיזוטרפיה' },
+            { id: 'phizi', name: 'פיזותרפיה' },
             { id: 'horseHolder', name: 'אחזקת סוס (פנסיון)' },
             { id: 'treatmentPsychological', name: 'טיפול פסיכולוגי' },
             { id: 'treatmentPsychological3-9', name: 'טיפול פסיכולוגי 3-9' },

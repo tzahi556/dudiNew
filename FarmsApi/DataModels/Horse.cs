@@ -109,6 +109,26 @@ namespace FarmsApi.DataModels
     }
 
 
+    public class HorseHozims
+    {
+        public int Id { get; set; }
+        public int HorseId { get; set; }
+        public int Type { get; set; }
+        public DateTime? Date { get; set; }
+        public int FatherHorseId { get; set; }
+        public double? Cost { get; set; }
+        public double? CostHava { get; set; }
+        public double? CostFather { get; set; }
+        public int ExpensesId { get; set; }
+        
+        [NotMapped]
+        public bool IsPaid { get; set; }
+
+       
+
+    }
+
+    
     public class HorseFiles
     {
         public int Id { get; set; }
