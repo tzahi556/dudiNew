@@ -411,7 +411,7 @@ namespace FarmsApi.Services
         }
 
 
-        public static Horse UpdateHorseMultiTables(JArray dataObj)
+        public static List<HorseHozims> UpdateHorseMultiTables(JArray dataObj)
         {
 
 
@@ -451,12 +451,12 @@ namespace FarmsApi.Services
 
 
             List<HorseHozims> hzm = dataObj[11].ToObject<List<HorseHozims>>();
-            UpdateHorseHozimsObject(hzm, h);
 
-            return h;
+
+            return UpdateHorseHozimsObject(hzm, h);
         }
 
-        private static void UpdateHorseHozimsObject(List<HorseHozims> objList, Horse f)
+        private static List<HorseHozims> UpdateHorseHozimsObject(List<HorseHozims> objList, Horse f)
         {
             using (var Context = new Context())
             {
@@ -468,9 +468,19 @@ namespace FarmsApi.Services
 
                     if (item.Id == 0)
                     {
-                        //string name = " פירזול ";
-                        //int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
-                        //item.ExpensesId = ExpensesId;
+                        string name = " תשלום עבור חוזה  ";
+                        int? ExpensesId = AddToExpensesTable(item.Cost, 0, item.HorseId, f.Name, name, item.Date);
+                        item.ExpensesId = ExpensesId;
+
+                        Horse hsSusa = Context.Horses.Where(x=>x.Id==item.HorseId).FirstOrDefault();
+                        Horse hsSus = Context.Horses.Where(x => x.Id == item.FatherHorseId).FirstOrDefault();
+
+                        HorseInseminations hi = new HorseInseminations();
+                        hi.HorseId = hsSus.Id;
+                        hi.HalivaDate = item.Date;
+                        hi.PregnanciesHorseId = hsSusa.Id;
+                        Context.HorseInseminations.Add(hi);
+
                         Context.HorseHozims.Add(item);
 
                     }
@@ -507,7 +517,7 @@ namespace FarmsApi.Services
 
                 Context.SaveChanges();
 
-
+                return Context.HorseHozims.Where(x => x.HorseId == f.Id).ToList();
             }
         }
 
@@ -1013,9 +1023,6 @@ namespace FarmsApi.Services
 
                         }
 
-
-
-
                         if (item.StateId == "birth")
                         {
 
@@ -1032,21 +1039,21 @@ namespace FarmsApi.Services
                         if (item.StateId == "insemination")
                         {
 
-                            HorseInseminations LastInseminations = Context.HorseInseminations.Where(h => h.PregnanciesHorseId == item.HorseId && h.InseminationDate == null).OrderByDescending(y => y.InseminationDate).FirstOrDefault();
-                            if (LastInseminations != null)
-                            {
-                                if (LastInseminations.Cost > 0)
-                                {
+                            //HorseInseminations LastInseminations = Context.HorseInseminations.Where(h => h.PregnanciesHorseId == item.HorseId && h.InseminationDate == null).OrderByDescending(y => y.InseminationDate).FirstOrDefault();
+                            //if (LastInseminations != null)
+                            //{
+                            //    if (LastInseminations.Cost > 0)
+                            //    {
 
-                                    int? ExpensesId = AddToExpensesTable(LastInseminations.Cost, 0, item.HorseId, f.Name, " הזרעה ", item.Date);
-                                    LastInseminations.ExpensesId = ExpensesId;
+                            //        int? ExpensesId = AddToExpensesTable(LastInseminations.Cost, 0, item.HorseId, f.Name, " הזרעה ", item.Date);
+                            //        LastInseminations.ExpensesId = ExpensesId;
 
-                                }
+                            //    }
 
-                                LastInseminations.PregnancId = item.HorsePregnanciesId;
-                                LastInseminations.InseminationDate = item.Date;
-                                Context.Entry(LastInseminations).State = System.Data.Entity.EntityState.Modified;
-                            }
+                            //    LastInseminations.PregnancId = item.HorsePregnanciesId;
+                            //    LastInseminations.InseminationDate = item.Date;
+                            //    Context.Entry(LastInseminations).State = System.Data.Entity.EntityState.Modified;
+                            //}
 
                         }
 

@@ -749,7 +749,7 @@
             var startDate = this.newPregnancy.Date;
 
 
-            //alert(this.newPregnancy.HozimId);
+          //  alert(this.newPregnancy.HozimId);
 
             this.newPregnancy.HorseId = this.horse.Id;
             horsesService.insertnewpregnancie(this.newPregnancy, false).then(function (pregnancy) {
@@ -835,6 +835,16 @@
 
             this.hozims.push(this.newHozim);
             this.initNewHozims();
+
+            this.submit(true);
+
+            //var self = this;
+            //horsesService.getHorse(this.horse.Id, 12).then(function (hozims) {
+              
+            //    self.hozims = hozims;
+            //}.bind(this));
+
+           
         }
 
         function _removeHozims(hozim) {
@@ -889,12 +899,15 @@
                 this.horse.OutDate.setHours(this.horse.OutDate.getHours() + 3);
 
             horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
-                this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations,this.hozims).then(function (horse) {
+                this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations,this.hozims).then(function (hozims) {
                     //var origId = this.horse.Id;
                     //this.horse = horse;
                     this.createNotifications();
                     //this.initHorse();
                     if (!isWithoutalert) alert('נשמר בהצלחה');
+
+                    this.hozims = hozims;
+
 
                 }.bind(this));
 

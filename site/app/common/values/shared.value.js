@@ -24,9 +24,9 @@
 
 
         hozimTypes: [
-            { id: '1', name: 'הקפצה', hide: false },
+            { id: '1', name: 'חליבה', hide: false },
             { id: '2', name: 'זירמה קפואה', hide: false },
-            { id: '3', name: 'חליבה', hide: true }
+            { id: '3', name: 'הקפצה', hide: true }
           
         ],
 

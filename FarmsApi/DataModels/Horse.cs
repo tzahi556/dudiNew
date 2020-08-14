@@ -119,12 +119,12 @@ namespace FarmsApi.DataModels
         public double? Cost { get; set; }
         public double? CostHava { get; set; }
         public double? CostFather { get; set; }
-        public int ExpensesId { get; set; }
+        public int? ExpensesId { get; set; }
         
         [NotMapped]
         public bool IsPaid { get; set; }
+        public int? Trial { get; set; }
 
-       
 
     }
 
@@ -254,6 +254,9 @@ namespace FarmsApi.DataModels
         public string SurrogateName { get; set; }
 
         public string Comments { get; set; }
+
+        public int? HozimId { get; set; }
+        
 
     }
 
