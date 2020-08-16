@@ -167,7 +167,7 @@
             this.horse.OutDate = moment(this.horse.OutDate).startOf('day').toDate();
            
             
-          
+       
 
 
             this.initNewTreatment();

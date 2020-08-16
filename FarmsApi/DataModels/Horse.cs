@@ -120,8 +120,7 @@ namespace FarmsApi.DataModels
         public double? CostHava { get; set; }
         public double? CostFather { get; set; }
         public int? ExpensesId { get; set; }
-        
-        [NotMapped]
+      
         public bool IsPaid { get; set; }
         public int? Trial { get; set; }
 

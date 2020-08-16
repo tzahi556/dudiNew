@@ -1479,7 +1479,7 @@ namespace FarmsApi.Services
         {
             using (var Context = new Context())
             {
-                SqlParameter TypePara = new SqlParameter("Type", 12);
+                SqlParameter TypePara = new SqlParameter("Type", 122);
                 SqlParameter HorseIdPara = new SqlParameter("HorseId", Id);
                 var query = Context.Database.SqlQuery<HorseHozims>
                 ("GetHorseObject  @Type,@HorseId", TypePara, HorseIdPara);
