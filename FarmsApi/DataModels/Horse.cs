@@ -89,8 +89,8 @@ namespace FarmsApi.DataModels
 
 
         //_getVaccineDate('flu', horse),
-        //                _getVaccineDate('nile', horse),
-        //                _getVaccineDate('tetanus', horse),
+        //  _getVaccineDate('nile', horse),
+        //   _getVaccineDate('tetanus', horse),
         //                _getVaccineDate('rabies', horse),
         //                _getVaccineDate('herpes', horse),
         //                _getVaccineDate('worming', horse),
@@ -120,7 +120,8 @@ namespace FarmsApi.DataModels
         public double? CostHava { get; set; }
         public double? CostFather { get; set; }
         public int? ExpensesId { get; set; }
-      
+        public int? ExpensesIdHava { get; set; }
+        
         public bool IsPaid { get; set; }
         public int? Trial { get; set; }
 
@@ -288,6 +289,8 @@ namespace FarmsApi.DataModels
         public int Id { get; set; }
         public int HorseId { get; set; }
 
+        public int? HozimId { get; set; }
+
         public DateTime? HalivaDate { get; set; }
         public DateTime? InseminationDate { get; set; }
 
@@ -296,7 +299,7 @@ namespace FarmsApi.DataModels
         public int? PregnanciesHorseId { get; set; }
 
         public double? Cost { get; set; }
-
+        public double? Sum { get; set; }
         public int? ExpensesId { get; set; }
 
         public int? StatusLeda { get; set; }// 0 התחלה 
@@ -317,7 +320,7 @@ namespace FarmsApi.DataModels
         public DateTime? HalivaDate { get; set; }
         public DateTime? InseminationDate { get; set; }
 
-       
+        public int? Type { get; set; }
         public string Susa { get; set; }
 
       
@@ -335,11 +338,11 @@ namespace FarmsApi.DataModels
         public bool IsPaid { get; set; }
 
         public double? Cost { get; set; }
-
+        public double? Sum { get; set; }
         public int? PregnancId { get; set; }
 
+        public int? HozimId { get; set; }
 
-        
     }
 
 

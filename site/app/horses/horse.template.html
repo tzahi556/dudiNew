@@ -536,13 +536,14 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th>מס'</th>
                                 <th>תאריך</th>
                                 <th>סוג</th>
                                 <th>סוס אב</th>
                                 <th>נסיונות</th>
                                 <th>עלות כוללת</th>
-                                <th>עלות לבעל הסוס</th>
-                                <th>עלות לחווה</th>
+                                <th>תשלום לבעל הסוס</th>
+                                <th>תשלום לחווה</th>
                                 <th> שולם</th>
                                 <th></th>
                             </tr>
@@ -550,13 +551,14 @@
                         <tbody  ng-repeat="hozim in $ctrl.getHozim()|orderBy:'-Date'">
                           
                             <tr>
+                                <td>{{hozim.Id}}</td>
                                 <td>{{hozim.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{hozim.TypeName}}</td>
                                 <td>
 
 
                                     <a ui-sref="horse({id:hozim.FatherHorseId})">{{hozim.FatherName}}</a>
-                                  
+
 
                                 </td>
                                 <td>{{hozim.Trial}}</td>
@@ -600,11 +602,11 @@
                             </div>
 
                             <div class="form-group col-md-3">
-                                <input type="text" class="form-control" ng-model="$ctrl.newHozim.CostFather" placeholder="עלות לבעל סוס" />
+                                <input type="text" class="form-control" ng-model="$ctrl.newHozim.CostFather" placeholder="תשלום לבעל סוס" />
                             </div>
 
                             <div class="form-group col-md-3">
-                                <input type="text" class="form-control" ng-model="$ctrl.newHozim.CostHava" placeholder="עלות לחווה" />
+                                <input type="text" class="form-control" ng-model="$ctrl.newHozim.CostHava" placeholder="תשלום לחווה" />
                             </div>
 
 
@@ -627,6 +629,7 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th>מס' חוזה</th>
                                 <th>תאריך התחלה</th>
                                 <th>שלב אחרון</th>
                                 <th>אב</th>
@@ -637,6 +640,7 @@
                         </thead>
                         <tbody ng-click="showDiv = !showDiv" ng-repeat="pregnancy in $ctrl.pregnancies track by $index">
                             <tr style="cursor:pointer" ng-class="$ctrl.pregnancyStatus(pregnancy)">
+                                <td>{{pregnancy.HozimId}}</td>
                                 <td>{{$ctrl.getStatesByFind(pregnancy.Id,0).Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{$ctrl.getStatesByFind(pregnancy.Id,-1).Date | ildate: 'DD/MM/YYYY'}}: {{$ctrl.getStatesByFind(pregnancy.Id,-1).name}}</td>
                                 <td>{{pregnancy.Father}}</td>
@@ -769,8 +773,37 @@
                     </div>
                     <table class="table">
                         <thead>
+
                             <tr>
-                                <th>תאריך חליבה</th>
+                                <td colspan="2">
+                                    מתאריך:<br>
+                                    <input type="date" ng-model="$ctrl.dateFrom">
+                                </td>
+                                <td colspan="2">
+                                    עד תאריך:<br>
+                                    <input type="date" ng-model="$ctrl.dateTo">
+                                </td>
+                                <td colspan="6">
+                                </td>
+                                <!--<td colspan="4">
+                <br>
+                <button class="btn btn-primary btn-xs" ng-click="showDetails=!showDetails;">{{showDetails ? 'הצג הערות משרד' : 'הצג הערות מדריך'}} </button>
+                <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printLessons()"> הדפסה </button>
+                <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-click="$ctrl.printExcel()"> Excel </button>
+
+            </td>-->
+                            </tr>
+
+
+
+
+
+
+
+
+                            <tr>
+                                <th>תאריך</th>
+                                <th>סוג</th>
                                 <th>תאריך הזרעה</th>
                                 <th>שם סוסה</th>
                                 <th>מס' סידורי</th>
@@ -779,14 +812,16 @@
                                 <th>צפי משוער לידה</th>
                                 <th>מחיר</th>
                                 <th>שולם</th>
-                                
+                                <!--<th></th>-->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody ng-click="showDivIns = !showDivIns" ng-repeat="insemination in $ctrl.inseminations | dateRange:$ctrl.dateFrom:$ctrl.dateTo">
 
-                            <!--{{(insemination.HalivaDate)?'success':''}}-->
-                            <tr  ng-class="$ctrl.getClassForinsemination(insemination)" ng-repeat="insemination in $ctrl.inseminations track by $index">
+
+                            <tr ng-class="$ctrl.getClassForinsemination(insemination)" ng-if="insemination.HalivaDate">
+
                                 <td><span ng-if="insemination.HalivaDate">{{insemination.HalivaDate | ildate: 'DD/MM/YYYY'}}</span></td>
+                                <td><span ng-if="insemination.HalivaDate">{{$ctrl.getInseminationTypeName(insemination.Type)}}</span></td>
                                 <td><span ng-if="insemination.InseminationDate">{{insemination.InseminationDate | ildate: 'DD/MM/YYYY'}}</span></td>
 
                                 <td>{{insemination.Susa}}</td>
@@ -797,35 +832,102 @@
                                 <td><span ng-if="insemination.LedaDate">{{insemination.LedaDate | ildate: 'DD/MM/YYYY'}}</span></td>
 
                                 <td>{{insemination.Cost}}</td>
-                                <td> <i class="fa fa-check-circle-o green" ng-show="insemination.IsPaid=='1'" aria-hidden="true"></i></td>
+                                <td>{{insemination.Sum}}</td>
                                 <!--<td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeInsemination(insemination)">הסר</button></td>-->
                             </tr>
+
+
+                            <tr ng-show="showDivIns">
+
+                                <td colspan="10" style="background:#ffcc99">
+                                    <table class="table">
+
+                                        <thead>
+                                            <tr>
+
+                                                <th>תאריך הזרעה</th>
+                                                <th>שם סוסה</th>
+                                                <th>מס' סידורי</th>
+                                                <th>בעלים</th>
+                                                <th>תאריך קליטה</th>
+                                                <th>צפי משוער לידה</th>
+
+                                                <!--<th></th>-->
+                                            </tr>
+                                        </thead>
+
+
+
+                                        <tr ng-repeat="inse in $ctrl.getCurrentHozim(insemination.HozimId) track by $index" ng-class="$ctrl.getClassForinsemination(inse)">
+
+
+                                            <td><span ng-if="inse.InseminationDate">{{inse.inseDate | ildate: 'DD/MM/YYYY'}}</span></td>
+
+                                            <td>{{inse.Susa}}</td>
+                                            <td>{{inse.SusaSiduri}}</td>
+                                            <td>{{inse.SusaOwner}}</td>
+
+                                            <td><span ng-if="inse.HerionDate">{{inse.HerionDate | ildate: 'DD/MM/YYYY'}}</span></td>
+                                            <td><span ng-if="inse.LedaDate">{{inse.LedaDate | ildate: 'DD/MM/YYYY'}}</span></td>
+
+
+                                        </tr>
+                                    </table>
+                                </td>
+
+
+
+                            </tr>
+
+
+
+
                         </tbody>
+
+
+                        <tr style="background:#ffcc00">
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th >סיכום</th>
+                            <th>{{$ctrl.getTotalHozim().Cost}}</th>
+                            <th>{{$ctrl.getTotalHozim().Sum}}</th>
+                            <!--<th></th>-->
+                        </tr>
+
+
+
+
                     </table>
                     <div class="panel-footer" style="margin-top:20px">
+                       
                         <!--<form name="inserForm">
-                            <div class="form-group">
-                                <label>תאריך חליבה</label><br />
-                                <input type="date" class="form-control" ng-model="$ctrl.newInsemination.HalivaDate" placeholder="תאריך חליבה" />
-                            </div>
+        <div class="form-group">
+            <label>תאריך חליבה</label><br />
+            <input type="date" class="form-control" ng-model="$ctrl.newInsemination.HalivaDate" placeholder="תאריך חליבה" />
+        </div>
 
 
 
-                            <div class="form-group">
-                                <label>סוסה להזרעה</label><br />
-                                <select class="form-control" ng-options="sus.Id as sus.Name for sus in $ctrl.susut" ng-model="$ctrl.newInsemination.PregnanciesHorseId">
-                                    <option value="">בחר סוסה</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>מחיר </label><br />
-                                <input type="number" class="form-control" ng-model="$ctrl.newInsemination.Cost" placeholder="עלות כספית" />
-                            </div>
+        <div class="form-group">
+            <label>סוסה להזרעה</label><br />
+            <select class="form-control" ng-options="sus.Id as sus.Name for sus in $ctrl.susut" ng-model="$ctrl.newInsemination.PregnanciesHorseId">
+                <option value="">בחר סוסה</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>מחיר </label><br />
+            <input type="number" class="form-control" ng-model="$ctrl.newInsemination.Cost" placeholder="עלות כספית" />
+        </div>
 
 
 
-                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addInsemination()" ng-disabled="inserForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת הזרעה</button>
-                        </form>-->
+        <button type="submit" class="btn btn-success" ng-click="$ctrl.addInsemination()" ng-disabled="inserForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת הזרעה</button>
+    </form>-->
                     </div>
                 </div>
 

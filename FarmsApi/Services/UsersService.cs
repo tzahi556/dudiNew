@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
-
+using System.Web.UI.WebControls;
 
 namespace FarmsApi.Services
 {
@@ -909,7 +909,6 @@ namespace FarmsApi.Services
 
             }
         }
-
         private static int UpdatePaymentsObject(List<Payments> objList, User u)
         {
             int NewId = 0;
@@ -1137,6 +1136,59 @@ namespace FarmsApi.Services
                     }
                     else
                     {
+                        //זיכוי בעל הסוס המרביע כאשר בעל הסוסה משלם
+                        HorseHozims hh = Context.HorseHozims.Where(x => x.ExpensesId == item.Id).FirstOrDefault();
+                        if (hh != null)
+                        {
+                            Horse h = Context.Horses.Where(x => x.Id == hh.FatherHorseId).FirstOrDefault();
+
+                            if(h!= null && h.OwnerId != null)
+                            {
+                                Horse hSusa = Context.Horses.Where(x => x.Id == hh.HorseId).FirstOrDefault();
+                                Expenses ex = Context.Expenses.Where(x => x.ZikuyNumber == hh.ExpensesId).FirstOrDefault();
+                                if(ex == null)
+                                {
+
+                                    Expenses NewE = new Expenses();
+                                    NewE.ZikuyNumber = hh.ExpensesId;
+                                    NewE.UserId =(int)h.OwnerId;
+                                    NewE.BeforePrice = -1 * item.Sum;
+                                
+                                    NewE.Date = item.Date;
+                                    NewE.Details = " זיכוי עבור חוזה לסוסה -  " + hSusa.Name;
+
+                                    Context.Expenses.Add(NewE);
+
+
+                                  
+                                }
+                                else
+                                {
+
+                                    ex.BeforePrice = -1 * item.Sum;
+                                    Context.Entry(ex).State = System.Data.Entity.EntityState.Modified;
+
+                                }
+
+                                // הוספת סכום לסוס
+                                HorseInseminations hi = Context.HorseInseminations.Where(x => x.HozimId == hh.Id && x.HalivaDate != null).FirstOrDefault();
+                                if (hi != null)
+                                {
+
+                                    hi.Sum = item.Sum;
+                                    Context.Entry(hi).State = System.Data.Entity.EntityState.Modified;
+                                }
+
+
+
+
+
+                            }
+                           
+
+                        }
+
+
                         Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
                     }
 
@@ -1183,6 +1235,22 @@ namespace FarmsApi.Services
                 // Context.UserHorses.AddRange(uhs);
                 //User u = UpdateUser(User);
                 Context.SaveChanges();
+
+
+                //var result2 = Context.Expenses.Where(p => p.UserId == u.Id).ToList();
+
+                //foreach (Expenses item in result)
+                //{
+                //    Context.SaveChanges();
+                //    var SumDiff = item.Price - item.Sum;
+                //    Expenses newExe = item;
+                //    newExe.Paid = null;
+                //    // newExe.Price = SumDiff;
+                //    newExe.Sum = item.Price;
+                //    Context.Expenses.Add(newExe);
+                //}
+
+
 
 
             }

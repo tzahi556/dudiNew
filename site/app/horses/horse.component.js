@@ -35,7 +35,24 @@
             hozims: '<',
         }
     });
+    app.filter('dateRange', function () {
 
+        return dateRangeFilter;
+
+        function dateRangeFilter(items, from, to) {
+            var results = [];
+            var fromDate = moment(from).format('YYYYMMDD');
+            var toDate = moment(to).format('YYYYMMDD');
+            for (var i in items) {
+                var startDate = moment(items[i].HalivaDate).format('YYYYMMDD');
+
+                if (startDate >= fromDate && startDate <= toDate) {
+                    results.push(items[i]);
+                }
+            }
+            return results;
+        }
+    });
 
     function HorseController($scope, horsesService, $state, sharedValues, notificationsService, filesService) {
 
@@ -94,6 +111,11 @@
         this.uploadFileTilufings = _uploadFileTilufings.bind(this);
 
         this.getClassForinsemination = _getClassForinsemination.bind(this);
+
+        this.getInseminationTypeName = _getInseminationTypeName.bind(this);
+
+
+        
         this.role = localStorage.getItem('currentRole');
         this.subrole = localStorage.getItem('currentSubRole');
 
@@ -113,11 +135,44 @@
 
         // init
 
-
+        this.dateFrom = moment().add(-5, 'months').toDate();
+        this.dateTo = moment().add(1, 'months').toDate();
        
 
         this.getStatesByFind = _getStatesByFind.bind(this);
         this.getCurrentPreg = _getCurrentPreg.bind(this);
+
+        this.getCurrentHozim = _getCurrentHozim.bind(this);
+
+        this.getTotalHozim = _getTotalHozim.bind(this);
+
+        function _getTotalHozim() {
+
+            var res = {Cost:0,Sum:0};
+
+            var ObjArray = this.inseminations.filter(x => x.HalivaDate != null && moment(x.HalivaDate) <= moment(this.dateTo) && moment(x.HalivaDate) >= moment(this.dateFrom));
+            for (var i in ObjArray) {
+                res.Cost += eval(ObjArray[i].Cost);
+                res.Sum += eval(ObjArray[i].Sum);
+            }
+
+
+            return res;
+
+
+        }
+
+
+        function _getCurrentHozim(hozimId) {
+
+
+          
+            var ObjArray = this.inseminations.filter(x => x.HozimId === hozimId && x.HalivaDate==null);
+
+            return ObjArray;
+
+
+        }
 
         function _getCurrentPreg(pregId) {
 
@@ -129,7 +184,14 @@
 
 
         }
+        function _getInseminationTypeName(type) {
 
+
+            if (!type) return "";
+            return this.hozimTypes.filter(x => x.id == type)[0].name;
+
+        }
+        
 
         function _getClassForinsemination(insemination) {
 
@@ -724,7 +786,7 @@
             this.newPregnancyState = {};
             if (pregnancy) {
                 pregnancyStates = this.getStates(pregnancy);
-                for (var i in pregnancyStates) {
+                for (var i in pregnancyStates ) {
                     if (pregnancyStates[i].id == this.getStatesByFind(pregnancy.Id, -1).StateId) {
                         this.newPregnancyState.State = pregnancyStates[++i];
                         if (this.newPregnancyState.State != null) {
@@ -741,10 +803,22 @@
         }
 
         function _addPregnancy() {
-           
-            this.pregnancies = this.pregnancies || [];
-            this.stopPregnancy();
 
+            this.pregnancies = this.pregnancies || [];
+
+            //debugger
+            var pregnancyHozimCount = this.pregnancies.filter(x => x.HozimId.toString() === this.newPregnancy.HozimId);
+            var HozimCount = this.hozims.filter(x => x.Id.toString() === this.newPregnancy.HozimId)[0];
+
+            if (HozimCount.Trial == pregnancyHozimCount.length) {
+
+                alert(" עברת את מספר הנסיונות בחוזה ");
+                return;
+
+            }
+          
+
+            this.stopPregnancy();
             pregnancyStates = this.getStates(this.newPregnancy);
             var startDate = this.newPregnancy.Date;
 
@@ -838,6 +912,10 @@
 
             this.submit(true);
 
+
+
+          
+
             //var self = this;
             //horsesService.getHorse(this.horse.Id, 12).then(function (hozims) {
               
@@ -848,6 +926,17 @@
         }
 
         function _removeHozims(hozim) {
+
+            var pregnancy = this.pregnancies.filter(x => x.HozimId.toString() === hozim.Id.toString())[0];
+            var pregnancstate = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === pregnancy.Id)[0];
+
+            if (pregnancstate.StateId != "insemination") {
+
+                alert("לא ניתן למחוק חוזה בשלב מתקדם של הריון");
+                return;
+
+            }
+
             for (var i in this.hozims) {
                 if (this.hozims[i] == hozim) {
                     this.hozims.splice(i, 1);
