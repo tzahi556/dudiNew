@@ -27,6 +27,8 @@ namespace FarmsApi.DataModels
         public string Active { get; set; }
         public string Gender { get; set; }
         public string Ownage { get; set; }
+
+        public string HorseLocation { get; set; }
         public string Race { get; set; }
         
         public int? OwnerId { get; set; }
@@ -125,6 +127,8 @@ namespace FarmsApi.DataModels
         public bool IsPaid { get; set; }
         public int? Trial { get; set; }
 
+        public int? UserId { get; set; }
+        
 
     }
 
@@ -323,7 +327,8 @@ namespace FarmsApi.DataModels
         public int? Type { get; set; }
         public string Susa { get; set; }
 
-      
+       
+        
         public string SusaOwner { get; set; }
 
         public int? SusaSiduri { get; set; }
@@ -342,6 +347,9 @@ namespace FarmsApi.DataModels
         public int? PregnancId { get; set; }
 
         public int? HozimId { get; set; }
+        public int? OwnerId { get; set; }
+
+        
 
     }
 

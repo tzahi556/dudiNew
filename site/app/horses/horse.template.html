@@ -1,11 +1,11 @@
 ﻿<style>
     .leda {
-        background: #ff66cc !important;
+        background: #99ff99 !important;
     }
 
 
     .ledaFaild {
-        background: #ff3300 !important;
+        background: #ff8c66 !important;
     }
 
     .haliva {
@@ -44,9 +44,9 @@
                             </select>
                         </div>
 
-                        
+
                     </div>
-                   
+
                     <div class="form-group col-md-12">
                         <imagepicker model="$ctrl.horse.Image" image-label="תמונת סוס" />
                     </div>
@@ -104,9 +104,9 @@
 
 
 
-                        
+
                     </div>
-                   
+
                     <div class="form-group">
 
                         <div class="col-md-6">
@@ -117,37 +117,53 @@
                             <label>אם סוס</label>
                             <input type="text" class="form-control" ng-model="$ctrl.horse.Mother" />
                         </div>
-
-
-
-
-
-
-                       
                     </div>
-                   
-                    <div class="form-group col-md-12">
+
+                    <div class="form-group">
+
+                        <div class="col-md-6">
+                            <label>שיוך הסוס</label>
+                            <select class="form-control" ng-model="$ctrl.horse.Ownage">
+                                <option value="">בחר שיוך הסוס</option>
+
+                                <option value="pension">פנסיון</option>
+                                <option value="school">בית ספר</option>
+                                <option value="farm">חווה</option>
+
+                                <option value="pensionEnglish">פנסיון אינגליש</option>
+                                <option value="pensionMaravi">פנסיון מערבי</option>
+                                <option value="pensionKating">פנסיון קאטינג</option>
+                                <option value="pensionMere">פנסיון מרעה</option>
+
+                                <option value="marbiah">סוס מרביע</option>
+                                <option value="puriot">פוריות</option>
+                                <option value="pundekaut">פונדקאות</option>
+                                <option value="hamlta">המלטה</option>
+                                <option value="imon">אימון</option>
+
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>מיקום הסוס</label>
+                            <select class="form-control" ng-model="$ctrl.horse.HorseLocation">
+                                <option value="">חווה</option>
+
+                                <option value="outer">חוץ לחווה</option>
+                               
+
+                            </select>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                    <!--<div class="form-group col-md-12">
                         <label>שיוך הסוס</label>
-                        <select class="form-control" ng-model="$ctrl.horse.Ownage">
-                            <option value="">בחר שיוך הסוס</option>
-
-                            <option value="pension">פנסיון</option>
-                            <option value="school">בית ספר</option>
-                            <option value="farm">חווה</option>
-
-                            <option value="pensionEnglish">פנסיון אינגליש</option>
-                            <option value="pensionMaravi">פנסיון מערבי</option>
-                            <option value="pensionKating">פנסיון קאטינג</option>
-                            <option value="pensionMere">פנסיון מרעה</option>
-
-                            <option value="marbiah">סוס מרביע</option>
-                            <option value="puriot">פוריות</option>
-                            <option value="pundekaut">פונדקאות</option>
-                            <option value="hamlta">המלטה</option>
-                            <option value="imon">אימון</option>
-
-                        </select>
-                    </div>
+                       
+                    </div>-->
                     <div class="form-group col-md-12">
                         <label>הערות</label>
                         <input type="text" class="form-control" ng-model="$ctrl.horse.Details" />
@@ -609,12 +625,23 @@
                                 <input type="text" class="form-control" ng-model="$ctrl.newHozim.CostHava" placeholder="תשלום לחווה" />
                             </div>
 
+                            <div class="form-group col-md-3">
 
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-success" ng-click="$ctrl.addHozims()" ng-disabled="hozimsForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת חוזה</button>
+                                <select class="form-control" ng-model="$ctrl.newHozim.UserId">
+                                    <option value="">--עובד מבצע--</option>
+                                    <option ng-repeat="instructor in $ctrl.instructors|filter:{IsMazkirut:'1'}|orderBy:'LastName'" value="{{instructor.Id}}">{{instructor.FirstName}} {{instructor.LastName}}</option>
+                                </select>
+                                <!--<select class="form-control" style=""
+                                        ng-model="$ctrl.newHozim.UserId" ng-options="instructor.Id as instructor.Result for instructor in $ctrl.instructorsWorks">
+                                    <option value="">-- בחר מדריך --</option>
+                                </select>-->
                             </div>
 
-                            <div class="clearfix"></div>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-success" ng-click="$ctrl.addHozims()" ng-disabled="hozimsForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת חוזה</button>
+                                </div>
+
+                                <div class="clearfix"></div>
                         </form>
                     </div>
                 </div>
@@ -652,7 +679,7 @@
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removePregnancy(pregnancy)">הסר</button></td>
                             </tr>
                             <tr ng-show="showDiv">
-                                <td colspan="6" style="background:#fff778">
+                                <td colspan="7" style="background:#fff778">
 
 
                                     <div class="panel panel-default">
@@ -697,7 +724,7 @@
 
                                 <select class="form-control" ng-model="$ctrl.newPregnancy.HozimId" required>
                                     <option value="">בחר חוזה</option>
-                                    <option ng-repeat="hozim in $ctrl.getHozim()|orderBy:'-Date'" value="{{hozim.Id}}">{{hozim.Date | ildate: 'DD/MM/YYYY'}}  - {{hozim.FatherName}}</option>
+                                    <option ng-repeat="hozim in $ctrl.getHozim()|orderBy:'-Date'" value="{{hozim.Id}}">{{hozim.Id}} - {{hozim.Date | ildate: 'DD/MM/YYYY'}}  - {{hozim.FatherName}}</option>
                                 </select>
 
 
@@ -707,6 +734,10 @@
                                 <label><input type="checkbox" ng-model="$ctrl.newPregnancy.IsSurrogate"> הריון אומנת</label>
                             </div>
                             <button type="submit" class="btn btn-success" ng-click="$ctrl.addPregnancy()" ng-disabled="pregnancyForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת הריון</button>
+                             
+                            <button type="button" ng-if="$ctrl.pregnancies.length > 0 && !$ctrl.pregnancies[$ctrl.pregnancies.length-1].Finished" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'" class="btn btn-default" ng-click="$ctrl.stopPregnancy()">סיום הריון</button>
+
+
                         </form>
                     </div>
                 </div>
@@ -714,7 +745,7 @@
                 <!--current pregnancy-->
                 <div class="panel panel-default" ng-if="$ctrl.pregnancies.length > 0 && !$ctrl.pregnancies[$ctrl.pregnancies.length-1].Finished">
                     <div class="panel-heading">
-                        הריון נוכחי
+                        הריון נוכחי {{($ctrl.horse.HorseLocation=='outer')?'(חוץ לחווה)':''}}
                     </div>
                     <table class="table">
                         <thead>
@@ -810,7 +841,7 @@
                                 <th>בעלים</th>
                                 <th>תאריך קליטה</th>
                                 <th>צפי משוער לידה</th>
-                                <th>מחיר</th>
+                                <th>זיכוי</th>
                                 <th>שולם</th>
                                 <!--<th></th>-->
                             </tr>
@@ -824,9 +855,9 @@
                                 <td><span ng-if="insemination.HalivaDate">{{$ctrl.getInseminationTypeName(insemination.Type)}}</span></td>
                                 <td><span ng-if="insemination.InseminationDate">{{insemination.InseminationDate | ildate: 'DD/MM/YYYY'}}</span></td>
 
-                                <td>{{insemination.Susa}}</td>
+                                <td><a ui-sref="horse({id:insemination.PregnanciesHorseId})">{{insemination.Susa}}</a></td>
                                 <td>{{insemination.SusaSiduri}}</td>
-                                <td>{{insemination.SusaOwner}}</td>
+                                <td><a ui-sref="student({id:insemination.OwnerId})">{{insemination.SusaOwner}}</a></td>
 
                                 <td><span ng-if="insemination.HerionDate">{{insemination.HerionDate | ildate: 'DD/MM/YYYY'}}</span></td>
                                 <td><span ng-if="insemination.LedaDate">{{insemination.LedaDate | ildate: 'DD/MM/YYYY'}}</span></td>
@@ -844,7 +875,7 @@
 
                                         <thead>
                                             <tr>
-
+                                                <th>סטטוס</th>
                                                 <th>תאריך הזרעה</th>
                                                 <th>שם סוסה</th>
                                                 <th>מס' סידורי</th>
@@ -860,7 +891,7 @@
 
                                         <tr ng-repeat="inse in $ctrl.getCurrentHozim(insemination.HozimId) track by $index" ng-class="$ctrl.getClassForinsemination(inse)">
 
-
+                                            <td>{{(inse.StatusLeda==1)?'לידה': ((inse.StatusLeda==2)?'לידה נכשלה':'הזרעה')}}</td>
                                             <td><span ng-if="inse.InseminationDate">{{inse.inseDate | ildate: 'DD/MM/YYYY'}}</span></td>
 
                                             <td>{{inse.Susa}}</td>

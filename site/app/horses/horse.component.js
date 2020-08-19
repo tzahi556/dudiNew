@@ -33,6 +33,7 @@
             inseminations: '<',
             susut: '<',
             hozims: '<',
+            instructors: '<',
         }
     });
     app.filter('dateRange', function () {
@@ -93,7 +94,7 @@
         this.removeHozims = _removeHozims.bind(this);
         this.initNewHozims = _initNewHozims.bind(this);
         this.getHozim = _getHozim.bind(this);
-        
+
 
 
         this.addInsemination = _addInsemination.bind(this);
@@ -115,7 +116,7 @@
         this.getInseminationTypeName = _getInseminationTypeName.bind(this);
 
 
-        
+
         this.role = localStorage.getItem('currentRole');
         this.subrole = localStorage.getItem('currentSubRole');
 
@@ -127,17 +128,15 @@
         this.uploadsUri = sharedValues.apiUrl + '/uploads/'
         this.scope = $scope;
 
-        //$scope.$on('submit', function (event, args) {
-        //    if (confirm('האם לשמור שינוים')) {
-        //        this.submit();
-        //    }
-        //}.bind(this));
+        $scope.$on('submit', function (event, args) {
+           this.submit(true);
+        }.bind(this));
 
         // init
 
         this.dateFrom = moment().add(-5, 'months').toDate();
         this.dateTo = moment().add(1, 'months').toDate();
-       
+
 
         this.getStatesByFind = _getStatesByFind.bind(this);
         this.getCurrentPreg = _getCurrentPreg.bind(this);
@@ -148,7 +147,7 @@
 
         function _getTotalHozim() {
 
-            var res = {Cost:0,Sum:0};
+            var res = { Cost: 0, Sum: 0 };
 
             var ObjArray = this.inseminations.filter(x => x.HalivaDate != null && moment(x.HalivaDate) <= moment(this.dateTo) && moment(x.HalivaDate) >= moment(this.dateFrom));
             for (var i in ObjArray) {
@@ -166,8 +165,8 @@
         function _getCurrentHozim(hozimId) {
 
 
-          
-            var ObjArray = this.inseminations.filter(x => x.HozimId === hozimId && x.HalivaDate==null);
+
+            var ObjArray = this.inseminations.filter(x => x.HozimId === hozimId && x.HalivaDate == null);
 
             return ObjArray;
 
@@ -191,10 +190,10 @@
             return this.hozimTypes.filter(x => x.id == type)[0].name;
 
         }
-        
+
 
         function _getClassForinsemination(insemination) {
-
+             
             if (insemination.HalivaDate)
                 return 'haliva';
 
@@ -221,15 +220,15 @@
 
         this.initHorse = function () {
 
-          
+
             this.horse.BirthDate = moment(this.horse.BirthDate).startOf('day').toDate();
             this.horse.PensionStartDate = moment(this.horse.PensionStartDate).startOf('day').toDate();
 
             this.horse.ArrivedDate = moment(this.horse.ArrivedDate).startOf('day').toDate();
             this.horse.OutDate = moment(this.horse.OutDate).startOf('day').toDate();
-           
-            
-       
+
+
+
 
 
             this.initNewTreatment();
@@ -302,7 +301,7 @@
         function _addInsemination() {
             this.inseminations = this.inseminations || [];
 
-           // debugger
+            // debugger
             //if (!this.newInsemination.HalivaDate && !this.newInsemination.InseminationDate) {
             //    alert("חובה לבחור תאריך חליבה או הזרעה");
             //    return;
@@ -595,7 +594,9 @@
                 pregnancyStates = sharedValues.pregnancyStatesSurrogateMother;
             }
             else {
-                pregnancyStates = sharedValues.pregnancyStates;
+
+
+                pregnancyStates = (this.horse.HorseLocation == "outer") ? sharedValues.pregnancyStatesOuter : sharedValues.pregnancyStates;
             }
             return pregnancyStates;
         }
@@ -786,7 +787,7 @@
             this.newPregnancyState = {};
             if (pregnancy) {
                 pregnancyStates = this.getStates(pregnancy);
-                for (var i in pregnancyStates ) {
+                for (var i in pregnancyStates) {
                     if (pregnancyStates[i].id == this.getStatesByFind(pregnancy.Id, -1).StateId) {
                         this.newPregnancyState.State = pregnancyStates[++i];
                         if (this.newPregnancyState.State != null) {
@@ -816,14 +817,14 @@
                 return;
 
             }
-          
+
 
             this.stopPregnancy();
             pregnancyStates = this.getStates(this.newPregnancy);
             var startDate = this.newPregnancy.Date;
 
 
-          //  alert(this.newPregnancy.HozimId);
+            //  alert(this.newPregnancy.HozimId);
 
             this.newPregnancy.HorseId = this.horse.Id;
             horsesService.insertnewpregnancie(this.newPregnancy, false).then(function (pregnancy) {
@@ -900,7 +901,7 @@
             }
         }
 
-       
+
 
 
 
@@ -914,26 +915,32 @@
 
 
 
-          
+
 
             //var self = this;
             //horsesService.getHorse(this.horse.Id, 12).then(function (hozims) {
-              
+
             //    self.hozims = hozims;
             //}.bind(this));
 
-           
+
         }
 
         function _removeHozims(hozim) {
 
-            var pregnancy = this.pregnancies.filter(x => x.HozimId.toString() === hozim.Id.toString())[0];
-            var pregnancstate = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === pregnancy.Id)[0];
 
-            if (pregnancstate.StateId != "insemination") {
+            
+            var pregnancy = this.pregnancies.filter(x => x.HozimId && x.HozimId.toString() === hozim.Id.toString())[0];
+            if (pregnancy) {
 
-                alert("לא ניתן למחוק חוזה בשלב מתקדם של הריון");
-                return;
+                var pregnancstate = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === pregnancy.Id)[this.pregnanciesstates.length-1];
+
+                if (pregnancstate.StateId != "insemination") {
+
+                    alert("לא ניתן למחוק חוזה בשלב מתקדם של הריון");
+                    return;
+
+                }
 
             }
 
@@ -954,6 +961,8 @@
             this.newHozim.CostFather = "";
             this.newHozim.CostHava = "";
 
+            this.newHozim.UserId = "";
+
             if ($scope.hozimsForm != null) {
                 $scope.hozimsForm.$setPristine();
             }
@@ -963,7 +972,7 @@
 
             for (var i in this.hozims) {
 
-               // if (this.hozims.length>0)debugger
+                // if (this.hozims.length>0)debugger
                 this.hozims[i].TypeName = this.hozimTypes.filter(x => x.id == this.hozims[i].Type)[0].name;
                 this.hozims[i].FatherName = this.horses.filter(x => x.Id == this.hozims[i].FatherHorseId)[0].Name;
                 this.hozims[i].Date = moment(this.hozims[i].Date);
@@ -974,7 +983,7 @@
 
             return this.hozims;
         }
-        
+
 
         function _submit(isWithoutalert) {
 
@@ -988,7 +997,11 @@
                 this.horse.OutDate.setHours(this.horse.OutDate.getHours() + 3);
 
             horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
-                this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations,this.hozims).then(function (hozims) {
+                this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations, this.hozims).then(function (hozims) {
+
+                 
+
+
                     //var origId = this.horse.Id;
                     //this.horse = horse;
                     this.createNotifications();

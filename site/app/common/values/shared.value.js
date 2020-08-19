@@ -82,6 +82,15 @@
             { id: 'herpes3', name: 'חיסון הרפס 3', day: moment.duration(9, 'months').asDays() },
             { id: 'birth', name: 'לידה', day: moment.duration(11, 'months').asDays() }
         ],
+
+        pregnancyStatesOuter: [
+            { id: 'insemination', name: 'הזרעה', day: 0 },
+            { id: 'ultrasound1', name: 'קליטה', day: moment.duration(17, 'days').asDays() },
+            { id: 'birth', name: 'לידה', day: moment.duration(11, 'months').asDays() }
+        ],
+
+
+
         pregnancyStatesSurrogateMother: [
             { id: 'implantation', name: 'השתלה', day: 0 },
             { id: 'ultrasound1', name: 'בדיקת אולטרסאונד 1', day: moment.duration(17, 'days').add(-7, 'days').asDays() },

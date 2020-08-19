@@ -21,7 +21,7 @@
         this.removeTags = _removeTags.bind(this);
         this.initNewTags = _initNewTags.bind(this);
 
-
+        this.role = localStorage.getItem('currentRole');
         function init() {
           //  alert();
          //   alert(self.farminstructors.length);

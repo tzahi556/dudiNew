@@ -84,7 +84,7 @@
                         <label>מזהה</label>
                         <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
                         <imagepicker model="$ctrl.user.Image" image-label="תמונת {{($ctrl.role=='farmAdminHorse')?'לקוח':'תלמיד '}}" />
                     </div>
                     <div class="form-group">
@@ -95,7 +95,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
 
                         <div class="row">
 
@@ -128,18 +128,18 @@
                         <input type="text" name="lastName" class="form-control" ng-model="$ctrl.user.LastName" required />
                     </div>
                     <div class="form-group">
-                        <label>ת.ז.</label>
+                        <label>       {{($ctrl.role!='farmAdminHorse')?"ת.ז":"ת.ז/ח.פ"}}</label>
                         <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.IdNumber" required />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>תאריך לידה</label>
                         <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>שם אם</label>
                         <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName2" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>שם אב</label>
                         <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName" />
                     </div>
@@ -205,7 +205,7 @@
 
 
 
-                    <div class="form-group">
+                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>עלות</label>
                         <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
                     </div>
@@ -770,7 +770,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index"  style=background:{{expense.ZikuyNumber?'#ffeeee':''}}>
+                            <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index"  style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}}>
                                 <td><input ng-if="$ctrl.newExpense.IsZikuy && !expense.ZikuyNumber && expense.Id" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
 
                                 <td>{{expense.Id}}</td>

@@ -1117,6 +1117,9 @@ namespace FarmsApi.Services
             }
         }
 
+      
+
+
         private static void UpdateExpensesObject(List<Expenses> objList, User u)
         {
             using (var Context = new Context())
@@ -1140,7 +1143,11 @@ namespace FarmsApi.Services
                         HorseHozims hh = Context.HorseHozims.Where(x => x.ExpensesId == item.Id).FirstOrDefault();
                         if (hh != null)
                         {
-                            Horse h = Context.Horses.Where(x => x.Id == hh.FatherHorseId).FirstOrDefault();
+
+
+
+
+                            Horse h = HorsesService.GetHorse(hh.FatherHorseId);   //Context.Horses.Where(x => x.Id == hh.FatherHorseId).FirstOrDefault();
 
                             if(h!= null && h.OwnerId != null)
                             {
@@ -1153,7 +1160,7 @@ namespace FarmsApi.Services
                                     NewE.ZikuyNumber = hh.ExpensesId;
                                     NewE.UserId =(int)h.OwnerId;
                                     NewE.BeforePrice = -1 * item.Sum;
-                                
+                                    NewE.Price = -1 * item.Sum;
                                     NewE.Date = item.Date;
                                     NewE.Details = " זיכוי עבור חוזה לסוסה -  " + hSusa.Name;
 
@@ -1166,6 +1173,7 @@ namespace FarmsApi.Services
                                 {
 
                                     ex.BeforePrice = -1 * item.Sum;
+                                    ex.Price = -1 * item.Sum;
                                     Context.Entry(ex).State = System.Data.Entity.EntityState.Modified;
 
                                 }

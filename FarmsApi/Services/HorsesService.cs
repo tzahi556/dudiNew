@@ -502,6 +502,60 @@ namespace FarmsApi.Services
                         hi.HozimId = item.Id;
                         Context.HorseInseminations.Add(hi);
 
+
+
+                        if (item.UserId!=null)
+                        {
+
+                            // Lesson CurrentLesson = 
+                            DateTime StartSearch = ((DateTime)item.Date).Date;
+                            DateTime EndSearch = StartSearch.AddDays(1);
+                            Lesson CurrentLesson = Context.Lessons.Where(u => u.Instructor_Id == item.UserId && u.Start < EndSearch && u.Start > StartSearch).OrderByDescending(y=>y.End).FirstOrDefault();
+                            if (CurrentLesson == null)
+                            {
+                                CurrentLesson = new Lesson();
+                                CurrentLesson.Instructor_Id =(int) item.UserId;
+                                CurrentLesson.Start = StartSearch.Add(new TimeSpan(7, 30, 0));
+                                CurrentLesson.End = StartSearch.Add(new TimeSpan(8, 00, 0));
+
+                                Context.Lessons.Add(CurrentLesson);
+                                Context.SaveChanges();
+
+                            }
+                            else
+                            {
+
+                                DateTime starttemp = CurrentLesson.End;
+                                DateTime endtemp = CurrentLesson.End.AddMinutes(30);
+                              
+                                CurrentLesson = new Lesson();
+                                CurrentLesson.Instructor_Id = (int)item.UserId;
+                                CurrentLesson.Start = starttemp;
+                                CurrentLesson.End = endtemp;
+
+                                Context.Lessons.Add(CurrentLesson);
+                                Context.SaveChanges();
+
+
+                                //CurrentLesson.Start = CurrentLesson.End;
+                                //CurrentLesson.End = CurrentLesson.End.AddMinutes(30);
+                                //Context.Entry(CurrentLesson).State = System.Data.Entity.EntityState.Modified;
+                                //Context.SaveChanges();
+
+                            }
+
+                             SchedularTasks Schedular = new SchedularTasks();
+                             Schedular.Title = (item.Type==1)?"חליבה":((item.Type == 2)? "זירמה קפואה" : "הקפצה")  + " לסוס " + hsSus.Name;
+                             Schedular.ResourceId = (int)item.UserId;
+                             Schedular.LessonId = CurrentLesson.Id;
+
+                            LessonsService.DeleteAll(Schedular, true, Context, CurrentLesson.Id, CurrentLesson);
+
+                            var res = LessonsService.ReopenLessonsByInstructorMazkirut(Schedular, CurrentLesson, (int)item.UserId, Context);
+
+
+                        }
+
                     }
                     else
                     {
@@ -557,6 +611,11 @@ namespace FarmsApi.Services
 
                 return Context.HorseHozims.Where(x => x.HorseId == f.Id).ToList();
             }
+        }
+
+        private static DateTime? GetDate(DateTime start)
+        {
+            return start.Date;
         }
 
         private static void UpdateHorseFilesObject(List<HorseFiles> objList, Horse f)

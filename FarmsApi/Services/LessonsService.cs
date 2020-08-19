@@ -882,7 +882,7 @@ namespace FarmsApi.Services
 
         }
 
-        private static string ReopenLessonsByInstructorMazkirut(SchedularTasks Schedular, Lesson CurrentLesson, int resourceId, Context Context)
+        public static string ReopenLessonsByInstructorMazkirut(SchedularTasks Schedular, Lesson CurrentLesson, int resourceId, Context Context)
         {
             // Context.Configuration.AutoDetectChangesEnabled = false;
             DateTime CurrentDate = CurrentLesson.Start;//new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, 07, 00, 0);// DateTime.Now;
@@ -1069,7 +1069,7 @@ namespace FarmsApi.Services
             }
         }
 
-        private static void DeleteAll(SchedularTasks schedularTaskList, bool affectChildren, Context Context, int lessonId, Lesson CurrentLesson)
+        public static void DeleteAll(SchedularTasks schedularTaskList, bool affectChildren, Context Context, int lessonId, Lesson CurrentLesson)
         {
 
             if (affectChildren)
