@@ -9,12 +9,6 @@ using System.Linq;
 
 namespace FarmsApi.Services
 {
-
-
-
-
-
-
     public class LessonsService
     {
         public static JArray GetLessons(int? StudentId, string startDate = null, string endDate = null, bool IsFromCompletion = false)
@@ -123,7 +117,7 @@ namespace FarmsApi.Services
                                 HearotStatus = s.HearotStatus,
                                 Mashov = s.Mashov,
                                 LessPrice = s.LessPrice
-                               
+
 
                             }).ToArray(),
                             title = (studentsArray.Length > 0 ? string.Join("", studentsArray) : "") + (!string.IsNullOrEmpty(Lesson.Details) ? (studentsArray.Length > 0 ? ". " : "") + Lesson.Details : ""),
@@ -287,7 +281,7 @@ namespace FarmsApi.Services
 
                             Context.Entry(StudentLesson).State = System.Data.Entity.EntityState.Modified;
 
-                           
+
                         }
                     }
 
@@ -463,8 +457,16 @@ namespace FarmsApi.Services
             if (Lesson["onlyMultiple"] != null)
                 onlyMultiple = Lesson["onlyMultiple"].Value<int>();
 
-            Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
+            var CurrentUserRole = UsersService.GetCurrentUser().Role;
+            if (CurrentUserRole == "instructor")
+            {
 
+                Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId && !sl.Status.Contains("completionReq")));
+            }
+            else
+            {
+                Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
+            }
             if (Lesson["students"] != null)
             {
                 var StudentIds = Lesson["students"].Values<int>().ToList();
@@ -577,7 +579,7 @@ namespace FarmsApi.Services
 
                     StudentLessons sl = new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]), HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]), OfficeDetails = StatusData[4] };
                     Context.StudentLessons.Add(sl);
-                    InsertIntoLog(LessonId, 2, Context," עדכון סטטוס  " + StatusData[2], sl);
+                    InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס  " + StatusData[2], sl);
 
 
                 }
@@ -612,7 +614,7 @@ namespace FarmsApi.Services
 
                     if (!exists)
                     {
-                        InsertIntoLog(item.Lesson_Id, 4, context,"הורדת תלמיד מקבוצה", item);
+                        InsertIntoLog(item.Lesson_Id, 4, context, "הורדת תלמיד מקבוצה", item);
 
                         context.StudentLessons.Remove(item);
                     }
@@ -669,7 +671,7 @@ namespace FarmsApi.Services
             Context.Lessons.Add(newLesson);
             Context.SaveChanges();
             Lesson["id"] = newLesson.Id;
-            InsertIntoLog(newLesson.Id, 1, Context,"שיעור חדש", null);
+            InsertIntoLog(newLesson.Id, 1, Context, "שיעור חדש", null);
             Context.SaveChanges();
 
 
@@ -677,7 +679,7 @@ namespace FarmsApi.Services
 
         }
 
-        private static void InsertIntoLog(int LessonId, int Type, Context context,string Details, StudentLessons sl = null)
+        private static void InsertIntoLog(int LessonId, int Type, Context context, string Details, StudentLessons sl = null)
         {
             var Lesson = context.Lessons.Where(x => x.Id == LessonId).FirstOrDefault();
 
@@ -792,7 +794,7 @@ namespace FarmsApi.Services
                         // Delete Lesson
                         Context.Lessons.Remove(Lesson);
 
-                        InsertIntoLog(Lesson.Id, 5, Context,"מחיקת שיעור", null);
+                        InsertIntoLog(Lesson.Id, 5, Context, "מחיקת שיעור", null);
                         Context.SaveChanges();
                     }
                 }

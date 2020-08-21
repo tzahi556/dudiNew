@@ -202,16 +202,12 @@
 
                     for (var i in event.statuses) {
 
-
+                       
 
                         //בלי סטטוס
                         if (!event.statuses[i].Status || event.statuses[i].Status == '') {
 
                             //  $(element).addClass('warning-icon');
-
-
-
-
                         }
                         //לא הגיע 
                         else if (event.statuses[i].Status == 'notAttended') {
@@ -253,6 +249,11 @@
                             //$(element).css("background-color", "lightGray").css("border-color", "gray");
                             //  $(element).addClass('returnred-icon');
                             countCompletionReq++;
+
+                           // debugger
+                           //// if (this.treatments[i] == treatment) {
+                           // event.statuses.splice(i, 1);
+                            //}
 
 
                         }

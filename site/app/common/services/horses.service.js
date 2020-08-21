@@ -162,11 +162,11 @@
 
         function _updateHorse(horse) {
             var deferred = $q.defer();
-            horse.Meta = angular.toJson(horse.Meta);
+           
             $http.post(sharedValues.apiUrl + 'horses/updatehorse', horse).then(function (res) {
                 var horse = res.data;
-                horse.Meta = angular.fromJson(horse.Meta);
-                horse.Meta.BirthDate = horse.Meta.BirthDate != '' ? new Date(horse.Meta.BirthDate) : null;
+              
+                horse.BirthDate = horse.BirthDate != '' ? new Date(horse.BirthDate) : null;
                 deferred.resolve(horse);
             });
             return deferred.promise;

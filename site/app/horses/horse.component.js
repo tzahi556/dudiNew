@@ -128,7 +128,10 @@
         this.uploadsUri = sharedValues.apiUrl + '/uploads/'
         this.scope = $scope;
 
+        this.isDelete = false;
+
         $scope.$on('submit', function (event, args) {
+            if (!this.isDelete)
            this.submit(true);
         }.bind(this));
 
@@ -996,22 +999,22 @@
             if (this.horse.OutDate)
                 this.horse.OutDate.setHours(this.horse.OutDate.getHours() + 3);
 
-            horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
-                this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations, this.hozims).then(function (hozims) {
-
-                 
 
 
-                    //var origId = this.horse.Id;
-                    //this.horse = horse;
-                    this.createNotifications();
-                    //this.initHorse();
-                    if (!isWithoutalert) alert('נשמר בהצלחה');
+            horsesService.updateHorse(this.horse).then(function (horse) {
+                this.horse = horse;
+                horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
+                    this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations, this.hozims).then(function (hozims) {
+                        this.createNotifications();
+                        if (!isWithoutalert) alert('נשמר בהצלחה');
+                        this.hozims = hozims;
 
-                    this.hozims = hozims;
+                    }.bind(this));
 
 
-                }.bind(this));
+            }.bind(this));
+
+          
 
 
 
@@ -1034,6 +1037,8 @@
 
         function _delete() {
             if (confirm('האם למחוק את הסוס?')) {
+
+                this.isDelete = true;
                 horsesService.deleteHorse(this.horse.Id).then(function () {
                     $state.go('horses');
                 });
