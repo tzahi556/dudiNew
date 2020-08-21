@@ -808,11 +808,11 @@
                             <tr>
                                 <td colspan="2">
                                     מתאריך:<br>
-                                    <input type="date" ng-model="$ctrl.dateFrom">
+                                    <input type="date" ng-model="$ctrl.dateFromHorse">
                                 </td>
                                 <td colspan="2">
                                     עד תאריך:<br>
-                                    <input type="date" ng-model="$ctrl.dateTo">
+                                    <input type="date" ng-model="$ctrl.dateToHorse">
                                 </td>
                                 <td colspan="6">
                                 </td>
@@ -846,7 +846,7 @@
                                 <!--<th></th>-->
                             </tr>
                         </thead>
-                        <tbody ng-click="showDivIns = !showDivIns" ng-repeat="insemination in $ctrl.inseminations | dateRange:$ctrl.dateFrom:$ctrl.dateTo">
+                        <tbody ng-click="showDivIns = !showDivIns" ng-repeat="insemination in $ctrl.inseminations | dateRangeHorse:$ctrl.dateFromHorse:$ctrl.dateToHorse">
 
 
                             <tr ng-class="$ctrl.getClassForinsemination(insemination)" ng-if="insemination.HalivaDate">

@@ -461,53 +461,32 @@ namespace FarmsApi.Services
             if (CurrentUserRole == "instructor")
             {
 
-                Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId && !sl.Status.Contains("completionReq")));
+                Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId && sl.Status!="completionReq" && sl.Status != "completionReqCharge"));
             }
             else
             {
                 Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId));
             }
+
+
             if (Lesson["students"] != null)
             {
                 var StudentIds = Lesson["students"].Values<int>().ToList();
                 foreach (var StudentId in StudentIds)
                 {
                     var StatusData = GetStatusDataFromJson(Lesson, StudentId);
-                    // int isCompleteFromClient = (StatusData[2] != 0) ? 1 : 0;
+
+                   // if (StatusData[0].Contains("completionReq") && CurrentUserRole == "instructor") continue;
+
+
 
                     if ((StatusData[0] == "completionReq" || StatusData[0] == "completionReqCharge") && (StatusData[2] == "0" || StatusData[2] == null))
                     {
+
                         StatusData[2] = "1";
                     }
 
-                    // בדיקה אם מיותר
-                    //if (StatusData[0].StartsWith("completionReq") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "6"))
-                    //{
-                    //    //StatusData[0] = "completion";
-                    //    StatusData[2] = "1";
-
-                    //    var conn = Context.Database.Connection;
-                    //    var connectionState = conn.State;
-                    //    if (connectionState != ConnectionState.Open) conn.Open();
-                    //    using (var cmd = conn.CreateCommand())
-                    //    {
-
-
-                    //        cmd.CommandText = "   UPDATE StudentLessons SET IsComplete = 5 "
-                    //                          + "  WHERE Lesson_Id = (SELECT top 1 Lesson_Id FROM StudentLessons WHERE Lesson_Id < " + LessonId + "  and User_Id = " + StudentId
-                    //                          + "  and Status = 'completionReq' order by Lesson_Id desc) and User_Id = " + StudentId;
-
-
-
-                    //        cmd.ExecuteNonQuery();
-
-                    //    }
-
-                    //    conn.Close();
-
-                    //}
-
-
+                 
 
 
                     if (StatusData[0] == "completion" && StatusData[2] == "2")
@@ -537,13 +516,7 @@ namespace FarmsApi.Services
 
                     }
 
-                    //if ((StatusData[0] == "notAttended" || StatusData[0] == null || StatusData[0] == "completion" ) && (StatusData[2] == "3" || StatusData[2] == "4"))
-                    //{
-                    //    StatusData[0] = "completion";
-                    //    StatusData[2] = "3";
-
-                    //}
-
+                   
                     if ((StatusData[0] == "" || StatusData[0] == null || StatusData[0] == "completion") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
                     {
                         StatusData[0] = "completion";

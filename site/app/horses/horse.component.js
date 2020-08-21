@@ -36,7 +36,7 @@
             instructors: '<',
         }
     });
-    app.filter('dateRange', function () {
+    app.filter('dateRangeHorse', function () {
 
         return dateRangeFilter;
 
@@ -137,8 +137,8 @@
 
         // init
 
-        this.dateFrom = moment().add(-5, 'months').toDate();
-        this.dateTo = moment().add(1, 'months').toDate();
+        this.dateFromHorse = moment().add(-5, 'months').toDate();
+        this.dateToHorse = moment().add(1, 'months').toDate();
 
 
         this.getStatesByFind = _getStatesByFind.bind(this);
@@ -152,7 +152,7 @@
 
             var res = { Cost: 0, Sum: 0 };
 
-            var ObjArray = this.inseminations.filter(x => x.HalivaDate != null && moment(x.HalivaDate) <= moment(this.dateTo) && moment(x.HalivaDate) >= moment(this.dateFrom));
+            var ObjArray = this.inseminations.filter(x => x.HalivaDate != null && moment(x.HalivaDate) <= moment(this.dateToHorse) && moment(x.HalivaDate) >= moment(this.dateFromHorse));
             for (var i in ObjArray) {
                 res.Cost += eval(ObjArray[i].Cost);
                 res.Sum += eval(ObjArray[i].Sum);
