@@ -940,31 +940,28 @@
 
         function _addExpense() {
             this.expenses = this.expenses || [];
-            //if (this.newExpense.IsPension) {
-            //    this.newExpense.Details = 'פנסיון';
-            //}
 
 
          
             this.newExpense.Price = this.newExpense.BeforePrice;// - this.newExpense.Discount;
-
-
             this.newExpense.Price = (this.newExpense.IsZikuy) ? this.newExpense.Price * -1 : this.newExpense.Price;
             this.newExpense.BeforePrice = (this.newExpense.IsZikuy) ? this.newExpense.BeforePrice * -1 : this.newExpense.BeforePrice;
-
             this.expenses.push(this.newExpense);
 
-        
-
-          
 
             for (var i in this.expenses) {
-               
+
+                //if (this.expenses[i].SelectedForZikuy) {
+
+                //    this.expenses[i].ZikuySum = this.newExpense.Price;
+                //    this.expenses[i].ZikuyNumber = 7777;
+                //    this.expenses[i].SelectedForZikuy = false;
+                //}
+
+
                 this.expenses[i].SelectedForZikuy = false;
 
                 if (typeof (this.newExpense.ZikuyNumber) != "undefined" && this.expenses[i].Id == this.newExpense.ZikuyNumber) {
-
-                   
 
                     this.expenses[i].ZikuySum = this.newExpense.Price;
                 }

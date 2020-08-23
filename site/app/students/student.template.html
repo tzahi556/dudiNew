@@ -545,7 +545,7 @@
                                     </thead>
                                     <tbody ng-if="!$ctrl.newPayment.isZikuy">
                                         <!--filter: {Paid:'!'} track by $index-->
-                                        <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc " ng-if="(expense.Price+expense.ZikuySum)!=expense.Sum && !expense.ZikuyNumber && expense.Price>0">
+                                        <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc " ng-if="(expense.Price+expense.ZikuySum)!=expense.Sum && !expense.ZikuyNumber && (expense.Price + expense.ZikuySum)>0">
                                             <td>
                                                 <input type="checkbox" ng-init="expense.Checked=false" ng-click="$ctrl.countTotal()"
                                                        ng-model="expense.Checked" />
@@ -771,7 +771,7 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index"  style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}}>
-                                <td><input ng-if="$ctrl.newExpense.IsZikuy && !expense.ZikuyNumber && expense.Id" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
+                                <td><input ng-if="$ctrl.newExpense.IsZikuy && !expense.ZikuyNumber && expense.Id && expense.BeforePrice<0" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
 
                                 <td>{{expense.Id}}</td>
                                 <td>{{expense.ZikuyNumber}}</td>

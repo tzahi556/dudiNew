@@ -895,7 +895,8 @@ namespace FarmsApi.Services
 
                     if (item.Id == 0)
                     {
-                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, item.Name, item.Date);
+                        string name = " חיסון " + item.Type;
+                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
                         item.ExpensesId = ExpensesId;
                         Context.HorseVaccinations.Add(item);
 

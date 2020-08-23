@@ -463,9 +463,13 @@ namespace FarmsApi.Services
 
                 var CurrentDate = DateTime.Now;
                 var UsersH = Context.UserHorses.Where(x=>!x.IsCancelAuto || (x.IsCancelAuto && CurrentDate > x.UntilCancelTime)).ToList();
-
+                
                 foreach (var UserH in UsersH)
                 {
+                    // במידה והסוס מחוק או לא פעיל
+                    Horse h = Context.Horses.Where(x => x.Id == UserH.HorseId).FirstOrDefault();
+                    if (h != null && (h.Deleted || h.Active== "notActive")) continue;
+
                     var PensionPrice = UserH.PensionPrice;
                     var TrainingCost = UserH.TrainingCost;
                     string addExpen = "";

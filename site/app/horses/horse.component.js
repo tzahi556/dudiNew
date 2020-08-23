@@ -989,9 +989,8 @@
 
 
         function _submit(isWithoutalert) {
-
-            if (this.horse.BirthDate)
-                this.horse.BirthDate.setHours(this.horse.BirthDate.getHours() + 3);
+            
+            this.horse.BirthDate.setHours(this.horse.BirthDate.getHours() + 3);
 
             if (this.horse.ArrivedDate)
                 this.horse.ArrivedDate.setHours(this.horse.ArrivedDate.getHours() + 3);
@@ -1003,6 +1002,7 @@
 
             horsesService.updateHorse(this.horse).then(function (horse) {
                 this.horse = horse;
+                this.initHorse();
                 horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
                     this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations, this.hozims).then(function (hozims) {
                         this.createNotifications();

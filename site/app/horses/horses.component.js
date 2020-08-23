@@ -16,11 +16,12 @@
     }
 
     function _getTotal(type) {
-        if (type==1)
-            return this.horses.filter(x => x.HorseLocation != 'outer').length;
+        if (type==0)
+            return this.horses.filter(x => x.HorseLocation != 'outer' && x.Active!="notActive").length;
+        else if (type == 1)
+            return this.horses.filter(x => x.HorseLocation != 'outer' && x.Active == "notActive").length;
         else
             return this.horses.filter(x => x.HorseLocation == 'outer').length;
-
 
     }
 
