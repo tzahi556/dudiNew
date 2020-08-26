@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FarmsApi.DataModels
 {
@@ -16,7 +17,12 @@ namespace FarmsApi.DataModels
         public int? ZikuyNumber { get; set; }
         public double? BeforePrice { get; set; }
         public double? ZikuySum { get; set; }
-        
+        [NotMapped]
+        public bool SelectedForZikuy { get; set; }
 
+       
+        public int? SelectedForZikuyManualId { get; set; }
+
+        
     }
 }

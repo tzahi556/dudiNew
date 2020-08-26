@@ -1125,7 +1125,7 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
-
+                Expenses Newitem = new Expenses();
                 List<Expenses> Diff = new List<Expenses>();
 
                 foreach (Expenses item in objList)
@@ -1136,6 +1136,8 @@ namespace FarmsApi.Services
                     if (item.Id == 0)
                     {
                         Context.Expenses.Add(item);
+                        Newitem = item;
+                      
                     }
                     else
                     {
@@ -1196,7 +1198,10 @@ namespace FarmsApi.Services
 
                         }
 
-
+                        if (item.SelectedForZikuyManualId != null)
+                        {
+                            Newitem = item;
+                        }
                         Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
                     }
 
@@ -1210,6 +1215,7 @@ namespace FarmsApi.Services
 
                     foreach (Expenses item in differenceQuery)
                     {
+
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
 
                     }
@@ -1244,6 +1250,45 @@ namespace FarmsApi.Services
                 //User u = UpdateUser(User);
                 Context.SaveChanges();
 
+
+                if(Newitem!=null && Newitem.Price < 0)
+                {
+                    var result = Context.Expenses.Where(p => p.UserId == u.Id).ToList();
+
+                    var ZikuyPrice = Newitem.Price * -1;
+                    foreach (Expenses item in result)
+                    {
+                        if (item.SelectedForZikuy && ZikuyPrice!=0)
+                        {
+                            var TotalPrice = item.Price + (item.ZikuySum ?? 0);
+
+                            if (TotalPrice == 0) continue;
+
+                            if (TotalPrice >= ZikuyPrice)
+                            {
+                               item.ZikuySum = (item.ZikuySum ?? 0) +  ZikuyPrice * -1;
+                               item.ZikuyNumber = Newitem.Id;
+                               ZikuyPrice = 0;
+
+                            }
+                            else
+                            {
+                               // ZikuyPrice = ZikuyPrice - TotalPrice;
+                                item.ZikuySum = (item.ZikuySum ?? 0) + (TotalPrice * -1);
+                                item.ZikuyNumber = Newitem.Id;
+                                ZikuyPrice = ZikuyPrice - TotalPrice;
+
+                            }
+                                
+                               
+
+                        }
+                       
+                    }
+
+                    Context.SaveChanges();
+
+                }
 
                 //var result2 = Context.Expenses.Where(p => p.UserId == u.Id).ToList();
 

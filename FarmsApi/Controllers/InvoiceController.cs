@@ -9,6 +9,7 @@ using System.Text;
 using System.Web.Http;
 using FarmsApi.Services;
 using FarmsApi.DataModels;
+using System.Linq;
 
 namespace FarmsApi.Controllers
 {
@@ -322,7 +323,136 @@ namespace FarmsApi.Controllers
                         Params.isMasKabala = false;
                     }
 
-                    //
+
+                    //*************************** חלוקה לרשימות
+                    List<dynamic> listProduct = new List<dynamic>();
+                    string InvoiceDetailsArray = Newtonsoft.Json.JsonConvert.SerializeObject(Params.InvoiceDetailsArray);
+                    List<JsonObj> items = JsonConvert.DeserializeObject<List<JsonObj>>(InvoiceDetailsArray);
+                    foreach (var product in items)
+                    {
+
+                        dynamic temp = new
+                        {
+                            details = product.details,
+                            amount = 1,
+                            price = product.price,
+                            price_inc_vat = true
+                        };
+
+                        listProduct.Add(temp);
+
+                    }
+
+                    if (items.Count == 0)
+                    {
+
+                        dynamic temp = new
+                        {
+                            details = (string)Params.InvoiceDetails,
+                            amount = 1,
+                            price = (decimal)Params.payment,
+                            price_inc_vat = true
+                        };
+
+                        listProduct.Add(temp);
+
+
+                    }
+
+                    //********************************************
+
+                    try
+                    {
+
+                        if ((bool)Params.isZikuy)
+                        {
+                            using (var Context = new Context())
+                            {
+                                dynamic responseZikuy = null;
+
+
+                                string parentList = (string)Params.parents;
+                                var Pays = Context.Payments.Where(x => (parentList).Contains(x.doc_uuid)).ToList();
+                                foreach (var item in Pays)
+                                {
+                                    var doc_type = item.doc_type;
+
+
+
+                                    if (doc_type == "Kabala" || doc_type == "MasKabala")
+                                    {
+                                        DocType = 400;
+
+                                        decimal p = -1 * (decimal)Params.payment;
+
+                                        dynamic temp = new
+                                        {
+                                            details = (string)Params.InvoiceDetails,
+                                            amount = 1,
+                                            price = p,
+                                            price_inc_vat = true
+                                        };
+
+                                        listProduct[0] = temp;
+
+
+                                        Payment.Add(
+                                                     new
+                                                     {
+                                                         payment_type = 1,
+                                                         date = (string)Params.payment_date,
+                                                         payment = p
+                                                     }
+
+                                                     );
+
+                                        responseZikuy = GetEzcountRes(Params, listProduct, Payment, DocType, IsProduction, doc, ref lg, p);
+
+                                    }
+
+                                    if (doc_type == "Mas" || doc_type == "MasKabala")
+                                    {
+                                        decimal p = (decimal)Params.payment;
+                                        DocType = 330;
+                                        Payment = null;
+                                        dynamic temp = new
+                                        {
+                                            details = (string)Params.InvoiceDetails,
+                                            amount = 1,
+                                            price = p,
+                                            price_inc_vat = true
+                                        };
+
+                                        listProduct[0] = temp;
+
+                                       
+                                        responseZikuy = GetEzcountRes(Params, listProduct, Payment, DocType, IsProduction, doc, ref lg, p);
+                                    }
+
+
+
+
+
+
+                                }
+
+
+                                return Ok(responseZikuy);
+
+
+
+                            }
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+
+
+
                     var reqObj = new
                     {
                         api_key = (string)Params.api_key,
@@ -345,29 +475,20 @@ namespace FarmsApi.Controllers
                         c_accounting_num = (string)Params.c_accounting_num,
                         tag_id = (string)Params.tag_id,
 
-                        item = new dynamic[] {
-                    new {
-                        details = (string)Params.InvoiceDetails,
-                        amount = 1,
-                        price = (decimal)Params.payment,
-                        price_inc_vat = true
-                       }
 
-
-                    },
+                        item = listProduct,
 
                         payment = Payment,
                         //  details = Params.checks_date != null ? "תאריך פרעון צ'ק: " + ((DateTime)Params.checks_date).ToLocalTime().ToShortDateString() : "",
                         price_total = (decimal)Params.payment,
                     };
 
-
                     lg.Details = " הנפקת חשבונית " + (string)Params.payment_type;
                     dynamic response = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
                     lg.Response = response.ToString();
                     return Ok(response);
 
-                  
+
                 }
 
 
@@ -392,5 +513,60 @@ namespace FarmsApi.Controllers
 
             }
         }
+
+        private dynamic GetEzcountRes(dynamic Params, List<dynamic> listProduct, List<dynamic> Payment, int DocType, string IsProduction, DocCreation doc, ref Logs lg, decimal p)
+        {
+            var reqObjZikuy = new
+            {
+                api_key = (string)Params.api_key,
+                api_email = (string)Params.api_email,
+                ua_uuid = (string)Params.ua_uuid,
+
+                developer_email = "tzahi556@gmail.com",
+                developer_phone = "0505913817",
+                type = DocType,
+                description = "",//(bool)Params.isMasKabala ? "" : (string)Params.InvoiceDetails,
+
+                customer_email = (string)Params.customer_email,
+                customer_address = (string)Params.customer_address,
+                comment = (string)Params.comment,
+                parent = (string)Params.parents,
+
+                customer_name = (string)Params.customer_name,
+                customerAction = "ASSOC_CREATE",
+                customer_crn = (string)Params.customer_crn,
+                c_accounting_num = (string)Params.c_accounting_num,
+                tag_id = (string)Params.tag_id,
+
+
+                item = listProduct,
+
+                payment = Payment,
+                price_total = p,
+            };
+
+            lg.Details = " הנפקת זיכוי " + (string)Params.payment_type;
+            dynamic responseZikuy = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObjZikuy);
+            lg.Response = responseZikuy.ToString();
+            return responseZikuy;
+
+        }
+    }
+
+
+    public class JsonObj
+    {
+        [JsonProperty("amount")]
+        public int amount { get; set; }
+
+        [JsonProperty("details")]
+        public string details { get; set; }
+        [JsonProperty("price")]
+        public decimal price { get; set; }
+        [JsonProperty("price_inc_vat")]
+        public bool price_inc_vat { get; set; }
+
+
+
     }
 }

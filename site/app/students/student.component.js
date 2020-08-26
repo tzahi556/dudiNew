@@ -101,7 +101,7 @@
         this.countTotal = _countTotal.bind(this);
         this.openComments = _openComments.bind(this);
         this.commentClose = _commentClose.bind(this);
-        this.countTotalByInvoiceSum = _countTotalByInvoiceSum.bind(this);
+       // this.countTotalByInvoiceSum = _countTotalByInvoiceSum.bind(this);
         this.countSherit = _countSherit.bind(this);
         this.openReport = _openReport.bind(this);
         this.filterReportMontlyComments = _filterReportMontlyComments.bind(this);
@@ -138,13 +138,17 @@
         this.printExcel = _printExcel.bind(this);
         this.printExcelExpensive = _printExcelExpensive.bind(this);
 
-        
+
         this.getPrint = _getPrint.bind(this);
         this.changeExpense = _changeExpense.bind(this);
         this.setExpensiveZikuy = _setExpensiveZikuy.bind(this);
         this.getExpensesAfterZikuy = _getExpensesAfterZikuy.bind(this);
+        this.modalAction = _modalAction.bind(this);
+
+        this.changeInvoiceTotal = _changeInvoiceTotal.bind(this);
+
         
-        
+
         this.show4 = _show4.bind(this);
         this.isDateMoreToday = _isDateMoreToday.bind(this);
 
@@ -164,10 +168,49 @@
 
         this.StudentTotalLessons = 0;
 
-     
 
-      
 
+       // this.SelectedForZikuyManualId;
+        function _modalAction(type, expense) {
+            if (!type) {
+
+                for (var i in this.expenses) {
+                    this.expenses[i].SelectedForZikuy = false;
+                    this.expenses[i].SelectedForZikuyManualId = null;
+                }
+                expense.SelectedForZikuyManualId = expense.Id;
+                $('#modalZikuy').modal('show');
+
+            }
+
+
+            if (type == 1) {
+
+              
+                this.submit(true);
+                $('#modalZikuy').modal('hide');
+
+
+
+            }
+            //ביטול
+            if (type == 2) {
+
+                for (var i in this.expenses) {
+                    this.expenses[i].SelectedForZikuy = false;
+                    this.expenses[i].SelectedForZikuyManualId = null;
+                }
+                
+                $('#modalZikuy').modal('hide');
+
+            }
+
+           
+
+
+           
+
+        }
 
         function _printExtention() {
             $.get('app/students/ReportExtenion.html?sssd=' + new Date(), function (text) {
@@ -176,20 +219,20 @@
                 var TableExtenion = "";
 
 
-              
+
 
                 for (var i in self.expenses) {
 
                     TableExtenion += "<tr>"
                         + "<td>" + ((self.expenses[i].Id) ? self.expenses[i].Id : "")
                         + "</td><td>" + ((self.expenses[i].ZikuyNumber) ? self.expenses[i].ZikuyNumber : "")
-                          + "</td><td>" + moment(self.expenses[i].Date).format('DD/MM/YYYY') 
-                          + "</td><td>" + ((self.expenses[i].Details)?self.expenses[i].Details:"")
+                        + "</td><td>" + moment(self.expenses[i].Date).format('DD/MM/YYYY')
+                        + "</td><td>" + ((self.expenses[i].Details) ? self.expenses[i].Details : "")
                         + "</td><td>" + ((self.expenses[i].BeforePrice) ? self.expenses[i].BeforePrice : "")
                         + "</td><td>" + ((self.expenses[i].Discount) ? self.expenses[i].Discount : "")
-                          + "</td><td>" + ((self.expenses[i].Price) ? self.expenses[i].Price : "")
-                          + "</td><td>" + ((self.expenses[i].Paid) ? self.expenses[i].Paid : "")
-                               + "</td><td>" + ((self.expenses[i].Sum)?self.expenses[i].Sum : "") + "</td></tr>";
+                        + "</td><td>" + ((self.expenses[i].Price) ? self.expenses[i].Price : "")
+                        + "</td><td>" + ((self.expenses[i].Paid) ? self.expenses[i].Paid : "")
+                        + "</td><td>" + ((self.expenses[i].Sum) ? self.expenses[i].Sum : "") + "</td></tr>";
 
 
                 }
@@ -209,7 +252,7 @@
 
         function _printLessons() {
             if (!this.dateFrom || !this.dateTo) { alert("חובה לבחור תאריכים לדו''ח"); return; }
-           
+
 
             $.get('app/students/Report.html?sssd=' + new Date(), function (text) {
                 text = text.replace("@FromDate", moment(self.dateFrom).format('DD/MM/YYYY')).replace("@ToDate", moment(self.dateTo).format('DD/MM/YYYY'));
@@ -221,7 +264,7 @@
                 var datesLessons = $filter('dateRange')(self.lessons, self.dateFrom, self.dateTo);
 
                 for (var i in datesLessons) {
-                    
+
                     var index = (parseInt(i) + 1);
 
 
@@ -233,9 +276,9 @@
                         + "</td><td style='text-align:right'>" + self.getPrint(datesLessons[i].statuses[0].Status, 1) + " " + ((datesLessons[i].statuses[0].IsComplete > 2) ? " (משיעור השלמה)" : "")
                         + "</td><td>" + self.getPrint(datesLessons[i].statuses[0].OfficeDetails)
                         + "</td><td>" + self.getPrint(datesLessons[i].lessprice)
-                        + "</td><td>" + ((datesLessons[i].paid) ?' שולם ':"") + "</td></tr>";
+                        + "</td><td>" + ((datesLessons[i].paid) ? ' שולם ' : "") + "</td></tr>";
 
-                   
+
                 }
 
                 text = text.replace("@TableLessons", TableLessons);
@@ -254,7 +297,7 @@
 
 
         function _printExcelExpensive() {
-           
+
 
             var data = [];
             data.push([
@@ -270,7 +313,7 @@
             ]);
 
             for (var i in this.expenses) {
-               // var index = (parseInt(i) + 1);
+                // var index = (parseInt(i) + 1);
                 data.push([
 
 
@@ -279,11 +322,11 @@
                     ((self.expenses[i].ZikuyNumber) ? self.expenses[i].ZikuyNumber : ""),
                     moment(self.expenses[i].Date).format('DD/MM/YYYY'),
                     ((self.expenses[i].Details) ? self.expenses[i].Details : ""),
-                    ((self.expenses[i].BeforePrice) ? self.expenses[i].BeforePrice : "") ,
+                    ((self.expenses[i].BeforePrice) ? self.expenses[i].BeforePrice : ""),
                     ((self.expenses[i].Discount) ? self.expenses[i].Discount : ""),
                     ((self.expenses[i].Price) ? self.expenses[i].Price : ""),
                     ((self.expenses[i].Paid) ? self.expenses[i].Paid : ""),
-                    ((self.expenses[i].Sum) ? self.expenses[i].Sum : ""), 
+                    ((self.expenses[i].Sum) ? self.expenses[i].Sum : ""),
 
                 ]);
 
@@ -295,24 +338,24 @@
             if (!this.dateFrom || !this.dateTo) { alert("חובה לבחור תאריכים לדו''ח"); return; }
 
 
-          
-                var TableLessons = "";
+
+            var TableLessons = "";
 
 
-                var datesLessons = $filter('dateRange')(self.lessons, self.dateFrom, self.dateTo);
+            var datesLessons = $filter('dateRange')(self.lessons, self.dateFrom, self.dateTo);
 
-                var data = [];
-                data.push([
-                    '#',
-                    'שם המדריך',
-                    'סוס',
-                    'התחלה',
-                    'סטטוס',
-                    'הערות משרד',
-                    'מחיר',
-                    'שולם',
-                 
-                ]);
+            var data = [];
+            data.push([
+                '#',
+                'שם המדריך',
+                'סוס',
+                'התחלה',
+                'סטטוס',
+                'הערות משרד',
+                'מחיר',
+                'שולם',
+
+            ]);
 
             for (var i in datesLessons) {
                 var index = (parseInt(i) + 1);
@@ -325,11 +368,11 @@
                     self.getPrint(datesLessons[i].statuses[0].OfficeDetails),
                     self.getPrint(datesLessons[i].lessprice),
                     ((datesLessons[i].paid) ? ' שולם ' : ""),
-                  
+
                 ]);
 
             }
-              _getReport(data);
+            _getReport(data);
         }
 
 
@@ -409,15 +452,15 @@
         }
 
 
-       
-        function _getPrint(val,type) {
+
+        function _getPrint(val, type) {
             if (type == 1) {
 
                 for (var i in this.lessonStatuses) {
                     if (this.lessonStatuses[i].id == val)
                         return this.lessonStatuses[i].name;
                 }
-               
+
 
 
 
@@ -769,8 +812,8 @@
 
         // init student
         this.initStudent = function () {
-           
-            if (this.user.IsTafus) { alert(" כרטיס תלמיד זה פתוח אצל ''" + this.user.TofesName + "'',לא ניתן לעבוד על אותו כרטיס במקביל")};
+
+            if (this.user.IsTafus) { alert(" כרטיס תלמיד זה פתוח אצל ''" + this.user.TofesName + "'',לא ניתן לעבוד על אותו כרטיס במקביל") };
             //  this.migration();
             this.initPaymentForm();
             this.initCommitmentForm();
@@ -942,58 +985,96 @@
             this.expenses = this.expenses || [];
 
 
-         
+
             this.newExpense.Price = this.newExpense.BeforePrice;// - this.newExpense.Discount;
             this.newExpense.Price = (this.newExpense.IsZikuy) ? this.newExpense.Price * -1 : this.newExpense.Price;
             this.newExpense.BeforePrice = (this.newExpense.IsZikuy) ? this.newExpense.BeforePrice * -1 : this.newExpense.BeforePrice;
             this.expenses.push(this.newExpense);
 
-
-            for (var i in this.expenses) {
-
-                //if (this.expenses[i].SelectedForZikuy) {
-
-                //    this.expenses[i].ZikuySum = this.newExpense.Price;
-                //    this.expenses[i].ZikuyNumber = 7777;
-                //    this.expenses[i].SelectedForZikuy = false;
-                //}
+            //if (this.newExpense.IsZikuy) {
 
 
-                this.expenses[i].SelectedForZikuy = false;
+            //    var sum = angular.copy(this.newExpense.Price);
 
-                if (typeof (this.newExpense.ZikuyNumber) != "undefined" && this.expenses[i].Id == this.newExpense.ZikuyNumber) {
-
-                    this.expenses[i].ZikuySum = this.newExpense.Price;
-                }
+            //    for (var i in this.expenses) {
+            //        if (this.expenses[i].SelectedForZikuy && sum!=0) {
 
 
-            }
+            //            if (this.expenses[i].Price >= sum) {
+
+            //                this.expenses[i].ZikuySum = sum;
+            //                this.expenses[i].SelectedForZikuy = 1;
+            //                sum = 0;
 
 
-            this.initNewExpense();
-            this.countAllCredits();
+            //            } else {
+
+            //                this.expenses[i].ZikuySum = sum - this.expenses[i].Price;
+            //                this.expenses[i].SelectedForZikuy = 1;
+            //                sum = sum - this.expenses[i].Price;
+
+            //            }
+
+            //            //expenses[j].ZikuyNumber = (expenses.reduce(function (prev, current) {
+            //            //    return (prev.Id > current.Id) ? prev : current
+            //            //})).Id;
+
+
+            //        }
+
+            //    }
+
+            //}
+
+            this.submit(true);
+
+
+            // this.submit(true);
+
+
+            // להביא את ההוספות
+
+
+
+            //  usersService.getUserExpensesByUserId($stateParams.id)
+
+
+
+
+            //this.expenses[i].SelectedForZikuy = false;
+
+            //if (typeof (this.newExpense.ZikuyNumber) != "undefined" && this.expenses[i].Id == this.newExpense.ZikuyNumber) {
+
+            //    this.expenses[i].ZikuySum = this.newExpense.Price;
+            //}
+
+
+
+
+
+
 
 
 
         }
 
 
-        
+
 
         function _changeExpense(expense) {
 
             expense.Price = expense.BeforePrice - expense.Discount;
 
             this.countExpenses();
-            
+
         }
 
         function _setExpensiveZikuy(expense) {
 
-        
-            this.newExpense.ZikuyNumber = expense.Id;
-            
-            this.countExpenses();
+
+            //  this.newExpense.ZikuyNumber = expense.Id;
+
+            //   this.countExpenses();
 
         }
 
@@ -1003,6 +1084,19 @@
         function _removeExpense(expense) {
             for (var i in this.expenses) {
                 if (this.expenses[i] == expense) {
+
+
+                    if (this.expenses[i].Price < 0) {
+                        for (var j in this.expenses) {
+                            if (this.expenses[j].ZikuyNumber == this.expenses[i].Id) {
+                                this.expenses[j].ZikuyNumber = null;
+                                this.expenses[j].ZikuySum = null;
+                            }
+                        }
+
+                    }
+
+
                     this.expenses.splice(i, 1);
                 }
             }
@@ -1017,7 +1111,7 @@
                 $scope.expenseForm.$setPristine();
             }
 
-           
+
 
         }
 
@@ -1126,7 +1220,7 @@
 
 
                     // במידה ומדובר בחווה שהחיוב הוא רק בעת הדרוש שיעור השלמה 
-                
+
                     if (CurrentStatus == 'completionReq' || (this.IsHiyuvInHashlama == 1 && (studentsStatusObj.IsComplete > "3"))) continue;
 
 
@@ -1226,7 +1320,7 @@
             this.results = [];
             this.newPrice = 0;
 
-            
+
             this.StudentTotalLessons = 0;
 
             for (var i in this.lessons) {
@@ -1277,7 +1371,7 @@
                     if (['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(studentsStatus) != -1) {
 
                         // במידה ומדובר בחווה שהחיוב הוא רק בעת הדרוש שיעור השלמה 
-                        if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6")  && this.IsHiyuvInHashlama == 1) {
+                        if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) {
 
                             this.lessons[i].paid = false;
                         }
@@ -1353,7 +1447,7 @@
         }
 
         function _setStatusZikuy(doc_type) {
-          
+
             return doc_type == 'Zikuy';
         }
 
@@ -1401,8 +1495,8 @@
             var studentsStatus = studentsStatusObj.Status;  //|| (['completion'].indexOf(studentsStatus) != -1 && lesson.IsComplete==4)
             if (['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(studentsStatus) != -1) {
                 // במידה ומדובר בחווה שהחיוב הוא רק בעת הדרוש שיעור השלמה 
-               
-                if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6")  && this.IsHiyuvInHashlama == 1) {
+
+                if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) {
 
                     return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
                 }
@@ -1469,6 +1563,8 @@
                     this.newPayment.api_key = this.farm.Meta.api_key;
                     this.newPayment.ua_uuid = this.farm.Meta.ua_uuid;
                     this.newPayment.api_email = this.farm.Meta.api_email;
+                    this.newPayment.InvoiceDetailsArray = [];
+
                     if (this.user.Farm_Id != 46) {
                         this.newPayment.isMasKabala = true;
                     } else {
@@ -1549,23 +1645,43 @@
         }
 
 
+        
+        function _changeInvoiceTotal() {
+
+            var Sum = 0;
+            var Details ='';
+            for (var total of self.newPayment.InvoiceDetailsArray) {
+
+               
+                Sum += total.price;
+                Details += (total.details)? (total.details + ","):"";
+
+            }
+
+            self.newPayment.InvoiceSum = Sum;
+            self.newPayment.InvoiceDetails = Details;
+
+
+        }
+
         function _countTotal() {
-          
+
             self.newPayment.InvoiceSum = 0;
             self.newPayment.InvoiceDetails = '';
+
+            self.newPayment.InvoiceDetailsArray = [];
+            
+            var counter = 1;
             if (self.newPayment.lessons || self.newPayment.month) {
                 if (self.user.PayType == 'lessonCost') {
                     self.newPayment.InvoiceSum += self.newPayment.lessons * self.user.Cost;
-                    // self.newPayment.InvoiceDetails += ((this.farm.Meta.IsRekivaTipulitInKabala && self.user.Style == "treatment") ? "רכיבה טיפולית - " : "") + self.newPayment.lessons + ' שיעורים ' + ((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");// "," + this.getLessonsDateNoPaid(self.newPayment.lessons);  //only for dev
 
                     if (this.farm.Meta.IsRekivaTipulitInKabala) {
 
                         if (self.user.Style == "treatment") {
-                            // var styleObject = sharedValues.styles.filter(x => x.id == self.user.Style);   //this.getStyleObjectfromSharedValue
                             self.newPayment.InvoiceDetails += " תשלום עבור " + self.newPayment.lessons + " טיפולי רכיבה "; //((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
                         }
                         if (self.user.Style == "phizi") {
-                            // var styleObject = sharedValues.styles.filter(x => x.id == self.user.Style);   //this.getStyleObjectfromSharedValue
                             self.newPayment.InvoiceDetails += " תשלום עבור " + self.newPayment.lessons + " טיפולי פיזותרפיה "; //((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
                         }
 
@@ -1573,7 +1689,7 @@
 
                     if (this.farm.Meta.IsDateInKabala) {
 
-                        self.newPayment.InvoiceDetails += "," + this.getLessonsDateNoPaid(self.newPayment.lessons);
+                        self.newPayment.InvoiceDetails +=  this.getLessonsDateNoPaid(self.newPayment.lessons);
 
                     }
 
@@ -1606,12 +1722,26 @@
                     }
 
                 }
+
+                var InvoiceDetailsObj = { 'details': self.newPayment.InvoiceDetails, 'price': self.newPayment.InvoiceSum, 'amount': counter++,'price_inc_vat':true};
+                self.newPayment.InvoiceDetailsArray.push(InvoiceDetailsObj);
+
             }
             if (this.expenses !== undefined) {
+               
                 for (var expense of this.expenses.filter(function (expense) { return expense.Checked && expense.Price != expense.Sum })) {
 
-                    self.newPayment.InvoiceSum += expense.Price + ((!expense.ZikuySum) ? 0 : expense.ZikuySum) - ((!expense.Sum) ? 0 : expense.Sum);
-                    self.newPayment.InvoiceDetails += ', ' + expense.Details;
+                    var OneInvoiceSum = expense.Price + ((!expense.ZikuySum) ? 0 : expense.ZikuySum) - ((!expense.Sum) ? 0 : expense.Sum);
+                    self.newPayment.InvoiceSum += OneInvoiceSum;
+
+                    var OneInvoiceDetails = expense.Details;
+                    self.newPayment.InvoiceDetails += OneInvoiceDetails + ",";
+
+
+                    var InvoiceDetailsObj = { 'details': OneInvoiceDetails, 'price': OneInvoiceSum, 'amount': counter++, 'price_inc_vat': true};
+                    self.newPayment.InvoiceDetailsArray.push(InvoiceDetailsObj);
+
+
                 }
             }
 
@@ -1668,48 +1798,48 @@
         }
 
         //איבנט בעת שינוי סכום חשבונית מאתחל את כמות השיעורים בהתאם לסכום
-        function _countTotalByInvoiceSum() {
+        //function _countTotalByInvoiceSum() {
 
-            self.newPayment.InvoiceDetails = "";
-            var TempExpenses = 0;
-            if (this.expenses !== undefined) {
-                for (var expense of this.expenses.filter(function (expense) { return !expense.Paid && expense.Checked })) {
-                    TempExpenses += expense.Price;
-                }
-            }
+        //    self.newPayment.InvoiceDetails = "";
+        //    var TempExpenses = 0;
+        //    if (this.expenses !== undefined) {
+        //        for (var expense of this.expenses.filter(function (expense) { return !expense.Paid && expense.Checked })) {
+        //            TempExpenses += expense.Price;
+        //        }
+        //    }
 
-            self.newPayment.lessons = 0;
+        //    self.newPayment.lessons = 0;
 
 
 
-            if (self.user.PayType == 'lessonCost') {
+        //    if (self.user.PayType == 'lessonCost') {
 
-                var TempSum = this.Sherit + self.newPayment.InvoiceSum - TempExpenses;
-                ////מקרה שקסדה עולה 120 שח ושילמתי 80 שיעדכן שיש לי 80 ש"ח עודף
-                if (TempExpenses > 0 && self.newPayment.InvoiceSum < TempExpenses) {
-                    self.newPayment.lessons += 0;
-                    return;
-                }
+        //        var TempSum = this.Sherit + self.newPayment.InvoiceSum - TempExpenses;
+        //        ////מקרה שקסדה עולה 120 שח ושילמתי 80 שיעדכן שיש לי 80 ש"ח עודף
+        //        if (TempExpenses > 0 && self.newPayment.InvoiceSum < TempExpenses) {
+        //            self.newPayment.lessons += 0;
+        //            return;
+        //        }
 
-                if (TempSum < 0) return;
-                //הסכום גדול קח את ההפרש לעודף
-                var DivisionRemainder = TempSum % self.user.Cost;
-                self.newPayment.lessons += (TempSum - DivisionRemainder) / self.user.Cost;
+        //        if (TempSum < 0) return;
+        //        //הסכום גדול קח את ההפרש לעודף
+        //        var DivisionRemainder = TempSum % self.user.Cost;
+        //        self.newPayment.lessons += (TempSum - DivisionRemainder) / self.user.Cost;
 
-            }
+        //    }
 
-            if (self.newPayment.lessons)
+        //    if (self.newPayment.lessons)
 
-                self.newPayment.InvoiceDetails += ((this.farm.Meta.IsRekivaTipulitInKabala && self.user.Meta.Style == "treatment") ? "רכיבה טיפולית - " : "") + self.newPayment.lessons + ' שיעורים ' + ((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
-            if (this.expenses !== undefined) {
-                for (var expense of this.expenses.filter(function (expense) { return !expense.Paid && expense.Checked })) {
+        //        self.newPayment.InvoiceDetails += ((this.farm.Meta.IsRekivaTipulitInKabala && self.user.Meta.Style == "treatment") ? "רכיבה טיפולית - " : "") + self.newPayment.lessons + ' שיעורים ' + ((this.farm.Meta.IsDateInKabala) ? ("," + this.getLessonsDateNoPaid(self.newPayment.lessons)) : "");
+        //    if (this.expenses !== undefined) {
+        //        for (var expense of this.expenses.filter(function (expense) { return !expense.Paid && expense.Checked })) {
 
-                    //self.newPayment.InvoiceSum += expense.Price;
-                    self.newPayment.InvoiceDetails += ', ' + expense.Details + ', ';
-                }
-            }
+        //            //self.newPayment.InvoiceSum += expense.Price;
+        //            self.newPayment.InvoiceDetails += ', ' + expense.Details + ', ';
+        //        }
+        //    }
 
-        }
+        //}
 
         //מחיקה
         function _removePayment(payment) {
@@ -1761,9 +1891,9 @@
 
         function _changeLessonsStatus(status, details, studentId, lessonId, isComplete, lesson, isText, officedetails) {
 
-         
+
             if (!isText && (isComplete > 2)) {
-              
+
 
                 if (status && status != "attended" && status != "notAttended" && status != "notAttendedCharge") {
 
@@ -1796,7 +1926,7 @@
                 }
 
 
-               
+
             }
 
             if (isComplete > 2) {
@@ -1886,10 +2016,10 @@
 
         //הוצאות אחרות
         function _getExpensesAfterZikuy() {
-           
-            var TempExpenses =this.expenses || [];
 
-            
+            var TempExpenses = this.expenses || [];
+
+
             for (var i in TempExpenses) {
                 var exp = TempExpenses[i];
 
@@ -1907,14 +2037,14 @@
             }
 
 
-           
+
             return TempExpenses;
         }
 
 
 
 
-        
+
 
         function _countPaidLessons() {
 
@@ -2010,12 +2140,12 @@
                 }
             }
 
-          
+
             return false;
         }
         function _countSherit() {
 
-           
+
             this.totalPay = 0;
             var total = 0;
             var totalLessons = 0;
@@ -2287,7 +2417,7 @@
             this.disablBtn = true;
 
             var UserTypePaid = this.user.PayType;
-            this.newPayment.customer_name = (this.user.Organzion ? (this.user.Organzion + "-"):"") +   this.user.FirstName + ' ' + this.user.LastName;
+            this.newPayment.customer_name = (this.user.Organzion ? (this.user.Organzion + "-") : "") + this.user.FirstName + ' ' + this.user.LastName;
             this.newPayment.customer_email = this.user.AnotherEmail;
             this.newPayment.customer_address = this.user.Address;
             this.newPayment.UserId = this.user.Id;
@@ -2348,7 +2478,7 @@
                 if (newPayment.parents)
                     newPayment.parents = (newPayment.parents).join();
 
-
+              
 
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
@@ -2368,6 +2498,10 @@
                         // מאחר וזה פוסט אני מעדכן את השדות שלא יאבדו לי
                         this.newPayment.InvoiceSum = newPayment.InvoiceSum;
                         this.newPayment.InvoiceDetails = newPayment.InvoiceDetails;
+
+                        this.newPayment.InvoiceDetailsArray = newPayment.InvoiceDetailsArray;
+
+
                         this.ksys_token = response.data.secretTransactionId;
                         var top = 0;
                         top = top > 0 ? top / 2 : 0;
@@ -2677,22 +2811,69 @@
                         return;
                     }
 
-                    //this.lessonToUpdate.push(lesson);
-                    //lessonsService.updateLesson(lesson);
-                    //for (var i in this.lessonToUpdate) {
 
-                    //    alert(this.lessonToUpdate[i].details);
-                    //}
+
+
+                    usersService.getUserExpensesByUserId(user.Id).then(function (expenses) {
+
+                        for (var i in this.expenses) {
+                            this.expenses[i].SelectedForZikuy = false;
+                            this.expenses[i].SelectedForZikuyManualId = null;
+                        }
+
+                        //    for (var i in this.expenses) {
+                        //        if (this.newExpense.Price == 0) continue;
+                        //        for (var j in expenses) {
+                        //            if (this.expenses[i].Id == expenses[j].Id) {
+
+                        //                if (this.expenses[i].SelectedForZikuy) {
+                        //                    //debugger
+                        //                    //alert(this.newExpense.isZikuy);
+
+                        //                    if (expenses[j].Price >= this.newExpense.Price) {
+
+                        //                        expenses[j].ZikuySum = this.newExpense.Price;
+                        //                        this.newExpense.Price = 0;
+
+
+                        //                    } else {
+
+                        //                        expenses[j].ZikuySum = this.newExpense.Price - expenses[j].Price;
+                        //                        this.newExpense.Price = this.newExpense.Price - expenses[j].Price;
+
+                        //                    }
+
+                        //                    expenses[j].ZikuyNumber = (expenses.reduce(function (prev, current) {
+                        //                                                return (prev.Id > current.Id) ? prev : current
+                        //                                                })).Id;
+
+                        //                }
+                        //                break;
+                        //            }
+                        //        }
+                        //    }
+
+                        this.expenses = expenses;
+                        this.initNewExpense();
+                        this.countAllCredits();
+
+                    }.bind(this));
+
+
+
+
+
 
                     usersService.getPaymentsByUserId(user.Id).then(function (payments) {
-                       
+
                         this.payments = payments;
 
                         this.createNotifications();
                         this.initStudent();
 
                     }.bind(this));
-                   
+
+
 
 
                     lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate);
@@ -2715,7 +2896,7 @@
                 for (var i in this.newPayment.Checks) {
 
 
-                   
+
                     this.newPayment.Checks[i].checks_date = moment(this.newPayment.Checks[i].checks_date).format("YYYY-MM-DD");
 
                     CheckList.push(this.newPayment.Checks[i]);

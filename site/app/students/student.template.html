@@ -6,7 +6,7 @@
 </style>
 
 <div class="row" ng-show="!$ctrl.user.IsTafus">
-    <div class="col-md-3" >
+    <div class="col-md-3">
         <comments studentid="$ctrl.selectedStudent" close-callback="$ctrl.commentClose"></comments>
 
         <reportMonth studentid="$ctrl.selectedStudentForReport"></reportMonth>
@@ -84,7 +84,7 @@
                         <label>מזהה</label>
                         <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />
                     </div>
-                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <imagepicker model="$ctrl.user.Image" image-label="תמונת {{($ctrl.role=='farmAdminHorse')?'לקוח':'תלמיד '}}" />
                     </div>
                     <div class="form-group">
@@ -95,7 +95,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
 
                         <div class="row">
 
@@ -131,15 +131,15 @@
                         <label>       {{($ctrl.role!='farmAdminHorse')?"ת.ז":"ת.ז/ח.פ"}}</label>
                         <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.IdNumber" required />
                     </div>
-                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>תאריך לידה</label>
                         <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" />
                     </div>
-                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>שם אם</label>
                         <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName2" />
                     </div>
-                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>שם אב</label>
                         <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName" />
                     </div>
@@ -159,7 +159,7 @@
                         <label>אימייל</label>
                         <input type="email" name="email" class="form-control" ng-model="$ctrl.user.AnotherEmail" />
                     </div>
-                   
+
                     <div class="form-group" ng-if="$ctrl.farms.length > 1">
                         <label>חווה</label>
                         <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.user.Farm_Id" required>
@@ -196,8 +196,7 @@
                     <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>מדריך קבוע</label>
                         <select class="form-control" ng-options="instructor.Id as instructor.FirstName + ' ' +instructor.LastName  for instructor in $ctrl.instructors|filter:{IsMazkirut:0}"
-                                ng-model="$ctrl.user.MainInstructorId"
-                               >
+                                ng-model="$ctrl.user.MainInstructorId">
                             <option value="">בחר מדריך</option>
                         </select>
                     </div>
@@ -205,7 +204,7 @@
 
 
 
-                    <div class="form-group"  ng-if="$ctrl.role!='farmAdminHorse'">
+                    <div class="form-group" ng-if="$ctrl.role!='farmAdminHorse'">
                         <label>עלות</label>
                         <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
                     </div>
@@ -545,7 +544,7 @@
                                     </thead>
                                     <tbody ng-if="!$ctrl.newPayment.isZikuy">
                                         <!--filter: {Paid:'!'} track by $index-->
-                                        <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc " ng-if="(expense.Price+expense.ZikuySum)!=expense.Sum && !expense.ZikuyNumber && (expense.Price + expense.ZikuySum)>0">
+                                        <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc " ng-if="(expense.Price+expense.ZikuySum)!=expense.Sum  && (expense.Price + expense.ZikuySum)>0">
                                             <td>
                                                 <input type="checkbox" ng-init="expense.Checked=false" ng-click="$ctrl.countTotal()"
                                                        ng-model="expense.Checked" />
@@ -562,12 +561,51 @@
                             <div class="form-group" ng-if="(!$ctrl.newPayment.isMasKabala && !$ctrl.newPayment.isKabala  && !$ctrl.newPayment.isKabalaTroma && !$ctrl.newPayment.isMas && !$ctrl.newPayment.isZikuy) || $ctrl.newPayment.noEazi">
                                 <input class="form-control" placeholder="מספר מסמך" type="text" ng-model="$ctrl.newPayment.InvoiceNum" required />
                             </div>
-                            <div class="form-group">
-                                <input class="form-control" placeholder="פירוט עסקה" type="text" ng-model="$ctrl.newPayment.InvoiceDetails" required />
-                            </div>
+                            <!--<div class="form-group">
+                                <input class="form-control" placeholder="פירוט עסקה" type="text" ng-model="$ctrl.newPayment.InvoiceDetails" />
+                            </div>-->
                             <!-- cash -->
-                            <div class="form-group">
-                                <input class="form-control" placeholder="סכום החשבונית" type="number" ng-model="$ctrl.newPayment.InvoiceSum" required />
+                            <div class="form-group" style="border:solid 1px gray;border-radius:5px;padding:10px" >
+
+
+                                <table class="table">
+                                    <tr>
+                                        <th>#</th>
+                                        <th width="80%">שם הפריט</th>
+                                        <th>סכום</th>
+
+                                    </tr>
+                                    <tr ng-repeat="total in $ctrl.newPayment.InvoiceDetailsArray">
+                                        <td>
+                                            {{total.amount}}
+                                        </td>
+                                        <td>
+                                            <input class="form-control" placeholder="פירוט" type="text" ng-model="total.details" required ng-change="$ctrl.changeInvoiceTotal()"/>  
+
+                                        </td>
+                                        <td>
+                                            <input class="form-control" placeholder="סכום הפריט" type="number" ng-model="total.price" required ng-change="$ctrl.changeInvoiceTotal()" />
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <input class="form-control" placeholder="פירוט" type="text" ng-model="$ctrl.newPayment.InvoiceDetails" ng-disabled="$ctrl.newPayment.InvoiceDetailsArray.length>0" required/>
+
+
+                                        </td>
+                                        <td>
+                                            <input class="form-control" placeholder="סכום החשבונית" type="number" ng-model="$ctrl.newPayment.InvoiceSum" ng-disabled="$ctrl.newPayment.InvoiceDetailsArray.length>0"  required />
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+                                
+
                                 <!--ng-change="$ctrl.countTotalByInvoiceSum()"-->
                             </div>
                             <!-- payment type -->
@@ -692,7 +730,7 @@
                                 <input style="float:left;width:150px" type="date" class="form-control" ng-model="$ctrl.user.DateForMonthlyPay" placeholder="תאריך" />
                                 <label style="float:left;margin:5px">חיוב חודשי לפי תאריך:</label>
 
-                                <button type="button" ng-click="$ctrl.submit()" class="btn btn-success pull-left" ng-disabled="studentForm.$invalid">שמור</button>
+                                <button type="button" ng-click="$ctrl.submit()" class="btn btn-success pull-left" ng-disabled="studentForm.$invalid ">שמור</button>
                             </div>
 
 
@@ -750,7 +788,7 @@
                         <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-click="$ctrl.printExcelExpensive()"> הורדה לאקסל </button>
 
 
-                        
+
 
                         הוצאות אחרות
                     </div>
@@ -767,28 +805,30 @@
                                 <th>עלות סופית</th>
                                 <th>שולם</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index"  style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}}>
-                                <td><input ng-if="$ctrl.newExpense.IsZikuy && !expense.ZikuyNumber && expense.Id && expense.BeforePrice<0" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
+                            <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index" style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}}>
+    <td><input ng-if="$ctrl.newExpense.IsZikuy && expense.BeforePrice>0" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
 
-                                <td>{{expense.Id}}</td>
-                                <td>{{expense.ZikuyNumber}}</td>
-                                <td>{{expense.Date | ildate: 'DD/MM/YYYY'}}</td>
-                                <td width="40%">
-                                    {{expense.Details}}
-                                    <span ng-if="expense.Paid">(שולם: {{expense.Paid}})</span>
-                                </td>
+    <td>{{expense.Id}}</td>
+    <td>{{expense.ZikuyNumber}}</td>
+    <td>{{expense.Date | ildate: 'DD/MM/YYYY'}}</td>
+    <td width="40%">
+        {{expense.Details}}
+        <span ng-if="expense.Paid">(שולם: {{expense.Paid}})</span>
+    </td>
 
-                                <td  style="direction:ltr;text-align:right">{{expense.BeforePrice}}</td>
-                                <td> <input type="number" class="" ng-if="!expense.ZikuyNumber" ng-model="expense.Discount" ng-change="$ctrl.changeExpense(expense)" placeholder="" style="width:100px" /></td>
+    <td style="direction:ltr;text-align:right">{{expense.BeforePrice}}</td>
+    <td> <input type="number" class="" ng-if="expense.BeforePrice>0" ng-model="expense.Discount" ng-change="$ctrl.changeExpense(expense)" placeholder="" style="width:100px" /></td>
 
 
-                                <td style="font-weight:bold;direction:ltr;text-align:right">{{expense.BeforePrice - expense.Discount}}</td>
-                                <td>{{expense.Sum}}</td>
-                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeExpense(expense)">הסר</button></td>
-                            </tr>
+    <td style="font-weight:bold;direction:ltr;text-align:right">{{expense.BeforePrice - expense.Discount}}</td>
+    <td>{{expense.Sum}}</td>
+    <td><button ng-if="expense.BeforePrice<0 && !expense.SelectedForZikuyManualId" class="btn btn-xs btn-primary" ng-click="$ctrl.modalAction(false,expense)">זיכוי</button></td>
+    <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeExpense(expense)">הסר</button></td>
+</tr>
                         </tbody>
                     </table>
                     <div class="panel-footer">
@@ -889,7 +929,7 @@
 
                                     <img ng-if="lesson.statuses[statusIndex].IsComplete>2  " src="../../images/replace.jpg" width="24px" />
 
-                                   
+
                                     <span ng-if="$ctrl.user.IsLeave==1 && ($ctrl.user.LeaveDate | ildate: 'DD/MM/YYYY')==(lesson.start | ildate: 'DD/MM/YYYY')" style="color:crimson;font-weight:bold">(עזב)</span>
 
                                 </td>
@@ -1309,6 +1349,64 @@
                 <div class="modal-body">
                     <button type="button" class="btn btn-primary" ng-click="$ctrl.modalRemoveAdd(false)" data-dismiss="modal" id="dvAppendHad">הסר תלמיד באופן חד פעמי</button>
                     <button type="button" class="btn btn-primary" ng-click="$ctrl.modalRemoveAdd(true)" data-dismiss="modal" id="dvAppendTz">הסר תלמיד לכל השיעורים עתידיים </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalZikuy" style="z-index:50000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">זיכוי הוצאות אחרות</h4>
+                </div>
+                <div class="modal-body">
+
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>#</th>
+
+                                <th>תאריך</th>
+                                <th>תיאור</th>
+                               
+                                <th>עלות סופית</th>
+
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="expense.BeforePrice > 0" ng-repeat="expense in $ctrl.expenses  | orderByDateDesc track by $index">
+                                <td><input type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
+
+                                <td>{{expense.Id}}</td>
+
+                                <td>{{expense.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                <td width="40%">
+                                    {{expense.Details}}
+                                    <span ng-if="expense.Paid">(שולם: {{expense.Paid}})</span>
+                                </td>
+
+                              
+                                <td style="font-weight:bold;direction:ltr;text-align:right">{{expense.BeforePrice - expense.Discount}}</td>
+                                
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <div style="text-align:left">
+
+                       
+                        <button type="button" class="btn btn-primary" ng-click="$ctrl.modalAction(1)" data-dismiss="modal">זכה הוצאות אחרות</button>
+                        <button type="button" class="btn btn-danger" ng-click="$ctrl.modalAction(2)" data-dismiss="modal">ביטול </button>
+                    </div>
                 </div>
             </div>
         </div>
