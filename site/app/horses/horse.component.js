@@ -114,9 +114,9 @@
         this.getClassForinsemination = _getClassForinsemination.bind(this);
 
         this.getInseminationTypeName = _getInseminationTypeName.bind(this);
+        this.goToStudent = _goToStudent.bind(this);
 
-
-
+        
         this.role = localStorage.getItem('currentRole');
         this.subrole = localStorage.getItem('currentSubRole');
 
@@ -147,6 +147,15 @@
         this.getCurrentHozim = _getCurrentHozim.bind(this);
 
         this.getTotalHozim = _getTotalHozim.bind(this);
+
+
+
+        function _goToStudent() {
+
+            this.submit(true, this.horse.OwnerId);
+
+
+        }
 
         function _getTotalHozim() {
 
@@ -988,7 +997,7 @@
         }
 
 
-        function _submit(isWithoutalert) {
+        function _submit(isWithoutalert, OwnerId) {
          
             this.horse.BirthDate.setHours(this.horse.BirthDate.getHours() + 3);
 
@@ -1008,6 +1017,8 @@
                         this.createNotifications();
                         if (!isWithoutalert) alert('נשמר בהצלחה');
                         this.hozims = hozims;
+
+                        if (OwnerId) $state.go('student',{id: this.horse.OwnerId });
 
                     }.bind(this));
 

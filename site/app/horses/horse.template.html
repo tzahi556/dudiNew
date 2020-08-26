@@ -98,7 +98,11 @@
                             <label>בעלים</label>
 
                             <input type="text" class="form-control" ng-model="$ctrl.horse.Owner" ng-disabled="true" />
-                            <a ng-if="$ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" class="" ui-sref="student({id:$ctrl.horse.OwnerId})">{{$ctrl.horse.Owner}} </a>
+                            <!--<a ng-if="$ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" class="" ui-sref="student({id:$ctrl.horse.OwnerId})">{{$ctrl.horse.Owner}} </a>-->
+
+
+                            <div ng-if="$ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" style="cursor:pointer;text-decoration:underline;color:dodgerblue"  ng-click="$ctrl.goToStudent()">{{$ctrl.horse.Owner}} </div>
+
 
                         </div>
 
