@@ -377,7 +377,24 @@ namespace FarmsApi.Controllers
                                 {
                                     var doc_type = item.doc_type;
 
+                                    if (doc_type == "Mas" || doc_type == "MasKabala")
+                                    {
+                                        decimal p = (decimal)Params.payment;
+                                        DocType = 330;
+                                        //Payment = null;
+                                        dynamic temp = new
+                                        {
+                                            details = (string)Params.InvoiceDetails,
+                                            amount = 1,
+                                            price = p,
+                                            price_inc_vat = true
+                                        };
 
+                                        listProduct[0] = temp;
+
+
+                                        responseZikuy = GetEzcountRes(Params, listProduct, Payment, DocType, IsProduction, doc, ref lg, p);
+                                    }
 
                                     if (doc_type == "Kabala" || doc_type == "MasKabala")
                                     {
@@ -395,6 +412,7 @@ namespace FarmsApi.Controllers
 
                                         listProduct[0] = temp;
 
+                                       
 
                                         Payment.Add(
                                                      new
@@ -410,24 +428,7 @@ namespace FarmsApi.Controllers
 
                                     }
 
-                                    if (doc_type == "Mas" || doc_type == "MasKabala")
-                                    {
-                                        decimal p = (decimal)Params.payment;
-                                        DocType = 330;
-                                        Payment = null;
-                                        dynamic temp = new
-                                        {
-                                            details = (string)Params.InvoiceDetails,
-                                            amount = 1,
-                                            price = p,
-                                            price_inc_vat = true
-                                        };
-
-                                        listProduct[0] = temp;
-
-                                       
-                                        responseZikuy = GetEzcountRes(Params, listProduct, Payment, DocType, IsProduction, doc, ref lg, p);
-                                    }
+                                
 
 
 

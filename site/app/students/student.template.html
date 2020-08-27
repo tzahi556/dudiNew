@@ -826,7 +826,7 @@
 
     <td style="font-weight:bold;direction:ltr;text-align:right">{{expense.BeforePrice - expense.Discount}}</td>
     <td>{{expense.Sum}}</td>
-    <td><button ng-if="expense.BeforePrice<0 && !expense.SelectedForZikuyManualId" class="btn btn-xs btn-primary" ng-click="$ctrl.modalAction(false,expense)">זיכוי</button></td>
+    <td><button ng-if="expense.BeforePrice<0 && $ctrl.zikuyButton(expense)" class="btn btn-xs btn-primary" ng-click="$ctrl.modalAction(false,expense)">זיכוי</button></td>
     <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeExpense(expense)">הסר</button></td>
 </tr>
                         </tbody>
@@ -1381,7 +1381,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-if="expense.BeforePrice > 0" ng-repeat="expense in $ctrl.expenses  | orderByDateDesc track by $index">
+                            <tr ng-if="expense.BeforePrice > 0" ng-repeat="expense in $ctrl.zikuyButton() | orderByDateDesc track by $index">
                                 <td><input type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
 
                                 <td>{{expense.Id}}</td>

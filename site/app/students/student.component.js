@@ -146,7 +146,7 @@
         this.modalAction = _modalAction.bind(this);
 
         this.changeInvoiceTotal = _changeInvoiceTotal.bind(this);
-
+        this.zikuyButton = _zikuyButton.bind(this);
         
 
         this.show4 = _show4.bind(this);
@@ -169,7 +169,32 @@
         this.StudentTotalLessons = 0;
 
 
+        function _zikuyButton(expense) {
 
+            if (!expense) {
+
+
+                var res = this.expenses.filter(x => x.BeforePrice > 0 && x.ZikuySum!=(x.Price*-1));
+
+                return res;
+
+            }
+
+
+
+            var sum=0;
+            for (var i in this.expenses) {
+                if (this.expenses[i].ZikuyNumber == expense.Id)
+                    sum += this.expenses[i].ZikuySum;
+            }
+
+           
+            if (expense.Price < sum)
+                return true;
+            else
+                return false;
+
+        }
        // this.SelectedForZikuyManualId;
         function _modalAction(type, expense) {
             if (!type) {

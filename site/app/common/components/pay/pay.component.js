@@ -326,7 +326,8 @@
                 this.newPayment.Price = this.user.Cost;
                 this.newPayment.IsAshrai = this.farm.Meta.IsAshrai;
                 this.newPayment.IsToken = this.farm.Meta.IsToken;
-                this.newPayment.Price = this.user.Cost;
+                this.newPayment.Price = this.user.Cost
+                this.newPayment.InvoiceDetailsArray = [];
                 if ($scope.paymentForm != null) {
                     $scope.paymentForm.$setPristine();
                 }
