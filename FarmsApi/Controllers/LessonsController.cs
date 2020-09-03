@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Web.Http;
 
 namespace FarmsApi.Services
@@ -79,7 +80,15 @@ namespace FarmsApi.Services
         }
 
 
+        [Route("getSetMonthlyReports/{id}/{date}/{text}/{type}")]
+        [HttpGet]
+        public IHttpActionResult GetSetMonthlyReports(int id, string date, string text,int type)
+        {
+            return Ok(LessonsService.GetSetMonthlyReports(id, date, text, type));
+        }
 
+
+        
 
     }
 }

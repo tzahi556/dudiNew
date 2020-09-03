@@ -16,9 +16,20 @@
         this.getifLessonsHaveMoreOneRider = _getifLessonsHaveMoreOneRider.bind(this);
         this.deleteOnlyStudentLesson = _deleteOnlyStudentLesson.bind(this);
         this.getSetSchedularTask = _getSetSchedularTask.bind(this);
-        
+        this.getSetMonthlyReports = _getSetMonthlyReports.bind(this);
 
         this.HMOs = sharedValues.HMOs;
+
+
+        function _getSetMonthlyReports(userId, date, text, type) {
+           
+            if (!text) text = null;
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'lessons/getSetMonthlyReports/' + userId + '/' + date + '/' + text + '/' + type).then(function (res) {
+                deferred.resolve(res.data);
+            });
+            return deferred.promise;
+        }
 
         function _getifLessonsHaveMoreOneRider(lessonId) {
           
@@ -112,7 +123,7 @@
 
         function _getLessons(studentId, startDate, endDate, isFromCompletion) {
 
-          
+           
             studentId = !angular.isUndefined(studentId) ? studentId : '';
             var deferred = $q.defer();
             $http.get(sharedValues.apiUrl + 'lessons/getLessons/', { params: { studentId: studentId, startDate: startDate, endDate: endDate, isFromCompletion: isFromCompletion } }).then(function (res) {

@@ -13,10 +13,14 @@
 
     function ReportmonthController($scope, lessonsService, sharedValues, usersService) {
         this.usersService = usersService;
+        this.lessonsService = lessonsService;
         this.scope = $scope;
      
         this.onShow = _onShow.bind(this);
         this.close = _close.bind(this);
+        this.addTextDetail = _addTextDetail.bind(this);
+
+        
       
         this.hide = _hide.bind(this);
     
@@ -35,14 +39,22 @@
         }
     }
 
-    function _onShow(event, monthlyReportData,userName,userTaz,farmName,instructorName) {
+    function _onShow(event, monthlyReportData,userName,userTaz,farmName,instructorName,user) {
 
-
+    
         this.userName = userName;
         this.userTaz = userTaz;
         this.farmName = farmName;
         this.instructorName = instructorName;
         this.monthlyReportData = monthlyReportData;
+        this.user = user;
+
+        var date = moment(this.monthlyReportData[0].Date).format('YYYY-MM-DD');
+        this.lessonsService.getSetMonthlyReports(this.user.Id, date.toString(),"",1).then(function (res) {
+
+            this.Text = res.Summery;
+            $("#dvSicum").hide();
+        }.bind(this));
         //   alert(monthlyReportData.length);
       
     }
@@ -55,12 +67,14 @@
 
     }
 
-       function _printReport() {
+    function _printReport() {
 
        
            $("#dvMain button").hide();
-
-           var innerContents = document.getElementById("dvMain").innerHTML;
+           $("#dvSicumReal").hide();
+           $("#dvSicum").show();
+        var innerContents = document.getElementById("dvMain").innerHTML;
+        
                var popupWinindow = window.open('', '_blank', 'width=600,height=700,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no');
                popupWinindow.document.open();
                popupWinindow.document.write('<html><head>'
@@ -70,8 +84,22 @@
                );
                popupWinindow.document.close();
          
-           $("#dvMain button").show();
+        $("#dvMain button").show();
+        $("#dvSicumReal").show();
+        $("#dvSicum").hide();
     }
 
+    function _addTextDetail() {
 
+
+        var date = moment(this.monthlyReportData[0].Date).format('YYYY-MM-DD');
+        var text = this.Text;
+        var CtrlThis = this;
+        this.lessonsService.getSetMonthlyReports(this.user.Id, date.toString(), text,2).then(function (text) {
+
+            CtrlThis.studentid = null;
+
+        }.bind(this));
+    }
+    
 })();

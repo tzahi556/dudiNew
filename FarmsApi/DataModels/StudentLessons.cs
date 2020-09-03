@@ -22,7 +22,7 @@ namespace FarmsApi.DataModels
         public string HearotStatus { get; set; }
         public string Mashov { get; set; }
 
-
+        public string HMO { get; set; }
 
     }
 }

@@ -772,7 +772,12 @@
 
             this.selectedStudentForReport = this.user.Id;
             var instructorId = this.lessons[this.lessons.length - 1].resourceId;
-            this.scope.$broadcast('reportMonth.show', this.filterReportMontlyComments(reportdate), this.user.FirstName + " " + this.user.LastName, this.user.Email, this.farm.Name, this.getInstructorName(instructorId));
+            if (this.user.MainInstructorId) {
+
+                instructorId = this.user.MainInstructorId;
+            }
+
+            this.scope.$broadcast('reportMonth.show', this.filterReportMontlyComments(reportdate), this.user.FirstName + " " + this.user.LastName, this.user.Email, this.farm.Name, this.getInstructorName(instructorId),this.user);
 
 
         }
@@ -1215,7 +1220,7 @@
                 if (monthlyLessons[i].statuses[0].Details) {
 
                     // alert(monthlyLessons[i].statuses[0].Details);
-                    this.monthlyReportData.push({ Date: monthlyLessons[i].start, Details: monthlyLessons[i].statuses[0].Details });
+                    this.monthlyReportData.push({ Date: monthlyLessons[i].start, Details: monthlyLessons[i].statuses[0].Details, Mashov: monthlyLessons[i].statuses[0].Mashov});
 
 
                 }
@@ -1878,6 +1883,12 @@
                     payments.splice(i, 1);
                     break;
                 }
+                //if (payments[i].ZikuyNumber == payment.InvoiceNum) {
+                //    payments[i].ZikuyNumber = null;
+
+                //}
+
+
             }
             this.countAllCredits();
         }
@@ -2508,7 +2519,7 @@
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
-
+                    
                     if (response.data == "-1") {
                         alert('לא ניתן להנפיק מסמך , תעודת זהות קיימת במערכת');
                         return;
@@ -2690,19 +2701,85 @@
 
                         newPayment.SelectedForInvoice = true;
                     }
+
+                    // צחי עדכן
                     if (newPayment.doc_type == "Zikuy") {
 
                         payment.ZikuyNumber = newPayment.InvoiceNum;
                         payment.ZikuyPdf = newPayment.InvoicePdf;
+                        //debugger
+                        if (payment.ParentInvoiceNum) {
+                           
+                            for (var x in thisCtrl.payments) {
+                                if (thisCtrl.payments[x].InvoiceNum == payment.ParentInvoiceNum) {
+                                
+
+                                    // רק במידה ויש שיעורים בחשבונית שאתה מצמיד אליה זיכוי תעשה הורדת שיעורים
+                                    if (thisCtrl.user.PayType == "lessonCost" && thisCtrl.payments[x].lessons > 0) {
+                                        var difflessons = ((thisCtrl.payments[x].lessons * thisCtrl.payments[x].Price) + newPayment.InvoiceSum) / thisCtrl.payments[x].Price;
+                                        thisCtrl.payments[x].lessons = Math.floor(difflessons);
+                                    }
+
+                                    
+                                    else if (thisCtrl.user.PayType == "monthCost") {
+
+                                        if (thisCtrl.payments[x].untilmonth && thisCtrl.payments[x].untilmonth != thisCtrl.payments[x].month) {
+                                            var diffMonth = (moment(thisCtrl.payments[x].untilmonth).startOf('month')).diff(moment(thisCtrl.payments[x].month).startOf('month'), 'months', true);
+                                            var diffMoney = ((diffMonth * thisCtrl.payments[x].Price) + newPayment.InvoiceSum) / thisCtrl.payments[x].Price;
+                                            diffMoney = Math.floor(diffMoney);
+                                            thisCtrl.payments[x].untilmonth = moment(thisCtrl.payments[x].month).add(diffMoney, 'month');
+
+
+                                        } else {
+
+                                            if ((newPayment.InvoiceSum * -1) >= thisCtrl.payments[x].Price) { 
+                                                thisCtrl.payments[x].month = null;
+                                                thisCtrl.payments[x].untilmonth = null;
+                                            }
+
+                                        }
+
+
+
+                                    }
+                                    break;
+                                }
+
+
+
+                            }
+
+
+                        }
+
+
 
                         // רק במידה ויש שיעורים בחשבונית שאתה מצמיד אליה זיכוי תעשה הורדת שיעורים
-                        if (thisCtrl.user.PayType == "lessonCost" && payment.lessons > 0) {
+                        else if (thisCtrl.user.PayType == "lessonCost" && payment.lessons > 0) {
                             var difflessons = ((payment.lessons * payment.Price) + newPayment.InvoiceSum) / payment.Price;
                             payment.lessons = Math.floor(difflessons);
-                        } else {
+                        }
 
-                            payment.month = null;
-                            payment.untilmonth = null;
+                        else if (thisCtrl.user.PayType == "monthCost") {
+
+                          
+                           
+                            if (payment.untilmonth && payment.untilmonth != payment.month) {
+                                var diffMonth = (moment(payment.untilmonth).startOf('month')).diff(moment(payment.month).startOf('month'), 'months', true);
+                                var diffMoney = ((diffMonth * payment.Price) + newPayment.InvoiceSum) / payment.Price;
+                                diffMoney = Math.floor(diffMoney);
+                                payment.untilmonth = moment(payment.month).add(diffMoney, 'month');
+
+
+                            } else {
+                                if ((newPayment.InvoiceSum * -1) >= payment.Price) {
+                                    payment.month = null;
+                                    payment.untilmonth = null;
+                                }
+
+                            }
+
+                           
 
                         }
 

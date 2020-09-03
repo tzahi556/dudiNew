@@ -498,7 +498,9 @@ namespace FarmsApi.Controllers
             catch (Exception ex)
             {
                 lg.Exception = ex.Message;
-                return Ok();
+                DocCreation doc = new DocCreation();
+                dynamic response = doc.execute(Constants.ENV_TEST , null); // "{errMsg:2220}";
+                return Ok(response);
 
             }
             finally

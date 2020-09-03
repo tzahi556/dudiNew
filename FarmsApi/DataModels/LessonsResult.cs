@@ -32,7 +32,7 @@ namespace FarmsApi.DataModels
 
         public int? IsMazkirut { get; set; }
 
-
+        public string HMO { get; set; }
 
 
         // id = lesson.Id,

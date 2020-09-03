@@ -1386,7 +1386,8 @@
                                 var studentName = student.FirstName + " " + student.LastName;
                                 var studentClientNumber = student.ClientNumber || "";
                                 var studentIdNumber = student.IdNumber;
-                                var studentHMO = student.HMO;
+                              
+                                var studentHMO = status.HMO;
                                 var studentCost = student.Cost;
 
                                 var startHour = (new Date(lesson.start)).toLocaleTimeString();
@@ -1407,7 +1408,7 @@
                                         studentName,
                                         self.getHebStatus(status),
                                         self.getHebHMO(studentHMO),
-                                        self.getPartaniK(lesson.statuses),
+                                        self.getPartaniK(lesson.statuses, status.StudentId),
                                         status.LessPrice,
                                         status.OfficeDetails,
                                     ]);
@@ -1423,12 +1424,15 @@
       
         }
 
-        function _getPartaniK(statuses) {
-
+        function _getPartaniK(statuses, StudentId) {
+           
             var count = 0;
             for (var i in statuses) {
 
-                if (statuses[i].Status == "attended" || statuses[i].Status == "notAttendedCharge") {
+                if (statuses[i].StudentId == StudentId && statuses[i].Status != "attended")
+                    return 'פרטני';
+
+                if (statuses[i].Status == "attended") {
 
                     count++;
 

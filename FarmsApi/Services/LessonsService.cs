@@ -86,7 +86,8 @@ namespace FarmsApi.Services
                             Mahalak = l.Mahalak,
                             HearotStatus = l.HearotStatus,
                             Mashov = l.Mashov,
-                            LessPrice = l.Price
+                            LessPrice = l.Price,
+                            HMO=l.HMO
                         }).Distinct().ToArray();
                         var studentsArray = students.Select(s => s.StudentName).ToArray();
                         var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName != null).Select(l => new { HorseName = l.HorseName }).ToArray();
@@ -116,7 +117,8 @@ namespace FarmsApi.Services
                                 Mahalak = s.Mahalak,
                                 HearotStatus = s.HearotStatus,
                                 Mashov = s.Mashov,
-                                LessPrice = s.LessPrice
+                                LessPrice = s.LessPrice,
+                                HMO=s.HMO
 
 
                             }).ToArray(),
@@ -457,11 +459,17 @@ namespace FarmsApi.Services
             if (Lesson["onlyMultiple"] != null)
                 onlyMultiple = Lesson["onlyMultiple"].Value<int>();
 
+
+            var TempStudentLessonsList = Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId).ToList();
+
+
+
             var CurrentUserRole = UsersService.GetCurrentUser().Role;
+
             if (CurrentUserRole == "instructor")
             {
 
-                Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId && sl.Status!="completionReq" && sl.Status != "completionReqCharge"));
+                Context.StudentLessons.RemoveRange(Context.StudentLessons.Where(sl => sl.Lesson_Id == LessonId && sl.Status != "completionReq" && sl.Status != "completionReqCharge"));
             }
             else
             {
@@ -476,7 +484,19 @@ namespace FarmsApi.Services
                 {
                     var StatusData = GetStatusDataFromJson(Lesson, StudentId);
 
-                   // if (StatusData[0].Contains("completionReq") && CurrentUserRole == "instructor") continue;
+                    string Matarot = "", Mahalak = "", HearotStatus = "", Mashov = "";
+
+                    var TempStudentLessons = TempStudentLessonsList.Where(x => x.User_Id == StudentId).FirstOrDefault();
+
+                    if (TempStudentLessons != null)
+                    {
+                        Matarot = TempStudentLessons.Matarot;
+                        Mahalak = TempStudentLessons.Mahalak;
+                        HearotStatus = TempStudentLessons.HearotStatus;
+                        Mashov = TempStudentLessons.Mashov;
+
+
+                    }
 
 
 
@@ -486,7 +506,7 @@ namespace FarmsApi.Services
                         StatusData[2] = "1";
                     }
 
-                 
+
 
 
                     if (StatusData[0] == "completion" && StatusData[2] == "2")
@@ -516,7 +536,7 @@ namespace FarmsApi.Services
 
                     }
 
-                   
+
                     if ((StatusData[0] == "" || StatusData[0] == null || StatusData[0] == "completion") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
                     {
                         StatusData[0] = "completion";
@@ -550,7 +570,22 @@ namespace FarmsApi.Services
 
                     }
 
-                    StudentLessons sl = new StudentLessons() { Lesson_Id = LessonId, User_Id = StudentId, Status = StatusData[0], Details = StatusData[1], IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]), HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]), OfficeDetails = StatusData[4] };
+                    StudentLessons sl = new StudentLessons()
+                    {
+                        Lesson_Id = LessonId,
+                        User_Id = StudentId,
+                        Status = StatusData[0],
+                        Details = StatusData[1],
+                        IsComplete = Int32.Parse((StatusData[2] == null) ? "0" : StatusData[2]),
+                        HorseId = Int32.Parse((StatusData[3] == null) ? "0" : StatusData[3]),
+                        OfficeDetails = StatusData[4],
+                        Matarot = Matarot,
+                        Mahalak = Mahalak,
+                        HearotStatus = HearotStatus,
+                        Mashov = Mashov
+
+
+                    };
                     Context.StudentLessons.Add(sl);
                     InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס  " + StatusData[2], sl);
 
@@ -1186,5 +1221,57 @@ namespace FarmsApi.Services
 
 
         }
+
+        public static MonthlyReports GetSetMonthlyReports(int id, string date, string text,int type)
+        {
+            var Res = new MonthlyReports();
+            if (text == "null") text = "";
+            DateTime FirstDate = date != null ? DateTime.Parse(date) : DateTime.Now.Date;
+            using (var Context = new Context())
+            {
+                Res = Context.MonthlyReports.Where(x => x.UserId == id && x.Date == FirstDate).FirstOrDefault();
+                if (type==1)
+                {
+
+
+                    return Res;
+
+                }
+                else
+                {
+
+                    if (Res == null)
+                    {
+
+                        Res = new MonthlyReports();
+                        Res.UserId = id;
+                        Res.Date = FirstDate;
+                        Res.Summery = text;
+
+                        Context.MonthlyReports.Add(Res);
+
+                    }
+                    else
+                    {
+
+                        Res.Date = FirstDate;
+                        Res.Summery = text;
+
+                        Context.Entry(Res).State = System.Data.Entity.EntityState.Modified;
+
+                    }
+
+
+                    Context.SaveChanges();
+
+
+                }
+
+            }
+
+            return Res;
+        }
+
+
     }
 }

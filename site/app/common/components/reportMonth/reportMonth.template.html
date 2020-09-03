@@ -5,9 +5,9 @@
             <label><u>דו"ח חודשי</u></label>
             <button class="btn btn-success " ng-click="$ctrl.printReport()" style="float:left">הדפס דו"ח</button>
         </div>
-       
-        
-        
+
+
+
         <div style="float:right">
             <label>שם חווה: </label>&nbsp;{{$ctrl.farmName}} <br />
             <label>שם תלמיד: </label>&nbsp;{{$ctrl.userName}} &nbsp;<label>ת.ז: </label>&nbsp;{{$ctrl.userTaz}}
@@ -20,36 +20,98 @@
 
         <div class="clearfix"></div>
 
+        <table width="100%" border="1">
+            <tr>
+                <td colspan="2" style="text-align:center;font-weight:bold; background:#34b7eb;padding:3px;width:100%;border:solid 1px black">
+                    מטרות הטיפול
+                </td>
+            </tr>
+            <tr>
 
-        <div class="panel panel-default" >
+                <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                    מוטורי:
+                </td>
+
+                <td>
+                    <div style="" ng-bind="$ctrl.user.Motori"></div>
+
+                </td>
+
+            </tr>
+
+            <tr>
+                <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                    תקשורתי:
+
+                </td>
+
+                <td>
+                    <div style="" ng-bind="$ctrl.user.Tikshorti"></div>
+
+                </td>
+
+            </tr>
+            <tr>
+                <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                    ריגשי:
+
+                </td>
+
+                <td>
+                    <div style="" ng-bind="$ctrl.user.Rigshi"></div>
+
+                </td>
+
+            </tr>
+
+            <tr>
+                <td style="font-weight:bold;padding:5px; border-spacing:5px;">
+                    התנהגותי:
+                </td>
+
+                <td>
+                    <div style="" ng-bind="$ctrl.user.Hitnahagoti"></div>
+                </td>
+
+            </tr>
+
+        </table>
+        <br />
+        <div class="panel panel-default">
             <div class="panel-heading">
                 דו"ח חודשי לחודש - <b>{{$ctrl.monthlyReportData[0].Date | date:'MM/yyyy' }}</b>
             </div>
-            <table class="table">
+            <table  class="table">
                 <thead>
                     <tr>
                         <th>תאריך</th>
                         <th>טקסט</th>
-                        <!--<th>מחיקה</th>-->
+                        <th>משוב</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="detail in $ctrl.monthlyReportData">
                         <td>{{detail.Date | date:'dd/MM/yyyy'}}</td>
                         <td>{{detail.Details}}</td>
+                        <td>{{detail.Mashov}}</td>
                         <!--<td><button class="btn btn-danger btn-xs" ng-click="$ctrl.removeTextDetail(detail)">מחיקה</button></td>-->
                     </tr>
                 </tbody>
             </table>
             <div class="panel-footer">
+                <div id="dvSicum">
+                    <label>סיכום חודשי</label>
+                    <div ng-bind="$ctrl.Text"></div>
 
-
-                <!--<div class="form-group">
-                    <textarea rows="4" type="text" class="form-control" placeholder="טקסט" ng-model="$ctrl.newTextDetail.Text"></textarea>
                 </div>
-                <div class="form-group">
-                    <button class="btn btn-success" ng-click="$ctrl.addTextDetail()">הוספה</button>
-                </div>-->
+
+            <div class="form-group" id="dvSicumReal">
+               <label>סיכום חודשי</label>
+               <textarea rows="2" type="text" class="form-control" placeholder="טקסט" ng-model="$ctrl.Text" ></textarea>
+            </div>
+            <div class="form-group" align="left">
+                <button class="btn btn-success" ng-disabled="false"  ng-click="$ctrl.addTextDetail()">שמור סיכום חודשי</button>
+            </div>
             </div>
         </div>
         <button class="btn btn-default" ng-click="$ctrl.close()" href="">סגור</button>
