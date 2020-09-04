@@ -1,4 +1,4 @@
-﻿<form name="farmmangerForm" ng-submit="$ctrl.submit()" novalidate>
+﻿<form name="farmmangerForm"  novalidate>
     <div class="col-md-2">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -23,7 +23,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 מדריכים
-                <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="farmmangerForm.$invalid">שמור</button>
+                <button  class="btn btn-xs btn-success pull-left" ng-click="$ctrl.SaveData(1)">שמור</button>
             </div>
             <div class="panel-body">
 
@@ -47,13 +47,10 @@
                     </tbody>
                 </table>
 
-                <!--<a target="_blank" class="btn btn-primary"  href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a><br /><br />
-                <a target="_blank" class="btn btn-primary" href="//drive.google.com">Google Drive</a><br /><br />
-                <a target="_blank" class="btn btn-primary" href="//www.dropbox.com">DropBox</a>-->
             </div>
             <div class="panel-footer">
-                <button type="submit" class="btn btn-success" ng-disabled="farmmangerForm.$invalid">עדכון</button>
-                <button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
+                <button class="btn btn-success" ng-click="$ctrl.SaveData(1)">עדכון</button>
+                <!--<button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>-->
             </div>
         </div>
     </div>
@@ -66,29 +63,29 @@
             <div class="panel-body">
                 <div class="col-md-2 form-group">
                     <label>שם משתמש</label>
-                    <input type="text" name="UserName" class="form-control" ng-model="$ctrl.UserName" required />
+                    <input type="text" name="UserName" class="form-control" ng-model="$ctrl.farmmanager.UserName" required />
                 </div>
                 <div class="col-md-2 form-group">
                     <label>סיסמא</label>
-                    <input type="text" name="Password" class="form-control" ng-model="$ctrl.Password" required />
+                    <input type="text" name="Password" class="form-control" ng-model="$ctrl.farmmanager.Password" required />
                 </div>
                 <div class="col-md-2 form-group">
                     <label>קוד ספק</label>
-                    <input type="text" name="SupplierID" class="form-control" ng-model="$ctrl.SupplierID" required />
+                    <input type="text" name="SupplierID" class="form-control" ng-model="$ctrl.farmmanager.SupplierID" required />
                 </div>
 
                 <div class="col-md-2 form-group">
                     <label>קוד טיפול</label>
-                    <input type="text" name="SectionCode" class="form-control" ng-model="$ctrl.SectionCode" required />
+                    <input type="text" name="SectionCode" class="form-control" ng-model="$ctrl.farmmanager.SectionCode" required />
                 </div>
                 <div class="col-md-2 form-group">
                     <label>קוד יחידה</label>
-                    <input type="text" name="CareCode" class="form-control" ng-model="$ctrl.CareCode" required />
+                    <input type="text" name="CareCode" class="form-control" ng-model="$ctrl.farmmanager.CareCode" required />
                 </div>
 
                 <div class="col-md-2 form-group">
                     <label>&nbsp;</label>
-                    <button type="submit" class="btn btn-success" ng-disabled="farmmangerForm.$invalid">שדר דיווח לכללית</button>
+                    <button class="btn btn-success" ng-click="$ctrl.SaveData(2)" ng-disabled="farmmangerForm.$invalid">שדר דיווח לכללית</button>
                 </div>
 
             </div>
@@ -99,35 +96,52 @@
               הסטורית דיווחים
             </div>
             <div class="panel-body">
-                <div class="col-md-2 form-group">
-                    <label>שם משתמש</label>
-                    <input type="text" name="UserName" class="form-control" ng-model="$ctrl.UserName" required />
-                </div>
-                <div class="col-md-2 form-group">
-                    <label>סיסמא</label>
-                    <input type="text" name="Password" class="form-control" ng-model="$ctrl.Password" required />
-                </div>
-                <div class="col-md-2 form-group">
-                    <label>קוד ספק</label>
-                    <input type="text" name="SupplierID" class="form-control" ng-model="$ctrl.SupplierID" required />
+
+                <div class="col-md-4 form-group">
+                    <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-model="$ctrl.SearchUser" />
                 </div>
 
-                <div class="col-md-2 form-group">
-                    <label>קוד טיפול</label>
-                    <input type="text" name="SectionCode" class="form-control" ng-model="$ctrl.SectionCode" required />
+                <div class="col-md-3 form-group">
+                    <input type="date" name="dateFromClalit" class="form-control" ng-model="$ctrl.dateFromClalit" />
                 </div>
-                <div class="col-md-2 form-group">
-                    <label>קוד יחידה</label>
-                    <input type="text" name="CareCode" class="form-control" ng-model="$ctrl.CareCode" required />
+               
+                <div class="col-md-3 form-group">
+                    <input type="date" name="dateToClalit" class="form-control" ng-model="$ctrl.dateToClalit" />
                 </div>
-
-                <div class="col-md-2 form-group">
-                    <label>&nbsp;</label>
-                    <button type="submit" class="btn btn-success" ng-disabled="farmmangerForm.$invalid">שדר דיווח לכללית</button>
+                <div class="col-md-1 form-group">
+                    <button class="btn btn-success">חפש</button>
                 </div>
 
+
+
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+
+
+                            <tr>
+                                <th>תאריך שליחה</th>
+                                <th>תאריך שיעור</th>
+                                <th>שם תלמיד</th>
+                                <th>סטטוס</th>
+                                <th></th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <!--<tr ng-repeat="lesson in $ctrl.lessons | orderBy:'start' | dateRangeClalit:$ctrl.dateFromClalit:$ctrl.dateToClalit " >
+
+                            </tr>-->
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+                </div>
             </div>
-        </div>
     </div>
 
 

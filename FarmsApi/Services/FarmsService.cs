@@ -1,6 +1,7 @@
 ﻿using FarmsApi.DataModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Http.Results;
 
 namespace FarmsApi.Services
 {
@@ -77,8 +78,66 @@ namespace FarmsApi.Services
 
         }
 
+        public static bool SetMangerFarm(FarmManagers farmmanger)
+        {
+
+            var CurrentUser = UsersService.GetCurrentUser();
+            using (var Context = new Context())
+            {
+
+                Context.Entry(farmmanger).State = System.Data.Entity.EntityState.Modified;
+                Context.SaveChanges();
+
+            }
 
 
+
+
+            return true;
+
+        }
+
+        public static bool SetMangerInstructorFarm(List<FarmInstructors> farmInstructors)
+        {
+
+            var CurrentUser = UsersService.GetCurrentUser();
+            using (var Context = new Context())
+            {
+
+              
+
+                foreach (FarmInstructors item in farmInstructors)
+                {
+
+                    FarmInstructors dbfarmInstructor = Context.FarmInstructors.Where(x => x.UserId == item.UserId).FirstOrDefault();
+
+                    if (dbfarmInstructor != null)
+                    {
+                        dbfarmInstructor.ClalitNumber = item.ClalitNumber;
+
+                        Context.Entry(dbfarmInstructor).State = System.Data.Entity.EntityState.Modified;
+                        //Context.SaveChanges();
+
+                    }
+                    else
+                    {
+                        Context.FarmInstructors.Add(item);
+
+                    }
+
+
+                }
+                Context.SaveChanges();
+
+
+                //Context.Entry(farmmanger).State = System.Data.Entity.EntityState.Modified;
+                //Context.SaveChanges();
+
+            }
+
+            return true;
+
+        }
 
         public static Farm UpdateFarm(Farm Farm)
         {

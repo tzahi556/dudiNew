@@ -1,4 +1,5 @@
 ﻿using FarmsApi.DataModels;
+using System.Collections.Generic;
 using System.Web.Http;
 
 namespace FarmsApi.Services
@@ -72,5 +73,29 @@ namespace FarmsApi.Services
         {
             return Ok(FarmsService.GetMangerInstructorFarm());
         }
+
+
+        [Authorize]
+        [Route("setMangerInstructorFarm")]
+        [HttpPost]
+        public IHttpActionResult SetMangerInstructorFarm(List<FarmInstructors> FarmInstructors)
+        {
+            return Ok(FarmsService.SetMangerInstructorFarm(FarmInstructors));
+        }
+
+
+        [Authorize]
+        [Route("setMangerFarm")]
+        [HttpPost]
+        public IHttpActionResult SetMangerFarm(FarmManagers farmmanger)
+        {
+            return Ok(FarmsService.SetMangerFarm(farmmanger));
+        }
+
+
+
+
+
+
     }
 }
