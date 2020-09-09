@@ -481,7 +481,7 @@ namespace FarmsApi.Services
                     if (TrainingCost != null && TrainingCost > 0)
                         addExpen += " + אימון(" + TrainingCost + ")";
 
-
+                 
                     if (!string.IsNullOrEmpty(addExpen))
                     {
                         Expenses ex = new Expenses();
