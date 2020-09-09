@@ -934,6 +934,7 @@ namespace FarmsApi.Services
                         lg.StudentId = item.UserId;
                         lg.UserId = GetCurrentUser().Id;
                         lg.Response = item.InvoicePdf;
+                        lg.Details = "חשבונית חדשה אצלינו";
                         Context.Logs.Add(lg);
                       
 
@@ -957,7 +958,7 @@ namespace FarmsApi.Services
                 try
                 {
 
-                    var result = Context.Payments.Where(p => p.UserId == u.Id).ToList();
+                    var result = Context.Payments.Where(p => p.UserId == u.Id && !p.Deleted).ToList();
                     IEnumerable<Payments> differenceQuery = result.Except(objList);
 
                     foreach (Payments item in differenceQuery)
@@ -978,6 +979,7 @@ namespace FarmsApi.Services
                         lg.StudentId = item.UserId;
                         lg.UserId = GetCurrentUser().Id;
                         lg.Response = item.InvoicePdf;
+                        lg.Details = "מחיקת חשבונית";
                         Context.Logs.Add(lg);
 
 

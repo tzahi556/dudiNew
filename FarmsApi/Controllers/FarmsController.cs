@@ -92,10 +92,24 @@ namespace FarmsApi.Services
             return Ok(FarmsService.SetMangerFarm(farmmanger));
         }
 
+        [Authorize]
+        [Route("getFarmsMainUser/{FarmId}")]
+        [HttpGet]
+        public IHttpActionResult GetFarmsMainUser(int FarmId)
+        {
+            return Ok(FarmsService.GetFarmsMainUser(FarmId));
+        }
 
 
+        [Authorize]
+        [Route("getKlalitHistoris")]
+        [HttpGet]
 
-
+        public IHttpActionResult GetKlalitHistoris(int FarmId , string startDate = null, string endDate = null,int? type=null,int? klalitId = null)
+        {
+            return Ok(FarmsService.GetKlalitHistoris(FarmId, startDate, endDate,type,klalitId));
+        }
+      
 
     }
 }

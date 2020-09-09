@@ -30,11 +30,9 @@
 
 
             this.usersService.updateUser(this.user).then(function (user) {
-               // debugger
+              
                 window.close();
-                //this.copyStatuses(true);
-                //this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
-                //this.event = null;
+            
 
 
 

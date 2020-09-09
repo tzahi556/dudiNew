@@ -14,6 +14,39 @@
         this.setMangerInstructorFarm = _setMangerInstructorFarm;
         this.setMangerFarm = _setMangerFarm;
 
+        this.getFarmsMainUser = _getFarmsMainUser;
+        this.getKlalitHistoris = _getKlalitHistoris;
+
+
+        function _getKlalitHistoris(farmId, startDate, endDate, type, klalitId) {
+
+
+          
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'farms/getKlalitHistoris/', { params: { farmId: farmId, startDate: startDate, endDate: endDate, type: type, klalitId:klalitId } }).then(function (res) {
+
+                deferred.resolve(res.data);
+            });
+
+            return deferred.promise;
+        }
+
+
+
+
+
+
+        function _getFarmsMainUser(farmId) {
+            var deferred = $q.defer();
+
+
+            $http.get(sharedValues.apiUrl + 'farms/getFarmsMainUser/' + farmId ).then(function (res) {
+                var user = res.data;
+                
+                deferred.resolve(user);
+            });
+            return deferred.promise;
+        }
         
 
         function _getFarms(includeDeleted) {
@@ -119,6 +152,11 @@
             });
             return deferred.promise;
         }
+
+
+
+
+
 
     }
 

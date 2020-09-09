@@ -470,11 +470,12 @@ namespace FarmsApi.Services
                     {
 
                        
-
+                        Horse hsSusa = Context.Horses.Where(x => x.Id == item.HorseId).FirstOrDefault();
+                        Horse hsSus = Context.Horses.Where(x => x.Id == item.FatherHorseId).FirstOrDefault();
 
                         if (item.CostFather > 0)
                         {
-                            string name = " חוזה חווה ";
+                            string name = " חוזה חווה " + "סוס מרביע -" + hsSus.Name ;
                             int? ExpensesId = AddToExpensesTable(item.CostHava, 0, item.HorseId, f.Name, name, item.Date);
                             item.ExpensesIdHava = ExpensesId;
                         }
@@ -482,13 +483,12 @@ namespace FarmsApi.Services
 
                         if (item.CostFather > 0)
                         {
-                            string name = " חוזה בעל הסוס ";
+                            string name = " חוזה בעל הסוס " + "סוס מרביע -" + hsSus.Name ;
                             int? ExpensesId = AddToExpensesTable(item.CostFather, 0, item.HorseId, f.Name, name, item.Date);
                             item.ExpensesId = ExpensesId;
                         }
 
-                        Horse hsSusa = Context.Horses.Where(x => x.Id == item.HorseId).FirstOrDefault();
-                        Horse hsSus = Context.Horses.Where(x => x.Id == item.FatherHorseId).FirstOrDefault();
+                       
 
                         HorseInseminations hi = new HorseInseminations();
                         hi.HorseId = hsSus.Id;

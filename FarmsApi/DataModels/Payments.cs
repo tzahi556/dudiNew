@@ -26,6 +26,8 @@ namespace FarmsApi.DataModels
 
         public double? Price { get; set; }
         public double? InvoiceSum { get; set; }
+        public double? InvoiceSumFakeZikuy { get; set; }
+        
         public string payment_type { get; set; }
 
         public string doc_type { get; set; }

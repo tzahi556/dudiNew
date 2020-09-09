@@ -119,7 +119,7 @@ namespace FarmsApi.Controllers
                         response = JsonConvert.DeserializeObject(messge.Content.ReadAsStringAsync().Result);
 
                     }
-                    lg.Details = "סליקה באשראי רכישה";
+                    lg.Details = "אשראי קבלת קישור לחלון";
                     lg.Response = response.ToString();
                     return Ok(response);
                 }
@@ -463,7 +463,7 @@ namespace FarmsApi.Controllers
                         developer_email = "tzahi556@gmail.com",
                         developer_phone = "0505913817",
                         type = DocType,
-                        description = "",//(bool)Params.isMasKabala ? "" : (string)Params.InvoiceDetails,
+                        description = (DocType!=400) ? "": (string)Params.InvoiceDetails,
 
                         customer_email = (string)Params.customer_email,
                         customer_address = (string)Params.customer_address,

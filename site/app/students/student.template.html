@@ -461,7 +461,8 @@
                                     <span ng-if="payment.canceled">(מזוכת: {{payment.canceled}})</span>
                                 </td>
                                 <td>{{payment.count}}</td>
-                                <td style="direction:ltr;text-align:right">{{payment.InvoiceSum}}</td>
+                                <td style="direction:ltr;text-align:right" ng-if="!payment.InvoiceSumFakeZikuy">{{payment.InvoiceSum}}  </td>
+                                <td style="direction:ltr;text-align:right" ng-if="payment.InvoiceSumFakeZikuy">{{payment.InvoiceSumFakeZikuy}}  </td>
                                 <td>
                                     <!--<button class="btn btn-xs btn-default" ng-disabled="payment.canceled" ng-if="!payment.InvoicePdf" ng-click="$ctrl.refundPayment(payment)">זיכוי</button>-->
                                     <!-- ng-if="!payment.InvoicePdf" צחי הוריד את -->
@@ -713,7 +714,7 @@
                             </div>
                             <!-- #payment type -->
                             <!--<button ng-click="$ctrl.addPayment()" ng-disabled="paymentForm.$invalid || $ctrl.user.Meta.Cost==0" type="submit" class="btn btn-success">הוספה</button>-->
-                            <button ng-click="$ctrl.addPayment()" ng-disabled="$ctrl.disablBtn || (paymentForm.$invalid && $ctrl.getIfanyCheckValid())" type="submit" class="btn btn-success">הוספה</button>
+                            <button ng-click="$ctrl.addPayment()" ng-disabled="$ctrl.disablBtn || (paymentForm.$invalid && $ctrl.getIfanyCheckValid())" type="submit" class="btn btn-success">הפקת חשבונית</button>
                             <button ng-click="$ctrl.cancelToken()" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default">איפוס טוקן</button>
                             <button ng-click="$ctrl.show4($ctrl.user.cc_4_digits)" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default"> הצג 4 ספרות אחרונות</button>
 

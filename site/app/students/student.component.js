@@ -174,7 +174,7 @@
             if (!expense) {
 
 
-                var res = this.expenses.filter(x => x.BeforePrice > 0 && x.ZikuySum!=(x.Price*-1));
+                var res = this.expenses.filter(x => x.BeforePrice > 0 && x.ZikuySum != (x.Price * -1) && (x.Sum != x.Price));
 
                 return res;
 
@@ -1590,6 +1590,7 @@
                     this.currentCheckindex = 0;
                     this.checksCount = 0;
                     this.newPayment.doc_type = "";
+                    this.newPayment.InvoiceSumFakeZikuy = null;
                     this.newPayment.api_key = this.farm.Meta.api_key;
                     this.newPayment.ua_uuid = this.farm.Meta.ua_uuid;
                     this.newPayment.api_email = this.farm.Meta.api_email;
@@ -2373,6 +2374,7 @@
 
             // alert(getUrlParameter("http://ynet.co.il?sdsd=1&Shir=3", "Shir"));
 
+            debugger
 
             if (this.newPayment.payment_type == 'ashrai') {
                 this.newPayment.payment_type = 'validate';
@@ -2519,7 +2521,7 @@
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
-                    
+                  
                     if (response.data == "-1") {
                         alert('לא ניתן להנפיק מסמך , תעודת זהות קיימת במערכת');
                         return;
@@ -2548,11 +2550,11 @@
 
                             //response.data.url
                             //http://localhost:52476/closeToken.html
-                            http://localhost:52476/index.html#/closetoken
+                            //http://localhost:52476/index.html#/closetoken
 
-                            // var testUrl = "http://localhost:52476/index.html#/closetoken?aa=55&UserId="+this.user.Id+"&cc_token=4cf8e168-261e-4613-8d20-000332986b24&cc_type_id=2&cc_type_name=%D7%95%D7%99%D7%96%D7%94+%D7%9B.%D7%90.%D7%9C.&cc_4_digits=0000&cc_payer_name=Card+Owner&cc_payer_id=040617649&cc_expire_month=10&cc_expire_year=2021&success=1";
+                            // var testUrl = "http://localhost:51517/index.html#/closetoken?aa=55&UserId="+this.user.Id+"&cc_token=4cf8e168-261e-4613-8d20-000332986b24&cc_type_id=2&cc_type_name=%D7%95%D7%99%D7%96%D7%94+%D7%9B.%D7%90.%D7%9C.&cc_4_digits=0000&cc_payer_name=Card+Owner&cc_payer_id=040617649&cc_expire_month=10&cc_expire_year=2021&success=1";
                             var payWind = window.open(response.data.url, "Upload Chapter content", "width=600,height=600" + ",top=" + top + ",left=" + left);
-
+                            //response.data.url אמת
                             var timer = setInterval(function () {
 
 
@@ -2598,7 +2600,7 @@
 
 
                     this.expenses.map(function (expense) {
-                        if (expense.Checked && expense.Price != expense.Sum) { //&& !expense.Paid !צחי הוריד בינתיים
+                        if (expense.Checked && expense.Price != expense.Sum && newPayment.doc_type != "Mas") { //&& !expense.Paid !צחי הוריד בינתיים
 
                             expense.Paid = newPayment.InvoiceNum;
                             expense.Sum = (!expense.Sum) ? 0 : expense.Sum;
@@ -2632,7 +2634,7 @@
 
                 this.payments = this.payments || [];
                 this.expenses.map(function (expense) {
-                    if (expense.Checked && expense.Price != expense.Sum) { //&& !expense.Paid !צחי הוריד בינתיים
+                    if (expense.Checked && expense.Price != expense.Sum && newPayment.doc_type != "Mas") { //הוספתי עוד תנאי שלא ישלם אם זה חשבונית מס 
                         expense.Paid = newPayment.InvoiceNum;
                         expense.Sum = (!expense.Sum) ? 0 : expense.Sum;
                         var Diff = expense.Price - expense.Sum;
@@ -2704,7 +2706,7 @@
 
                     // צחי עדכן
                     if (newPayment.doc_type == "Zikuy") {
-
+                       
                         payment.ZikuyNumber = newPayment.InvoiceNum;
                         payment.ZikuyPdf = newPayment.InvoicePdf;
                         //debugger
@@ -2750,7 +2752,16 @@
                             }
 
 
+                        } else if (payment.doc_type == "Mas") {
+
+                            newPayment.InvoiceSumFakeZikuy =  newPayment.InvoiceSum;
+                            newPayment.InvoiceSum = 0;
+
                         }
+
+
+
+
 
 
 

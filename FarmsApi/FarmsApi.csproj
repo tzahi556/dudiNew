@@ -165,6 +165,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DataModels\AvailableHours.cs" />
+    <Compile Include="DataModels\KlalitHistoris.cs" />
     <Compile Include="DataModels\MonthlyReports.cs" />
     <Compile Include="DataModels\LogsLessons.cs" />
     <Compile Include="DataModels\Logs.cs" />

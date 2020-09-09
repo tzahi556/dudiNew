@@ -1,5 +1,7 @@
 ﻿using FarmsApi.DataModels;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Http.Results;
 
@@ -18,6 +20,19 @@ namespace FarmsApi.Services
                     return Context.Farms.Where(f => f.Deleted == deleted && f.Id == CurrentUser.Farm_Id).ToList();
             }
         }
+
+        public static User GetFarmsMainUser(int FarmId)
+        {
+            using (var Context = new Context())
+            {
+
+                return Context.Users.Where(x => x.Farm_Id == FarmId && (x.Role == "farmAdmin" || x.Role == "farmAdminHorse")).FirstOrDefault();
+
+
+            }
+        }
+
+
 
         public static void DeleteFarm(int id)
         {
@@ -152,5 +167,40 @@ namespace FarmsApi.Services
                 return Farm;
             }
         }
+
+
+
+        public static List<KlalitHistoris> GetKlalitHistoris(int FarmId, string startDate = null, string endDate = null, int? type = null, int? klalitId = null)
+        {
+            using (var Context = new Context())
+            {
+
+              //  DateTime StartDate = startDate != null ? DateTime.Parse(startDate) : DateTime.Now.Date;
+              //  DateTime EndDate = endDate != null ? DateTime.Parse(endDate) : DateTime.Now.Date;
+
+                SqlParameter FarmIdPara = new SqlParameter("FarmId", FarmId);
+                SqlParameter StartDatePara = new SqlParameter("StartDate", startDate);
+                SqlParameter EndDatePara = new SqlParameter("EndDate", endDate);
+
+
+             
+                var query = Context.Database.SqlQuery<KlalitHistoris>
+                ("GetKlalitHistoris  @FarmId,@StartDate,@EndDate", FarmIdPara, StartDatePara, EndDatePara);
+                var Objects = query.ToList();
+                return Objects;
+
+               
+
+               
+
+
+
+            }
+        }
+
+
+
+
+        
     }
 }

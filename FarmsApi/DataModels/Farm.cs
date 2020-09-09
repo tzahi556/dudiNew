@@ -1,4 +1,6 @@
-﻿namespace FarmsApi.DataModels
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FarmsApi.DataModels
 {
     public class Farm
     {
@@ -8,6 +10,11 @@
         public string Meta { get; set; }
 
         public int? IsHiyuvInHashlama { get; set; }
+
+        [NotMapped]
+        public string UserName { get; set; }
+        [NotMapped]
+        public string Password { get; set; }
 
 
     }
