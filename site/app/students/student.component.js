@@ -2752,18 +2752,14 @@
                             }
 
 
-                        } else if (payment.doc_type == "Mas") {
+                        }
+
+                        else if (payment.doc_type == "Mas") {
 
                             newPayment.InvoiceSumFakeZikuy =  newPayment.InvoiceSum;
                             newPayment.InvoiceSum = 0;
 
                         }
-
-
-
-
-
-
 
                         // רק במידה ויש שיעורים בחשבונית שאתה מצמיד אליה זיכוי תעשה הורדת שיעורים
                         else if (thisCtrl.user.PayType == "lessonCost" && payment.lessons > 0) {
