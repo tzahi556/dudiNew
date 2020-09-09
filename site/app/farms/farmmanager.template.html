@@ -59,6 +59,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 דיווחי תביעה לכללית
+                <button class="btn btn-xs btn-success pull-left" ng-click="$ctrl.SaveData(2)">שמור</button>
             </div>
             <div class="panel-body">
                 <div class="col-md-2 form-group">
@@ -82,10 +83,10 @@
                     <label>קוד יחידה</label>
                     <input type="text" name="CareCode" class="form-control" ng-model="$ctrl.farmmanager.CareCode" required />
                 </div>
-
+              
                 <div class="col-md-2 form-group">
                     <label>&nbsp;</label>
-                    <button class="btn btn-success" ng-click="$ctrl.SaveData(2)" ng-disabled="farmmangerForm.$invalid">שדר דיווח לכללית</button>
+                    <button class="btn btn-primary" ng-click="$ctrl.getKlalitHistoriPage(2)" ng-disabled="farmmangerForm.$invalid">שדר דיווח לכללית</button>
                 </div>
 
             </div>
@@ -109,7 +110,7 @@
                     <input type="date" name="dateToClalit" class="form-control" ng-model="$ctrl.dateToClalit" />
                 </div>
                 <div class="col-md-1 form-group">
-                    <button class="btn btn-success">חפש</button>
+                    <button class="btn btn-primary" ng-click="$ctrl.getKlalitHistoriPage()">חפש</button>
                 </div>
 
 
@@ -122,17 +123,24 @@
                             <tr>
                                 <th>תאריך שליחה</th>
                                 <th>תאריך שיעור</th>
+                                <th>ת.ז</th>
                                 <th>שם תלמיד</th>
                                 <th>סטטוס</th>
                                 <th></th>
-                               
+
                             </tr>
                         </thead>
                         <tbody>
 
-                            <!--<tr ng-repeat="lesson in $ctrl.lessons | orderBy:'start' | dateRangeClalit:$ctrl.dateFromClalit:$ctrl.dateToClalit " >
+                            <tr ng-repeat="klalit in $ctrl.klalits">
 
-                            </tr>-->
+                                <td>{{klalit.DateSend | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{klalit.DateLesson | ildate: 'DD/MM/YYYY'}}</td>
+                                <td>{{klalit.Taz}}</td>
+                                <td>{{klalit.UserName}}</td>
+                                <td>{{klalit.Result}}</td>
+                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.getKlalitHistoriPage(1,klalit.Id)">שלח שוב</button></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

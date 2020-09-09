@@ -12,8 +12,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="farm in $ctrl.farms" ui-sref="farm({id:farm.Id})">
-                <td>{{farm.Name}}</td>
+            <tr ng-repeat="farm in $ctrl.farms" >
+                <td ui-sref="farm({id:farm.Id})">{{farm.Name}}</td>
+
+                <td><button type="button" class="btn btn-primary" ng-click="$ctrl.enterManger(farm.Id)" >כנס בתור מנהל חווה</button></td>
             </tr>
         </tbody>
     </table>

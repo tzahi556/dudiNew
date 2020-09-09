@@ -40,7 +40,34 @@
         this.removeTags = _removeTags.bind(this);
         this.initNewTags = _initNewTags.bind(this);
 
+        this.getKlalitHistoriPage = _getKlalitHistoriPage.bind(this);
+
+
         this.role = localStorage.getItem('currentRole');
+
+
+
+
+        function _getKlalitHistoriPage(type,klalitId) {
+
+            debugger
+
+            var startDate = moment(this.dateFromClalit).format('YYYY-MM-DD');
+            var endDate = moment(this.dateToClalit).format('YYYY-MM-DD');
+
+
+            farmsService.getKlalitHistoris(this.farmmanager.FarmId, startDate, endDate, type, klalitId).then(function (res) {
+
+                this.klalits = res;
+                 
+            }.bind(this));
+
+        }
+
+
+
+
+
         function init() {
             //  alert();
             //   alert(self.farminstructors.length);
@@ -75,12 +102,12 @@
 
 
             if (type == 2) {
-              
+
                 this.farmsService.setMangerFarm(this.farmmanager).then(function (farm) {
 
                     alert('נשמר בהצלחה');
                 }.bind(this));
-               
+
 
             }
         }

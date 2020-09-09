@@ -1,0 +1,10 @@
+C:\Dev\Doremego\FarmsApi\bin\FarmsApi.dll.config
+C:\Dev\Doremego\FarmsApi\bin\FarmsApi.dll
+C:\Dev\Doremego\FarmsApi\bin\FarmsApi.pdb
+C:\Dev\Doremego\FarmsApi\bin\Z.EntityFramework.Extensions.dll
+C:\Dev\Doremego\FarmsApi\bin\Z.EntityFramework.Extensions.xml
+C:\Dev\Doremego\FarmsApi\obj\Debug\Doremego.csprojAssemblyReference.cache
+C:\Dev\Doremego\FarmsApi\obj\Debug\Doremego.csproj.CoreCompileInputs.cache
+C:\Dev\Doremego\FarmsApi\obj\Debug\Doremego.csproj.CopyComplete
+C:\Dev\Doremego\FarmsApi\obj\Debug\FarmsApi.dll
+C:\Dev\Doremego\FarmsApi\obj\Debug\FarmsApi.pdb

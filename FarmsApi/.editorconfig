@@ -1,4 +1,0 @@
-﻿[*.cs]
-
-# IDE0043: Invalid format string
-dotnet_diagnostic.IDE0043.severity = none
