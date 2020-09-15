@@ -366,7 +366,11 @@ namespace FarmsApi.DataModels
         public DateTime? Date { get; set; }
      
         public string Name { get; set; }
-      
+       
+        [NotMapped]
+        public DateTime? ObjectDate { get; set; }
+
+
     }
 
 

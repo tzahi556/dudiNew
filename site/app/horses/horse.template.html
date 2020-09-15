@@ -297,7 +297,7 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody ng-click="$ctrl.typeupload=1;$ctrl.typeuploadId=treatment.Id;"  ng-repeat="treatment in $ctrl.treatments | orderByDateDesc track by $index">
+                        <tbody ng-click="$ctrl.typeupload=1;$ctrl.typeuploadId=treatment.Id;$ctrl.ObjectDate=treatment.Date"  ng-repeat="treatment in $ctrl.treatments | orderByDateDesc track by $index">
                             <tr ng-click="showDivTreatment = !showDivTreatment;">
                                 <td>{{treatment.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{treatment.Name}}</td>
@@ -398,7 +398,7 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody ng-click="$ctrl.typeupload=2;$ctrl.typeuploadId=vaccination.Id;" ng-repeat="vaccination in $ctrl.vaccinations | orderByDateDesc track by $index">
+                        <tbody ng-click="$ctrl.typeupload=2;$ctrl.typeuploadId=vaccination.Id;$ctrl.ObjectDate=vaccination.Date" ng-repeat="vaccination in $ctrl.vaccinations | orderByDateDesc track by $index">
                             <tr ng-click="showDivVaccination = !showDivVaccination;">
                                 <td>{{vaccination.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{vaccination.Type}}</td>
@@ -514,7 +514,7 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody ng-click="$ctrl.typeupload=3;$ctrl.typeuploadId=shoeing.Id;" ng-repeat="shoeing in $ctrl.shoeings | orderByDateDesc track by $index">
+                        <tbody ng-click="$ctrl.typeupload=3;$ctrl.typeuploadId=shoeing.Id;$ctrl.ObjectDate=shoeing.Date" ng-repeat="shoeing in $ctrl.shoeings | orderByDateDesc track by $index">
                             <tr ng-click="showDivShoeing = !showDivShoeing;">
                                 <td>{{shoeing.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{shoeing.ShoerName}}</td>
@@ -617,7 +617,7 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody ng-click="$ctrl.typeupload=4;$ctrl.typeuploadId=tiluf.Id;" ng-repeat="tiluf in $ctrl.tilufings | orderByDateDesc track by $index">
+                        <tbody ng-click="$ctrl.typeupload=4;$ctrl.typeuploadId=tiluf.Id;$ctrl.ObjectDate=tiluf.Date" ng-repeat="tiluf in $ctrl.tilufings | orderByDateDesc track by $index">
                             <tr ng-click="showDivTiluf = !showDivTiluf;">
                                 <td>{{tiluf.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{tiluf.ShoerName}}</td>

@@ -472,6 +472,68 @@ namespace FarmsApi.Services
 
                     if (item.Id == 0)
                     {
+
+
+                        if (item.TypeId == 0)
+                        {
+                            if (item.Type == 1)
+                            {
+                                var ObjList = Context.HorseTreatments.Where(x =>x.HorseId==item.HorseId).ToList();
+                                foreach (var Obj in ObjList)
+                                {
+                                    if (Obj.Date.ToString() == item.ObjectDate.Value.ToString())
+                                    {
+                                        item.TypeId = Obj.Id;
+                                        break;
+                                    }
+
+                                }
+                            }
+
+                            if (item.Type == 2)
+                            {
+                                var ObjList = Context.HorseVaccinations.Where(x => x.HorseId == item.HorseId).ToList();
+                                foreach (var Obj in ObjList)
+                                {
+                                    if (Obj.Date.ToString() == item.ObjectDate.Value.ToString())
+                                    {
+                                        item.TypeId = Obj.Id;
+                                        break;
+                                    }
+
+                                }
+                            }
+                            if (item.Type == 3)
+                            {
+                                var ObjList = Context.HorseShoeings.Where(x => x.HorseId == item.HorseId).ToList();
+                                foreach (var Obj in ObjList)
+                                {
+                                    if (Obj.Date.ToString() == item.ObjectDate.Value.ToString())
+                                    {
+                                        item.TypeId = Obj.Id;
+                                        break;
+                                    }
+
+                                }
+
+                              
+                            }
+                            if (item.Type == 4)
+                            {
+                                var ObjList = Context.HorseTilufings.Where(x => x.HorseId == item.HorseId).ToList();
+                                foreach (var Obj in ObjList)
+                                {
+                                    if (Obj.Date.ToString() == item.ObjectDate.Value.ToString())
+                                    {
+                                        item.TypeId = Obj.Id;
+                                        break;
+                                    }
+
+                                }
+                            }
+
+                        }
+
                         Context.HorsesMultipleFiles.Add(item);
 
                     }

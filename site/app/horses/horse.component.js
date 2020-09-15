@@ -420,9 +420,7 @@
            
             for (var i in res) {
 
-                debugger
-        
-                var newHorsesmultipleFiles = { Id: 0, Type: 1, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00')};
+                var newHorsesmultipleFiles = { Id: 0, Type: 1, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00'), ObjectDate: this.ObjectDate};
                 this.horsesmultiplefiles.push(newHorsesmultipleFiles);
 
             }
@@ -436,7 +434,7 @@
             for (var i in res) {
 
 
-                var newHorsesmultipleFiles = { Id: 0, Type: 2, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00') };
+                var newHorsesmultipleFiles = { Id: 0, Type: 2, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00'), ObjectDate: this.ObjectDate };
                 this.horsesmultiplefiles.push(newHorsesmultipleFiles);
 
             }
@@ -451,7 +449,7 @@
             for (var i in res) {
 
 
-                var newHorsesmultipleFiles = { Id: 0, Type: 3, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00') };
+                var newHorsesmultipleFiles = { Id: 0, Type: 3, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00'), ObjectDate: this.ObjectDate };
                 this.horsesmultiplefiles.push(newHorsesmultipleFiles);
 
             }
@@ -464,7 +462,7 @@
             for (var i in res) {
 
 
-                var newHorsesmultipleFiles = { Id: 0, Type: 4, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00') };
+                var newHorsesmultipleFiles = { Id: 0, Type: 4, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00'), ObjectDate: this.ObjectDate };
                 this.horsesmultiplefiles.push(newHorsesmultipleFiles);
 
             }
