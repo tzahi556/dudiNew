@@ -284,7 +284,7 @@
                     <div class="panel-heading">
                         טיפולים
                     </div>
-                    <table class="table" expandable>
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>תאריך</th>
@@ -297,8 +297,8 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody ng-click="showDivTreatment = !showDivTreatment" ng-repeat="treatment in $ctrl.treatments | orderByDateDesc track by $index">
-                            <tr >
+                        <tbody ng-click="$ctrl.typeupload=1;$ctrl.typeuploadId=treatment.Id;"  ng-repeat="treatment in $ctrl.treatments | orderByDateDesc track by $index">
+                            <tr ng-click="showDivTreatment = !showDivTreatment;">
                                 <td>{{treatment.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{treatment.Name}}</td>
 
@@ -312,7 +312,7 @@
                             </tr>
 
                             <tr ng-show="showDivTreatment">
-                                <td colspan="7" style="background:#fff778">
+                                <td colspan="7" style="background:#0099cc">
 
 
                                     <div class="panel panel-default">
@@ -320,7 +320,7 @@
                                             קבצים - טיפולים
 
                                             <div class="form-group" style="float:left">
-                                                <input type="file" filename="$ctrl.newTreatment.FileName" multiple  filename-callback="$ctrl.uploadFileTreatment" />
+                                                <input type="file" filename="$ctrl.newTreatment.FileName" multiple   filename-callback="$ctrl.uploadFileTreatment" />
                                             </div>
                                         </div>
 
@@ -338,7 +338,7 @@
                                                 <tr ng-repeat="state in $ctrl.getCurrentFiles(treatment.HorseId,1,treatment.Id) track by $index">
                                                     <td>{{state.Date | ildate: 'DD/MM/YYYY'}}</td>
                                                     <td><a ng-href="{{$ctrl.uploadsUri + state.Name}}" target="_blank">{{state.Name}}</a></td>
-                                                    <td><button class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorsesFiles(state)">הסר</button></td>
+                                                    <td><button class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorsesFiles(state.Name)">הסר</button></td>
 
                                                 </tr>
                                             </tbody>
@@ -392,26 +392,73 @@
                                 <th>מחיר</th>
                                 <th>הנחה</th>
                                 <th>מחיר סופי</th>
-                                <th>קובץ</th>
+                               
                                 <th>שולם</th>
 
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr ng-repeat="vaccination in $ctrl.vaccinations | orderByDateDesc track by $index">
+                        <tbody ng-click="$ctrl.typeupload=2;$ctrl.typeuploadId=vaccination.Id;" ng-repeat="vaccination in $ctrl.vaccinations | orderByDateDesc track by $index">
+                            <tr ng-click="showDivVaccination = !showDivVaccination;">
                                 <td>{{vaccination.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{vaccination.Type}}</td>
                                 <td>{{vaccination.Name}}</td>
                                 <td>{{vaccination.Cost}}</td>
                                 <td>{{vaccination.Discount}}</td>
                                 <td><span ng-show="vaccination.Cost > 0">  {{vaccination.Cost - vaccination.Discount}}</span> </td>
-                                <td><a ng-href="{{$ctrl.uploadsUri + vaccination.FileName}}" target="_blank">{{vaccination.FileName}}</a></td>
+                               
                                 <td> <i class="fa fa-check-circle-o green" ng-show="vaccination.IsPaid=='1'" aria-hidden="true"></i></td>
 
 
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeVaccination(vaccination)">הסר</button></td>
                             </tr>
+
+
+                            <tr ng-show="showDivVaccination">
+                                <td colspan="8" style="background:#0099cc">
+
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            קבצים - חיסונים
+                                          
+                                            <div class="form-group" style="float:left">
+                                                <input type="file" filename="$ctrl.newVaccination.FileName" multiple filename-callback="$ctrl.uploadFileVaccination" />
+                                            </div>
+                                        </div>
+
+
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>תאריך</th>
+                                                    <th>שם קובץ</th>
+                                                    <th>הסר קובץ</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="state in $ctrl.getCurrentFiles(vaccination.HorseId,2,vaccination.Id) track by $index">
+                                                    <td>{{state.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                                    <td><a ng-href="{{$ctrl.uploadsUri + state.Name}}" target="_blank">{{state.Name}}</a></td>
+                                                    <td><button class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorsesFiles(state.Name)">הסר</button></td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+
+
+
+
+
+
+
+
                         </tbody>
                     </table>
                     <div class="panel-footer">
@@ -435,9 +482,7 @@
                             <div class="form-group">
                                 <input type="number" class="form-control" ng-model="$ctrl.newVaccination.Discount" placeholder="הנחה" />
                             </div>
-                            <div class="form-group">
-                                <input type="file" filename="$ctrl.newVaccination.FileName" filename-callback="$ctrl.uploadFileVaccination" />
-                            </div>
+                           
 
 
 
@@ -455,7 +500,7 @@
                     <div class="panel-heading">
                         פירזול
                     </div>
-                    <table class="table" expandable>
+                    <table class="table" >
                         <thead>
                             <tr>
                                 <th>תאריך</th>
@@ -464,24 +509,67 @@
                                 <th>מחיר</th>
                                 <th>הנחה</th>
                                 <th>מחיר סופי</th>
-                                <th>קובץ</th>
+                              
                                 <th>שולם</th>
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr ng-repeat="shoeing in $ctrl.shoeings | orderByDateDesc track by $index">
+                        <tbody ng-click="$ctrl.typeupload=3;$ctrl.typeuploadId=shoeing.Id;" ng-repeat="shoeing in $ctrl.shoeings | orderByDateDesc track by $index">
+                            <tr ng-click="showDivShoeing = !showDivShoeing;">
                                 <td>{{shoeing.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{shoeing.ShoerName}}</td>
                                 <td>{{shoeing.Name}}</td>
                                 <td>{{shoeing.Cost}}</td>
                                 <td>{{shoeing.Discount}}</td>
                                 <td><span ng-show="shoeing.Cost > 0">  {{shoeing.Cost - shoeing.Discount}}</span> </td>
-                                <td><a ng-href="{{$ctrl.uploadsUri + shoeing.FileName}}" target="_blank">{{shoeing.FileName}}</a></td>
+                               
                                 <td> <i class="fa fa-check-circle-o green" ng-show="shoeing.IsPaid=='1'" aria-hidden="true"></i></td>
 
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeShoeing(shoeing)">הסר</button></td>
                             </tr>
+
+
+                            <tr ng-show="showDivShoeing">
+                                <td colspan="8" style="background:#0099cc">
+
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            קבצים - חיסונים
+
+                                            <div class="form-group" style="float:left">
+                                                <input type="file" filename="$ctrl.newShoeing.FileName" multiple filename-callback="$ctrl.uploadFileShoeings" />
+                                            </div>
+                                        </div>
+
+
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>תאריך</th>
+                                                    <th>שם קובץ</th>
+                                                    <th>הסר קובץ</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="state in $ctrl.getCurrentFiles(vaccination.HorseId,3,shoeing.Id) track by $index">
+                                                    <td>{{state.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                                    <td><a ng-href="{{$ctrl.uploadsUri + state.Name}}" target="_blank">{{state.Name}}</a></td>
+                                                    <td><button class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorsesFiles(state.Name)">הסר</button></td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+
+
+
+
                         </tbody>
                     </table>
                     <div class="panel-footer">
@@ -503,9 +591,7 @@
                             <div class="form-group">
                                 <input type="number" class="form-control" ng-model="$ctrl.newShoeing.Discount" placeholder="הנחה" />
                             </div>
-                            <div class="form-group">
-                                <input type="file" filename="$ctrl.newShoeing.FileName" filename-callback="$ctrl.uploadFileShoeings" />
-                            </div>
+                          
 
 
                             <button type="submit" class="btn btn-success" ng-disabled="shoeingForm.$invalid" ng-click="$ctrl.addShoeing()">הוספה</button>
@@ -526,20 +612,20 @@
                                 <th>מחיר</th>
                                 <th>הנחה</th>
                                 <th>מחיר סופי</th>
-                                <th>קובץ</th>
+                               
                                 <th>שולם</th>
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr ng-repeat="tiluf in $ctrl.tilufings | orderByDateDesc track by $index">
+                        <tbody ng-click="$ctrl.typeupload=4;$ctrl.typeuploadId=tiluf.Id;" ng-repeat="tiluf in $ctrl.tilufings | orderByDateDesc track by $index">
+                            <tr ng-click="showDivTiluf = !showDivTiluf;">
                                 <td>{{tiluf.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{tiluf.ShoerName}}</td>
                                 <td>{{tiluf.Name}}</td>
                                 <td>{{tiluf.Cost}}</td>
                                 <td>{{tiluf.Discount}}</td>
                                 <td><span ng-show="tiluf.Cost > 0">  {{tiluf.Cost - tiluf.Discount}}</span> </td>
-                                <td><a ng-href="{{$ctrl.uploadsUri + tiluf.FileName}}" target="_blank">{{tiluf.FileName}}</a></td>
+                               
                                 <td> <i class="fa fa-check-circle-o green" ng-show="tiluf.IsPaid=='1'" aria-hidden="true"></i></td>
 
 
@@ -548,6 +634,51 @@
 
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeTiluf(tiluf)">הסר</button></td>
                             </tr>
+
+                            <tr ng-show="showDivTiluf">
+                                <td colspan="8" style="background:#0099cc">
+
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            קבצים - חיסונים
+
+
+                                            <div class="form-group" style="float:left">
+                                                <input type="file" filename="$ctrl.newTiluf.FileName" multiple filename-callback="$ctrl.uploadFileTilufings" />
+                                            </div>
+                                        </div>
+
+
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>תאריך</th>
+                                                    <th>שם קובץ</th>
+                                                    <th>הסר קובץ</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="state in $ctrl.getCurrentFiles(tiluf.HorseId,4,tiluf.Id) track by $index">
+                                                    <td>{{state.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                                    <td><a ng-href="{{$ctrl.uploadsUri + state.Name}}" target="_blank">{{state.Name}}</a></td>
+                                                    <td><button class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorsesFiles(state.Name)">הסר</button></td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+
+
+
+
+
+
                         </tbody>
                     </table>
                     <div class="panel-footer">
@@ -569,9 +700,7 @@
                             <div class="form-group">
                                 <input type="number" class="form-control" ng-model="$ctrl.newTiluf.Discount" placeholder="הנחה" />
                             </div>
-                            <div class="form-group">
-                                <input type="file" filename="$ctrl.newTiluf.FileName" filename-callback="$ctrl.uploadFileTilufings" />
-                            </div>
+                           
 
 
 

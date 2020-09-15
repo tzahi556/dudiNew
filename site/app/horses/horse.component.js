@@ -117,6 +117,7 @@
         this.getInseminationTypeName = _getInseminationTypeName.bind(this);
         this.goToStudent = _goToStudent.bind(this);
         this.getCurrentFiles = _getCurrentFiles.bind(this);
+        this.removeHorsesFiles = _removeHorsesFiles.bind(this);
         
         
         this.role = localStorage.getItem('currentRole');
@@ -131,7 +132,7 @@
         this.scope = $scope;
 
         this.isDelete = false;
-
+       
         $scope.$on('submit', function (event, args) {
             if (!this.isDelete)
            this.submit(true);
@@ -153,6 +154,30 @@
 
 
         
+
+        function _removeHorsesFiles(Name) {
+
+           
+
+           // var tempres = this.horsesmultiplefiles.filter(x => x.Type == Type && x.TypeId == Id);
+
+            for (var i in this.horsesmultiplefiles) {
+
+                if (this.horsesmultiplefiles[i].Name == Name) {
+
+                    this.horsesmultiplefiles.splice(i, 1);
+
+
+                    filesService.delete(Name);
+                }
+
+            }
+
+
+            // this.submit(true, this.horse.OwnerId);
+
+
+        }
 
         function _getCurrentFiles(HorseId,Type,Id) {
 
@@ -388,28 +413,61 @@
         }
 
 
+
+
         function _uploadFileTreatment(file) {
-
+            var res = file.split(",");
            
+            for (var i in res) {
 
+                debugger
+        
+                var newHorsesmultipleFiles = { Id: 0, Type: 1, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00')};
+                this.horsesmultiplefiles.push(newHorsesmultipleFiles);
 
-            debugger
-          //  this.newTreatment.FileName = file;
+            }
+
         }
 
         function _uploadFileVaccination(file) {
 
-            this.newVaccination.FileName = file;
+            var res = file.split(",");
+
+            for (var i in res) {
+
+
+                var newHorsesmultipleFiles = { Id: 0, Type: 2, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00') };
+                this.horsesmultiplefiles.push(newHorsesmultipleFiles);
+
+            }
+
+           // this.newVaccination.FileName = file;
         }
 
         function _uploadFileShoeings(file) {
 
-            this.newShoeing.FileName = file;
+            var res = file.split(",");
+
+            for (var i in res) {
+
+
+                var newHorsesmultipleFiles = { Id: 0, Type: 3, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00') };
+                this.horsesmultiplefiles.push(newHorsesmultipleFiles);
+
+            }
         }
 
         function _uploadFileTilufings(file) {
 
-            this.newTiluf.FileName = file;
+            var res = file.split(",");
+
+            for (var i in res) {
+
+
+                var newHorsesmultipleFiles = { Id: 0, Type: 4, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00') };
+                this.horsesmultiplefiles.push(newHorsesmultipleFiles);
+
+            }
         }
 
 
