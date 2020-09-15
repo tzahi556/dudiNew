@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -22,13 +23,29 @@ namespace FarmsApi.Controllers
 
             var file = await Request.Content.ReadAsMultipartAsync(provider);
 
-            var source = file.FileData[0].LocalFileName;
-            var dest = root + file.FileData[0].Headers.ContentDisposition.FileName.Replace("\"", "");
-            dest = filterFilename(dest);
 
-            File.Move(source, dest);
+            string fileList = "";
+            for (int i = 0; i < file.FileData.Count; i++)
+            {
+                var source = file.FileData[i].LocalFileName;
+                var dest = root + file.FileData[i].Headers.ContentDisposition.FileName.Replace("\"", "");
+                dest = filterFilename(dest);
 
-            return Ok(Path.GetFileName(dest));
+                File.Move(source, dest);
+                if (i == 0)
+                {
+                    fileList += Path.GetFileName(dest);
+
+                }
+                else
+                {
+                    fileList += "," + Path.GetFileName(dest) ;
+                }
+
+            }
+           
+
+            return Ok(fileList);
         }
 
         public string filterFilename(string filename)

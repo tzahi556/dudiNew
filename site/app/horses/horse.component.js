@@ -34,6 +34,7 @@
             susut: '<',
             hozims: '<',
             instructors: '<',
+            horsesmultiplefiles: '<',
         }
     });
     app.filter('dateRangeHorse', function () {
@@ -115,7 +116,8 @@
 
         this.getInseminationTypeName = _getInseminationTypeName.bind(this);
         this.goToStudent = _goToStudent.bind(this);
-
+        this.getCurrentFiles = _getCurrentFiles.bind(this);
+        
         
         this.role = localStorage.getItem('currentRole');
         this.subrole = localStorage.getItem('currentSubRole');
@@ -149,6 +151,17 @@
         this.getTotalHozim = _getTotalHozim.bind(this);
 
 
+
+        
+
+        function _getCurrentFiles(HorseId,Type,Id) {
+
+
+            return this.horsesmultiplefiles.filter(x => x.Type == Type && x.TypeId == Id);
+           // this.submit(true, this.horse.OwnerId);
+
+
+        }
 
         function _goToStudent() {
 
@@ -377,7 +390,11 @@
 
         function _uploadFileTreatment(file) {
 
-            this.newTreatment.FileName = file;
+           
+
+
+            debugger
+          //  this.newTreatment.FileName = file;
         }
 
         function _uploadFileVaccination(file) {
@@ -1013,7 +1030,7 @@
                 this.horse = horse;
                 this.initHorse();
                 horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
-                    this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations, this.hozims).then(function (hozims) {
+                    this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations, this.hozims,this.horsesmultiplefiles).then(function (hozims) {
                         this.createNotifications();
                         if (!isWithoutalert) alert('נשמר בהצלחה');
                         this.hozims = hozims;

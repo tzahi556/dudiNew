@@ -52,11 +52,11 @@
 
 
         function _updateHorseMultiTables(horse, files, hozefiles, pundekautfiles, treatments,
-            vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations,hozims) {
+            vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations, hozims, horsesmultiplefiles) {
 
 
             var dataobj = [horse, files, hozefiles, pundekautfiles, treatments,
-                vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations, hozims];
+                vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations, hozims, horsesmultiplefiles];
             var deferred = $q.defer();
             $http.post(sharedValues.apiUrl + 'horses/updateHorseMultiTables', angular.toJson(dataobj)).then(function (res) {
 

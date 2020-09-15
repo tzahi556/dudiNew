@@ -187,8 +187,8 @@
             url: '/horse/{id}',
             views: {
                 'main': {
-                    template: '<horse horse="$ctrl.horse" farms="$ctrl.farms" horses="$ctrl.horses" files="$ctrl.files"  hozefiles="$ctrl.hozefiles" pundekautfiles="$ctrl.pundekautfiles" treatments="$ctrl.treatments"  vaccinations="$ctrl.vaccinations" shoeings="$ctrl.shoeings" tilufings="$ctrl.tilufings" pregnancies="$ctrl.pregnancies"  pregnanciesstates="$ctrl.pregnanciesstates"  inseminations="$ctrl.inseminations" susut="$ctrl.susut" hozims="$ctrl.hozims" instructors="$ctrl.instructors"></horse>',
-                    controller: function (horse, farms, horses, files, hozefiles, pundekautfiles, treatments, vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations, susut, hozims, instructors) {
+                    template: '<horse horse="$ctrl.horse" farms="$ctrl.farms" horses="$ctrl.horses" files="$ctrl.files"  hozefiles="$ctrl.hozefiles" pundekautfiles="$ctrl.pundekautfiles" treatments="$ctrl.treatments"  vaccinations="$ctrl.vaccinations" shoeings="$ctrl.shoeings" tilufings="$ctrl.tilufings" pregnancies="$ctrl.pregnancies"  pregnanciesstates="$ctrl.pregnanciesstates"  inseminations="$ctrl.inseminations" susut="$ctrl.susut" hozims="$ctrl.hozims" instructors="$ctrl.instructors" horsesmultiplefiles="$ctrl.horsesmultiplefiles" ></horse>',
+                    controller: function (horse, farms, horses, files, hozefiles, pundekautfiles, treatments, vaccinations, shoeings, tilufings, pregnancies, pregnanciesstates, inseminations, susut, hozims, instructors, horsesmultiplefiles) {
                         this.horse = horse;
                         this.farms = farms;
                         this.horses = horses;
@@ -210,7 +210,7 @@
 
                         this.hozims = hozims;
                         this.instructors = instructors;
-                        
+                        this.horsesmultiplefiles = horsesmultiplefiles;
                         
                         
 
@@ -262,6 +262,13 @@
                         hozims: function (horsesService, $stateParams) {
                             return horsesService.getHorse($stateParams.id, 12);
                         },
+
+                        horsesmultiplefiles: function (horsesService, $stateParams) {
+                            return horsesService.getHorse($stateParams.id, 13);
+                        },
+
+
+
                         instructors: function (usersService) {
                             return usersService.getUsers(['instructor', 'profAdmin'], true);
                         },

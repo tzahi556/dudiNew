@@ -292,24 +292,67 @@
                                 <th>מחיר</th>
                                 <th>הנחה</th>
                                 <th>מחיר סופי</th>
-                                <th>קובץ</th>
+                                <!--<th>קובץ</th>-->
                                 <th>שולם</th>
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr ng-repeat="treatment in $ctrl.treatments | orderByDateDesc track by $index">
+                        <tbody ng-click="showDivTreatment = !showDivTreatment" ng-repeat="treatment in $ctrl.treatments | orderByDateDesc track by $index">
+                            <tr >
                                 <td>{{treatment.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{treatment.Name}}</td>
 
                                 <td>{{treatment.Cost}}</td>
                                 <td>{{treatment.Discount}}</td>
                                 <td><span ng-show="treatment.Cost > 0">  {{treatment.Cost - treatment.Discount}}</span> </td>
-                                <td><a ng-href="{{$ctrl.uploadsUri + treatment.FileName}}" target="_blank">{{treatment.FileName}}</a></td>
+                               
 
                                 <td> <i class="fa fa-check-circle-o green" ng-show="treatment.IsPaid=='1'" aria-hidden="true"></i></td>
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeTreatment(treatment)">הסר</button></td>
                             </tr>
+
+                            <tr ng-show="showDivTreatment">
+                                <td colspan="7" style="background:#fff778">
+
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            קבצים - טיפולים
+
+                                            <div class="form-group" style="float:left">
+                                                <input type="file" filename="$ctrl.newTreatment.FileName" multiple  filename-callback="$ctrl.uploadFileTreatment" />
+                                            </div>
+                                        </div>
+
+
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>תאריך</th>
+                                                    <th>שם קובץ</th>
+                                                    <th>הסר קובץ</th>
+                                                  
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="state in $ctrl.getCurrentFiles(treatment.HorseId,1,treatment.Id) track by $index">
+                                                    <td>{{state.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                                    <td><a ng-href="{{$ctrl.uploadsUri + state.Name}}" target="_blank">{{state.Name}}</a></td>
+                                                    <td><button class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorsesFiles(state)">הסר</button></td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+
+
+
+
+
                         </tbody>
                     </table>
                     <div class="panel-footer">
@@ -328,9 +371,7 @@
                             <div class="form-group">
                                 <input type="number" class="form-control" ng-model="$ctrl.newTreatment.Discount" placeholder="הנחה" />
                             </div>
-                            <div class="form-group">
-                                <input type="file" filename="$ctrl.newTreatment.FileName" filename-callback="$ctrl.uploadFileTreatment" />
-                            </div>
+                            
 
                             <button type="submit" class="btn btn-success" ng-disabled="treatmentForm.$invalid" ng-click="$ctrl.addTreatment()">הוספה</button>
                         </form>

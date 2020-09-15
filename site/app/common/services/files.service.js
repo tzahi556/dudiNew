@@ -11,7 +11,11 @@
         function _upload(file) {
             var deferred = $q.defer();
             var fd = new FormData();
-            fd.append('file', file);
+           
+            for (var i = 0; i < file.length; i++) {
+                fd.append('file', file[i]);
+            }
+           
             $http.post(sharedValues.apiUrl + 'files/upload', fd, {
                 transformRequest: angular.identity,
                 headers: { 'Content-Type': undefined }
@@ -39,8 +43,9 @@
             },
             link: function (scope, element, attributes) {
                 element.bind("change", function (changeEvent) {
+                  
                     if (changeEvent.target.files.length > 0) {
-                        filesService.upload(changeEvent.target.files[0]).then(function (data) {
+                        filesService.upload(changeEvent.target.files).then(function (data) {
                             scope.filename = data;
                             if (scope.filenameCallback) {
                                 scope.filenameCallback(data);

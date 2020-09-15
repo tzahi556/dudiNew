@@ -449,11 +449,66 @@ namespace FarmsApi.Services
             List<HorseInseminations> hti = dataObj[10].ToObject<List<HorseInseminations>>();
             UpdateHorseInseminationsObject(hti, h);
 
+            List<HorsesMultipleFiles> htmf = dataObj[12].ToObject<List<HorsesMultipleFiles>>();
+            UpdateHorsesMultipleFilesObject(htmf, h);
+
 
             List<HorseHozims> hzm = dataObj[11].ToObject<List<HorseHozims>>();
 
-
             return UpdateHorseHozimsObject(hzm, h);
+        }
+
+
+
+        private static void UpdateHorsesMultipleFilesObject(List<HorsesMultipleFiles> objList, Horse f)
+        {
+            using (var Context = new Context())
+            {
+
+                foreach (HorsesMultipleFiles item in objList)
+                {
+
+                    item.HorseId = f.Id;
+
+                    if (item.Id == 0)
+                    {
+                        Context.HorsesMultipleFiles.Add(item);
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    var result = Context.HorsesMultipleFiles.Where(p => p.HorseId == f.Id).ToList();
+                    IEnumerable<HorsesMultipleFiles> differenceQuery = result.Except(objList);
+
+                    foreach (HorsesMultipleFiles item in differenceQuery)
+                    {
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
+                Context.SaveChanges();
+
+
+            }
         }
 
         private static List<HorseHozims> UpdateHorseHozimsObject(List<HorseHozims> objList, Horse f)
@@ -1635,6 +1690,15 @@ namespace FarmsApi.Services
             using (var Context = new Context())
                 return Context.HorsePregnancies.Where(u => u.HorseId == Id).ToList();
         }
+
+        public static List<HorsesMultipleFiles> GetHorsesMultipleFiles(int Id)
+        {
+            using (var Context = new Context())
+                return Context.HorsesMultipleFiles.Where(u => u.HorseId == Id).ToList();
+        }
+        
+
+
 
         public static List<HorsePregnanciesStates> GetHorsePregnanciesStates(int Id)
         {

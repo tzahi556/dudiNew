@@ -355,5 +355,21 @@ namespace FarmsApi.DataModels
 
 
 
+    public class HorsesMultipleFiles
+    {
+        public int Id { get; set; }
+        public int HorseId { get; set; }
+        public int Type { get; set; }
+        public int TypeId { get; set; }
+        
+
+        public DateTime? Date { get; set; }
+     
+        public string Name { get; set; }
+      
+    }
+
+
+
 
 }

@@ -104,6 +104,9 @@ namespace FarmsApi.Services
             if (type == 12)
                 return Ok(HorsesService.GetHorseHozims(id));
 
+            if (type == 13)
+                return Ok(HorsesService.GetHorsesMultipleFiles(id));
+
             if (id==0)
                 return Ok(new Horse());
           
