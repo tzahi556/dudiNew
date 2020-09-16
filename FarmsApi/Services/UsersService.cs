@@ -935,6 +935,11 @@ namespace FarmsApi.Services
                         lg.UserId = GetCurrentUser().Id;
                         lg.Response = item.InvoicePdf;
                         lg.Details = "חשבונית חדשה אצלינו";
+
+                        lg.ResponseTimeStamp = DateTime.Now;
+                        lg.RequestTimeStamp = DateTime.Now;
+
+
                         Context.Logs.Add(lg);
                       
 
@@ -980,6 +985,10 @@ namespace FarmsApi.Services
                         lg.UserId = GetCurrentUser().Id;
                         lg.Response = item.InvoicePdf;
                         lg.Details = "מחיקת חשבונית";
+
+                        lg.ResponseTimeStamp = DateTime.Now;
+                        lg.RequestTimeStamp = DateTime.Now;
+
                         Context.Logs.Add(lg);
 
 

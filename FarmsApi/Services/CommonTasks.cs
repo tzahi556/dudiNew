@@ -376,6 +376,8 @@ namespace FarmsApi.Services
                         lg.Type = 2;// החזרת צק
                         lg.TimeStamp = DateTime.Now;
                         lg.Request = reqObj.ToString();
+                        lg.RequestEzea = reqObj.ToString();
+                        lg.RequestTimeStamp = DateTime.Now;
                         lg.StudentId = uc.UserId;
                         lg.UserId = UsersService.GetCurrentUser().Id;
 
@@ -384,6 +386,7 @@ namespace FarmsApi.Services
                         dynamic response = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
                        
                         lg.Response = response.ToString();
+                        lg.ResponseTimeStamp = DateTime.Now;
                         Context.Logs.Add(lg);
 
                         Context.SaveChanges();
@@ -418,6 +421,9 @@ namespace FarmsApi.Services
                             lg.StudentId = uc.UserId;
                             lg.UserId = UsersService.GetCurrentUser().Id;
                             lg.Response = p.InvoicePdf;
+
+                            lg.ResponseTimeStamp = DateTime.Now;
+                            lg.RequestTimeStamp = DateTime.Now;
                             Context.Logs.Add(lg);
 
 

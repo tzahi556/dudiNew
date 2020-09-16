@@ -19,6 +19,11 @@ namespace FarmsApi.DataModels
         public DateTime TimeStamp { get; set; }
         public string Request { get; set; }
         public string Response { get; set; }
+        public string RequestEzea { get; set; }
+
+        public DateTime RequestTimeStamp { get; set; }
+        public DateTime ResponseTimeStamp { get; set; }
+
         public string Exception { get; set; }
         public string Details { get; set; }
         

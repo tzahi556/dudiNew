@@ -77,10 +77,13 @@ namespace FarmsApi.Controllers
                     string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjValidate);
 
                     var SlikaUrl = SlikaUrlAsraiValidate + Params.ksys_token;
+                    lg.RequestEzea = SlikaUrl.ToString();
+                    lg.RequestTimeStamp = DateTime.Now;
                     var client = new HttpClient();
                     HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                     HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
 
+                   
                     dynamic response = "";
                     if (messge.IsSuccessStatusCode)
                     {
@@ -90,6 +93,7 @@ namespace FarmsApi.Controllers
 
                     lg.Details = "סליקה באשראי ולידציה";
                     lg.Response = response.ToString();
+                    lg.ResponseTimeStamp = DateTime.Now;
                     return Ok(response);
                 }
 
@@ -106,12 +110,18 @@ namespace FarmsApi.Controllers
                     };
 
 
+
                     string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
 
                     var SlikaUrl = SlikaUrlAshrai;
+
+                    lg.RequestEzea = DATA.ToString();
+                    lg.RequestTimeStamp = DateTime.Now;
                     var client = new HttpClient();
                     HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                     HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
+
+                    
 
                     dynamic response = "";
                     if (messge.IsSuccessStatusCode)
@@ -121,6 +131,7 @@ namespace FarmsApi.Controllers
                     }
                     lg.Details = "אשראי קבלת קישור לחלון";
                     lg.Response = response.ToString();
+                    lg.ResponseTimeStamp = DateTime.Now;
                     return Ok(response);
                 }
 
@@ -140,6 +151,10 @@ namespace FarmsApi.Controllers
                     string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
 
                     var SlikaUrl = SlikaUrlToken;
+
+                    lg.RequestEzea = DATA.ToString();
+                    lg.RequestTimeStamp = DateTime.Now;
+
                     var client = new HttpClient();
                     HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                     HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -152,6 +167,8 @@ namespace FarmsApi.Controllers
                     }
                     lg.Details = "הגדרת טוקן";
                     lg.Response = response.ToString();
+                    lg.ResponseTimeStamp = DateTime.Now;
+
                     return Ok(response);
                 }
 
@@ -177,6 +194,9 @@ namespace FarmsApi.Controllers
 
                     string DATA = Newtonsoft.Json.JsonConvert.SerializeObject(reqObjAshrai);
                     var SlikaUrl = SlikaUrlChargeToken;
+
+                    lg.RequestEzea = DATA.ToString();
+                    lg.RequestTimeStamp = DateTime.Now;
                     var client = new HttpClient();
                     HttpContent content = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
                     HttpResponseMessage messge = client.PostAsync(SlikaUrl, content).Result;
@@ -200,6 +220,8 @@ namespace FarmsApi.Controllers
                             Params.cc_payment_num = 1;
                             lg.Details = "סליקה טוקן";
                             lg.Response = responseToken.ToString();
+                          
+                            lg.ResponseTimeStamp = DateTime.Now;
                             return sendInvoice(Params);
 
                         }
@@ -207,7 +229,7 @@ namespace FarmsApi.Controllers
                         {
                             lg.Details = "סליקה טוקן";
                             lg.Response = responseToken.ToString();
-
+                            lg.ResponseTimeStamp = DateTime.Now;
                         }
 
 
@@ -485,8 +507,11 @@ namespace FarmsApi.Controllers
                     };
 
                     lg.Details = " הנפקת חשבונית " + (string)Params.payment_type;
+                    lg.RequestEzea = reqObj.ToString();
+                    lg.RequestTimeStamp = DateTime.Now;
                     dynamic response = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
                     lg.Response = response.ToString();
+                    lg.ResponseTimeStamp = DateTime.Now;
                     return Ok(response);
 
 
@@ -549,8 +574,10 @@ namespace FarmsApi.Controllers
             };
 
             lg.Details = " הנפקת זיכוי " + (string)Params.payment_type;
+            lg.RequestTimeStamp = DateTime.Now;
             dynamic responseZikuy = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObjZikuy);
             lg.Response = responseZikuy.ToString();
+            lg.ResponseTimeStamp = DateTime.Now;
             return responseZikuy;
 
         }

@@ -714,7 +714,7 @@
                             </div>
                             <!-- #payment type -->
                             <!--<button ng-click="$ctrl.addPayment()" ng-disabled="paymentForm.$invalid || $ctrl.user.Meta.Cost==0" type="submit" class="btn btn-success">הוספה</button>-->
-                            <button ng-click="$ctrl.addPayment()" ng-disabled="$ctrl.disablBtn || (paymentForm.$invalid && $ctrl.getIfanyCheckValid())" type="submit" class="btn btn-success">הפקת חשבונית</button>
+                            <button ng-click="$ctrl.addPayment()" ng-disabled="$ctrl.disablBtn || (paymentForm.$invalid && $ctrl.getIfanyCheckValid())" type="submit" class="btn btn-success">הפקת מסמך</button>
                             <button ng-click="$ctrl.cancelToken()" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default">איפוס טוקן</button>
                             <button ng-click="$ctrl.show4($ctrl.user.cc_4_digits)" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default"> הצג 4 ספרות אחרונות</button>
 
