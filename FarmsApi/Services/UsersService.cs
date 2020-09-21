@@ -15,7 +15,7 @@ namespace FarmsApi.Services
 
     public class UsersService
     {
-       // public static List<int> UsersEnter;
+        // public static List<int> UsersEnter;
 
         //public static void UpdateUsers()
         //{
@@ -476,9 +476,9 @@ namespace FarmsApi.Services
                 var CurrentUserFarmId = GetCurrentUser().Farm_Id;
 
                 var UserHorsesList = from uh in Context.UserHorses
-                           join u in Context.Users on uh.UserId equals u.Id
-                           where u.Farm_Id == CurrentUserFarmId
-                           select uh;
+                                     join u in Context.Users on uh.UserId equals u.Id
+                                     where u.Farm_Id == CurrentUserFarmId
+                                     select uh;
 
 
 
@@ -641,8 +641,8 @@ namespace FarmsApi.Services
 
         public static User GetSetUserEnter(int? Id, bool isForCartis = false)
         {
-          
-            
+
+
             using (var Context = new Context())
             {
                 if (Id.HasValue)
@@ -682,8 +682,8 @@ namespace FarmsApi.Services
                             else
                             {
                                 // אם תפוס אבל אותו משתמש תחזיר שלא תפוס
-                               if(us.CurrentUserId == GetCurrentUser().Id)
-                                us.IsTafus = false;
+                                if (us.CurrentUserId == GetCurrentUser().Id)
+                                    us.IsTafus = false;
 
                             }
 
@@ -709,7 +709,7 @@ namespace FarmsApi.Services
 
 
             User u = UpdateUser(dataObj[0].ToObject<User>());
-            if (u.Id == 0 || u.FirstName=="Error") return u;
+            if (u.Id == 0 || u.FirstName == "Error") return u;
 
             //if (u.IsMazkirut == 1 && u.Role == "instructor") ReopenLessonsByInstructorMazkirut(u);
 
@@ -941,12 +941,12 @@ namespace FarmsApi.Services
 
 
                         Context.Logs.Add(lg);
-                      
+
 
                         Context.Payments.Add(item);
                         NewPayment = item;
                         //Context.SaveChanges();
-                     //   NewId = item.Id;
+                        //   NewId = item.Id;
 
 
                     }
@@ -972,7 +972,7 @@ namespace FarmsApi.Services
                         //var ChecksList = Context.Checks.Where(x => x.PaymentsId == item.Id).ToList();
                         //ChecksList.ForEach(a =>
                         //{
-                           
+
                         //    Context.Entry(a).State = System.Data.Entity.EntityState.Deleted;
                         //});
 
@@ -991,14 +991,16 @@ namespace FarmsApi.Services
 
                         Context.Logs.Add(lg);
 
+                        if (string.IsNullOrEmpty(item.InvoicePdf))
+                        {
+                            //שיניתי ממחיקה לשמירה
+                            item.Deleted = true;
+                            Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        }
 
-                        //שיניתי ממחיקה לשמירה
-                        item.Deleted = true;
-                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
-                      
                     }
 
-                   
+
 
                 }
                 catch (Exception ex)
@@ -1128,7 +1130,7 @@ namespace FarmsApi.Services
             }
         }
 
-      
+
 
 
         private static void UpdateExpensesObject(List<Expenses> objList, User u)
@@ -1148,7 +1150,7 @@ namespace FarmsApi.Services
                     {
                         Context.Expenses.Add(item);
                         Newitem = item;
-                      
+
                     }
                     else
                     {
@@ -1162,16 +1164,16 @@ namespace FarmsApi.Services
 
                             Horse h = HorsesService.GetHorse(hh.FatherHorseId);   //Context.Horses.Where(x => x.Id == hh.FatherHorseId).FirstOrDefault();
 
-                            if(h!= null && h.OwnerId != null)
+                            if (h != null && h.OwnerId != null)
                             {
                                 Horse hSusa = Context.Horses.Where(x => x.Id == hh.HorseId).FirstOrDefault();
                                 Expenses ex = Context.Expenses.Where(x => x.ZikuyNumber == hh.ExpensesId).FirstOrDefault();
-                                if(ex == null)
+                                if (ex == null)
                                 {
 
                                     Expenses NewE = new Expenses();
                                     NewE.ZikuyNumber = hh.ExpensesId;
-                                    NewE.UserId =(int)h.OwnerId;
+                                    NewE.UserId = (int)h.OwnerId;
                                     NewE.BeforePrice = -1 * item.Sum;
                                     NewE.Price = -1 * item.Sum;
                                     NewE.Date = item.Date;
@@ -1180,7 +1182,7 @@ namespace FarmsApi.Services
                                     Context.Expenses.Add(NewE);
 
 
-                                  
+
                                 }
                                 else
                                 {
@@ -1205,7 +1207,7 @@ namespace FarmsApi.Services
 
 
                             }
-                           
+
 
                         }
 
@@ -1262,14 +1264,14 @@ namespace FarmsApi.Services
                 Context.SaveChanges();
 
 
-                if(Newitem!=null && Newitem.Price < 0)
+                if (Newitem != null && Newitem.Price < 0)
                 {
                     var result = Context.Expenses.Where(p => p.UserId == u.Id).ToList();
 
                     var ZikuyPrice = Newitem.Price * -1;
                     foreach (Expenses item in result)
                     {
-                        if (item.SelectedForZikuy && ZikuyPrice!=0)
+                        if (item.SelectedForZikuy && ZikuyPrice != 0)
                         {
                             var TotalPrice = item.Price + (item.ZikuySum ?? 0);
 
@@ -1277,24 +1279,24 @@ namespace FarmsApi.Services
 
                             if (TotalPrice >= ZikuyPrice)
                             {
-                               item.ZikuySum = (item.ZikuySum ?? 0) +  ZikuyPrice * -1;
-                               item.ZikuyNumber = Newitem.Id;
-                               ZikuyPrice = 0;
+                                item.ZikuySum = (item.ZikuySum ?? 0) + ZikuyPrice * -1;
+                                item.ZikuyNumber = Newitem.Id;
+                                ZikuyPrice = 0;
 
                             }
                             else
                             {
-                               // ZikuyPrice = ZikuyPrice - TotalPrice;
+                                // ZikuyPrice = ZikuyPrice - TotalPrice;
                                 item.ZikuySum = (item.ZikuySum ?? 0) + (TotalPrice * -1);
                                 item.ZikuyNumber = Newitem.Id;
                                 ZikuyPrice = ZikuyPrice - TotalPrice;
 
                             }
-                                
-                               
+
+
 
                         }
-                       
+
                     }
 
                     Context.SaveChanges();
@@ -1514,12 +1516,12 @@ namespace FarmsApi.Services
             }
         }
 
-        public static int GetUserIdByEmail(string Email, int CurrentUserFarmId=0)
+        public static int GetUserIdByEmail(string Email, int CurrentUserFarmId = 0)
         {
             using (var Context = new Context())
             {
-               
-                var User = Context.Users.SingleOrDefault(u => u.Email.ToLower() == Email.ToLower() && (CurrentUserFarmId==0 || u.Farm_Id== CurrentUserFarmId));
+
+                var User = Context.Users.SingleOrDefault(u => u.Email.ToLower() == Email.ToLower() && (CurrentUserFarmId == 0 || u.Farm_Id == CurrentUserFarmId));
                 if (User != null)
                     return User.Id;
                 return 0;

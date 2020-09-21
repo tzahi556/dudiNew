@@ -467,7 +467,7 @@
                                     <!--<button class="btn btn-xs btn-default" ng-disabled="payment.canceled" ng-if="!payment.InvoicePdf" ng-click="$ctrl.refundPayment(payment)">זיכוי</button>-->
                                     <!-- ng-if="!payment.InvoicePdf" צחי הוריד את -->
 
-                                    <button class="btn btn-xs btn-default" ng-click="$ctrl.removePayment(payment)">
+                                    <button ng-if="!payment.InvoicePdf" class="btn btn-xs btn-default" ng-click="$ctrl.removePayment(payment)">
                                         מחיקה
                                     </button>
                                 </td>

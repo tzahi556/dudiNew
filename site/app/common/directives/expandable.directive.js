@@ -8,9 +8,10 @@
                 var SHOW_ALL = 'הצג הכל';
                 var HIDE_ALL = 'הסתר רשומות';
                 var CAPTION = SHOW_ALL;
-
+              
                 var button = $('<button class="btn btn-link">' + CAPTION + '</button>');
                 $(button).click(function () {
+                   
                     $(elm).toggleClass('expandable-collapsed');
                     if ($(this).html() == SHOW_ALL) {
                         $(this).html(HIDE_ALL);

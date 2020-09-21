@@ -118,6 +118,10 @@
 .expandable-collapsed tr:nth-child(n+3) {
     display: none;
 }
+.expandable-collapsed tbody:nth-child(n+4) {
+    display: none;
+}
+
 
 .table-control {
     width: 100%;
