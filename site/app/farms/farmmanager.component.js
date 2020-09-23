@@ -50,13 +50,27 @@
 
         function _getKlalitHistoriPage(type,klalitId) {
 
-            debugger
+           
 
             var startDate = moment(this.dateFromClalit).format('YYYY-MM-DD');
             var endDate = moment(this.dateToClalit).format('YYYY-MM-DD');
 
 
+            if (type == 2) this.SaveData(2, true);
+
+
+
             farmsService.getKlalitHistoris(this.farmmanager.FarmId, startDate, endDate, type, klalitId).then(function (res) {
+               
+                if (type == 2 && res[0].Id <0) {
+
+                    if (res[0].Id == -1) alert("אין הגדרות למדריכים");
+                    if (res[0].Id == -2) alert("אין הגדרות לחווה");
+                    return;
+
+                }
+
+
 
                 this.klalits = res;
                  
@@ -87,7 +101,7 @@
         this.dateFromClalit = moment().add(-5, 'months').toDate();
         this.dateToClalit = moment().add(1, 'months').toDate();
 
-        function _SaveData(type) {
+        function _SaveData(type,isNoAlert) {
 
             if (type == 1) {
 
@@ -105,7 +119,7 @@
 
                 this.farmsService.setMangerFarm(this.farmmanager).then(function (farm) {
 
-                    alert('נשמר בהצלחה');
+                   if(!isNoAlert)  alert('נשמר בהצלחה');
                 }.bind(this));
 
 

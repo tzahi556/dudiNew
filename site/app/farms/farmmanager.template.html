@@ -99,7 +99,7 @@
             <div class="panel-body">
 
                 <div class="col-md-4 form-group">
-                    <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-model="$ctrl.SearchUser" />
+                    <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-model="$ctrl.filter.UserName" />
                 </div>
 
                 <div class="col-md-3 form-group">
@@ -132,7 +132,7 @@
                         </thead>
                         <tbody>
 
-                            <tr ng-repeat="klalit in $ctrl.klalits">
+                            <tr ng-repeat="klalit in $ctrl.klalits  | filter:$ctrl.filter">
 
                                 <td>{{klalit.DateSend | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{klalit.DateLesson | ildate: 'DD/MM/YYYY'}}</td>
