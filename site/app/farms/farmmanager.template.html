@@ -1,157 +1,291 @@
-﻿<form name="farmmangerForm"  novalidate>
-    <div class="col-md-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-        קישורים
-             
-            </div>
-            <div class="panel-body">
+﻿<form name="farmmangerForm" novalidate>
 
 
 
-                <a target="_blank" class="btn btn-primary"  href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a><br /><br />
-                <a target="_blank" class="btn btn-primary" href="//drive.google.com">Google Drive</a><br /><br />
-                <a target="_blank" class="btn btn-primary" href="//www.dropbox.com">DropBox</a>
-            </div>
-            <div class="panel-footer">
-               
-            </div>
-        </div>
-    </div>
+    <uib-tabset active="active" class="tab-form-demo">
 
-    <div class="col-md-3" ng-if="$ctrl.role!='farmAdminHorse'">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                מדריכים
-                <button  class="btn btn-xs btn-success pull-left" ng-click="$ctrl.SaveData(1)">שמור</button>
-            </div>
-            <div class="panel-body">
+        <uib-tab index="0" heading="קישורים">
 
 
-                <table class="table">
-                    <thead>
-                        <tr>
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        קישורים
 
-                            <th>שם מדריך</th>
-                            <th>מספר  בכללית</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="instructor in $ctrl.farminstructors track by $index">
-
-                            <td>{{instructor.InstructorName}}</td>
-                            <td><input type="text" class="form-control" ng-model="instructor.ClalitNumber" /></td>
-
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-            <div class="panel-footer">
-                <button class="btn btn-success" ng-click="$ctrl.SaveData(1)">עדכון</button>
-                <!--<button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>-->
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-7" ng-if="$ctrl.role!='farmAdminHorse'">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                דיווחי תביעה לכללית
-                <button class="btn btn-xs btn-success pull-left" ng-click="$ctrl.SaveData(2)">שמור</button>
-            </div>
-            <div class="panel-body">
-                <div class="col-md-2 form-group">
-                    <label>שם משתמש</label>
-                    <input type="text" name="UserName" class="form-control" ng-model="$ctrl.farmmanager.UserName" required />
-                </div>
-                <div class="col-md-2 form-group">
-                    <label>סיסמא</label>
-                    <input type="text" name="Password" class="form-control" ng-model="$ctrl.farmmanager.Password" required />
-                </div>
-                <div class="col-md-2 form-group">
-                    <label>קוד ספק</label>
-                    <input type="text" name="SupplierID" class="form-control" ng-model="$ctrl.farmmanager.SupplierID" required />
-                </div>
-
-                <div class="col-md-2 form-group">
-                    <label>קוד טיפול</label>
-                    <input type="text" name="SectionCode" class="form-control" ng-model="$ctrl.farmmanager.SectionCode" required />
-                </div>
-                <div class="col-md-2 form-group">
-                    <label>קוד יחידה</label>
-                    <input type="text" name="CareCode" class="form-control" ng-model="$ctrl.farmmanager.CareCode" required />
-                </div>
-              
-                <div class="col-md-2 form-group">
-                    <label>&nbsp;</label>
-                    <button class="btn btn-primary" ng-click="$ctrl.getKlalitHistoriPage(2)" ng-disabled="farmmangerForm.$invalid">שדר דיווח לכללית</button>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-              הסטורית דיווחים
-            </div>
-            <div class="panel-body">
-
-                <div class="col-md-4 form-group">
-                    <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-model="$ctrl.filter.UserName" />
-                </div>
-
-                <div class="col-md-3 form-group">
-                    <input type="date" name="dateFromClalit" class="form-control" ng-model="$ctrl.dateFromClalit" />
-                </div>
-               
-                <div class="col-md-3 form-group">
-                    <input type="date" name="dateToClalit" class="form-control" ng-model="$ctrl.dateToClalit" />
-                </div>
-                <div class="col-md-1 form-group">
-                    <button class="btn btn-primary" ng-click="$ctrl.getKlalitHistoriPage()">חפש</button>
-                </div>
+                    </div>
+                    <div class="panel-body">
 
 
 
-                <div class="col-md-12">
-                    <table class="table">
-                        <thead>
+                        <a target="_blank" class="btn btn-primary" href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a><br /><br />
+                        <a target="_blank" class="btn btn-primary" href="//drive.google.com">Google Drive</a><br /><br />
+                        <a target="_blank" class="btn btn-primary" href="//www.dropbox.com">DropBox</a>
+                    </div>
+                    <div class="panel-footer">
 
-
-                            <tr>
-                                <th>תאריך שליחה</th>
-                                <th>תאריך שיעור</th>
-                                <th>ת.ז</th>
-                                <th>שם תלמיד</th>
-                                <th>סטטוס</th>
-                                <th></th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr ng-repeat="klalit in $ctrl.klalits  | filter:$ctrl.filter">
-
-                                <td>{{klalit.DateSend | ildate: 'DD/MM/YYYY'}}</td>
-                                <td>{{klalit.DateLesson | ildate: 'DD/MM/YYYY'}}</td>
-                                <td>{{klalit.Taz}}</td>
-                                <td>{{klalit.UserName}}</td>
-                                <td>{{klalit.Result}}</td>
-                                <td><button class="btn btn-xs btn-default" ng-click="$ctrl.getKlalitHistoriPage(1,klalit.Id)">שלח שוב</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-
-
-
+                    </div>
                 </div>
             </div>
-    </div>
 
+        </uib-tab>
+        <uib-tab index="1" heading="דיווחי כללית" ng-if="$ctrl.role!='farmAdminHorse'">
+            <div class="col-md-3" ng-if="$ctrl.role!='farmAdminHorse'">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        מדריכים
+                        <button class="btn btn-xs btn-success pull-left" ng-click="$ctrl.SaveData(1)">שמור</button>
+                    </div>
+                    <div class="panel-body">
+
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+
+                                    <th>שם מדריך</th>
+                                    <th>מספר  בכללית</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="instructor in $ctrl.farminstructors track by $index">
+
+                                    <td>{{instructor.InstructorName}}</td>
+                                    <td><input type="text" class="form-control" ng-model="instructor.ClalitNumber" /></td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-success" ng-click="$ctrl.SaveData(1)">עדכון</button>
+                        <!--<button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>-->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9" ng-if="$ctrl.role!='farmAdminHorse'">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        דיווחי תביעה לכללית
+                        <button class="btn btn-xs btn-success pull-left" ng-click="$ctrl.SaveData(2)">שמור</button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-2 form-group">
+                            <label>שם משתמש</label>
+                            <input type="text" name="UserName" class="form-control" ng-model="$ctrl.farmmanager.UserName" required />
+                        </div>
+                        <div class="col-md-2 form-group">
+                            <label>סיסמא</label>
+                            <input type="text" name="Password" class="form-control" ng-model="$ctrl.farmmanager.Password" required />
+                        </div>
+                        <div class="col-md-2 form-group">
+                            <label>קוד ספק</label>
+                            <input type="text" name="SupplierID" class="form-control" ng-model="$ctrl.farmmanager.SupplierID" required />
+                        </div>
+
+                        <div class="col-md-2 form-group">
+                            <label>קוד טיפול</label>
+                            <input type="text" name="SectionCode" class="form-control" ng-model="$ctrl.farmmanager.SectionCode" required />
+                        </div>
+                        <div class="col-md-2 form-group">
+                            <label>קוד יחידה</label>
+                            <input type="text" name="CareCode" class="form-control" ng-model="$ctrl.farmmanager.CareCode" required />
+                        </div>
+
+                        <div class="col-md-2 form-group">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-primary" ng-click="$ctrl.getKlalitHistoriPage(4)" ng-disabled="farmmangerForm.$invalid">שדר דיווח לכללית</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        הסטורית דיווחים
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="col-md-4 form-group">
+                            <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-model="$ctrl.filter.UserName" />
+                        </div>
+
+                        <div class="col-md-3 form-group">
+                            <input type="date" name="dateFromClalit" class="form-control" ng-model="$ctrl.dateFromClalit" />
+                        </div>
+
+                        <div class="col-md-3 form-group">
+                            <input type="date" name="dateToClalit" class="form-control" ng-model="$ctrl.dateToClalit" />
+                        </div>
+                        <div class="col-md-1 form-group">
+                            <button class="btn btn-primary" ng-click="$ctrl.getKlalitHistoriPage()">חפש</button>
+                        </div>
+
+
+
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+
+
+                                    <tr>
+                                        <th>תאריך שליחה</th>
+                                        <th>תאריך שיעור</th>
+                                        <th>ת.ז</th>
+                                        <th>שם תלמיד</th>
+                                        <th>סטטוס</th>
+                                        <th></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr ng-repeat="klalit in $ctrl.klalits  | filter:$ctrl.filter">
+
+                                        <td>{{klalit.DateSend | ildate: 'DD/MM/YYYY'}}</td>
+                                        <td>{{klalit.DateLesson | ildate: 'DD/MM/YYYY'}}</td>
+                                        <td>{{klalit.Taz}}</td>
+                                        <td>{{klalit.UserName}}</td>
+                                        <td>{{klalit.Result}}</td>
+                                        <td><button class="btn btn-xs btn-default" ng-click="$ctrl.getKlalitHistoriPage(1,klalit.Id)">שלח שוב</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+        </uib-tab>
+       </uib-tabset>
+
+            <div class="modal fade" id="modalKlalit" style="z-index:50000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">רשימת תלמידים לדיווח כללית</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="col-md-12">
+                                <div class="col-md-7">
+                                    <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-model="$ctrl.filter.UserName" />
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-primary" ng-click="$ctrl.setKlalitHistoriPage(2)" data-dismiss="modal">שלח/י דיווח לכללית</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">ביטול </button>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <table class="table">
+                                    <thead>
+
+
+                                        <tr>
+
+                                            <th>תאריך שיעור</th>
+                                            <th>ת.ז</th>
+                                            <th>שם תלמיד</th>
+
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr ng-repeat="klalit in $ctrl.klalitsBefore  | filter:$ctrl.filter">
+
+
+                                            <td>{{klalit.DateLesson | ildate: 'DD/MM/YYYY'}}</td>
+                                            <td>{{klalit.Taz}}</td>
+                                            <td>{{klalit.UserName.replace(',',' ')}}</td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="clearfix"></div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalKlalitSend" style="z-index:50000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">סטטוס דיווח</h4>
+                        </div>
+                        <div class="modal-body">
+
+
+                            <div class="col-md-12" ng-if="!$ctrl.endMessage" style="font-size:18px;font-weight:bold;text-decoration:underline">
+                                אנחנו מתחילים לדווח תביעה על <span>{{$ctrl.klalitsBefore.length}}</span> תלמידים
+                                <br />
+                                <label style="color:brown">נא לא לסגור בעת הדיווח!</label>
+
+                                <br />
+
+                            </div>
+
+                            <div class="col-md-12" ng-if="$ctrl.endMessage" style="color:blue;font-size:18px;text-align:center">
+
+                                <label>הדיווח עבר בהצלחה!</label>
+                                <br />
+                                <img src="../../images/klalit.png" width="40px" /><br />
+                                {{$ctrl.currentElement}} / {{$ctrl.klalitsBefore.length}}
+                            </div>
+
+                            <div class="col-md-10" ng-if="!$ctrl.endMessage">
+                                <table style="font-size:16px;font-weight:bold">
+                                    <tr>
+
+                                        <td>שם תלמיד:&nbsp;</td>
+                                        <td>{{$ctrl.returnUserName}}</td>
+
+                                    </tr>
+                                    <tr>
+
+                                        <td>תאריך שיעור:&nbsp;</td>
+                                        <td>{{($ctrl.returnDate) ? ($ctrl.returnDate | ildate: 'DD/MM/YYYY'):''}}</td>
+                                    </tr>
+
+                                    <tr>
+
+                                        <td>סטטוס:&nbsp;</td>
+                                        <td>{{$ctrl.returnStatus}}</td>
+                                    </tr>
+
+                                </table>
+
+                            </div>
+                            <div class="col-md-2" ng-if="!$ctrl.endMessage" style="font-weight:bold;font-size:18px">
+                                <img src="../../images/klalit.png" width="40px" /><br />
+                                {{$ctrl.klalitsBefore.length}}  / {{$ctrl.currentElement}}
+                            </div>
+
+
+                            <div class="clearfix"></div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 </form>
 

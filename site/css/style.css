@@ -95,6 +95,15 @@
 }
 
 
+.kvutza-icon {
+    background-image: url(../images/kvutza.png);
+    background-size:15px;
+    background-position: top left;
+    background-repeat: no-repeat;
+   
+}
+
+
 .hmoImage {
     position:absolute;
     left: 25px;

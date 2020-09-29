@@ -1,5 +1,6 @@
 ﻿using FarmsApi.DataModels;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Web.Http;
 
 namespace FarmsApi.Services
@@ -149,6 +150,16 @@ namespace FarmsApi.Services
 
             return Ok(HorsesService.CheckIfHorseWork(id, start, end));
         }
+
+
+        [Authorize]
+        [Route("getHorseVetrinars")]
+        [HttpPost]
+        public IHttpActionResult GetHorseVetrinars(List<HorseVetrinars> HorseVetrinars)
+        {
+            return Ok(HorsesService.GetHorseToVetrinars(HorseVetrinars));
+        }
+
 
 
     }

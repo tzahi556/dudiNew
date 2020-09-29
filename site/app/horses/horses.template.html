@@ -4,6 +4,8 @@
     </div>
     <div class="panel-body">
         <a class="btn btn-success btn-xs" ui-sref="horse({id:0})">סוס חדש</a>
+
+        <a ng-if="$ctrl.role=='vetrinar' || $ctrl.role=='shoeing' " class="btn btn-primary btn-xs" ng-click="$ctrl.openModal()">ייבוא סוסים מחוות אחרות</a>
     </div>
     <div style="padding:10px">
 
@@ -16,12 +18,18 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
+
                             <th>שם</th>
+                            <th ng-if="$ctrl.role=='vetrinar' || $ctrl.role=='shoeing' ">שם חווה</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="horse in $ctrl.horses|  orderBy:'Name' | filter: $ctrl.filter | filter:{'HorseLocation':'!outer','Active':'!notActive'}" ui-sref="horse({id:horse.Id})">
-                            <td> {{horse.Name}} <span ng-if="horse.Active == 'notActive'" style="font-weight:bold;color:red">(לא פעיל)</span> </td>
+                        <tr ng-repeat="horse in $ctrl.horses  | orderBy:'Name' | orderBy:'Farm_Id' | filter: $ctrl.filter | filter:{'HorseLocation':'!outer','Active':'!notActive'}" ui-sref="horse({id:horse.Id})">
+
+
+                            <td>{{horse.Name}} <span ng-if="horse.Active == 'notActive'" style="font-weight:bold;color:red">(לא פעיל)</span> </td>
+                            <td ng-if="$ctrl.role=='vetrinar' || $ctrl.role=='shoeing' ">{{$ctrl.getFarmName(horse.Farm_Id)}}</td>
+
                         </tr>
                     </tbody>
                 </table>
@@ -32,12 +40,15 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
+
                             <th>שם</th>
+                            <th ng-if="$ctrl.role=='vetrinar' || $ctrl.role=='shoeing' ">שם חווה</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="horse in $ctrl.horses|  orderBy:'Name' | filter: $ctrl.filter | filter:{'HorseLocation':'!outer','Active':'notActive'}" ui-sref="horse({id:horse.Id})">
+                        <tr ng-repeat="horse in $ctrl.horses |  orderBy:'Name'  | orderBy:'Farm_Id' | filter: $ctrl.filter | filter:{'HorseLocation':'!outer','Active':'notActive'}" ui-sref="horse({id:horse.Id})">
                             <td> {{horse.Name}} <span ng-if="horse.Active == 'notActive'" style="font-weight:bold;color:red">(לא פעיל)</span> </td>
+                            <td ng-if="$ctrl.role=='vetrinar' || $ctrl.role=='shoeing' ">{{$ctrl.getFarmName(horse.Farm_Id)}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -49,11 +60,13 @@
                     <thead>
                         <tr>
                             <th>שם</th>
+                            <th ng-if="$ctrl.role=='vetrinar' || $ctrl.role=='shoeing' ">שם חווה</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="horse in $ctrl.horses|  orderBy:'Name' | filter: $ctrl.filter | filter:{'HorseLocation':'outer'}" ui-sref="horse({id:horse.Id})">
+                        <tr ng-repeat="horse in $ctrl.horses | orderBy:'Name' |  orderBy:'Farm_Id' | filter: $ctrl.filter | filter:{'HorseLocation':'outer'}" ui-sref="horse({id:horse.Id})">
                             <td> {{horse.Name}} <span ng-if="horse.Active == 'notActive'" style="font-weight:bold;color:red">(לא פעיל)</span> </td>
+                            <td ng-if="$ctrl.role=='vetrinar' || $ctrl.role=='shoeing' ">{{$ctrl.getFarmName(horse.Farm_Id)}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -96,4 +109,70 @@
             </tr>
         </tbody>
     </table>-->
+</div>
+
+<div class="modal fade" id="modalHavot" style="z-index:50000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">בחירת סוסים מחוות</h4>
+            </div>
+            <div class="modal-body">
+
+
+                <table class="table">
+                    <thead>
+                        <tr>
+
+                            <th>#</th>
+                            <th>מס' חווה</th>
+                            <th>שם חווה</th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="horsevetrinar in $ctrl.horsevetrinars">
+
+                            <td>{{$index + 1}}</td>
+                            <td>{{horsevetrinar.FarmIdAdd}}</td>
+                            <td>{{$ctrl.getFarmName(horsevetrinar.FarmIdAdd)}}</td>
+                            <td>
+                                <button type="button" class="btn btn-danger" ng-click="$ctrl.action(1,horsevetrinar)">הסר סוסים </button>
+                            </td>
+
+
+
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">הוסף חווה</td>
+                            <td colspan="1">
+                                <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.getFilerArray()" ng-model="$ctrl.newhorsevetrinars.FarmId" >
+                                    <option value="">בחר חווה</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary" ng-disabled="!$ctrl.newhorsevetrinars.FarmId" ng-click="$ctrl.action(2)">הוסף סוסים</button>
+                            </td>
+
+                        </tr>
+
+
+
+                    </tbody>
+                </table>
+
+
+                <div style="text-align:left">
+
+
+                    <button type="button" class="btn btn-primary" ng-click="$ctrl.action(3)" data-dismiss="modal">שמור</button>
+                    <button type="button" class="btn btn-danger"  data-dismiss="modal">ביטול </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1081,7 +1081,7 @@
                 this.horse.OutDate.setHours(this.horse.OutDate.getHours() + 3);
 
 
-
+          
             horsesService.updateHorse(this.horse).then(function (horse) {
                 this.horse = horse;
                 this.initHorse();

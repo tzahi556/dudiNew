@@ -16,6 +16,21 @@
 
         this.getFarmsMainUser = _getFarmsMainUser;
         this.getKlalitHistoris = _getKlalitHistoris;
+        this.setKlalitHistoris = _setKlalitHistoris;
+
+
+        function _setKlalitHistoris(klalithistoris) {
+
+
+
+            var deferred = $q.defer();
+            $http.post(sharedValues.apiUrl + 'farms/setKlalitHistoris/', klalithistoris).then(function (res) {
+
+                deferred.resolve(res.data);
+            });
+
+            return deferred.promise;
+        }
 
 
         function _getKlalitHistoris(farmId, startDate, endDate, type, klalitId) {

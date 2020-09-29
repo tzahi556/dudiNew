@@ -28,7 +28,7 @@
             return results;
         }
     });
-    function FarmmanagerController($scope, farmsService, $state) {
+    function FarmmanagerController($scope, farmsService, $state, sharedValues, $http) {
 
 
         var self = this;
@@ -41,39 +41,96 @@
         this.initNewTags = _initNewTags.bind(this);
 
         this.getKlalitHistoriPage = _getKlalitHistoriPage.bind(this);
-
+        this.setKlalitHistoriPage = _setKlalitHistoriPage.bind(this);
+        this.setPostToKlalit = _setPostToKlalit.bind(this);
 
         this.role = localStorage.getItem('currentRole');
 
 
 
+        function _setKlalitHistoriPage(type, klalitId) {
 
-        function _getKlalitHistoriPage(type,klalitId) {
+            if (this.klalitsBefore.length > 0) {
 
-           
+                $('#modalKlalitSend').modal('show');
+
+             
+                var ctrlthis = this;
+                ctrlthis.endMessage = false;
+                ctrlthis.currentElement = 0;
+                ctrlthis.setPostToKlalit(0, ctrlthis);
+
+            }
+          
+
+
+
+        }
+
+
+        function _setPostToKlalit(index, ctrlthis) {
+
+
+            $http.post(sharedValues.apiUrl + 'farms/setKlalitHistoris/', ctrlthis.klalitsBefore[index]).then(function (response) {
+
+                ctrlthis.returnUserName = response.data.UserName;
+                ctrlthis.returnDate = response.data.DateLesson;
+                ctrlthis.returnStatus = response.data.Result;
+                ctrlthis.currentElement = index + 1;
+
+                if ((index + 1) < ctrlthis.klalitsBefore.length)
+                    ctrlthis.setPostToKlalit(index + 1, ctrlthis);
+                else { 
+                    ctrlthis.endMessage = true;
+                    ctrlthis.getKlalitHistoriPage();
+                }
+
+
+            });
+
+        }
+
+
+        function _getKlalitHistoriPage(type, klalitId) {
+
+
+
+
+
 
             var startDate = moment(this.dateFromClalit).format('YYYY-MM-DD');
             var endDate = moment(this.dateToClalit).format('YYYY-MM-DD');
 
+            // שליחה עצמה
+            if (type == 2) {
+                this.SaveData(2, true);
+            }
 
-            if (type == 2) this.SaveData(2, true);
+            // פתיחת חלון מקדים
+            if (type == 4) $('#modalKlalit').modal('show');
 
 
 
-            farmsService.getKlalitHistoris(this.farmmanager.FarmId, startDate, endDate, type, klalitId).then(function (res) {
-               
-                if (type == 2 && res[0].Id <0) {
+            farmsService.getKlalitHistoris(this.farmmanager.FarmId, startDate, endDate, type, klalitId, null).then(function (res) {
+
+                if (type == 2 && res[0].Id < 0) {
 
                     if (res[0].Id == -1) alert("אין הגדרות למדריכים");
                     if (res[0].Id == -2) alert("אין הגדרות לחווה");
+
+
                     return;
 
                 }
 
+                if (type == 4) {
 
+                    this.klalitsBefore = res;
 
-                this.klalits = res;
-                 
+                } else {
+                    this.klalits = res;
+                }
+
             }.bind(this));
 
         }
@@ -98,10 +155,10 @@
         init();
 
 
-        this.dateFromClalit = moment().add(-5, 'months').toDate();
-        this.dateToClalit = moment().add(1, 'months').toDate();
+        this.dateFromClalit = moment().add(0, 'months').toDate();
+        this.dateToClalit = moment().add(1, 'days').toDate();
 
-        function _SaveData(type,isNoAlert) {
+        function _SaveData(type, isNoAlert) {
 
             if (type == 1) {
 
@@ -119,7 +176,7 @@
 
                 this.farmsService.setMangerFarm(this.farmmanager).then(function (farm) {
 
-                   if(!isNoAlert)  alert('נשמר בהצלחה');
+                    if (!isNoAlert) alert('נשמר בהצלחה');
                 }.bind(this));
 
 

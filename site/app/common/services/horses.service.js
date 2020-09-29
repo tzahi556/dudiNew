@@ -20,7 +20,9 @@
         this.updateHorseMultiTables = _updateHorseMultiTables;
 
         this.insertnewpregnancie = _insertnewpregnancie;
+        this.getHorseVetrinars = _getHorseVetrinars;
 
+        
 
         function _insertnewpregnancie(newpregnancie,isBuild) {
           
@@ -30,6 +32,19 @@
                 var horse = res.data;
               
                 deferred.resolve(horse);
+            });
+            return deferred.promise;
+        }
+
+
+        function _getHorseVetrinars(horsevetrinars) {
+
+            var deferred = $q.defer();
+           
+            $http.post(sharedValues.apiUrl + 'horses/getHorseVetrinars', horsevetrinars).then(function (res) {
+               
+                var horses = res.data;
+                deferred.resolve(horses);
             });
             return deferred.promise;
         }

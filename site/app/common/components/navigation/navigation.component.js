@@ -25,12 +25,12 @@
            
             this.farms = ['sysAdmin'].indexOf(role) != -1 ? true : false;
             this.accounting = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
-            this.lessons = ['sysAdmin', 'farmAdmin', 'instructor', 'profAdmin', 'farmAdminHorse', "stableman","worker"].indexOf(role) != -1 ? true : false;
+            this.lessons = ['sysAdmin', 'farmAdmin', 'instructor', 'profAdmin', 'farmAdminHorse', "stableman", "worker", 'vetrinar', 'shoeing'].indexOf(role) != -1 ? true : false;
             this.users = ['sysAdmin', 'farmAdmin'].indexOf(role) != -1 ? true : false;
-            this.instructors = (['sysAdmin', 'farmAdmin', 'farmAdminHorse', 'instructor', 'profAdmin'].indexOf(role) != -1 && ["stableman", "worker"].indexOf(this.subrole) == -1 )? true : false;
-            this.students = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
-            this.reports = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
-            this.horses = ['sysAdmin', 'farmAdmin', 'profAdmin', 'stableman', "worker", 'assistant', 'farmAdminHorse'].indexOf(role) != -1 || ["stableman", "worker"].indexOf(this.subrole) != -1 ? true : false;
+            this.instructors = (['sysAdmin', 'farmAdmin', 'farmAdminHorse', 'instructor', 'profAdmin', 'vetrinar', 'shoeing'].indexOf(role) != -1 && ["stableman", "worker"].indexOf(this.subrole) == -1 )? true : false;
+            this.students = ['sysAdmin', 'farmAdmin', 'farmAdminHorse', 'vetrinar', 'shoeing'].indexOf(role) != -1 ? true : false;
+            this.reports = ['sysAdmin', 'farmAdmin', 'farmAdminHorse', 'vetrinar', 'shoeing'].indexOf(role) != -1 ? true : false;
+            this.horses = ['sysAdmin', 'farmAdmin', 'profAdmin', 'stableman', "worker", 'assistant', 'farmAdminHorse', 'vetrinar', 'shoeing'].indexOf(role) != -1 || ["stableman", "worker"].indexOf(this.subrole) != -1 ? true : false;
 
             this.farmmanager = ['sysAdmin', 'farmAdmin', 'farmAdminHorse'].indexOf(role) != -1 ? true : false;
             this.files = role != null;

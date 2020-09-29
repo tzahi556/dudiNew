@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
 using System.Web.Http.Results;
 using System.Xml;
 
@@ -16,7 +17,7 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
                 var CurrentUser = UsersService.GetCurrentUser();
-                if (CurrentUser.Role == "sysAdmin")
+                if (CurrentUser.Role == "sysAdmin" || CurrentUser.Role == "vetrinar" || CurrentUser.Role == "shoeing")
                     return Context.Farms.Where(f => f.Deleted == deleted).ToList();
                 else
                     return Context.Farms.Where(f => f.Deleted == deleted && f.Id == CurrentUser.Farm_Id).ToList();
@@ -170,7 +171,78 @@ namespace FarmsApi.Services
             }
         }
 
+        
 
+        public static KlalitHistoris SetKlalitHistoris(KlalitHistoris khv)
+        {
+
+          
+
+                using (var Context = new Context())
+                {
+                    var item = khv;
+                    FarmManagers fm = Context.FarmManagers.Where(x => x.FarmId == item.FarmId).FirstOrDefault();
+                    IEnumerable<FarmInstructors> fi = GetMangerInstructorFarm();
+
+                    FarmInstructors fs = fi.Where(y => y.UserId == item.Instructor_Id).FirstOrDefault();
+
+
+
+
+                    string FirstName = item.UserName.Split(',')[0];
+                    string LastName = item.UserName.Split(',')[1];
+                    string DateStart = item.DateLesson.ToString("ddMMyyyy");
+
+                    KlalitAPI.SupplierRequest kp = new KlalitAPI.SupplierRequest();
+
+                    string xml = @"
+                                    <XMLInput>
+	                                    <ActionCode>11</ActionCode>
+	                                    <UserName>" + fm.UserName + @"</UserName>
+	                                    <Password>" + fm.Password + @"</Password>
+	                                    <SupplierID>" + fm.SupplierID + @"</SupplierID>
+	                                    <ClinicID>0</ClinicID>
+	                                    <InsuredID>" + item.Taz + @"</InsuredID>
+	                                    <InsuredFirstName>" + FirstName + @"</InsuredFirstName>
+	                                    <InsuredLastName>" + LastName + @"</InsuredLastName>
+	                                    <SectionCode>" + fm.SectionCode + @"</SectionCode>
+	                                    <CareCode>" + fm.CareCode + @"</CareCode>
+	                                    <CareDate>" + DateStart + @"</CareDate>
+	                                    <DoctorID>" + fs.ClalitNumber + @"</DoctorID>
+	                                    <OnlineServiceType>0</OnlineServiceType>
+                                    </XMLInput>";
+                    var resXML = kp.SendXML(xml); //203700003 //203700007
+
+                    XmlDocument XmlRes = new XmlDocument();
+                    XmlRes.LoadXml(resXML.ToString());
+
+                    var Result = XmlRes.DocumentElement.SelectSingleNode("Result").InnerText;// 1 נקלטה
+                    var AnswerDetails = XmlRes.DocumentElement.SelectSingleNode("AnswerDetails");// התשובה כאן
+                    var ErrorDescription = XmlRes.DocumentElement.SelectSingleNode("ErrorDescription");// השגיאה כאן
+                    var ClaimNumber = XmlRes.DocumentElement.SelectSingleNode("ClaimNumber");// מספר תביעה
+
+                    KlalitHistoris kh = new KlalitHistoris();
+                    kh.Id = 0;
+                    kh.UserId = item.UserId;
+                    kh.UserName = khv.UserName;
+                    kh.FarmId = item.FarmId;
+                    kh.DateSend = DateTime.Now;
+                    kh.DateLesson = item.DateLesson;
+                    kh.ClaimNumber = (ClaimNumber == null) ? "" : ClaimNumber.InnerText;
+                    kh.ResultXML = resXML.ToString();
+                    kh.ResultNumber = Result;
+                    kh.Result = (Int32.Parse(Result) > 0) ? AnswerDetails.InnerText : ErrorDescription.InnerText;
+
+                    if (kh.Result.Contains("קיימת פניה דומה")) kh.Result = "קיימת כבר תביעה לתאריך";
+
+
+                    kh.Instructor_Id = item.Instructor_Id;
+                    Context.KlalitHistoris.Add(kh);
+                    Context.SaveChanges();
+                    return kh;
+                }
+          
+        }
 
         public static List<KlalitHistoris> GetKlalitHistoris(int FarmId, string startDate = null, string endDate = null, int? type = null, int? klalitId = null)
         {
@@ -180,7 +252,7 @@ namespace FarmsApi.Services
 
                 if (type == null) type = -1;
                 if (klalitId == null) klalitId = 0;
-                
+
 
                 SqlParameter FarmIdPara = new SqlParameter("FarmId", FarmId);
                 SqlParameter StartDatePara = new SqlParameter("StartDate", startDate);
@@ -263,7 +335,7 @@ namespace FarmsApi.Services
                     string xml = @"
                                     <XMLInput>
 	                                    <ActionCode>11</ActionCode>
-	                                    <UserName>"+fm.UserName+ @"</UserName>
+	                                    <UserName>" + fm.UserName + @"</UserName>
 	                                    <Password>" + fm.Password + @"</Password>
 	                                    <SupplierID>" + fm.SupplierID + @"</SupplierID>
 	                                    <ClinicID>0</ClinicID>
@@ -272,7 +344,7 @@ namespace FarmsApi.Services
 	                                    <InsuredLastName>" + LastName + @"</InsuredLastName>
 	                                    <SectionCode>" + fm.SectionCode + @"</SectionCode>
 	                                    <CareCode>" + fm.CareCode + @"</CareCode>
-	                                    <CareDate>"+ DateStart + @"</CareDate>
+	                                    <CareDate>" + DateStart + @"</CareDate>
 	                                    <DoctorID>" + fs.ClalitNumber + @"</DoctorID>
 	                                    <OnlineServiceType>0</OnlineServiceType>
                                     </XMLInput>";
@@ -292,7 +364,7 @@ namespace FarmsApi.Services
                     kh.FarmId = item.FarmId;
                     kh.DateSend = DateTime.Now;
                     kh.DateLesson = item.DateLesson;
-                    kh.ClaimNumber = (ClaimNumber==null)?"": ClaimNumber.InnerText;
+                    kh.ClaimNumber = (ClaimNumber == null) ? "" : ClaimNumber.InnerText;
                     kh.ResultXML = resXML.ToString();
                     kh.ResultNumber = Result;
                     kh.Result = (Int32.Parse(Result) > 0) ? AnswerDetails.InnerText : ErrorDescription.InnerText;

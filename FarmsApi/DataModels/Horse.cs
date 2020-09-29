@@ -373,6 +373,18 @@ namespace FarmsApi.DataModels
 
     }
 
+    public class HorseVetrinars
+    {
+        public int Id { get; set; }
+        public int FarmIdAdd { get; set; }
+        public int FarmId { get; set; }
+
+        public int? UserId { get; set; }
+
+    }
+    
+
+
 
 
 

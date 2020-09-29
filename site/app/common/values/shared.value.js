@@ -20,6 +20,8 @@
             { id: 'worker', name: 'עובד כללי', showInUsers: true, sysAdminOnly: false, homePage: 'horses' },
             { id: 'instructor', name: 'מדריך', showInUsers: false, sysAdminOnly: true, homePage: 'lessons' },
             { id: 'student', name: 'תלמיד', showInUsers: false, sysAdminOnly: true, homePage: 'lessons' },
+            { id: 'vetrinar', name: 'וטרינר', showInUsers: true, sysAdminOnly: true, homePage: 'horses' },
+            { id: 'shoeing', name: 'מפרזל', showInUsers: true, sysAdminOnly: true, homePage: 'horses' },
         ],
 
 

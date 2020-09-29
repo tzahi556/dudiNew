@@ -169,15 +169,24 @@
             url: '/horses/',
             views: {
                 'main': {
-                    template: '<horses horses="$ctrl.horses"></horses>',
-                    controller: function (horses) {
+                    template: '<horses horses="$ctrl.horses" horsevetrinars="$ctrl.horsevetrinars" farms="$ctrl.farms"></horses>',
+                    controller: function (horses, horsevetrinars, farms) {
                         this.horses = horses;
+                        this.farms = farms;
+
+                        this.horsevetrinars = horsevetrinars.filter(x => x.UserId == null);
                     },
                     controllerAs: '$ctrl',
                     resolve: {
                         horses: function (horsesService) {
                             return horsesService.getHorses();
-                        }
+                        },
+                        horsevetrinars: function (horsesService) {
+                            return horsesService.getHorseVetrinars();
+                        },
+                        farms: function (farmsService) {
+                            return farmsService.getFarms();
+                        },
                     }
                 }
             }
@@ -408,14 +417,24 @@
             url: '/students/',
             views: {
                 'main': {
-                    template: '<students users="$ctrl.users"></students>',
-                    controller: function (users) {
+                    template: '<students users="$ctrl.users" horsevetrinars="$ctrl.horsevetrinars" farms="$ctrl.farms"></students>',
+                    controller: function (users, horsevetrinars, farms) {
                         this.users = users;
+                        this.horsevetrinars = horsevetrinars.filter(x => x.UserId != null);
+                       
+                        this.farms = farms;
                     },
                     controllerAs: '$ctrl',
                     resolve: {
                         users: function (usersService) {
                             return usersService.getUsers('student');
+                        },
+                        horsevetrinars: function (horsesService) {
+
+                            return horsesService.getHorseVetrinars();
+                        },
+                        farms: function (farmsService) {
+                            return farmsService.getFarms();
                         }
                     }
                 }

@@ -46,6 +46,9 @@ namespace FarmsApi.DataModels
         public DbSet<MonthlyReports> MonthlyReports { get; set; }
         public DbSet<KlalitHistoris> KlalitHistoris { get; set; }
         public DbSet<HorsesMultipleFiles> HorsesMultipleFiles { get; set; }
+        public DbSet<HorseVetrinars> HorseVetrinars { get; set; }
+
+        
 
         public Context() : base("Farms") { }
 

@@ -1,5 +1,6 @@
 ﻿using FarmsApi.DataModels;
 using System.Collections.Generic;
+using System.Threading;
 using System.Web.Http;
 
 namespace FarmsApi.Services
@@ -109,7 +110,17 @@ namespace FarmsApi.Services
         {
             return Ok(FarmsService.GetKlalitHistoris(FarmId, startDate, endDate,type,klalitId));
         }
-      
+
+
+        [Authorize]
+        [Route("setKlalitHistoris")]
+        [HttpPost]
+
+        public IHttpActionResult SetKlalitHistoris(KlalitHistoris kh)
+        {
+            return Ok(FarmsService.SetKlalitHistoris(kh));
+        }
+
 
     }
 }

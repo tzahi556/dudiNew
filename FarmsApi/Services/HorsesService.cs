@@ -359,6 +359,7 @@ namespace FarmsApi.Services
         }
 
 
+
         private static double? CheckifExistDouble(JToken jToken)
         {
             if (jToken == null) return 0;
@@ -478,7 +479,7 @@ namespace FarmsApi.Services
                         {
                             if (item.Type == 1)
                             {
-                                var ObjList = Context.HorseTreatments.Where(x =>x.HorseId==item.HorseId).ToList();
+                                var ObjList = Context.HorseTreatments.Where(x => x.HorseId == item.HorseId).ToList();
                                 foreach (var Obj in ObjList)
                                 {
                                     if (Obj.Date.ToString() == item.ObjectDate.Value.ToString())
@@ -516,7 +517,7 @@ namespace FarmsApi.Services
 
                                 }
 
-                              
+
                             }
                             if (item.Type == 4)
                             {
@@ -586,13 +587,13 @@ namespace FarmsApi.Services
                     if (item.Id == 0)
                     {
 
-                       
+
                         Horse hsSusa = Context.Horses.Where(x => x.Id == item.HorseId).FirstOrDefault();
                         Horse hsSus = Context.Horses.Where(x => x.Id == item.FatherHorseId).FirstOrDefault();
 
                         if (item.CostFather > 0)
                         {
-                            string name = " חוזה חווה " + "סוס מרביע -" + hsSus.Name ;
+                            string name = " חוזה חווה " + "סוס מרביע -" + hsSus.Name;
                             int? ExpensesId = AddToExpensesTable(item.CostHava, 0, item.HorseId, f.Name, name, item.Date);
                             item.ExpensesIdHava = ExpensesId;
                         }
@@ -600,12 +601,12 @@ namespace FarmsApi.Services
 
                         if (item.CostFather > 0)
                         {
-                            string name = " חוזה בעל הסוס " + "סוס מרביע -" + hsSus.Name ;
+                            string name = " חוזה בעל הסוס " + "סוס מרביע -" + hsSus.Name;
                             int? ExpensesId = AddToExpensesTable(item.CostFather, 0, item.HorseId, f.Name, name, item.Date);
                             item.ExpensesId = ExpensesId;
                         }
 
-                       
+
 
                         HorseInseminations hi = new HorseInseminations();
                         hi.HorseId = hsSus.Id;
@@ -613,7 +614,7 @@ namespace FarmsApi.Services
                         hi.PregnanciesHorseId = hsSusa.Id;
                         hi.Cost = item.CostFather;
                         Context.HorseHozims.Add(item);
-                       
+
                         Context.SaveChanges();
 
                         hi.HozimId = item.Id;
@@ -621,17 +622,17 @@ namespace FarmsApi.Services
 
 
 
-                        if (item.UserId!=null)
+                        if (item.UserId != null)
                         {
 
                             // Lesson CurrentLesson = 
                             DateTime StartSearch = ((DateTime)item.Date).Date;
                             DateTime EndSearch = StartSearch.AddDays(1);
-                            Lesson CurrentLesson = Context.Lessons.Where(u => u.Instructor_Id == item.UserId && u.Start < EndSearch && u.Start > StartSearch).OrderByDescending(y=>y.End).FirstOrDefault();
+                            Lesson CurrentLesson = Context.Lessons.Where(u => u.Instructor_Id == item.UserId && u.Start < EndSearch && u.Start > StartSearch).OrderByDescending(y => y.End).FirstOrDefault();
                             if (CurrentLesson == null)
                             {
                                 CurrentLesson = new Lesson();
-                                CurrentLesson.Instructor_Id =(int) item.UserId;
+                                CurrentLesson.Instructor_Id = (int)item.UserId;
                                 CurrentLesson.Start = StartSearch.Add(new TimeSpan(7, 30, 0));
                                 CurrentLesson.End = StartSearch.Add(new TimeSpan(8, 00, 0));
 
@@ -644,7 +645,7 @@ namespace FarmsApi.Services
 
                                 DateTime starttemp = CurrentLesson.End;
                                 DateTime endtemp = CurrentLesson.End.AddMinutes(30);
-                              
+
                                 CurrentLesson = new Lesson();
                                 CurrentLesson.Instructor_Id = (int)item.UserId;
                                 CurrentLesson.Start = starttemp;
@@ -661,10 +662,10 @@ namespace FarmsApi.Services
 
                             }
 
-                             SchedularTasks Schedular = new SchedularTasks();
-                             Schedular.Title = (item.Type==1)?"חליבה":((item.Type == 2)? "זירמה קפואה" : "הקפצה")  + " לסוס " + hsSus.Name;
-                             Schedular.ResourceId = (int)item.UserId;
-                             Schedular.LessonId = CurrentLesson.Id;
+                            SchedularTasks Schedular = new SchedularTasks();
+                            Schedular.Title = (item.Type == 1) ? "חליבה" : ((item.Type == 2) ? "זירמה קפואה" : "הקפצה") + " לסוס " + hsSus.Name;
+                            Schedular.ResourceId = (int)item.UserId;
+                            Schedular.LessonId = CurrentLesson.Id;
 
                             LessonsService.DeleteAll(Schedular, true, Context, CurrentLesson.Id, CurrentLesson);
 
@@ -708,7 +709,7 @@ namespace FarmsApi.Services
                         {
                             Context.Entry(a).State = System.Data.Entity.EntityState.Deleted;
                         });
-                       
+
 
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
@@ -1261,9 +1262,9 @@ namespace FarmsApi.Services
 
                                 HorsePregnanciesStates hs = Context.HorsePregnanciesStates.Where(p => p.HorsePregnanciesId == item.HorsePregnanciesId).FirstOrDefault();
 
-                              
 
-                                if (hs==null)
+
+                                if (hs == null)
                                 {
                                     HorseInseminations LastInseminationsTemp = Context.HorseInseminations.Where(h => h.HozimId == hp.HozimId).FirstOrDefault();
                                     LastInseminationsTemp.PregnancId = item.HorsePregnanciesId;
@@ -1459,12 +1460,26 @@ namespace FarmsApi.Services
         {
             using (var Context = new Context())
             {
+
                 var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
+
+                var HorseVetrinarList = Context.HorseVetrinars.Where(x => x.FarmId == CurrentHorsefarmId).ToList();
+
+
+
+
                 var Horses = Context.Horses.ToList();
                 if (CurrentHorsefarmId != 0)
                 {
-                    Horses = Horses.Where(h => h.Farm_Id == CurrentHorsefarmId).OrderBy(x => x.Name).ToList();
+                    Horses = Horses.Where(h => h.Farm_Id == CurrentHorsefarmId || HorseVetrinarList.Any(y=>y.FarmIdAdd== h.Farm_Id)).OrderBy(x => x.Name).ToList();
                 }
+
+                
+
+                //fo
+
+
+
                 Horses = FilterDeleted(Horses, IncludeDeleted);
                 return Horses;
             }
@@ -1616,7 +1631,73 @@ namespace FarmsApi.Services
             }
         }
 
+        public static List<HorseVetrinars> GetHorseToVetrinars(List<HorseVetrinars> HorseVetrinars = null)
+        {
+            using (var Context = new Context())
+            {
+                var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
 
+                if (HorseVetrinars == null)
+                {
+                    return Context.HorseVetrinars.Where(u => u.FarmId == CurrentHorsefarmId).ToList();
+                }
+                else
+                {
+
+                    foreach (HorseVetrinars item in HorseVetrinars)
+                    {
+
+                        item.FarmId = CurrentHorsefarmId;
+
+                        if (item.Id == 0)
+                        {
+                            Context.HorseVetrinars.Add(item);
+
+                        }
+                        else
+                        {
+
+                            Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                            //  Context.SaveChanges();
+
+                        }
+
+                    }
+
+                    try
+                    {
+
+                        var result = Context.HorseVetrinars.Where(p => p.FarmId == CurrentHorsefarmId).ToList();
+                        IEnumerable<HorseVetrinars> differenceQuery = result.Except(HorseVetrinars);
+
+                        foreach (HorseVetrinars item in differenceQuery)
+                        {
+                            Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                        }
+
+
+
+                    }
+                    catch (Exception ex)
+                    {
+
+
+                    }
+
+                    Context.SaveChanges();
+
+
+                    return Context.HorseVetrinars.Where(u => u.FarmId == CurrentHorsefarmId).ToList();
+
+
+
+
+
+
+                }
+
+            }
+        }
 
 
         private static List<Horse> FilterDeleted(List<Horse> Horses, bool IncludeDeleted)
@@ -1758,7 +1839,7 @@ namespace FarmsApi.Services
             using (var Context = new Context())
                 return Context.HorsesMultipleFiles.Where(u => u.HorseId == Id).ToList();
         }
-        
+
 
 
 
@@ -1838,9 +1919,13 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
                 var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
-                Horse.Farm_Id = CurrentHorsefarmId != 0 ? CurrentHorsefarmId : Horse.Farm_Id;
+             
                 if (Horse.Id == 0)
+                {
+                    Horse.Farm_Id = CurrentHorsefarmId != 0 ? CurrentHorsefarmId : Horse.Farm_Id;
                     Context.Horses.Add(Horse);
+                }
+                   
                 else
                 {
                     // כאשר לא פעיל תמחק את הסוס מהתלמידים
