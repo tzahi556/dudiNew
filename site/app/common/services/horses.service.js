@@ -21,7 +21,8 @@
 
         this.insertnewpregnancie = _insertnewpregnancie;
         this.getHorseVetrinars = _getHorseVetrinars;
-
+        this.getSetHorseGroups = _getSetHorseGroups;
+        this.getSetHorseGroupsHorses = _getSetHorseGroupsHorses;
         
 
         function _insertnewpregnancie(newpregnancie,isBuild) {
@@ -37,11 +38,13 @@
         }
 
 
-        function _getHorseVetrinars(horsevetrinars) {
+        function _getHorseVetrinars(horsevetrinars,type) {
 
+
+            if (!type) type = '0';
             var deferred = $q.defer();
            
-            $http.post(sharedValues.apiUrl + 'horses/getHorseVetrinars', horsevetrinars).then(function (res) {
+            $http.post(sharedValues.apiUrl + 'horses/getHorseVetrinars/' + type, horsevetrinars).then(function (res) {
                
                 var horses = res.data;
                 deferred.resolve(horses);
@@ -50,6 +53,33 @@
         }
 
 
+        function _getSetHorseGroups(type,horsegroups) {
+
+
+            if (!type) type = '0';
+            var deferred = $q.defer();
+
+            $http.post(sharedValues.apiUrl + 'horses/getSetHorseGroups/' + type, horsegroups).then(function (res) {
+
+                var horses = res.data;
+                deferred.resolve(horses);
+            });
+            return deferred.promise;
+        }
+
+        function _getSetHorseGroupsHorses(type,horsegroupshorses) {
+
+
+            if (!type) type = '0';
+            var deferred = $q.defer();
+
+            $http.post(sharedValues.apiUrl + 'horses/getSetHorseGroupsHorses/' + type, horsegroupshorses).then(function (res) {
+
+                var horses = res.data;
+                deferred.resolve(horses);
+            });
+            return deferred.promise;
+        }
 
 
 
@@ -157,21 +187,14 @@
         function _getHorse(id, type) {
 
             var deferred = $q.defer();
-            //if (id == 0) {
-            //    $http.get(sharedValues.apiUrl + 'horses/newhorse/').then(function (res) {
-            //        deferred.resolve(res.data);
-            //    });
-            //}
-            //else {
-
-           
+         
             $http.get(sharedValues.apiUrl + 'horses/gethorse/' + id + '/' + type).then(function (res) {
                     
                     var horse = res.data;
 
                     deferred.resolve(horse);
                 });
-           // }
+         
             return deferred.promise;
         }
 

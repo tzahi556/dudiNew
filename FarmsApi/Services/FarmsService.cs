@@ -29,7 +29,7 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
-                return Context.Users.Where(x => x.Farm_Id == FarmId && (x.Role == "farmAdmin" || x.Role == "farmAdminHorse")).FirstOrDefault();
+                return Context.Users.Where(x => x.Farm_Id == FarmId && (x.Role == "farmAdmin" || x.Role == "farmAdminHorse" || x.Role == "vetrinar" || x.Role == "shoeing")).FirstOrDefault();
 
 
             }

@@ -890,59 +890,7 @@ namespace FarmsApi.Services
         }
 
 
-        private static void UpdateHorseTreatmentsObject(List<HorseTreatments> objList, Horse f)
-        {
-            using (var Context = new Context())
-            {
-
-                foreach (HorseTreatments item in objList)
-                {
-
-                    item.HorseId = f.Id;
-
-                    if (item.Id == 0)
-                    {
-                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, item.Name, item.Date);
-                        item.ExpensesId = ExpensesId;
-                        Context.HorseTreatments.Add(item);
-
-                    }
-                    else
-                    {
-
-                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
-                        //  Context.SaveChanges();
-
-                    }
-
-                }
-
-                try
-                {
-
-                    var result = Context.HorseTreatments.Where(p => p.HorseId == f.Id).ToList();
-                    IEnumerable<HorseTreatments> differenceQuery = result.Except(objList);
-
-                    foreach (HorseTreatments item in differenceQuery)
-                    {
-                        DeleteFromExpensive(item.ExpensesId, item.IsPaid);
-                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
-                    }
-
-
-
-                }
-                catch (Exception ex)
-                {
-
-
-                }
-
-                Context.SaveChanges();
-
-
-            }
-        }
+      
         /// <summary>
         /// 
         /// </summary>
@@ -966,6 +914,83 @@ namespace FarmsApi.Services
             }
         }
 
+
+        private static void DeleteFromExpensiveFarm(int? ExpensesId, bool IsPaid)
+        {
+            if (ExpensesId != null && !IsPaid)
+            {
+                using (var Context = new Context())
+                {
+                    var Expensive = Context.Expenses.SingleOrDefault(x => x.Id == ExpensesId && x.Paid == null);
+
+                    if (Expensive != null)
+                    {
+                        Context.Entry(Expensive).State = System.Data.Entity.EntityState.Deleted;
+                        Context.SaveChanges();
+                    }
+                }
+
+            }
+        }
+
+
+        private static int? AddToExpensesFarmTable(double? cost, double? discount, int horseId, string horsename, string name, DateTime? date)
+        {
+
+
+            DateTime dt = (DateTime)date;
+
+            int? res = null;
+            using (var Context = new Context())
+            {
+
+
+
+                //UserHorses uh = Context.UserHorses.SingleOrDefault(u => u.HorseId == horseId && u.Owner);
+
+                //if (uh != null)
+                //{
+
+                    var CurrentUser = UsersService.GetCurrentUser();
+
+                    if (CurrentUser.Role == "vetrinar" || CurrentUser.Role == "shoeing")
+                    {
+                        Horse h = Context.Horses.Where(y => y.Id == horseId).FirstOrDefault();
+
+                        HorseVetrinars hv = Context.HorseVetrinars.SingleOrDefault(u => u.FarmIdAdd == h.Farm_Id && u.FarmId == CurrentUser.Farm_Id && u.UserId != null);
+
+                        if (hv != null)
+                        {
+
+                            Expenses e = new Expenses();
+                            e.Details = " תשלום עבור " + name + " לסוס/ה " + horsename + " בתאריך " + dt.ToString("dd/MM/yy");
+                            e.BeforePrice = (cost ?? 0);
+                            e.Discount = (discount ?? 0);
+                            e.Price = (cost ?? 0) - (discount ?? 0);
+                            e.UserId = (int)hv.UserId;
+                            e.Date = date;
+                            Context.Expenses.Add(e);
+                            Context.SaveChanges();
+                            res = e.Id;
+                        }
+
+
+
+                    //}
+                }
+
+
+              
+
+
+
+
+
+                return res;
+
+            }
+        }
+
         private static int? AddToExpensesTable(double? cost, double? discount, int horseId, string horsename, string name, DateTime? date)
         {
 
@@ -976,12 +1001,12 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
+
+
                 UserHorses uh = Context.UserHorses.SingleOrDefault(u => u.HorseId == horseId && u.Owner);
 
                 if (uh != null)
                 {
-
-
 
                     Expenses e = new Expenses();
                     e.Details = " תשלום עבור " + name + " לסוס/ה " + horsename + " בתאריך " + dt.ToString("dd/MM/yy");
@@ -996,7 +1021,68 @@ namespace FarmsApi.Services
                     res = e.Id;
                 }
 
+
+
                 return res;
+
+            }
+        }
+
+
+        private static void UpdateHorseTreatmentsObject(List<HorseTreatments> objList, Horse f)
+        {
+            using (var Context = new Context())
+            {
+
+                foreach (HorseTreatments item in objList)
+                {
+
+                    item.HorseId = f.Id;
+
+                    if (item.Id == 0)
+                    {
+                        int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, item.Name, item.Date);
+                        item.ExpensesId = ExpensesId;
+
+                        item.HavaExpensesId = AddToExpensesFarmTable(item.Cost, item.Discount, item.HorseId, f.Name, item.Name, item.Date);
+                        Context.HorseTreatments.Add(item);
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    var result = Context.HorseTreatments.Where(p => p.HorseId == f.Id).ToList();
+                    IEnumerable<HorseTreatments> differenceQuery = result.Except(objList);
+
+                    foreach (HorseTreatments item in differenceQuery)
+                    {
+                        DeleteFromExpensive(item.ExpensesId, item.IsPaid);
+                        DeleteFromExpensiveFarm(item.HavaExpensesId, item.HavaIsPaid);
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
+                Context.SaveChanges();
+
 
             }
         }
@@ -1016,6 +1102,8 @@ namespace FarmsApi.Services
                         string name = " חיסון " + item.Type;
                         int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
                         item.ExpensesId = ExpensesId;
+
+                        item.HavaExpensesId = AddToExpensesFarmTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
                         Context.HorseVaccinations.Add(item);
 
                     }
@@ -1038,6 +1126,7 @@ namespace FarmsApi.Services
                     foreach (HorseVaccinations item in differenceQuery)
                     {
                         DeleteFromExpensive(item.ExpensesId, item.IsPaid);
+                        DeleteFromExpensiveFarm(item.HavaExpensesId, item.HavaIsPaid);
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -1071,6 +1160,8 @@ namespace FarmsApi.Services
                         string name = " פירזול ";
                         int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
                         item.ExpensesId = ExpensesId;
+                        item.HavaExpensesId = AddToExpensesFarmTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
+
                         Context.HorseShoeings.Add(item);
 
                     }
@@ -1093,6 +1184,7 @@ namespace FarmsApi.Services
                     foreach (HorseShoeings item in differenceQuery)
                     {
                         DeleteFromExpensive(item.ExpensesId, item.IsPaid);
+                        DeleteFromExpensiveFarm(item.HavaExpensesId, item.HavaIsPaid);
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -1126,6 +1218,7 @@ namespace FarmsApi.Services
                         string name = " טילוף ";
                         int? ExpensesId = AddToExpensesTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
                         item.ExpensesId = ExpensesId;
+                        item.HavaExpensesId = AddToExpensesFarmTable(item.Cost, item.Discount, item.HorseId, f.Name, name, item.Date);
                         Context.HorseTilufings.Add(item);
 
                     }
@@ -1148,6 +1241,7 @@ namespace FarmsApi.Services
                     foreach (HorseTilufings item in differenceQuery)
                     {
                         DeleteFromExpensive(item.ExpensesId, item.IsPaid);
+                        DeleteFromExpensiveFarm(item.HavaExpensesId, item.HavaIsPaid);
                         Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                     }
 
@@ -1165,6 +1259,10 @@ namespace FarmsApi.Services
 
             }
         }
+
+
+
+
 
 
         private static void UpdateHorsePregnanciesObject(List<HorsePregnancies> objList, Horse f)
@@ -1463,7 +1561,7 @@ namespace FarmsApi.Services
 
                 var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
 
-                var HorseVetrinarList = Context.HorseVetrinars.Where(x => x.FarmId == CurrentHorsefarmId).ToList();
+                var HorseVetrinarList = Context.HorseVetrinars.Where(x => x.FarmId == CurrentHorsefarmId && x.UserId==null).ToList();
 
 
 
@@ -1631,7 +1729,7 @@ namespace FarmsApi.Services
             }
         }
 
-        public static List<HorseVetrinars> GetHorseToVetrinars(List<HorseVetrinars> HorseVetrinars = null)
+        public static List<HorseVetrinars> GetHorseToVetrinars(string type,List<HorseVetrinars> HorseVetrinars = null)
         {
             using (var Context = new Context())
             {
@@ -1651,6 +1749,26 @@ namespace FarmsApi.Services
 
                         if (item.Id == 0)
                         {
+
+                            if (item.UserId == -1)
+                            {
+                                var Farm = Context.Farms.Where(x => x.Id == item.FarmIdAdd).FirstOrDefault();
+                                User u = new User();
+                                u.FirstName = " חווה- " + Farm.Name;
+                                u.LastName = " ";
+                                u.Role = "student";
+                                u.Active = "active";
+                                u.Farm_Id = CurrentHorsefarmId;
+                                u.Email = CurrentHorsefarmId.ToString() + item.FarmIdAdd.ToString() + "@gmail.com";
+                                u.Password = CurrentHorsefarmId.ToString() + item.FarmIdAdd.ToString();
+                                u.IdNumber = CurrentHorsefarmId.ToString() + item.FarmIdAdd.ToString();
+                                Context.Users.Add(u);
+                                Context.SaveChanges();
+
+                                item.UserId = u.Id;
+
+                            }
+
                             Context.HorseVetrinars.Add(item);
 
                         }
@@ -1667,12 +1785,26 @@ namespace FarmsApi.Services
                     try
                     {
 
-                        var result = Context.HorseVetrinars.Where(p => p.FarmId == CurrentHorsefarmId).ToList();
+                        var result = Context.HorseVetrinars.Where(p => p.FarmId == CurrentHorsefarmId && p.UserId==null).ToList();
+                        if (type == "1")
+                        {
+                            result = Context.HorseVetrinars.Where(p => p.FarmId == CurrentHorsefarmId && p.UserId != null).ToList();
+
+
+                        }
+
                         IEnumerable<HorseVetrinars> differenceQuery = result.Except(HorseVetrinars);
 
                         foreach (HorseVetrinars item in differenceQuery)
                         {
                             Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+
+                            if (item.UserId != null)
+                            {
+                                var DelUser = Context.Users.Where(p => p.Id == item.UserId).FirstOrDefault();
+
+                                Context.Entry(DelUser).State = System.Data.Entity.EntityState.Deleted;
+                            }
                         }
 
 
@@ -1699,7 +1831,142 @@ namespace FarmsApi.Services
             }
         }
 
+        public static List<HorseGroups> GetHorseGroups(string type, List<HorseGroups> HorseGroups = null)
+        {
+            using (var Context = new Context())
+            {
+                var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
 
+                if (HorseGroups == null)
+                {
+                    return Context.HorseGroups.Where(u => u.FarmId == CurrentHorsefarmId).ToList();
+                }
+                else
+                {
+
+                    foreach (HorseGroups item in HorseGroups)
+                    {
+
+                     
+
+                        if (item.Id == 0)
+                        {
+                          
+
+                            Context.HorseGroups.Add(item);
+
+                        }
+                        else
+                        {
+
+                            Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                           
+
+                        }
+
+                    }
+
+                    try
+                    {
+
+                        var result = Context.HorseGroups.Where(p => p.FarmId == CurrentHorsefarmId).ToList();
+                        
+
+                        IEnumerable<HorseGroups> differenceQuery = result.Except(HorseGroups);
+
+                        foreach (HorseGroups item in differenceQuery)
+                        {
+                            Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+
+                            var HorsesInGroupList = Context.HorseGroupsHorses.Where(x=>x.HorseGroupsId==item.Id).ToList();
+
+                            Context.HorseGroupsHorses.RemoveRange(HorsesInGroupList);
+
+                        }
+
+
+
+                    }
+                    catch (Exception ex)
+                    {
+
+
+                    }
+
+                    Context.SaveChanges();
+
+
+                    return Context.HorseGroups.Where(u => u.FarmId == CurrentHorsefarmId).ToList();
+                }
+
+            }
+        }
+
+        public static List<HorseGroupsHorses> GetHorseGroupsHorses(string type, List<HorseGroupsHorses> HorseGroupsHorses = null)
+        {
+            using (var Context = new Context())
+            {
+                var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
+
+                if (HorseGroupsHorses == null)
+                {
+                    return Context.HorseGroupsHorses.Where(u => u.FarmId == CurrentHorsefarmId).ToList();
+                }
+                else
+                {
+
+                    foreach (HorseGroupsHorses item in HorseGroupsHorses)
+                    {
+
+
+
+                        if (item.Id == 0)
+                        {
+
+
+                            Context.HorseGroupsHorses.Add(item);
+
+                        }
+                        else
+                        {
+
+                            Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+
+
+                        }
+
+                    }
+
+                    try
+                    {
+
+                        var result = Context.HorseGroupsHorses.Where(p => p.FarmId == CurrentHorsefarmId).ToList();
+
+
+                        IEnumerable<HorseGroupsHorses> differenceQuery = result.Except(HorseGroupsHorses);
+
+                        foreach (HorseGroupsHorses item in differenceQuery)
+                        {
+                            Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                        }
+
+
+
+                    }
+                    catch (Exception ex)
+                    {
+
+
+                    }
+
+                    Context.SaveChanges();
+
+
+                    return Context.HorseGroupsHorses.Where(u => u.FarmId == CurrentHorsefarmId).ToList();
+                }
+
+            }
+        }
         private static List<Horse> FilterDeleted(List<Horse> Horses, bool IncludeDeleted)
         {
             if (IncludeDeleted)

@@ -153,14 +153,29 @@ namespace FarmsApi.Services
 
 
         [Authorize]
-        [Route("getHorseVetrinars")]
+        [Route("getHorseVetrinars/{type}")]
         [HttpPost]
-        public IHttpActionResult GetHorseVetrinars(List<HorseVetrinars> HorseVetrinars)
+        public IHttpActionResult GetHorseVetrinars(string type,List<HorseVetrinars> HorseVetrinars)
         {
-            return Ok(HorsesService.GetHorseToVetrinars(HorseVetrinars));
+            return Ok(HorsesService.GetHorseToVetrinars(type,HorseVetrinars));
+        }
+
+        [Authorize]
+        [Route("getSetHorseGroups/{type}")]
+        [HttpPost]
+        public IHttpActionResult GetSetHorseGroups(string type, List<HorseGroups> HorseGroups)
+        {
+            return Ok(HorsesService.GetHorseGroups(type, HorseGroups));
         }
 
 
+        [Authorize]
+        [Route("getSetHorseGroupsHorses/{type}")]
+        [HttpPost]
+        public IHttpActionResult GetSetHorseGroups(string type, List<HorseGroupsHorses> HorseGroupsHorses)
+        {
+            return Ok(HorsesService.GetHorseGroupsHorses(type, HorseGroupsHorses));
+        }
 
     }
 }

@@ -12,12 +12,13 @@
         }
     });
 
-    function StudentsController(usersService, lessonsService, $scope, sharedValues, $http) {
+    function StudentsController(usersService, lessonsService, horsesService, $scope, sharedValues, $http) {
        
         this.role = localStorage.getItem('currentRole');
         
         var self = this;
         this.usersService = usersService;
+        this.horsesService = horsesService;
         this.upload = _upload.bind(this);
         this.changeStatus = _changeStatus.bind(this);
         this.getCounter = _getCounter.bind(this);
@@ -50,7 +51,7 @@
             // הוספה של חווה
             if (type == 2) {
 
-                var newhorsevetrinars = { Id: 0, FarmIdAdd: this.newhorsevetrinars.FarmId }
+                var newhorsevetrinars = { Id: 0, FarmIdAdd: this.newhorsevetrinars.FarmId, UserId: -1 };
                 this.horsevetrinars.push(newhorsevetrinars);
                 this.newhorsevetrinars.FarmId = "";
 
@@ -63,12 +64,13 @@
             if (type == 3) {
 
                 var thisCtrl = this;
-                this.horsesService.getHorseVetrinars(this.horsevetrinars).then(function (res) {
+                this.horsesService.getHorseVetrinars(this.horsevetrinars,'1').then(function (res) {
 
-                    thisCtrl.horsesService.getHorses().then(function (res) {
-                        thisCtrl.horses = res;
+                    thisCtrl.usersService.getUsers('student').then(function (res) {
+                        thisCtrl.users = res;
+                        thisCtrl.getCounter();
                     }.bind(this));
-                    // .horses = thisCtrl.horsesService.getHorses();
+                    
 
 
                 }.bind(this));
@@ -162,7 +164,9 @@
 
 
         function _getCounter() {
-           
+            this.pensionStudent = 0;
+            this.activeStudent = 0;
+            this.notActiveStudent = 0;
             for (var i in this.users) {
 
 

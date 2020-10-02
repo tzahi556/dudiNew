@@ -34,8 +34,8 @@
             { name: 'רשימת סוסים + טיפולים עתידיים', callback: self.horsesReport }
         ]
 
-
-        if (self.role == "farmAdminHorse") {
+        
+        if (["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role)!=-1 ) {
            
            
             self.reports = [
@@ -204,7 +204,7 @@
 
 
 
-            $.get('app/reports/ReportDebt' + ((self.role =="farmAdminHorse")?"Horse":"")+'.html?sdss=' + new Date(), function (text) {
+            $.get('app/reports/ReportDebt' + ((["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1)?"Horse":"")+'.html?sdss=' + new Date(), function (text) {
 
                 text = text.replace("@NameHava", localStorage.getItem('FarmName'));
 
@@ -465,7 +465,7 @@
 
 
             if (!self.toDate || !self.fromDate) { alert("חובה לבחור תאריכים לדו''ח"); return; }
-            var ReportFileName = (self.role == "farmAdminHorse") ?"ReportAdminFarmHorse":"Report"; 
+            var ReportFileName = (["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1) ?"ReportAdminFarmHorse":"Report"; 
             $.get('app/reports/' + ReportFileName+'.html?sssd=' + new Date(), function (text) {
 
                 // var CurrentDate = self.fromDate;
@@ -1224,7 +1224,7 @@
                 return res;
             };
 
-            if (self.role == "farmAdminHorse") {
+            if (["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1) {
                 usersService.getAllFarmsuseruserhorses().then(function (horses) {
                  
                     self.reportHorses = horses;
@@ -1236,7 +1236,7 @@
             usersService.getUsers('student').then(function (students) {
                 var data = [];
 
-                if (self.role == "farmAdminHorse") {
+                if (["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1) {
 
 
 

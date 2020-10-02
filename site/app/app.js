@@ -139,12 +139,14 @@
             url: '/farmmanager/',
             views: {
                 'main': {
-                    template: '<farmmanager farmmanager="$ctrl.farmmanager" farminstructors="$ctrl.farminstructors"></farmmanager>',
-                    controller: function (farmmanager, farminstructors) {
+                    template: '<farmmanager farmmanager="$ctrl.farmmanager" farminstructors="$ctrl.farminstructors" horses="$ctrl.horses" horsegroups="$ctrl.horsegroups" horsegroupshorses="$ctrl.horsegroupshorses" ></farmmanager>',
+                    controller: function (farmmanager, farminstructors, horses, horsegroups, horsegroupshorses) {
                        
                         this.farmmanager = farmmanager;
                         this.farminstructors = farminstructors;
-
+                        this.horses = horses;
+                        this.horsegroups = horsegroups;
+                        this.horsegroupshorses = horsegroupshorses;
 
                     },
                     controllerAs: '$ctrl',
@@ -156,8 +158,17 @@
                         farminstructors: function (farmsService, $stateParams) {
 
                             return farmsService.getMangerInstructorFarm();
-                        }
+                        },
+                        horses: function (horsesService) {
+                            return horsesService.getHorses();
+                        },
+                        horsegroups: function (horsesService) {
+                            return horsesService.getSetHorseGroups(1);
+                        },
 
+                        horsegroupshorses: function (horsesService) {
+                            return horsesService.getSetHorseGroupsHorses(1);
+                        },
 
                         
                     }

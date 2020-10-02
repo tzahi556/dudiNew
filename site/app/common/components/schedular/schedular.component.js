@@ -10,7 +10,9 @@
             selectedpayvalue: "=",
             students: '<',
             closeCallback: '<',
-            deleteCallback: '<'
+            deleteCallback: '<',
+            horses: '<',
+            groups: '<',
         }
     });
 
@@ -118,7 +120,7 @@
 
         function _onShow(event, lesson) {
 
-
+            
             this.selectedStudentSchedular = lesson;
 
             this.lessonId = lesson.id;

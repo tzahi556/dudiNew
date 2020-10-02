@@ -48,6 +48,9 @@ namespace FarmsApi.DataModels
         public DbSet<HorsesMultipleFiles> HorsesMultipleFiles { get; set; }
         public DbSet<HorseVetrinars> HorseVetrinars { get; set; }
 
+
+        public DbSet<HorseGroups> HorseGroups { get; set; }
+        public DbSet<HorseGroupsHorses> HorseGroupsHorses { get; set; }
         
 
         public Context() : base("Farms") { }

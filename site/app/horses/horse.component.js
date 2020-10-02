@@ -56,7 +56,7 @@
         }
     });
 
-    function HorseController($scope, horsesService, $state, sharedValues, notificationsService, filesService) {
+    function HorseController($scope, horsesService, $state, sharedValues, notificationsService, filesService, $window) {
 
         var self = this;
 
@@ -118,10 +118,13 @@
         this.goToStudent = _goToStudent.bind(this);
         this.getCurrentFiles = _getCurrentFiles.bind(this);
         this.removeHorsesFiles = _removeHorsesFiles.bind(this);
+        this.getFarmName = _getFarmName.bind(this);
         
-        
+
         this.role = localStorage.getItem('currentRole');
         this.subrole = localStorage.getItem('currentSubRole');
+        this.currentUserFarmId = localStorage.getItem('FarmId');
+       
 
         this.removeFile = _removeFile.bind(this);
         this.vaccinationsHorse = sharedValues.vaccinations;
@@ -130,12 +133,12 @@
 
         this.uploadsUri = sharedValues.apiUrl + '/uploads/'
         this.scope = $scope;
-
+      
         this.isDelete = false;
-       
+
         $scope.$on('submit', function (event, args) {
             if (!this.isDelete)
-           this.submit(true);
+                this.submit(true);
         }.bind(this));
 
         // init
@@ -153,13 +156,13 @@
 
 
 
-        
+
 
         function _removeHorsesFiles(Name) {
 
-           
 
-           // var tempres = this.horsesmultiplefiles.filter(x => x.Type == Type && x.TypeId == Id);
+
+            // var tempres = this.horsesmultiplefiles.filter(x => x.Type == Type && x.TypeId == Id);
 
             for (var i in this.horsesmultiplefiles) {
 
@@ -179,11 +182,11 @@
 
         }
 
-        function _getCurrentFiles(HorseId,Type,Id) {
+        function _getCurrentFiles(HorseId, Type, Id) {
 
 
             return this.horsesmultiplefiles.filter(x => x.Type == Type && x.TypeId == Id);
-           // this.submit(true, this.horse.OwnerId);
+            // this.submit(true, this.horse.OwnerId);
 
 
         }
@@ -243,7 +246,7 @@
 
 
         function _getClassForinsemination(insemination) {
-             
+
             if (insemination.HalivaDate)
                 return 'haliva';
 
@@ -266,9 +269,20 @@
                 return this.pregnanciesstates.filter(x => x.HorsePregnanciesId === id)[ObjArray.length - 1];
         }
 
+        function _getFarmName(FarmId) {
 
+            for (var i in this.farms) {
+
+                if (this.farms[i].Id == FarmId) return this.farms[i].Name;
+            }
+
+
+        }
 
         this.initHorse = function () {
+
+
+
 
 
             this.horse.BirthDate = moment(this.horse.BirthDate).startOf('day').toDate();
@@ -276,9 +290,12 @@
 
             this.horse.ArrivedDate = moment(this.horse.ArrivedDate).startOf('day').toDate();
             this.horse.OutDate = moment(this.horse.OutDate).startOf('day').toDate();
+          
+            this.horse.Owner = (this.currentUserFarmId != this.horse.Farm_Id) ? this.getFarmName(this.horse.Farm_Id) : this.horse.Owner;
 
-
-
+            //debugger
+            //var dsdsd = this.treatments;
+            this.diffHorseFarm = (this.currentUserFarmId != this.horse.Farm_Id && this.horse.Id!=0) ? true : false;
 
 
             this.initNewTreatment();
@@ -417,10 +434,10 @@
 
         function _uploadFileTreatment(file) {
             var res = file.split(",");
-           
+
             for (var i in res) {
 
-                var newHorsesmultipleFiles = { Id: 0, Type: 1, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00'), ObjectDate: this.ObjectDate};
+                var newHorsesmultipleFiles = { Id: 0, Type: 1, TypeId: this.typeuploadId, HorseId: this.horse.Id, Name: res[i], Date: moment().format('YYYY-MM-DDT00:00:00'), ObjectDate: this.ObjectDate };
                 this.horsesmultiplefiles.push(newHorsesmultipleFiles);
 
             }
@@ -439,7 +456,7 @@
 
             }
 
-           // this.newVaccination.FileName = file;
+            // this.newVaccination.FileName = file;
         }
 
         function _uploadFileShoeings(file) {
@@ -1014,11 +1031,11 @@
         function _removeHozims(hozim) {
 
 
-            
+
             var pregnancy = this.pregnancies.filter(x => x.HozimId && x.HozimId.toString() === hozim.Id.toString())[0];
             if (pregnancy) {
 
-                var pregnancstate = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === pregnancy.Id)[this.pregnanciesstates.length-1];
+                var pregnancstate = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === pregnancy.Id)[this.pregnanciesstates.length - 1];
 
                 if (pregnancstate.StateId != "insemination") {
 
@@ -1071,7 +1088,7 @@
 
 
         function _submit(isWithoutalert, OwnerId) {
-         
+
             this.horse.BirthDate.setHours(this.horse.BirthDate.getHours() + 3);
 
             if (this.horse.ArrivedDate)
@@ -1081,24 +1098,52 @@
                 this.horse.OutDate.setHours(this.horse.OutDate.getHours() + 3);
 
 
-          
+
             horsesService.updateHorse(this.horse).then(function (horse) {
+
                 this.horse = horse;
                 this.initHorse();
                 horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
-                    this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations, this.hozims,this.horsesmultiplefiles).then(function (hozims) {
+                    this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations, this.hozims, this.horsesmultiplefiles).then(function (hozims) {
                         this.createNotifications();
                         if (!isWithoutalert) alert('נשמר בהצלחה');
                         this.hozims = hozims;
+                        
+                        if (OwnerId) {
+                            $state.go('student', { id: this.horse.OwnerId });
+                        } else {
+                         //   $window.location.reload();
+                        }
 
-                        if (OwnerId) $state.go('student',{id: this.horse.OwnerId });
+
+                        horsesService.getHorse(this.horse.Id, 7).then(function (res) {
+
+                            
+                            this.shoeings = res;
+                        }.bind(this));
+                        horsesService.getHorse(this.horse.Id, 5).then(function (res) {
+                            this.treatments = res;
+                        }.bind(this));
+                        horsesService.getHorse(this.horse.Id, 6).then(function (res) {
+                            this.vaccinations = res;
+                        }.bind(this));
+                        horsesService.getHorse(this.horse.Id, 8).then(function (res) {
+                            this.tilufings = res;
+                        }.bind(this));
+
+                      
+                        //else {
+                           
+                        //    $state.go('horse', { id: this.horse.Id });
+
+                        //}
 
                     }.bind(this));
 
 
             }.bind(this));
 
-          
+
 
 
 

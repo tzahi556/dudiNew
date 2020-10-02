@@ -32,12 +32,12 @@
         this.roles = usersService.roles;
         this.delete = _delete.bind(this);
         this.selfEdit = angular.fromJson(localStorage.getItem('authorizationData')).userName == this.user.Email;
-
+        this.role = localStorage.getItem('currentRole');
         this.initUser = function () {
             // set default farm
 
            
-            if (this.farms.length == 1 && this.user.Role != 'sysAdmin') {
+            if (this.user.Role != 'sysAdmin') {
                 this.user.Farm_Id = this.user.Farm_Id || this.farms[0].Id;
             }
         }.bind(this);

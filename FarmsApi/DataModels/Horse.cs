@@ -171,6 +171,10 @@ namespace FarmsApi.DataModels
 
         public int? ExpensesId { get; set; }
 
+        public bool HavaIsPaid { get; set; }
+
+        public int? HavaExpensesId { get; set; }
+
 
     }
     /// <summary>
@@ -192,6 +196,10 @@ namespace FarmsApi.DataModels
 
         public int? ExpensesId { get; set; }
 
+        public bool HavaIsPaid { get; set; }
+
+        public int? HavaExpensesId { get; set; }
+
     }
 
     /// <summary>
@@ -211,6 +219,9 @@ namespace FarmsApi.DataModels
         public bool IsPaid { get; set; }
 
         public int? ExpensesId { get; set; }
+        public bool HavaIsPaid { get; set; }
+    
+        public int? HavaExpensesId { get; set; }
 
     }
 
@@ -231,6 +242,10 @@ namespace FarmsApi.DataModels
         public bool IsPaid { get; set; }
 
         public int? ExpensesId { get; set; }
+
+        public bool HavaIsPaid { get; set; }
+
+        public int? HavaExpensesId { get; set; }
 
     }
 
@@ -382,7 +397,26 @@ namespace FarmsApi.DataModels
         public int? UserId { get; set; }
 
     }
-    
+
+    public class HorseGroups
+    {
+        public int Id { get; set; }
+      
+        public int FarmId { get; set; }
+
+        public string Name { get; set; }
+
+    }
+    public class HorseGroupsHorses
+    {
+        public int Id { get; set; }
+        public int FarmId { get; set; }
+        public int HorseGroupsId { get; set; }
+       
+
+        public int HorseId { get; set; }
+
+    }
 
 
 

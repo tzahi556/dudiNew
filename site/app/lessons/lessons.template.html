@@ -131,7 +131,7 @@
         }
 
         function drop(event) {
-
+            debugger
             // $(".hadPeami").show();
             angular.element(document.getElementById('mainController')).scope().makeDrop(event, currentStudentId);
             currentStudentId = "";
@@ -150,7 +150,7 @@
 
         <pay studentid="$ctrl.selectedStudent" selectedpayvalue="$ctrl.selectedPayValue" delete-callback="$ctrl.eventDelete" close-callback="$ctrl.eventClose" students="$ctrl.students"></pay>
 
-        <schedular selectedStudentSchedular="$ctrl.selectedStudentSchedular" delete-callback="$ctrl.eventDelete" close-callback="$ctrl.eventClose" students="$ctrl.students"></schedular>
+        <schedular selectedStudentSchedular="$ctrl.selectedStudentSchedular" delete-callback="$ctrl.eventDelete" close-callback="$ctrl.eventClose" students="$ctrl.students" horses="$ctrl.horses"></schedular>
 
 
 

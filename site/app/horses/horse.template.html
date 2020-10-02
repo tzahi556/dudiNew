@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-md-6">
                             <label>פעיל</label>
-                            <select class="form-control" ng-model="$ctrl.horse.Active" required>
+                            <select class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Active" required>
                                 <option value="active">פעיל</option>
                                 <option value="notActive">לא פעיל</option>
                             </select>
@@ -52,32 +52,32 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label>שם</label>
-                        <input type="text" class="form-control" ng-model="$ctrl.horse.Name" required />
+                        <input type="text" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Name" required />
                     </div>
                     <div class="form-group col-md-12">
                         <label>גזע</label>
-                        <input type="text" class="form-control" ng-model="$ctrl.horse.Race" />
+                        <input type="text" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Race" />
                     </div>
 
 
                     <div class="form-group">
                         <div class="col-md-6">
                             <label>תאריך הגעה</label>
-                            <input type="date" class="form-control" ng-model="$ctrl.horse.ArrivedDate" />
+                            <input type="date" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.ArrivedDate" />
                         </div>
                         <div class="col-md-6">
                             <label>תאריך יציאה</label>
-                            <input type="date" class="form-control" ng-model="$ctrl.horse.OutDate" />
+                            <input type="date" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.OutDate" />
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-6">
                             <label>מס' סידורי</label>
-                            <input type="text" class="form-control" ng-model="$ctrl.horse.SeqNumber" />
+                            <input type="text" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.SeqNumber" />
                         </div>
                         <div class="col-md-6">
                             <label>שבב</label>
-                            <input type="text" class="form-control" ng-model="$ctrl.horse.Shvav" />
+                            <input type="text" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Shvav" />
                         </div>
                     </div>
 
@@ -87,7 +87,7 @@
 
                         <div class="col-md-6">
                             <label>מין</label>
-                            <select class="form-control" ng-model="$ctrl.horse.Gender" required>
+                            <select class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Gender" required>
                                 <option value="">בחר מין</option>
                                 <option value="male">זכר</option>
                                 <option value="female">נקבה</option>
@@ -101,7 +101,7 @@
                             <!--<a ng-if="$ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" class="" ui-sref="student({id:$ctrl.horse.OwnerId})">{{$ctrl.horse.Owner}} </a>-->
 
 
-                            <div ng-if="$ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" style="cursor:pointer;text-decoration:underline;color:dodgerblue"  ng-click="$ctrl.goToStudent()">{{$ctrl.horse.Owner}} </div>
+                            <div ng-if="(($ctrl.role!='vetrinar' && $ctrl.role!='shoeing') || !$ctrl.diffHorseFarm) &&   $ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" style="cursor:pointer;text-decoration:underline;color:dodgerblue"  ng-click="$ctrl.goToStudent()">{{$ctrl.horse.Owner}} </div>
 
 
                         </div>
@@ -115,11 +115,11 @@
 
                         <div class="col-md-6">
                             <label>אב סוס</label>
-                            <input type="text" class="form-control" ng-model="$ctrl.horse.Father" />
+                            <input type="text" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Father" />
                         </div>
                         <div class="col-md-6">
                             <label>אם סוס</label>
-                            <input type="text" class="form-control" ng-model="$ctrl.horse.Mother" />
+                            <input type="text" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Mother" />
                         </div>
                     </div>
 
@@ -127,7 +127,7 @@
 
                         <div class="col-md-6">
                             <label>שיוך הסוס</label>
-                            <select class="form-control" ng-model="$ctrl.horse.Ownage">
+                            <select class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Ownage">
                                 <option value="">בחר שיוך הסוס</option>
 
                                 <option value="pension">פנסיון</option>
@@ -149,7 +149,7 @@
                         </div>
                         <div class="col-md-6">
                             <label>מיקום הסוס</label>
-                            <select class="form-control" ng-model="$ctrl.horse.HorseLocation">
+                            <select class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.HorseLocation">
                                 <option value="">חווה</option>
 
                                 <option value="outer">חוץ לחווה</option>
@@ -170,11 +170,11 @@
                     </div>-->
                     <div class="form-group col-md-12">
                         <label>הערות</label>
-                        <input type="text" class="form-control" ng-model="$ctrl.horse.Details" />
+                        <input type="text" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Details" />
                     </div>
                     <div class="form-group col-md-12">
                         <label>תאריך לידה</label>
-                        <input type="date" class="form-control" ng-model="$ctrl.horse.BirthDate" required />
+                        <input type="date" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.BirthDate" required />
                     </div>
                     <div class="form-group col-md-12" ng-if="$ctrl.role=='sysAdmin'">
                         <label>חווה</label>
@@ -185,7 +185,7 @@
                 </div>
                 <div class="panel-footer" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">
                     <button type="submit" class="btn btn-success" ng-disabled="horseForm.$invalid">עדכון</button>
-                    <button type="button" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
+                    <button type="button" ng-disabled="$ctrl.diffHorseFarm" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
                 </div>
             </div>
         </form>
@@ -193,7 +193,7 @@
 
     <div class="col-md-8">
         <uib-tabset active="active" class="tab-form-demo">
-            <uib-tab index="0" heading="כללי">
+            <uib-tab index="0" heading="כללי" ng-if="$ctrl.role!='vetrinar' && $ctrl.role!='shoeing'">
 
                 <!--feeding-->
                 <div class="panel panel-default">
@@ -277,10 +277,12 @@
                 </div>
 
             </uib-tab>
-            <uib-tab index="1" heading="טיפולים">
-
+            <uib-tab index="1"  ng-if="1==1">
+                <uib-tab-heading>
+                    {{$ctrl.role=='shoeing'?'פירזולים':'טיפולים'}}
+                </uib-tab-heading>
                 <!--treatments-->
-                <div class="panel panel-default">
+                <div class="panel panel-default" ng-if="$ctrl.role!='shoeing'">
                     <div class="panel-heading">
                         טיפולים
                     </div>
@@ -297,17 +299,17 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody ng-click="$ctrl.typeupload=1;$ctrl.typeuploadId=treatment.Id;$ctrl.ObjectDate=treatment.Date"  ng-repeat="treatment in $ctrl.treatments | orderByDateDesc track by $index">
-                            <tr ng-click="showDivTreatment = !showDivTreatment;" >
+                        <tbody ng-click="$ctrl.typeupload=1;$ctrl.typeuploadId=treatment.Id;$ctrl.ObjectDate=treatment.Date" ng-repeat="treatment in $ctrl.treatments | orderByDateDesc track by $index">
+                            <tr ng-click="showDivTreatment = !showDivTreatment;">
                                 <td>{{treatment.Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{treatment.Name}}</td>
 
                                 <td>{{treatment.Cost}}</td>
                                 <td>{{treatment.Discount}}</td>
                                 <td><span ng-show="treatment.Cost > 0">  {{treatment.Cost - treatment.Discount}}</span> </td>
-                               
 
-                                <td> <i class="fa fa-check-circle-o green" ng-show="treatment.IsPaid=='1'" aria-hidden="true"></i></td>
+
+                                <td> <i class="fa fa-check-circle-o green" ng-show="(($ctrl.role=='vetrinar' || $ctrl.role=='shoeing') && $ctrl.diffHorseFarm && treatment.HavaIsPaid=='1') || (treatment.IsPaid=='1')" aria-hidden="true"></i></td>
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeTreatment(treatment)">הסר</button></td>
                             </tr>
 
@@ -320,7 +322,7 @@
                                             קבצים - טיפולים
 
                                             <div class="form-group" style="float:left">
-                                                <input type="file" filename="$ctrl.newTreatment.FileName" multiple   filename-callback="$ctrl.uploadFileTreatment" />
+                                                <input type="file" filename="$ctrl.newTreatment.FileName" multiple filename-callback="$ctrl.uploadFileTreatment" />
                                             </div>
                                         </div>
 
@@ -370,7 +372,7 @@
                             <div class="form-group">
                                 <input type="number" class="form-control" ng-model="$ctrl.newTreatment.Discount" placeholder="הנחה" />
                             </div>
-                            
+
 
                             <button type="submit" class="btn btn-success" ng-disabled="treatmentForm.$invalid" ng-click="$ctrl.addTreatment()">הוספה</button>
                         </form>
@@ -378,7 +380,7 @@
                 </div>
 
                 <!--vaccinations-->
-                <div class="panel panel-default">
+                <div class="panel panel-default" ng-if="$ctrl.role!='shoeing'">
                     <div class="panel-heading">
                         חיסונים
                     </div>
@@ -391,7 +393,7 @@
                                 <th>מחיר</th>
                                 <th>הנחה</th>
                                 <th>מחיר סופי</th>
-                               
+
                                 <th>שולם</th>
 
                                 <th></th>
@@ -405,8 +407,8 @@
                                 <td>{{vaccination.Cost}}</td>
                                 <td>{{vaccination.Discount}}</td>
                                 <td><span ng-show="vaccination.Cost > 0">  {{vaccination.Cost - vaccination.Discount}}</span> </td>
-                               
-                                <td> <i class="fa fa-check-circle-o green" ng-show="vaccination.IsPaid=='1'" aria-hidden="true"></i></td>
+
+                                <td> <i class="fa fa-check-circle-o green" ng-show="(($ctrl.role=='vetrinar' || $ctrl.role=='shoeing') && $ctrl.diffHorseFarm && vaccination.HavaIsPaid=='1') || (vaccination.IsPaid=='1')" aria-hidden="true"></i></td>
 
 
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeVaccination(vaccination)">הסר</button></td>
@@ -420,7 +422,7 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
                                             קבצים - חיסונים
-                                          
+
                                             <div class="form-group" style="float:left">
                                                 <input type="file" filename="$ctrl.newVaccination.FileName" multiple filename-callback="$ctrl.uploadFileVaccination" />
                                             </div>
@@ -481,7 +483,7 @@
                             <div class="form-group">
                                 <input type="number" class="form-control" ng-model="$ctrl.newVaccination.Discount" placeholder="הנחה" />
                             </div>
-                           
+
 
 
 
@@ -508,7 +510,7 @@
                                 <th>מחיר</th>
                                 <th>הנחה</th>
                                 <th>מחיר סופי</th>
-                              
+
                                 <th>שולם</th>
                                 <th></th>
                             </tr>
@@ -521,8 +523,8 @@
                                 <td>{{shoeing.Cost}}</td>
                                 <td>{{shoeing.Discount}}</td>
                                 <td><span ng-show="shoeing.Cost > 0">  {{shoeing.Cost - shoeing.Discount}}</span> </td>
-                               
-                                <td> <i class="fa fa-check-circle-o green" ng-show="shoeing.IsPaid=='1'" aria-hidden="true"></i></td>
+
+                                <td> <i class="fa fa-check-circle-o green" ng-show="(($ctrl.role=='vetrinar' || $ctrl.role=='shoeing') && $ctrl.diffHorseFarm && shoeing.HavaIsPaid=='1') || (shoeing.IsPaid=='1')" aria-hidden="true"></i></td>
 
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeShoeing(shoeing)">הסר</button></td>
                             </tr>
@@ -534,7 +536,7 @@
 
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
-                                            קבצים - חיסונים
+                                            קבצים - פירזול
 
                                             <div class="form-group" style="float:left">
                                                 <input type="file" filename="$ctrl.newShoeing.FileName" multiple filename-callback="$ctrl.uploadFileShoeings" />
@@ -590,15 +592,16 @@
                             <div class="form-group">
                                 <input type="number" class="form-control" ng-model="$ctrl.newShoeing.Discount" placeholder="הנחה" />
                             </div>
-                          
+
 
 
                             <button type="submit" class="btn btn-success" ng-disabled="shoeingForm.$invalid" ng-click="$ctrl.addShoeing()">הוספה</button>
                         </form>
                     </div>
                 </div>
+
                 <!--tilufeing-->
-                <div class="panel panel-default">
+                <div class="panel panel-default" ng-if="$ctrl.role!='shoeing'">
                     <div class="panel-heading">
                         טילוף
                     </div>
@@ -611,7 +614,7 @@
                                 <th>מחיר</th>
                                 <th>הנחה</th>
                                 <th>מחיר סופי</th>
-                               
+
                                 <th>שולם</th>
                                 <th></th>
                             </tr>
@@ -624,8 +627,8 @@
                                 <td>{{tiluf.Cost}}</td>
                                 <td>{{tiluf.Discount}}</td>
                                 <td><span ng-show="tiluf.Cost > 0">  {{tiluf.Cost - tiluf.Discount}}</span> </td>
-                               
-                                <td> <i class="fa fa-check-circle-o green" ng-show="tiluf.IsPaid=='1'" aria-hidden="true"></i></td>
+
+                                <td> <i class="fa fa-check-circle-o green" ng-show="(($ctrl.role=='vetrinar' || $ctrl.role=='shoeing') && $ctrl.diffHorseFarm && tiluf.HavaIsPaid=='1') || (tiluf.IsPaid=='1')" aria-hidden="true"></i></td>
 
 
 
@@ -640,7 +643,7 @@
 
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
-                                            קבצים - חיסונים
+                                            קבצים - טילוף
 
 
                                             <div class="form-group" style="float:left">
@@ -699,7 +702,7 @@
                             <div class="form-group">
                                 <input type="number" class="form-control" ng-model="$ctrl.newTiluf.Discount" placeholder="הנחה" />
                             </div>
-                           
+
 
 
 
@@ -716,7 +719,7 @@
                 </div>
 
             </uib-tab>
-            <uib-tab index="2" heading="הריונות" ng-if="$ctrl.horse.Gender == 'female'">
+            <uib-tab index="2" heading="הריונות" ng-if="$ctrl.horse.Gender == 'female' &&  $ctrl.role!='vetrinar' && $ctrl.role!='shoeing'">
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -968,7 +971,7 @@
 
             </uib-tab>
 
-            <uib-tab index="3" heading="הרבעות" ng-if="$ctrl.horse.Gender == 'male'">
+            <uib-tab index="3" heading="הרבעות" ng-if="$ctrl.horse.Gender == 'male' &&  $ctrl.role!='vetrinar' && $ctrl.role!='shoeing'">
 
                 <!--pregnancies-->
                 <div class="panel panel-default">

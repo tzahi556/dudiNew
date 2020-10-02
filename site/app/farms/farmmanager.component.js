@@ -7,7 +7,9 @@
         bindings: {
             farmmanager: '<',
             farminstructors: '<',
-
+            horses: '<',
+            horsegroups: '<',
+            horsegroupshorses: '<',
         }
     });
     app.filter('dateRangeClalit', function () {
@@ -28,21 +30,27 @@
             return results;
         }
     });
-    function FarmmanagerController($scope, farmsService, $state, sharedValues, $http) {
+    function FarmmanagerController($scope, farmsService, horsesService, $state, sharedValues, $http) {
 
 
         var self = this;
+        this.scope = $scope;
+        this.horsesService = horsesService;
         this.farmsService = farmsService;
         this.SaveData = _SaveData.bind(this);
         this.delete = _delete.bind(this);
 
-        this.addNewTag = _addNewTag.bind(this);
-        this.removeTags = _removeTags.bind(this);
+        //this.addNewTag = _addNewTag.bind(this);
+        //   this.removeTags = _removeTags.bind(this);
         this.initNewTags = _initNewTags.bind(this);
 
         this.getKlalitHistoriPage = _getKlalitHistoriPage.bind(this);
         this.setKlalitHistoriPage = _setKlalitHistoriPage.bind(this);
         this.setPostToKlalit = _setPostToKlalit.bind(this);
+
+        this.getHorsesGroup = _getHorsesGroup.bind(this);
+        this.actionHorsesGroup = _actionHorsesGroup.bind(this);
+        this.getFreeHorses = _getFreeHorses.bind(this);
 
         this.role = localStorage.getItem('currentRole');
 
@@ -54,14 +62,14 @@
 
                 $('#modalKlalitSend').modal('show');
 
-             
+
                 var ctrlthis = this;
                 ctrlthis.endMessage = false;
                 ctrlthis.currentElement = 0;
                 ctrlthis.setPostToKlalit(0, ctrlthis);
 
             }
-          
+
 
 
 
@@ -80,7 +88,7 @@
 
                 if ((index + 1) < ctrlthis.klalitsBefore.length)
                     ctrlthis.setPostToKlalit(index + 1, ctrlthis);
-                else { 
+                else {
                     ctrlthis.endMessage = true;
                     ctrlthis.getKlalitHistoriPage();
                 }
@@ -140,7 +148,7 @@
 
 
         function init() {
-            //  alert();
+
             //   alert(self.farminstructors.length);
 
             //self.farm.Meta = self.farm.Meta || {};
@@ -149,6 +157,8 @@
             //self.farm.IsHiyuvInHashlama = (self.farm.IsHiyuvInHashlama) ? self.farm.IsHiyuvInHashlama.toString() : "0";
 
             //self.initNewTags();
+
+
 
         }
 
@@ -203,29 +213,154 @@
             //}
         }
 
-        function _addNewTag() {
 
 
-            //for (var i in this.userhorses) {
-            //    if (this.userhorses[i].HorseId == this.newHorse.Id) {
-            //        return false;
-            //    }
-            //}
 
-            self.farm.Meta.farmTags.push({ tag_name: self.newfarmTag.tag_name, tag_id: self.newfarmTag.tag_id });
-            //self.newFarmTags.tag_name = "";
-            //self.newFarmTags.tag_id = "";
-            self.initNewTags();
-        }
+        ///**************************************************
+        function _getHorsesGroup(id) {
 
-        function _removeTags(tag) {
-            var farmTags = self.farm.Meta.farmTags;
-            for (var i in farmTags) {
-                if (farmTags[i].tag_id == tag.tag_id && farmTags[i].tag_name == tag.tag_name) {
-                    farmTags.splice(i, 1);
-                }
+            var res = this.horsegroupshorses.filter(x => x.HorseGroupsId == id);
+
+            for (var i in res) {
+
+                var horse = this.horses.filter(y => y.Id == res[i].HorseId);
+                res[i].Name = horse[0].Name;
+
             }
+
+            return res;
+
         }
+
+        $scope.makeDropHorse = function (newEvent, currentHorseId, currentGroupeId) {
+
+            if (currentGroupeId == 0 || currentHorseId == 0) return;
+
+            //if (currentGroupeId == "dvAllHorses") {
+
+            //    for (var i in $scope.$ctrl.horsegroupshorses) {
+            //        if ($scope.$ctrl.horsegroupshorses[i].HorseId == currentHorseId) {
+            //            $scope.$ctrl.horsegroupshorses.splice(i, 1);
+            //        }
+            //    }
+
+
+            //} else {
+
+            $scope.$ctrl.horsegroupshorses.push({ HorseGroupsId: currentGroupeId, HorseId: currentHorseId, Id: 0, FarmId: localStorage.getItem('FarmId') });
+
+            //   }
+
+
+
+
+
+
+            $scope.$ctrl.horsesService.getSetHorseGroupsHorses(2, $scope.$ctrl.horsegroupshorses).then(function (res) {
+                $scope.$ctrl.horsegroupshorses = res;
+            }.bind(this));
+        }
+
+        function _actionHorsesGroup(type, obj) {
+
+            var thisCtrl = this;
+            //הוספה קבוצה
+            if (type == 1) {
+
+                if (!this.newGroup) {
+
+                    alert("שדה שם קבוצה הינו שדה חובה!");
+                    return;
+                }
+
+                this.horsegroups.push({ Name: this.newGroup, Id: 0, FarmId: localStorage.getItem('FarmId') });
+
+                this.horsesService.getSetHorseGroups(2, this.horsegroups).then(function (res) {
+                    thisCtrl.horsegroups = res;
+                }.bind(this));
+
+            }
+
+            //מחיקת קבוצה
+            if (type == 2) {
+                for (var i in this.horsegroups) {
+                    if (this.horsegroups[i] == obj) {
+                        this.horsegroups.splice(i, 1);
+                    }
+                }
+
+                this.horsesService.getSetHorseGroups(2, this.horsegroups).then(function (res) {
+                    thisCtrl.horsegroups = res;
+                }.bind(this));
+
+            }
+
+            //מחיקת סוס
+            if (type == 3) {
+                for (var i in this.horsegroupshorses) {
+                    if (this.horsegroupshorses[i].HorseId == obj) {
+                        this.horsegroupshorses.splice(i, 1);
+                    }
+                }
+
+                this.horsesService.getSetHorseGroupsHorses(2, this.horsegroupshorses).then(function (res) {
+                    this.horsegroupshorses = res;
+                }.bind(this));
+
+
+
+            }
+
+
+        }
+
+
+        function _getFreeHorses() {
+
+            var res = [];
+
+            for (var i in this.horses) {
+
+                if (this.horsegroupshorses.filter(x => x.HorseId == this.horses[i].Id).length > 0) continue;
+
+                res.push(this.horses[i]);
+
+
+            }
+
+            return res;
+
+
+        }
+
+        //function _addNewTag() {
+
+
+        //    //for (var i in this.userhorses) {
+        //    //    if (this.userhorses[i].HorseId == this.newHorse.Id) {
+        //    //        return false;
+        //    //    }
+        //    //}
+
+        //    self.farm.Meta.farmTags.push({ tag_name: self.newfarmTag.tag_name, tag_id: self.newfarmTag.tag_id });
+        //    //self.newFarmTags.tag_name = "";
+        //    //self.newFarmTags.tag_id = "";
+        //    self.initNewTags();
+        //}
+
+        //function _removeTags(tag) {
+        //    var farmTags = self.farm.Meta.farmTags;
+        //    for (var i in farmTags) {
+        //        if (farmTags[i].tag_id == tag.tag_id && farmTags[i].tag_name == tag.tag_name) {
+        //            farmTags.splice(i, 1);
+        //        }
+        //    }
+        //}
+
+
+
+
+
     }
 
 })();
