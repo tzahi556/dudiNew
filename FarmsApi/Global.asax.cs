@@ -11,8 +11,8 @@ namespace FarmsApi
         protected void Application_Start(object sender, EventArgs e)
         {
             //StartMailChecker();
-            AddTask("DoStuff", 3600);
-            // AddTask("DoStuff", 30);
+           AddTask("DoStuff", 3600);
+           //  AddTask("DoStuff", 30);
         }   
 
         private void AddTask(string name, int seconds)

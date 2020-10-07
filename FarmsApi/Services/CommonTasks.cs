@@ -297,15 +297,39 @@ namespace FarmsApi.Services
 
         public void InsertChecksToMas()
         {
+
+
+           
             string IsProduction = ConfigurationSettings.AppSettings["IsProduction"].ToString();
 
 
             DateTime CurrentDate = DateTime.Now.Date;
             using (var Context = new Context())
             {
-                var UsersChecks = Context.Checks.Where(x => x.checks_date == CurrentDate && x.checks_auto).ToList();
 
 
+
+
+
+
+                Logs lgstaet = new Logs();
+                lgstaet.Type = 20;// בדיקה שהסקדולר רץ
+                lgstaet.TimeStamp = DateTime.Now;
+                lgstaet.Request = "";
+                lgstaet.RequestEzea = "";
+                lgstaet.RequestTimeStamp = DateTime.Now;
+                lgstaet.StudentId = 9999;
+              //  lgstaet.UserId = UsersService.GetCurrentUser().Id;
+
+                lgstaet.Response = "";
+                lgstaet.ResponseTimeStamp = DateTime.Now;
+                Context.Logs.Add(lgstaet);
+
+                Context.SaveChanges();
+
+
+
+                var UsersChecks = Context.Checks.Where(x =>x.checks_date== CurrentDate && x.checks_auto).ToList();
 
                 foreach (var uc in UsersChecks)
                 {
@@ -379,7 +403,7 @@ namespace FarmsApi.Services
                         lg.RequestEzea = reqObj.ToString();
                         lg.RequestTimeStamp = DateTime.Now;
                         lg.StudentId = uc.UserId;
-                        lg.UserId = UsersService.GetCurrentUser().Id;
+                      //  lg.UserId = UsersService.GetCurrentUser().Id;
 
 
 
@@ -419,7 +443,7 @@ namespace FarmsApi.Services
                             lg.TimeStamp = DateTime.Now;
                             lg.Request = p.InvoiceNum;
                             lg.StudentId = uc.UserId;
-                            lg.UserId = UsersService.GetCurrentUser().Id;
+                           // lg.UserId = UsersService.GetCurrentUser().Id;
                             lg.Response = p.InvoicePdf;
 
                             lg.ResponseTimeStamp = DateTime.Now;
