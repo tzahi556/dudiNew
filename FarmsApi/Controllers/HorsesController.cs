@@ -177,5 +177,13 @@ namespace FarmsApi.Services
             return Ok(HorsesService.GetHorseGroupsHorses(type, HorseGroupsHorses));
         }
 
+
+        [Authorize]
+        [Route("getSetPirzulHorse/{type}/{lessonid}")]
+        [HttpPost]
+        public IHttpActionResult GetSetPirzulHorse(string type,int LessonId, List<HorsePirzulLists> HorsePirzulLists)
+        {
+            return Ok(HorsesService.GetSetPirzulHorse(type, LessonId, HorsePirzulLists));
+        }
     }
 }

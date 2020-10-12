@@ -51,8 +51,8 @@ namespace FarmsApi.DataModels
 
         public DbSet<HorseGroups> HorseGroups { get; set; }
         public DbSet<HorseGroupsHorses> HorseGroupsHorses { get; set; }
+        public DbSet<HorsePirzulLists> HorsePirzulLists { get; set; }
         
-
         public Context() : base("Farms") { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

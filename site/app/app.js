@@ -371,12 +371,13 @@
             url: '/lessons/',
             views: {
                 'main': {
-                    template: '<lessons instructors="$ctrl.instructors" students="$ctrl.students" availablehours="$ctrl.availablehours" horses="$ctrl.horses"></lessons>',
-                    controller: function (instructors, students, availablehours, horses) {
+                    template: '<lessons instructors="$ctrl.instructors" students="$ctrl.students" availablehours="$ctrl.availablehours" horses="$ctrl.horses" groups="$ctrl.groups"></lessons>',
+                    controller: function (instructors, students, availablehours, horses, groups) {
                         this.instructors = instructors;
                         this.students = students;
                         this.availablehours = availablehours;
                         this.horses = horses;
+                        this.groups = groups;
                     },
                     controllerAs: '$ctrl',
                     resolve: {
@@ -391,6 +392,9 @@
                         },
                         horses: function (horsesService) {
                             return horsesService.getHorsesForLessons();
+                        },
+                        groups: function (horsesService) {
+                            return horsesService.getSetHorseGroups(1);
                         }
                     }
                 }

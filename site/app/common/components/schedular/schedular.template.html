@@ -37,7 +37,54 @@
 
             </uib-tab>
             <uib-tab index="1" heading="פירזול" style="border:solid 0px ">
-                </uib-tab>
+
+                <div class="col-md-6" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1">
+                    <div class="form-group">
+                        <select class="form-control" ng-change="$ctrl.addHorseToList(2)" ng-options="group as group.Name for group in $ctrl.groups" ng-model="$ctrl.newGroup">
+                            <option value="">בחר קבוצה</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1">
+                    <div class="form-group">
+                        <select class="form-control" ng-change="$ctrl.addHorseToList(1)" ng-options="horse as horse.Name for horse in $ctrl.horses |filter:{Active:'!notActive'} " ng-model="$ctrl.newHorse">
+                            <option value="">בחר סוס</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div >
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+
+                                <th>שם הסוס</th>
+                                <th>מחיר</th>
+                                <th>האם בוצע</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="horseslist in $ctrl.horseslists">
+
+                                <td>{{horseslist.SusName}}</td>
+                                <td><input class="" style="width:100px;" type="text" ng-model="horseslist.Cost"></td>
+                                <td><input class="" type="checkbox" ng-model="horseslist.IsDo"></td>
+                                <td><button ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1" class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorse(horseslist)">הסר</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <hr />
+                <a class="btn btn-success" style="float:left;" ng-click="$ctrl.savePirzul()" href="">שמור</a>
+                <a class="btn btn-default" style="float:left;margin-left:2px" ng-click="$ctrl.hide()" href="">סגור</a>
+
+
+            </uib-tab>
         </uib-tabset>
 
 

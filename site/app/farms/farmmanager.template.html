@@ -219,11 +219,11 @@
                         <span>(גרור את הסוס הרצוי לקבוצה המבוקשת)</span>
                     </div>
                     <div class="panel-body" id="dvAllHorses" ondrop="drop(event)" ondragover="allowDrop(event)">
-
+                        <div> <input type="text" class="form-control" ng-model="$ctrl.filter.Name" placeholder="שם סוס" /></div>
                         <button style="margin:2px" id="{{horse.Id}}" draggable="true"
                                 ondragover="allowDrop(event)"
                                 ondragstart="dragStart(event)"
-                                ng-repeat="horse in $ctrl.getFreeHorses()"
+                                ng-repeat="horse in $ctrl.getFreeHorses() | filter:$ctrl.filter"
                                 class="fc-draggable dvDragElement  btn btn-info">
                             {{horse.Name}}
                         </button>

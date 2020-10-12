@@ -890,7 +890,7 @@ namespace FarmsApi.Services
         }
 
 
-      
+
         /// <summary>
         /// 
         /// </summary>
@@ -951,28 +951,28 @@ namespace FarmsApi.Services
                 //if (uh != null)
                 //{
 
-                    var CurrentUser = UsersService.GetCurrentUser();
+                var CurrentUser = UsersService.GetCurrentUser();
 
-                    if (CurrentUser.Role == "vetrinar" || CurrentUser.Role == "shoeing")
+                if (CurrentUser.Role == "vetrinar" || CurrentUser.Role == "shoeing")
+                {
+                    Horse h = Context.Horses.Where(y => y.Id == horseId).FirstOrDefault();
+
+                    HorseVetrinars hv = Context.HorseVetrinars.SingleOrDefault(u => u.FarmIdAdd == h.Farm_Id && u.FarmId == CurrentUser.Farm_Id && u.UserId != null);
+
+                    if (hv != null)
                     {
-                        Horse h = Context.Horses.Where(y => y.Id == horseId).FirstOrDefault();
 
-                        HorseVetrinars hv = Context.HorseVetrinars.SingleOrDefault(u => u.FarmIdAdd == h.Farm_Id && u.FarmId == CurrentUser.Farm_Id && u.UserId != null);
-
-                        if (hv != null)
-                        {
-
-                            Expenses e = new Expenses();
-                            e.Details = " תשלום עבור " + name + " לסוס/ה " + horsename + " בתאריך " + dt.ToString("dd/MM/yy");
-                            e.BeforePrice = (cost ?? 0);
-                            e.Discount = (discount ?? 0);
-                            e.Price = (cost ?? 0) - (discount ?? 0);
-                            e.UserId = (int)hv.UserId;
-                            e.Date = date;
-                            Context.Expenses.Add(e);
-                            Context.SaveChanges();
-                            res = e.Id;
-                        }
+                        Expenses e = new Expenses();
+                        e.Details = " תשלום עבור " + name + " לסוס/ה " + horsename + " בתאריך " + dt.ToString("dd/MM/yy");
+                        e.BeforePrice = (cost ?? 0);
+                        e.Discount = (discount ?? 0);
+                        e.Price = (cost ?? 0) - (discount ?? 0);
+                        e.UserId = (int)hv.UserId;
+                        e.Date = date;
+                        Context.Expenses.Add(e);
+                        Context.SaveChanges();
+                        res = e.Id;
+                    }
 
 
 
@@ -980,7 +980,7 @@ namespace FarmsApi.Services
                 }
 
 
-              
+
 
 
 
@@ -1561,7 +1561,7 @@ namespace FarmsApi.Services
 
                 var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
 
-                var HorseVetrinarList = Context.HorseVetrinars.Where(x => x.FarmId == CurrentHorsefarmId && x.UserId==null).ToList();
+                var HorseVetrinarList = Context.HorseVetrinars.Where(x => x.FarmId == CurrentHorsefarmId && x.UserId == null).ToList();
 
 
 
@@ -1569,10 +1569,10 @@ namespace FarmsApi.Services
                 var Horses = Context.Horses.ToList();
                 if (CurrentHorsefarmId != 0)
                 {
-                    Horses = Horses.Where(h => h.Farm_Id == CurrentHorsefarmId || HorseVetrinarList.Any(y=>y.FarmIdAdd== h.Farm_Id)).OrderBy(x => x.Name).ToList();
+                    Horses = Horses.Where(h => h.Farm_Id == CurrentHorsefarmId || HorseVetrinarList.Any(y => y.FarmIdAdd == h.Farm_Id)).OrderBy(x => x.Name).ToList();
                 }
 
-                
+
 
                 //fo
 
@@ -1729,7 +1729,7 @@ namespace FarmsApi.Services
             }
         }
 
-        public static List<HorseVetrinars> GetHorseToVetrinars(string type,List<HorseVetrinars> HorseVetrinars = null)
+        public static List<HorseVetrinars> GetHorseToVetrinars(string type, List<HorseVetrinars> HorseVetrinars = null)
         {
             using (var Context = new Context())
             {
@@ -1785,7 +1785,7 @@ namespace FarmsApi.Services
                     try
                     {
 
-                        var result = Context.HorseVetrinars.Where(p => p.FarmId == CurrentHorsefarmId && p.UserId==null).ToList();
+                        var result = Context.HorseVetrinars.Where(p => p.FarmId == CurrentHorsefarmId && p.UserId == null).ToList();
                         if (type == "1")
                         {
                             result = Context.HorseVetrinars.Where(p => p.FarmId == CurrentHorsefarmId && p.UserId != null).ToList();
@@ -1847,11 +1847,11 @@ namespace FarmsApi.Services
                     foreach (HorseGroups item in HorseGroups)
                     {
 
-                     
+
 
                         if (item.Id == 0)
                         {
-                          
+
 
                             Context.HorseGroups.Add(item);
 
@@ -1860,7 +1860,7 @@ namespace FarmsApi.Services
                         {
 
                             Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
-                           
+
 
                         }
 
@@ -1870,7 +1870,7 @@ namespace FarmsApi.Services
                     {
 
                         var result = Context.HorseGroups.Where(p => p.FarmId == CurrentHorsefarmId).ToList();
-                        
+
 
                         IEnumerable<HorseGroups> differenceQuery = result.Except(HorseGroups);
 
@@ -1878,7 +1878,7 @@ namespace FarmsApi.Services
                         {
                             Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
 
-                            var HorsesInGroupList = Context.HorseGroupsHorses.Where(x=>x.HorseGroupsId==item.Id).ToList();
+                            var HorsesInGroupList = Context.HorseGroupsHorses.Where(x => x.HorseGroupsId == item.Id).ToList();
 
                             Context.HorseGroupsHorses.RemoveRange(HorsesInGroupList);
 
@@ -1901,6 +1901,10 @@ namespace FarmsApi.Services
 
             }
         }
+
+
+
+
 
         public static List<HorseGroupsHorses> GetHorseGroupsHorses(string type, List<HorseGroupsHorses> HorseGroupsHorses = null)
         {
@@ -1967,6 +1971,186 @@ namespace FarmsApi.Services
 
             }
         }
+
+
+
+        public static List<HorsePirzulLists> GetSetPirzulHorse(string type, int LessonId, List<HorsePirzulLists> HorsePirzulLists = null)
+        {
+            using (var Context = new Context())
+            {
+                var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
+
+                int? MefarzelLessonId = null;
+
+                if (HorsePirzulLists == null)
+                {
+                    return Context.HorsePirzulLists.Where(u => u.LessonId == LessonId || u.MefarzelLessonId == LessonId).ToList();
+                }
+                else
+                {
+
+                    // var DBHorsePirzulLists = Context.HorsePirzulLists.Where(u => u.LessonId == LessonId || u.MefarzelLessonId == LessonId).ToList();
+
+                    foreach (HorsePirzulLists item in HorsePirzulLists)
+                    {
+
+                        MefarzelLessonId = item.MefarzelLessonId;
+
+                        if (item.Id == 0)
+                        {
+
+                            Context.HorsePirzulLists.Add(item);
+
+                        }
+                        else
+                        {
+                            Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+
+                          //  var DBHorsePirzulList = Context.HorsePirzulLists.Where(u => u.Id == item.Id).FirstOrDefault();
+                          
+                            // אם סומן שהוא עשה את זה
+                            if (item.IsDo && !item.PrevIsDo)
+                            {
+
+                                Horse f = Context.Horses.Where(x => x.Id == item.HorseId).FirstOrDefault();
+                                HorseShoeings NewShoeings = new HorseShoeings();
+
+                                NewShoeings.HorseId = item.HorseId;
+                                NewShoeings.Id = 0;
+                                NewShoeings.ShoerName = UsersService.GetCurrentUser().FirstName + " " + UsersService.GetCurrentUser().LastName;
+                                NewShoeings.Date = DateTime.Now;
+                                NewShoeings.Cost = item.Cost;
+                                NewShoeings.Discount = 0;
+
+                                string name = " פירזול ";
+                                int? ExpensesId = AddToExpensesTable(item.Cost, 0, item.HorseId, f.Name, name, DateTime.Now);
+                                NewShoeings.ExpensesId = ExpensesId;
+
+                                NewShoeings.HavaExpensesId = AddToExpensesFarmTable(item.Cost, 0, item.HorseId, f.Name, name, DateTime.Now);
+                                Context.HorseShoeings.Add(NewShoeings);
+                              
+                            }
+                            //}
+
+
+
+
+
+
+
+                        }
+
+
+
+
+                    }
+
+
+
+
+
+                    try
+                    {
+
+
+                        var result = Context.HorsePirzulLists.Where(p => p.LessonId == LessonId).ToList();
+
+
+                        IEnumerable<HorsePirzulLists> differenceQuery = result.Except(HorsePirzulLists);
+
+                        foreach (HorsePirzulLists item in differenceQuery)
+                        {
+                            MefarzelLessonId = item.MefarzelLessonId;
+                            Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+
+                        }
+
+
+
+
+
+
+
+
+                    }
+                    catch (Exception ex)
+                    {
+
+
+                    }
+
+                    Context.SaveChanges();
+                    // מציאת השיעור
+                    var Less = Context.Lessons.Where(p => p.Id == LessonId).FirstOrDefault();
+
+                    var LessMefarzel = Context.Lessons.Where(p => p.Id == MefarzelLessonId).FirstOrDefault();
+
+                    var HorsePirzulListsAfterChange = Context.HorsePirzulLists.Where(u => u.LessonId == LessonId || u.MefarzelLessonId == LessonId).ToList();
+
+                    if (HorsePirzulListsAfterChange.Count == 0)
+                    {
+
+                        Context.Lessons.Remove(Less);
+                        if (LessMefarzel != null) Context.Lessons.Remove(LessMefarzel);
+                        Context.SaveChanges();
+                        return HorsePirzulListsAfterChange;
+                    }
+
+                    //**********************************************
+
+
+                    if (Less != null)
+                    {
+                        Less.Details = "רשימת סוסים לפרזול";
+                        Context.Entry(Less).State = System.Data.Entity.EntityState.Modified;
+
+                        // קיים מפרזל ששייך 
+                        var MefarzelFarm = Context.HorseVetrinars.Where(p => p.FarmIdAdd == CurrentHorsefarmId && p.UserId == null).FirstOrDefault();
+
+                        if (MefarzelFarm != null)
+                        {
+
+                            var MefarzelUser = Context.Users.Where(p => p.Farm_Id == MefarzelFarm.FarmId && p.IsMazkirut == 1).FirstOrDefault();
+                            if (MefarzelUser != null)
+                            {
+                                if (MefarzelLessonId != null)
+                                {
+                                    Context.Lessons.Remove(LessMefarzel);
+
+                                }
+
+                                Lesson NewLesson = new Lesson();
+                                NewLesson.Id = 0;
+                                NewLesson.Start = Less.Start;
+                                NewLesson.End = Less.End;
+                                NewLesson.Instructor_Id = MefarzelUser.Id;
+                                NewLesson.Details = "רשימת סוסים לפרזול";
+
+                                Context.Lessons.Add(NewLesson);
+                                Context.SaveChanges();
+
+                                foreach (var HorsePirzul in HorsePirzulListsAfterChange)
+                                {
+                                    HorsePirzul.MefarzelLessonId = NewLesson.Id;
+                                    Context.Entry(HorsePirzul).State = System.Data.Entity.EntityState.Modified;
+                                }
+
+
+
+
+                            }
+
+
+                        }
+
+                    }
+                    Context.SaveChanges();
+                    return HorsePirzulListsAfterChange;
+                }
+
+            }
+        }
+
         private static List<Horse> FilterDeleted(List<Horse> Horses, bool IncludeDeleted)
         {
             if (IncludeDeleted)
@@ -2186,13 +2370,13 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
                 var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
-             
+
                 if (Horse.Id == 0)
                 {
                     Horse.Farm_Id = CurrentHorsefarmId != 0 ? CurrentHorsefarmId : Horse.Farm_Id;
                     Context.Horses.Add(Horse);
                 }
-                   
+
                 else
                 {
                     // כאשר לא פעיל תמחק את הסוס מהתלמידים

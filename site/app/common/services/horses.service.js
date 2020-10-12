@@ -23,8 +23,8 @@
         this.getHorseVetrinars = _getHorseVetrinars;
         this.getSetHorseGroups = _getSetHorseGroups;
         this.getSetHorseGroupsHorses = _getSetHorseGroupsHorses;
+        this.getSetPirzulHorse = _getSetPirzulHorse;
         
-
         function _insertnewpregnancie(newpregnancie,isBuild) {
           
             var deferred = $q.defer();
@@ -51,6 +51,28 @@
             });
             return deferred.promise;
         }
+
+
+
+        function _getSetPirzulHorse(type, lessonid, horseslists) {
+
+
+            if (!type) type = '0';
+            var deferred = $q.defer();
+
+            $http.post(sharedValues.apiUrl + 'horses/getSetPirzulHorse/' + type + '/' + lessonid , horseslists).then(function (res) {
+
+                var horses = res.data;
+                deferred.resolve(horses);
+            });
+            return deferred.promise;
+        }
+
+
+
+
+
+
 
 
         function _getSetHorseGroups(type,horsegroups) {

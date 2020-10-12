@@ -9,7 +9,8 @@
             instructors: '<',
             students: '<',
             availablehours: '<',
-            horses: '<'
+            horses: '<',
+            groups: '<',
         }
     });
 

@@ -323,6 +323,7 @@
 
                 if (this.horsegroupshorses.filter(x => x.HorseId == this.horses[i].Id).length > 0) continue;
 
+
                 res.push(this.horses[i]);
 
 

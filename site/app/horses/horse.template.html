@@ -11,10 +11,6 @@
     .haliva {
         background: #ffff00 !important;
     }
-
-
-   
-
 </style>
 
 
@@ -101,7 +97,7 @@
                             <!--<a ng-if="$ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" class="" ui-sref="student({id:$ctrl.horse.OwnerId})">{{$ctrl.horse.Owner}} </a>-->
 
 
-                            <div ng-if="(($ctrl.role!='vetrinar' && $ctrl.role!='shoeing') || !$ctrl.diffHorseFarm) &&   $ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" style="cursor:pointer;text-decoration:underline;color:dodgerblue"  ng-click="$ctrl.goToStudent()">{{$ctrl.horse.Owner}} </div>
+                            <div ng-if="(($ctrl.role!='vetrinar' && $ctrl.role!='shoeing') || !$ctrl.diffHorseFarm) &&   $ctrl.role!='worker' && $ctrl.subrole!='worker' && $ctrl.role!='stableman' && $ctrl.subrole!='stableman'" style="cursor:pointer;text-decoration:underline;color:dodgerblue" ng-click="$ctrl.goToStudent()">{{$ctrl.horse.Owner}} </div>
 
 
                         </div>
@@ -153,29 +149,37 @@
                                 <option value="">חווה</option>
 
                                 <option value="outer">חוץ לחווה</option>
-                               
+
 
                             </select>
                         </div>
                     </div>
 
 
+                    <div class="form-group">
+
+
+                        <div class="col-md-6">
+                            <label>תאריך לידה</label>
+                            <input type="date" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.BirthDate" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label>מחיר פירזול</label>
+                            <input type="number" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.ShoeingCost" />
+                        </div>
+                      
+                    </div>
 
 
 
 
-                    <!--<div class="form-group col-md-12">
-                        <label>שיוך הסוס</label>
-                       
-                    </div>-->
                     <div class="form-group col-md-12">
                         <label>הערות</label>
                         <input type="text" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.Details" />
+
+
                     </div>
-                    <div class="form-group col-md-12">
-                        <label>תאריך לידה</label>
-                        <input type="date" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.BirthDate" required />
-                    </div>
+
                     <div class="form-group col-md-12" ng-if="$ctrl.role=='sysAdmin'">
                         <label>חווה</label>
                         <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.horse.Farm_Id">
@@ -277,7 +281,7 @@
                 </div>
 
             </uib-tab>
-            <uib-tab index="1"  ng-if="1==1">
+            <uib-tab index="1" ng-if="1==1">
                 <uib-tab-heading>
                     {{$ctrl.role=='shoeing'?'פירזולים':'טיפולים'}}
                 </uib-tab-heading>
@@ -740,8 +744,8 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody  ng-repeat="hozim in $ctrl.getHozim()|orderBy:'-Date'">
-                          
+                        <tbody ng-repeat="hozim in $ctrl.getHozim()|orderBy:'-Date'">
+
                             <tr>
                                 <td>{{hozim.Id}}</td>
                                 <td>{{hozim.Date | ildate: 'DD/MM/YYYY'}}</td>
@@ -760,7 +764,7 @@
                                 <td><i class="fa fa-check-circle-o green" ng-show="hozim.IsPaid=='1'" aria-hidden="true"></i></td>
                                 <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeHozims(hozim)">הסר</button></td>
                             </tr>
-                         
+
 
 
                         </tbody>
@@ -813,11 +817,11 @@
                                 </select>-->
                             </div>
 
-                                <div class="col-md-12">
-                                    <button type="submit" class="btn btn-success" ng-click="$ctrl.addHozims()" ng-disabled="hozimsForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת חוזה</button>
-                                </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-success" ng-click="$ctrl.addHozims()" ng-disabled="hozimsForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת חוזה</button>
+                            </div>
 
-                                <div class="clearfix"></div>
+                            <div class="clearfix"></div>
                         </form>
                     </div>
                 </div>
@@ -910,7 +914,7 @@
                                 <label><input type="checkbox" ng-model="$ctrl.newPregnancy.IsSurrogate"> הריון אומנת</label>
                             </div>
                             <button type="submit" class="btn btn-success" ng-click="$ctrl.addPregnancy()" ng-disabled="pregnancyForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת הריון</button>
-                             
+
                             <button type="button" ng-if="$ctrl.pregnancies.length > 0 && !$ctrl.pregnancies[$ctrl.pregnancies.length-1].Finished" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'" class="btn btn-default" ng-click="$ctrl.stopPregnancy()">סיום הריון</button>
 
 
@@ -951,8 +955,8 @@
                                 <input type="text" class="form-control" ng-model="$ctrl.newPregnancyState.State.name" placeholder="שלב" disabled required />
                             </div>
                             <!--<div class="form-group">
-                    <input type="number" class="form-control" ng-model="$ctrl.newPregnancyState.State.Cost" placeholder="מחיר"   />
-                </div>-->
+                                <input type="number" class="form-control" ng-model="$ctrl.newPregnancyState.State.Cost" placeholder="מחיר"   />
+                            </div>-->
 
 
                             <div class="form-group">
@@ -993,12 +997,12 @@
                                 <td colspan="6">
                                 </td>
                                 <!--<td colspan="4">
-                <br>
-                <button class="btn btn-primary btn-xs" ng-click="showDetails=!showDetails;">{{showDetails ? 'הצג הערות משרד' : 'הצג הערות מדריך'}} </button>
-                <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printLessons()"> הדפסה </button>
-                <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-click="$ctrl.printExcel()"> Excel </button>
+                                    <br>
+                                    <button class="btn btn-primary btn-xs" ng-click="showDetails=!showDetails;">{{showDetails ? 'הצג הערות משרד' : 'הצג הערות מדריך'}} </button>
+                                    <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printLessons()"> הדפסה </button>
+                                    <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-click="$ctrl.printExcel()"> Excel </button>
 
-            </td>-->
+                                </td>-->
                             </tr>
 
 
@@ -1100,7 +1104,7 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th >סיכום</th>
+                            <th>סיכום</th>
                             <th>{{$ctrl.getTotalHozim().Cost}}</th>
                             <th>{{$ctrl.getTotalHozim().Sum}}</th>
                             <!--<th></th>-->
@@ -1111,30 +1115,30 @@
 
                     </table>
                     <div class="panel-footer" style="margin-top:20px">
-                       
+
                         <!--<form name="inserForm">
-        <div class="form-group">
-            <label>תאריך חליבה</label><br />
-            <input type="date" class="form-control" ng-model="$ctrl.newInsemination.HalivaDate" placeholder="תאריך חליבה" />
-        </div>
+                            <div class="form-group">
+                                <label>תאריך חליבה</label><br />
+                                <input type="date" class="form-control" ng-model="$ctrl.newInsemination.HalivaDate" placeholder="תאריך חליבה" />
+                            </div>
 
 
 
-        <div class="form-group">
-            <label>סוסה להזרעה</label><br />
-            <select class="form-control" ng-options="sus.Id as sus.Name for sus in $ctrl.susut" ng-model="$ctrl.newInsemination.PregnanciesHorseId">
-                <option value="">בחר סוסה</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>מחיר </label><br />
-            <input type="number" class="form-control" ng-model="$ctrl.newInsemination.Cost" placeholder="עלות כספית" />
-        </div>
+                            <div class="form-group">
+                                <label>סוסה להזרעה</label><br />
+                                <select class="form-control" ng-options="sus.Id as sus.Name for sus in $ctrl.susut" ng-model="$ctrl.newInsemination.PregnanciesHorseId">
+                                    <option value="">בחר סוסה</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>מחיר </label><br />
+                                <input type="number" class="form-control" ng-model="$ctrl.newInsemination.Cost" placeholder="עלות כספית" />
+                            </div>
 
 
 
-        <button type="submit" class="btn btn-success" ng-click="$ctrl.addInsemination()" ng-disabled="inserForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת הזרעה</button>
-    </form>-->
+                            <button type="submit" class="btn btn-success" ng-click="$ctrl.addInsemination()" ng-disabled="inserForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת הזרעה</button>
+                        </form>-->
                     </div>
                 </div>
 

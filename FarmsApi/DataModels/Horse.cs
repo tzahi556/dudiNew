@@ -44,7 +44,13 @@ namespace FarmsApi.DataModels
         public string Dinner1 { get; set; }
         public string Dinner2 { get; set; }
         public string Image { get; set; }
-        [NotMapped]
+
+        public double? ShoeingCost { get; set; }
+
+        
+
+
+         [NotMapped]
         public bool IsShoeings { get; set; }
         [NotMapped]
         public bool IsTilufings { get; set; }
@@ -84,6 +90,10 @@ namespace FarmsApi.DataModels
         public DateTime? shoeingsLastDate { get; set; }
         [NotMapped]
         public bool shoeings { get; set; }
+
+
+
+   
 
         //public DateTime? wormingLastDate { get; set; }
         //[NotMapped]
@@ -417,6 +427,27 @@ namespace FarmsApi.DataModels
         public int HorseId { get; set; }
 
     }
+    public class HorsePirzulLists
+    {
+        public int Id { get; set; }
+
+        public int HorseId { get; set; }
+        public int LessonId { get; set; }
+
+        public int? MefarzelLessonId { get; set; }
+        public double? Cost { get; set; }
+        public bool IsDo { get; set; }
+       
+        [NotMapped]
+        public bool PrevIsDo { get; set; }
+
+
+
+
+    }
+
+
+    
 
 
 
