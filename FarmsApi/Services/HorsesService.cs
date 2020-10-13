@@ -1982,6 +1982,8 @@ namespace FarmsApi.Services
 
                 int? MefarzelLessonId = null;
 
+                string GroupName = "";
+
                 if (HorsePirzulLists == null)
                 {
                     return Context.HorsePirzulLists.Where(u => u.LessonId == LessonId || u.MefarzelLessonId == LessonId).ToList();
@@ -1993,6 +1995,8 @@ namespace FarmsApi.Services
 
                     foreach (HorsePirzulLists item in HorsePirzulLists)
                     {
+
+                        if (!string.IsNullOrEmpty(item.GroupName)) GroupName = item.GroupName;
 
                         MefarzelLessonId = item.MefarzelLessonId;
 
@@ -2101,7 +2105,7 @@ namespace FarmsApi.Services
 
                     if (Less != null)
                     {
-                        Less.Details = "רשימת סוסים לפרזול";
+                        Less.Details = "פירזול " + GroupName;
                         Context.Entry(Less).State = System.Data.Entity.EntityState.Modified;
 
                         // קיים מפרזל ששייך 
@@ -2119,12 +2123,14 @@ namespace FarmsApi.Services
 
                                 }
 
+                                var CurrentFarm = Context.Farms.Where(x => x.Id ==CurrentHorsefarmId).FirstOrDefault();
+
                                 Lesson NewLesson = new Lesson();
                                 NewLesson.Id = 0;
                                 NewLesson.Start = Less.Start;
                                 NewLesson.End = Less.End;
                                 NewLesson.Instructor_Id = MefarzelUser.Id;
-                                NewLesson.Details = "רשימת סוסים לפרזול";
+                                NewLesson.Details = "פירזול " + GroupName + " - " + CurrentFarm.Name;
 
                                 Context.Lessons.Add(NewLesson);
                                 Context.SaveChanges();

@@ -181,6 +181,7 @@
 
                         this.horseslists[i].SusName = this.horses.filter(x => x.Id == this.horseslists[i].HorseId)[0].Name;
                         this.horseslists[i].PrevIsDo = this.horseslists[i].IsDo;
+
                     }
 
 
@@ -308,20 +309,21 @@
             //הוספת סוס
             if (type == 1) {
 
-                this.horseslists.push({ SusName: this.newHorse.Name, Id: 0, Cost: this.newHorse.ShoeingCost, isDo: false, HorseId: this.newHorse.Id, LessonId: this.lessonId });
+                this.horseslists.push({ SusName: this.newHorse.Name, Id: 0, Cost: this.newHorse.ShoeingCost, isDo: false, HorseId: this.newHorse.Id, LessonId: this.lessonId});
             }
 
             //הוספת קבוצה
             if (type == 2) {
 
-
+               
                 var horselist = this.horsegroupshorses.filter(x => x.HorseGroupsId == this.newGroup.Id);
+                var groupName = this.groups.filter(x => x.Id == this.newGroup.Id)[0].Name;
                 for (var i in horselist) {
 
                     var currentHorse = this.horses.filter(y => y.Id == horselist[i].HorseId);
                     if (currentHorse.length > 0) {
 
-                        this.horseslists.push({ SusName: currentHorse[0].Name, Id: 0, Cost: currentHorse[0].ShoeingCost, isDo: false, HorseId: currentHorse[0].Id, LessonId: this.lessonId });
+                        this.horseslists.push({ SusName: currentHorse[0].Name, Id: 0, Cost: currentHorse[0].ShoeingCost, isDo: false, HorseId: currentHorse[0].Id, LessonId: this.lessonId, GroupName: groupName});
                     }
                 }
 

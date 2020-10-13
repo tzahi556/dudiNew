@@ -440,10 +440,11 @@ namespace FarmsApi.DataModels
        
         [NotMapped]
         public bool PrevIsDo { get; set; }
+      
+        public string GroupName { get; set; }
 
 
-
-
+        
     }
 
 
