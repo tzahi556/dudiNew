@@ -1,7 +1,7 @@
 ﻿<form name="instructorForm" ng-submit="$ctrl.submit()" novalidate>
     <div class="panel panel-default">
         <div class="panel-heading">
-            {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1 ?'עובד':'מדריך')}}
+            {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)!=-1?'עובדים':'מדריכים')}}
         </div>
         <div class="panel-body">
 

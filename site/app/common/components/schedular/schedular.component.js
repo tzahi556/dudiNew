@@ -47,8 +47,12 @@
         this.addHorseToList = _addHorseToList.bind(this);
         this.removeHorse = _removeHorse.bind(this);
         this.savePirzul = _savePirzul.bind(this);
+        this.vaccinationsHorse = sharedValues.vaccinations;
 
-
+        this.saveVaccination = _saveVaccination.bind(this);
+        this.addHorseVaccinationToList = _addHorseVaccinationToList.bind(this);
+        this.removeVaccinationHorse = _removeVaccinationHorse.bind(this);
+        
         this.scope.$on('schedular.show', this.onShow);
 
         function _isExec(schedular) {
@@ -174,7 +178,7 @@
 
             this.horsesService.getHorses().then(function (hss) {
                 this.horses = hss;
-
+                //פירזולים
                 this.horsesService.getSetPirzulHorse(0, this.lessonId, null).then(function (res) {
                     this.horseslists = res;
                     for (var i in this.horseslists) {
@@ -182,6 +186,19 @@
                         this.horseslists[i].SusName = this.horses.filter(x => x.Id == this.horseslists[i].HorseId)[0].Name;
                         this.horseslists[i].PrevIsDo = this.horseslists[i].IsDo;
 
+                    }
+
+
+                }.bind(this));
+
+                // חיסונים
+                this.horsesService.getSetVaccinationHorse(0, this.lessonId, null).then(function (res) {
+                    this.horsesVaccinationlists = res;
+                    for (var i in this.horsesVaccinationlists) {
+
+                        this.horsesVaccinationlists[i].SusName = this.horses.filter(x => x.Id == this.horsesVaccinationlists[i].HorseId)[0].Name;
+                        this.horsesVaccinationlists[i].PrevIsDo = this.horsesVaccinationlists[i].IsDo;
+                        this.horsesVaccinationlists[i].HebName = this.vaccinationsHorse.filter(x => x.id == this.horsesVaccinationlists[i].Vaccination)[0].name;
                     }
 
 
@@ -249,6 +266,10 @@
 
         function _close(schedular, type) {
 
+            if (this.horsegroupshorses.length > 0) {
+                alert("לא ניתן למחוק משימה שיש פירזולים");
+                return;
+            }
 
             if (this.newSchedular.EndDate) this.newSchedular.EndDate.setHours(this.newSchedular.EndDate.getHours() + 3);
 
@@ -339,7 +360,24 @@
             }
         }
 
-        function _savePirzul() {
+        function _savePirzul(isDelete) {
+
+            if (isDelete) {
+                var m = this.horseslists.length;
+                while (m--) {
+                    if (this.horseslists[m].IsDo) continue;
+                  //  if (this.horsegroupshorses[m].HorseGroupsId == obj.Id) {
+                    this.horseslists.splice(m, 1);
+                   // }
+                }
+
+
+
+
+
+            }
+
+
             this.horsesService.getSetPirzulHorse(1, this.lessonId, this.horseslists).then(function (res) {
 
                 this.closeCallback(null);
@@ -349,9 +387,64 @@
 
 
         }
+         //******************************************* חיסונים ***************************
+
+        function _removeVaccinationHorse(horsesVaccinationlist) {
+            //הוספת סוס
+            for (var i in this.horsesVaccinationlists) {
+                if (this.horsesVaccinationlists[i] == horsesVaccinationlist) {
+                    this.horsesVaccinationlists.splice(i, 1);
+                }
+            }
+        }
+
+        
+
+
+        function _addHorseVaccinationToList(type) {
+         
+            var Vaccination = this.newVaccination.Vaccination;
+            var Horse = this.newVaccinationHorse;
+
+            if (!Vaccination || !Horse) return;
+           
+            //הוספת סוס
+            if (type == 1) {
+
+                this.horsesVaccinationlists.push({ SusName: this.newVaccinationHorse.Name, Vaccination: this.newVaccination.Vaccination, Id: 0, Cost: 0, isDo: false, HorseId: this.newVaccinationHorse.Id, LessonId: this.lessonId });
+            }
+
+           
+           
+        }
+        function _saveVaccination(isDelete) {
+
+            if (isDelete) {
+                var m = this.horsesVaccinationlists.length;
+                while (m--) {
+
+                    if (this.horsesVaccinationlists[m].IsDo) continue;
+                    this.horsesVaccinationlists.splice(m, 1);
+                   
+                }
 
 
 
+
+
+            }
+
+
+            this.horsesService.getSetVaccinationHorse(1, this.lessonId, this.horsesVaccinationlists).then(function (res) {
+
+                this.closeCallback(null);
+                this.selectedStudentSchedular = null;
+
+            }.bind(this));
+
+
+        }
+        
 
 
     }

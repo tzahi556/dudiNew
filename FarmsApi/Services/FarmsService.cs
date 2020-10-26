@@ -17,11 +17,26 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
                 var CurrentUser = UsersService.GetCurrentUser();
-                if (CurrentUser.Role == "sysAdmin" || CurrentUser.Role == "vetrinar" || CurrentUser.Role == "shoeing")
+                if (CurrentUser.Role == "sysAdmin")
                     return Context.Farms.Where(f => f.Deleted == deleted).ToList();
+                else if (CurrentUser.Role == "vetrinar" || CurrentUser.Role == "shoeing")
+                    return GetFarmsByRole(Context, CurrentUser);//Context.Farms.Where(f => f.Deleted == deleted).ToList();
                 else
                     return Context.Farms.Where(f => f.Deleted == deleted && f.Id == CurrentUser.Farm_Id).ToList();
             }
+        }
+
+        private static List<Farm> GetFarmsByRole(Context context, User currentUser)
+        {
+
+            var FarmList = context.FarmManagers.Where(x=>x.MefarzelUser==currentUser.Email || x.VetrinarUser == currentUser.Email).ToList();
+
+            var Farms = context.Farms.ToList();
+            var ReturnFarms = Farms.Where(y => y.Id == currentUser.Farm_Id || FarmList.Any(f=>f.FarmId==y.Id)).ToList();
+
+            return ReturnFarms;
+
+
         }
 
         public static User GetFarmsMainUser(int FarmId)
@@ -103,7 +118,20 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
-                Context.Entry(farmmanger).State = System.Data.Entity.EntityState.Modified;
+                if (farmmanger.Id == 0)
+                {
+                    farmmanger.FarmId = CurrentUser.Farm_Id;
+                    Context.FarmManagers.Add(farmmanger);
+
+
+                }
+                else
+                {
+                    Context.Entry(farmmanger).State = System.Data.Entity.EntityState.Modified;
+
+                }
+
+                
                 Context.SaveChanges();
 
             }

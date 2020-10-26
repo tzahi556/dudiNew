@@ -52,6 +52,9 @@ namespace FarmsApi.DataModels
         public DbSet<HorseGroups> HorseGroups { get; set; }
         public DbSet<HorseGroupsHorses> HorseGroupsHorses { get; set; }
         public DbSet<HorsePirzulLists> HorsePirzulLists { get; set; }
+
+        public DbSet<HorseVaccinationLists> HorseVaccinationLists { get; set; }
+
         
         public Context() : base("Farms") { }
 

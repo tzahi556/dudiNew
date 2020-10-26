@@ -11,7 +11,8 @@ namespace FarmsApi.DataModels
         public int SupplierID { get; set; }
         public string SectionCode { get; set; }
         public string CareCode { get; set; }
-
-
+        public string MefarzelUser { get; set; }
+        public string VetrinarUser { get; set; }
+        
     }
 }

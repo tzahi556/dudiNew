@@ -178,8 +178,8 @@
 
                     currentHorseId = event.target.id;
 
-                  
-                    
+
+
                 }
 
                 function allowDrop(event) {
@@ -189,13 +189,13 @@
                 function drop(event) {
                     var currentGroupeId = event.target.id;
 
-                   // debugger
+                    // debugger
                     angular.element(document.getElementById('mainControllerHorse')).scope().makeDropHorse(event, currentHorseId, currentGroupeId);
                     currentHorseId = "";
 
                 }
 
-              
+
 
             </script>
             <div class="col-md-12">
@@ -242,15 +242,47 @@
                             <div style="float:left">  <button style="" class="btn btn-xs btn-danger" ng-click="$ctrl.actionHorsesGroup(2,horsegroup)">הסר</button></div>
                         </div>
                         <div class="panel-body" id="{{horsegroup.Id}}" ondrop="drop(event)" ondragover="allowDrop(event)">
-                            <button 
-                                    style="margin:2px" 
-                                    ng-repeat="horse in $ctrl.getHorsesGroup(horsegroup.Id)" ng-click="$ctrl.actionHorsesGroup(3,horse.HorseId)" class="col-md-12 btn btn-info">{{horse.Name}}</button>
+                            <button style="margin:2px"
+                                    ng-repeat="horse in $ctrl.getHorsesGroup(horsegroup.Id)" ng-click="$ctrl.actionHorsesGroup(3,horse.HorseId)" class="col-md-12 btn btn-info">
+                                {{horse.Name}}
+                            </button>
                         </div>
                     </div>
 
                 </div>
 
             </div>
+
+        </uib-tab>
+
+        <uib-tab index="3" heading="הרשאות">
+
+            <div class="col-md-12" style="">
+                <label style="color:brown">יש לשים לב כי ברגע שתינתן הרשאה למפרזל\וטרינר הוא יוכל לצפות בכל הסוסים שברשותך...</label>
+            </div>
+
+            <div class="col-md-2" style="">
+                <label> שם משתמש מפרזל</label>
+                <input type="text" class="form-control" ng-model="$ctrl.farmmanager.MefarzelUser" />
+            </div>
+            <div class="col-md-2">
+                <label>&nbsp;</label><br />
+                <button style="" class="btn  btn-success" ng-click="$ctrl.SaveData(2)">שמור</button>
+            </div>
+
+
+            <div class="col-md-2" style="">
+                <label> שם משתמש וטרינר</label>
+                <input type="text" class="form-control" ng-model="$ctrl.farmmanager.VetrinarUser" />
+            </div>
+            <div class="col-md-2">
+                <label>&nbsp;</label><br />
+                <button style="" class="btn  btn-success" ng-click="$ctrl.SaveData(2)">שמור</button>
+            </div>
+
+
+
+
 
         </uib-tab>
     </uib-tabset>

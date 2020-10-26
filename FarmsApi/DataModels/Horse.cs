@@ -406,6 +406,8 @@ namespace FarmsApi.DataModels
 
         public int? UserId { get; set; }
 
+        public string Role { get; set; }
+
     }
 
     public class HorseGroups
@@ -447,8 +449,25 @@ namespace FarmsApi.DataModels
         
     }
 
+    public class HorseVaccinationLists
+    {
+        public int Id { get; set; }
 
-    
+        public int HorseId { get; set; }
+        public int LessonId { get; set; }
+
+        public string Vaccination { get; set; }
+
+        public double? Cost { get; set; }
+        public bool IsDo { get; set; }
+        [NotMapped]
+        public bool PrevIsDo { get; set; }
+
+
+
+
+    }
+
 
 
 

@@ -281,11 +281,13 @@
 
         this.initHorse = function () {
 
-
-
-
+         
+           
+          //  this.user.BirthDate = moment(this.user.BirthDate).startOf('day').toDate();
 
             this.horse.BirthDate = moment(this.horse.BirthDate).startOf('day').toDate();
+
+        
             this.horse.PensionStartDate = moment(this.horse.PensionStartDate).startOf('day').toDate();
 
             this.horse.ArrivedDate = moment(this.horse.ArrivedDate).startOf('day').toDate();
@@ -591,7 +593,7 @@
         }
 
         function _addShoeingNotification() {
-
+            
             var horseBirthDate = this.horse.BirthDate;
             var shoeingDate = null;
             var hasLastShoeing = (typeof (this.shoeings) !== "undefined" && this.shoeings.length > 0);
@@ -622,7 +624,7 @@
         }
 
         function _addVaccineNotification(vaccineName, notificationMessage) {
-
+           
             var horseBirthDate = this.horse.BirthDate;
             var horseAge = moment().diff(moment(horseBirthDate), 'years');
             var vaccine = _getVaccination(vaccineName);
@@ -1088,7 +1090,7 @@
 
 
         function _submit(isWithoutalert, OwnerId) {
-
+           
             this.horse.BirthDate.setHours(this.horse.BirthDate.getHours() + 3);
 
             if (this.horse.ArrivedDate)
@@ -1102,12 +1104,25 @@
             horsesService.updateHorse(this.horse).then(function (horse) {
 
                 this.horse = horse;
+               
                 this.initHorse();
+                this.horse.BirthDate.setHours(this.horse.BirthDate.getHours() + 3);
+
+                if (this.horse.ArrivedDate)
+                    this.horse.ArrivedDate.setHours(this.horse.ArrivedDate.getHours() + 3);
+
+                if (this.horse.OutDate)
+                    this.horse.OutDate.setHours(this.horse.OutDate.getHours() + 3);
+
+              
                 horsesService.updateHorseMultiTables(this.horse, this.files, this.hozefiles, this.pundekautfiles, this.treatments,
                     this.vaccinations, this.shoeings, this.tilufings, this.pregnancies, this.pregnanciesstates, this.inseminations, this.hozims, this.horsesmultiplefiles).then(function (hozims) {
                         this.createNotifications();
                         if (!isWithoutalert) alert('נשמר בהצלחה');
                         this.hozims = hozims;
+
+
+                        
                         
                         if (OwnerId) {
                             $state.go('student', { id: this.horse.OwnerId });
@@ -1117,8 +1132,6 @@
 
 
                         horsesService.getHorse(this.horse.Id, 7).then(function (res) {
-
-                            
                             this.shoeings = res;
                         }.bind(this));
                         horsesService.getHorse(this.horse.Id, 5).then(function (res) {

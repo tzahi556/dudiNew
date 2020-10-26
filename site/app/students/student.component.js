@@ -1203,6 +1203,7 @@
         }
 
         function _monthlyReport() {
+           
             var LastDate = "";
             this.monthlyReportData = [];
             this.monthlyReportHeader = [];
@@ -1217,7 +1218,7 @@
                 }
 
 
-                if (monthlyLessons[i].statuses[0].Details) {
+                if (monthlyLessons[i].statuses[0].Details || monthlyLessons[i].statuses[0].Mashov) {
 
                     // alert(monthlyLessons[i].statuses[0].Details);
                     this.monthlyReportData.push({ Date: monthlyLessons[i].start, Details: monthlyLessons[i].statuses[0].Details, Mashov: monthlyLessons[i].statuses[0].Mashov});

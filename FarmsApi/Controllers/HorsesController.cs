@@ -185,5 +185,13 @@ namespace FarmsApi.Services
         {
             return Ok(HorsesService.GetSetPirzulHorse(type, LessonId, HorsePirzulLists));
         }
+
+        [Authorize]
+        [Route("getSetVaccinationHorse/{type}/{lessonid}")]
+        [HttpPost]
+        public IHttpActionResult GetSetVaccinationHorse(string type, int LessonId, List<HorseVaccinationLists> HorseVaccinationLists)
+        {
+            return Ok(HorsesService.GetSetVaccinationHorse(type, LessonId, HorseVaccinationLists));
+        }
     }
 }

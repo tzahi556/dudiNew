@@ -15,6 +15,7 @@
         function _enterManger(farmId) {
 
             farmsService.getFarmsMainUser(farmId).then(function (res) {
+                
                 authenticationService.login({ userName: res.Email, password: res.Password }).then(function (res) {
 
                     location.href = './';

@@ -41,15 +41,17 @@
 
     function _onShow(event, monthlyReportData,userName,userTaz,farmName,instructorName,user) {
 
-    
+      
         this.userName = userName;
         this.userTaz = userTaz;
         this.farmName = farmName;
         this.instructorName = instructorName;
         this.monthlyReportData = monthlyReportData;
         this.user = user;
-
+        this.Text = "";
         var date = moment(this.monthlyReportData[0].Date).format('YYYY-MM-DD');
+       
+      
         this.lessonsService.getSetMonthlyReports(this.user.Id, date.toString(),"",1).then(function (res) {
 
             this.Text = res.Summery;
@@ -91,10 +93,12 @@
 
     function _addTextDetail() {
 
-
+       
         var date = moment(this.monthlyReportData[0].Date).format('YYYY-MM-DD');
         var text = this.Text;
         var CtrlThis = this;
+
+
         this.lessonsService.getSetMonthlyReports(this.user.Id, date.toString(), text,2).then(function (text) {
 
             CtrlThis.studentid = null;

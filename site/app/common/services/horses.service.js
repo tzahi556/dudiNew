@@ -24,6 +24,8 @@
         this.getSetHorseGroups = _getSetHorseGroups;
         this.getSetHorseGroupsHorses = _getSetHorseGroupsHorses;
         this.getSetPirzulHorse = _getSetPirzulHorse;
+        this.getSetVaccinationHorse = _getSetVaccinationHorse;
+
         
         function _insertnewpregnancie(newpregnancie,isBuild) {
           
@@ -68,7 +70,19 @@
             return deferred.promise;
         }
 
+        function _getSetVaccinationHorse(type, lessonid, horsesVaccinationHorselists) {
 
+
+            if (!type) type = '0';
+            var deferred = $q.defer();
+
+            $http.post(sharedValues.apiUrl + 'horses/getSetVaccinationHorse/' + type + '/' + lessonid, horsesVaccinationHorselists).then(function (res) {
+
+                var horses = res.data;
+                deferred.resolve(horses);
+            });
+            return deferred.promise;
+        }
 
 
 

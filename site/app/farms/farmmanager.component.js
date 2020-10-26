@@ -183,7 +183,7 @@
 
 
             if (type == 2) {
-
+              
                 this.farmsService.setMangerFarm(this.farmmanager).then(function (farm) {
 
                     if (!isNoAlert) alert('נשמר בהצלחה');
@@ -285,13 +285,35 @@
             if (type == 2) {
                 for (var i in this.horsegroups) {
                     if (this.horsegroups[i] == obj) {
+
+
                         this.horsegroups.splice(i, 1);
+
+
+
+                        var m = this.horsegroupshorses.length;
+                        while (m--) {
+    
+                            if (this.horsegroupshorses[m].HorseGroupsId == obj.Id) {
+                                this.horsegroupshorses.splice(m, 1);
+                            }
+                        }
+                        //מחיקת הסוסים ששייכים לקבוצה
+                        //for (var m in this.horsegroupshorses) {
+                        //    if (this.horsegroupshorses[m].HorseGroupsId == obj.Id) {
+                        //        this.horsegroupshorses.splice(m, 1);
+                        //    }
+                        //}
+
                     }
                 }
 
                 this.horsesService.getSetHorseGroups(2, this.horsegroups).then(function (res) {
                     thisCtrl.horsegroups = res;
+
                 }.bind(this));
+
+
 
             }
 
