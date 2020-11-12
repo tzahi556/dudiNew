@@ -810,26 +810,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-if="!expense.Sum" ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index" style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}} >
-    <td><input ng-if="$ctrl.newExpense.IsZikuy && expense.BeforePrice>0" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
+                                    <tr ng-if="expense.Sum!=expense.Price" ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index"  style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}} >
+                                        <td><input ng-if="$ctrl.newExpense.IsZikuy && expense.BeforePrice>0" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
 
-    <td>{{expense.Id}}</td>
-    <td>{{expense.ZikuyNumber}}</td>
-    <td>{{expense.Date | ildate: 'DD/MM/YYYY'}}</td>
-    <td width="40%">
-        {{expense.Details}}
-        <span ng-if="expense.Paid">(שולם: {{expense.Paid}})</span>
-    </td>
+                                        <td>{{expense.Id}}</td>
+                                        <td>{{expense.ZikuyNumber}}</td>
+                                        <td>{{expense.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                        <td width="40%">
+                                            {{expense.Details}}
+                                            <span ng-if="expense.Paid">(שולם: {{expense.Paid}})</span>
+                                        </td>
 
-    <td style="direction:ltr;text-align:right">{{expense.BeforePrice}}</td>
-    <td> <input type="number" class="" ng-if="expense.BeforePrice>0" ng-model="expense.Discount" ng-change="$ctrl.changeExpense(expense)" placeholder="" style="width:100px" /></td>
+                                        <td style="direction:ltr;text-align:right">{{expense.BeforePrice}}</td>
+                                        <td> <input type="number" class="" ng-if="expense.BeforePrice>0" ng-model="expense.Discount" ng-change="$ctrl.changeExpense(expense)" placeholder="" style="width:100px" /></td>
 
 
-    <td style="font-weight:bold;direction:ltr;text-align:right">{{expense.BeforePrice - expense.Discount}}</td>
-    <td>{{expense.Sum}}</td>
-    <td><button ng-if="expense.BeforePrice<0 && $ctrl.zikuyButton(expense)" class="btn btn-xs btn-primary" ng-click="$ctrl.modalAction(false,expense)">זיכוי</button></td>
-    <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeExpense(expense)">הסר</button></td>
-</tr>
+                                        <td style="font-weight:bold;direction:ltr;text-align:right">{{expense.BeforePrice - expense.Discount}}</td>
+                                        <td>{{expense.Sum}}</td>
+                                        <td><button ng-if="expense.BeforePrice<0 && $ctrl.zikuyButton(expense)" class="btn btn-xs btn-primary" ng-click="$ctrl.modalAction(false,expense)">זיכוי</button></td>
+                                        <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeExpense(expense)">הסר</button></td>
+                                    </tr>
                                 </tbody>
                             </table>
 
@@ -852,26 +852,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-if="expense.Sum" ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index" style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}} >
-    <td><input ng-if="$ctrl.newExpense.IsZikuy && expense.BeforePrice>0" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
+                                    <tr ng-if="expense.Sum>=expense.Price" ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index" style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}}>
+                                        <td><input ng-if="$ctrl.newExpense.IsZikuy && expense.BeforePrice>0" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
 
-    <td>{{expense.Id}}</td>
-    <td>{{expense.ZikuyNumber}}</td>
-    <td>{{expense.Date | ildate: 'DD/MM/YYYY'}}</td>
-    <td width="40%">
-        {{expense.Details}}
-        <span ng-if="expense.Paid">(שולם: {{expense.Paid}})</span>
-    </td>
+                                        <td>{{expense.Id}}</td>
+                                        <td>{{expense.ZikuyNumber}}</td>
+                                        <td>{{expense.Date | ildate: 'DD/MM/YYYY'}}</td>
+                                        <td width="40%">
+                                            {{expense.Details}}
+                                            <span ng-if="expense.Paid">(שולם: {{expense.Paid}})</span>
+                                        </td>
 
-    <td style="direction:ltr;text-align:right">{{expense.BeforePrice}}</td>
-    <td> <input type="number" class="" ng-if="expense.BeforePrice>0" ng-model="expense.Discount" ng-change="$ctrl.changeExpense(expense)" placeholder="" style="width:100px" /></td>
+                                        <td style="direction:ltr;text-align:right">{{expense.BeforePrice}}</td>
+                                        <td> <input type="number" class="" ng-if="expense.BeforePrice>0" ng-model="expense.Discount" ng-change="$ctrl.changeExpense(expense)" placeholder="" style="width:100px" /></td>
 
 
-    <td style="font-weight:bold;direction:ltr;text-align:right">{{expense.BeforePrice - expense.Discount}}</td>
-    <td>{{expense.Sum}}</td>
-    <td><button ng-if="expense.BeforePrice<0 && $ctrl.zikuyButton(expense)" class="btn btn-xs btn-primary" ng-click="$ctrl.modalAction(false,expense)">זיכוי</button></td>
-    <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeExpense(expense)">הסר</button></td>
-</tr>
+                                        <td style="font-weight:bold;direction:ltr;text-align:right">{{expense.BeforePrice - expense.Discount}}</td>
+                                        <td>{{expense.Sum}}</td>
+                                        <td><button ng-if="expense.BeforePrice<0 && $ctrl.zikuyButton(expense)" class="btn btn-xs btn-primary" ng-click="$ctrl.modalAction(false,expense)">זיכוי</button></td>
+                                        <td><button class="btn btn-xs btn-default" ng-click="$ctrl.removeExpense(expense)">הסר</button></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </uib-tab>

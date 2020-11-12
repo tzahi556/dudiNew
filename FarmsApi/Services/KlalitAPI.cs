@@ -4,6 +4,10 @@ using System.Linq;
 
 namespace FarmsApi.Services
 {
+    // https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx
+    //https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/RequestClaim.asmx
+    //https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx
+
     public class KlalitAPIClass
     {
        

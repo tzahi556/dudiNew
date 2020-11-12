@@ -12,7 +12,7 @@ namespace FarmsApi.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -26,7 +26,8 @@ namespace FarmsApi.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest" +
+            ".asmx")]
         public string FarmsApi_KlalitAPI_SupplierRequest {
             get {
                 return ((string)(this["FarmsApi_KlalitAPI_SupplierRequest"]));

@@ -9,12 +9,12 @@ namespace FarmsApi.Services
     public class HorsesController : ApiController
     {
 
-
-        [Route("UpdateMetaHorsses")]
+        //http://localhost:54033/horses/UpdateMetaHorssesPreg
+        [Route("UpdateMetaHorssesPreg")]
         [HttpGet]
         public string UpdateMetaHorsses()
         {
-            HorsesService.UpdateMetaHorsses();
+            HorsesService.UpdateMetaHorssesPreg();
             return "sdsdsdsd";
         }
 

@@ -266,8 +266,14 @@
 
         function _close(schedular, type) {
 
-            if (this.horsegroupshorses.length > 0) {
+         
+            if (this.horseslists.length > 0) {
                 alert("לא ניתן למחוק משימה שיש פירזולים");
+                return;
+            }
+
+            if (this.horsesVaccinationlists.length > 0) {
+                alert("לא ניתן למחוק משימה שיש חיסונים");
                 return;
             }
 
@@ -402,7 +408,7 @@
 
 
         function _addHorseVaccinationToList(type) {
-         
+          
             var Vaccination = this.newVaccination.Vaccination;
             var Horse = this.newVaccinationHorse;
 
@@ -410,8 +416,9 @@
            
             //הוספת סוס
             if (type == 1) {
-
-                this.horsesVaccinationlists.push({ SusName: this.newVaccinationHorse.Name, Vaccination: this.newVaccination.Vaccination, Id: 0, Cost: 0, isDo: false, HorseId: this.newVaccinationHorse.Id, LessonId: this.lessonId });
+                var name = this.vaccinationsHorse.filter(x => x.id == Vaccination)[0].name;
+                
+                this.horsesVaccinationlists.push({ SusName: this.newVaccinationHorse.Name, Vaccination: Vaccination, HebName:name, Id: 0, Cost: 0, isDo: false, HorseId: this.newVaccinationHorse.Id, LessonId: this.lessonId });
             }
 
            

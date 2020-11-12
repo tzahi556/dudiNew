@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
-  <contractRef ref="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx?wsdl" docRef="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
-  <soap address="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" xmlns:q1="http://www.comtec.co.il/" binding="q1:SupplierRequestSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
-  <soap address="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" xmlns:q2="http://www.comtec.co.il/" binding="q2:SupplierRequestSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <contractRef ref="https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx?wsdl" docRef="https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" xmlns:q1="http://www.comtec.co.il/" binding="q1:SupplierRequestSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" xmlns:q2="http://www.comtec.co.il/" binding="q2:SupplierRequestSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
 </discovery>

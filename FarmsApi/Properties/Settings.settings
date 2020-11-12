@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="FarmsApi_KlalitAPI_SupplierRequest" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx</Value>
+      <Value Profile="(Default)">https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -56,10 +56,10 @@
   </wsdl:binding>
   <wsdl:service name="SupplierRequest">
     <wsdl:port name="SupplierRequestSoap" binding="tns:SupplierRequestSoap">
-      <soap:address location="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" />
+      <soap:address location="https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" />
     </wsdl:port>
     <wsdl:port name="SupplierRequestSoap12" binding="tns:SupplierRequestSoap12">
-      <soap12:address location="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" />
+      <soap12:address location="https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

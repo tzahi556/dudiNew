@@ -73,7 +73,7 @@
                                 <td>{{horseslist.SusName}}</td>
                                 <td><input class="" ng-disabled="horseslist.IsDo" style="width:100px;" type="text" ng-model="horseslist.Cost"></td>
                                 <td><input class="" ng-disabled="horseslist.IsDo" type="checkbox" ng-model="horseslist.IsDo"></td>
-                                <td><button ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1 || !horseslist.IsDo" class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorse(horseslist)">הסר</button></td>
+                                <td><button ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1 && !horseslist.IsDo" class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorse(horseslist)">הסר</button></td>
                             </tr>
                         </tbody>
                     </table>

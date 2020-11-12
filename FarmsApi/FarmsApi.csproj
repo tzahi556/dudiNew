@@ -90,6 +90,8 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Cors, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.0.0\lib\net45\System.Web.Cors.dll</HintPath>
       <Private>True</Private>
@@ -133,10 +135,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Content Include="Web References\KlalitAPI\Reference.map">
+    <None Include="Web References\KlalitAPI\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
-    </Content>
+    </None>
     <None Include="Web References\KlalitAPI\SupplierRequest.wsdl" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -226,10 +228,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx%3fop=SendXML">
+    <WebReferenceUrl Include="https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\KlalitAPI\</RelPath>
-      <UpdateFromURL>https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx%3fop=SendXML</UpdateFromURL>
+      <UpdateFromURL>https://portalsapakim.mushlam.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

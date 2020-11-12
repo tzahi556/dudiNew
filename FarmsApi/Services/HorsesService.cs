@@ -13,6 +13,80 @@ namespace FarmsApi.Services
 {
     public class HorsesService
     {
+
+
+        public static void UpdateMetaHorssesPreg()
+        {
+            using (var Context = new Context())
+            {
+                var Horses = Context.Horses.ToList();
+               // var Horses = Context.Horses.Where(x => x.Id == 17).ToList();
+                foreach (Horse Horsef in Horses)
+                {
+
+                    try
+                    {
+
+
+
+                        var Meta = JObject.Parse(Horsef.Meta);
+
+                        if (Meta["Pregnancies"] != null)
+                        {
+                            foreach (var Item in Meta["Pregnancies"])
+                            {
+
+                                var PregDate = CheckifExistDate(Item["Date"]);
+
+                                var HorsePreg = Context.HorsePregnancies.Where(x => x.HorseId == Horsef.Id && x.Date == PregDate).FirstOrDefault();
+
+
+                                if (HorsePreg == null) continue;
+
+                                if (Item["States"] != null)
+                                {
+
+
+                                    foreach (var st in Item["States"])
+                                    {
+
+
+                                        var State = JObject.Parse(st["State"].ToString());
+
+                                        var statename = State["id"].ToString();
+
+                                        HorsePregnanciesStates hss = Context.HorsePregnanciesStates.Where(x => x.HorsePregnanciesId == HorsePreg.Id && x.StateId == statename).FirstOrDefault();
+
+                                        if (hss != null)
+                                        {
+                                            hss.Date = CheckifExistDate(st["Date"]);
+                                            Context.Entry(hss).State = System.Data.Entity.EntityState.Modified;
+                                        }
+
+
+                                    }
+
+                                }
+
+                            }
+                        }
+
+
+                    }
+                    catch (Exception ex)
+                    {
+
+
+
+                    }
+                }
+
+
+                Context.SaveChanges();
+            }
+        }
+
+
         public static void UpdateMetaHorsses()
         {
             try
@@ -2032,7 +2106,7 @@ namespace FarmsApi.Services
 
 
 
-                                CreateVaccinationsNotifacions(Context, item.HorseId, LessonId, item.Vaccination, CurrentFarm,item);
+                                CreateVaccinationsNotifacions(Context, item.HorseId, LessonId, item.Vaccination, CurrentFarm, item);
 
                             }
                             //}
@@ -2085,7 +2159,7 @@ namespace FarmsApi.Services
                     var Less = Context.Lessons.Where(p => p.Id == LessonId).FirstOrDefault();
                     if (Less != null)
                     {
-                        Less.Details = " חיסוני סוסים ";
+                        Less.Details = "התראת חיסוני סוסים";
                         Context.Entry(Less).State = System.Data.Entity.EntityState.Modified;
                     }
 
@@ -2155,7 +2229,7 @@ namespace FarmsApi.Services
 
 
 
-            var Start = new DateTime(DateVaction.Year, DateVaction.Month, DateVaction.Day,Less.Start.Hour, Less.Start.Minute, Less.Start.Second);// Less.Start.AddDays(DayDiff);
+            var Start = new DateTime(DateVaction.Year, DateVaction.Month, DateVaction.Day, Less.Start.Hour, Less.Start.Minute, Less.Start.Second);// Less.Start.AddDays(DayDiff);
             var End = new DateTime(DateVaction.Year, DateVaction.Month, DateVaction.Day, Less.End.Hour, Less.End.Minute, Less.End.Second);
 
 
@@ -2187,7 +2261,7 @@ namespace FarmsApi.Services
             hv.Cost = HorseVaccinationList.Cost;
             hv.LessonId = NewLessonId;
             hv.Vaccination = Vaccination;
-            
+
             context.HorseVaccinationLists.Add(hv);
 
 
@@ -2275,6 +2349,10 @@ namespace FarmsApi.Services
 
 
                     }
+
+
+
+
 
                     CreateFutureLessons(HorsePirzulLists, Context, GroupName, CurrentFarm);
 
@@ -2432,11 +2510,16 @@ namespace FarmsApi.Services
                 {
                     if (item.IsDo && !item.PrevIsDo)
                     {
-                        item.LessonId = NewLessonId;
-                        item.IsDo = false;
-                        item.MefarzelLessonId = NewMefarzelLessonId;
+                        HorsePirzulLists hp = new HorsePirzulLists();
+                        hp.LessonId = NewLessonId;
+                        hp.IsDo = false;
+                        hp.MefarzelLessonId = NewMefarzelLessonId;
+                        hp.Cost = item.Cost;
+                        hp.GroupName = item.GroupName;
+                        hp.HorseId = item.HorseId;
 
-                        context.HorsePirzulLists.Add(item);
+
+                        context.HorsePirzulLists.Add(hp);
 
                     }
 
@@ -2444,16 +2527,7 @@ namespace FarmsApi.Services
 
 
             }
-            //var AllDoList = HorsePirzulLists.Where(x=>x.IsDo && !x.PrevIsDo).ToList();
-            //if (AllDoList.Count > 0)
-            //{
 
-
-
-
-
-
-            //}
 
         }
 

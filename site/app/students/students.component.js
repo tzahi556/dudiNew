@@ -29,7 +29,9 @@
         this.activeStudent = 0;
         this.notActiveStudent = 0;
         this.pensionStudent = 0;
+        this.pensionStudentNotActive = 0;
 
+        
         this.getCounter();
 
 
@@ -165,14 +167,20 @@
 
         function _getCounter() {
             this.pensionStudent = 0;
+            this.pensionStudentNotActive = 0;
             this.activeStudent = 0;
             this.notActiveStudent = 0;
             for (var i in this.users) {
 
 
-                if (this.users[i].Style == 'horseHolder') {
+                if (this.users[i].Style == 'horseHolder' && this.users[i].Active == 'active') {
                     this.pensionStudent++;
                 }
+                else if (this.users[i].Style == 'horseHolder' && this.users[i].Active == 'notActive') {
+                    this.pensionStudentNotActive++;
+                }
+
+
                 else if (this.users[i].Active == 'active') {
                     this.activeStudent++;
                 }
@@ -203,13 +211,15 @@
                         var data = e.target.result;
                         var workbook;
                         workbook = XLSX.read(data, { type: 'binary' });
-                        debugger
+                       
                         var students = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
 
 
 
                         students.map(function (student) {
+
+                           
                             student.Id = 0;
                             student.Email = student.id;
                             student.Password = student.id;

@@ -842,7 +842,8 @@
 
         // init student
         this.initStudent = function () {
-
+            this.user.AnotherEmail = $.trim(this.user.AnotherEmail);
+           
             if (this.user.IsTafus) { alert(" כרטיס תלמיד זה פתוח אצל ''" + this.user.TofesName + "'',לא ניתן לעבוד על אותו כרטיס במקביל") };
             //  this.migration();
             this.initPaymentForm();
@@ -1597,7 +1598,7 @@
                     this.newPayment.api_email = this.farm.Meta.api_email;
                     this.newPayment.InvoiceDetailsArray = [];
 
-                    if (this.user.Farm_Id != 46) {
+                    if (this.user.Farm_Id != 46 && this.user.Farm_Id != 96) {
                         this.newPayment.isMasKabala = true;
                     } else {
                         this.newPayment.isMasKabala = false;

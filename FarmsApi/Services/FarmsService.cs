@@ -239,9 +239,11 @@ namespace FarmsApi.Services
 	                                    <DoctorID>" + fs.ClalitNumber + @"</DoctorID>
 	                                    <OnlineServiceType>0</OnlineServiceType>
                                     </XMLInput>";
-                    var resXML = kp.SendXML(xml); //203700003 //203700007
+                  var resXML = kp.SendXML(xml); //203700003 //203700007
 
-                    XmlDocument XmlRes = new XmlDocument();
+           
+
+                XmlDocument XmlRes = new XmlDocument();
                     XmlRes.LoadXml(resXML.ToString());
 
                     var Result = XmlRes.DocumentElement.SelectSingleNode("Result").InnerText;// 1 נקלטה

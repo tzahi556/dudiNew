@@ -228,7 +228,7 @@
 
         function _getCurrentPreg(pregId) {
 
-
+            debugger
             var CurrentId = (pregId) ? pregId : this.pregnancies[this.pregnancies.length - 1].Id;
             var ObjArray = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === CurrentId);
 
