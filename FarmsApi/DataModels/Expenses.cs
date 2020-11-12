@@ -23,6 +23,8 @@ namespace FarmsApi.DataModels
        
         public int? SelectedForZikuyManualId { get; set; }
 
-        
+        public int? HorseId { get; set; }
+
+
     }
 }

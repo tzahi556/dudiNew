@@ -101,7 +101,7 @@
         this.countTotal = _countTotal.bind(this);
         this.openComments = _openComments.bind(this);
         this.commentClose = _commentClose.bind(this);
-       // this.countTotalByInvoiceSum = _countTotalByInvoiceSum.bind(this);
+        // this.countTotalByInvoiceSum = _countTotalByInvoiceSum.bind(this);
         this.countSherit = _countSherit.bind(this);
         this.openReport = _openReport.bind(this);
         this.filterReportMontlyComments = _filterReportMontlyComments.bind(this);
@@ -133,6 +133,9 @@
         this.setshowDivLeave = _setshowDivLeave.bind(this);
         this.printExtention = _printExtention.bind(this);
 
+        this.getHorseName = _getHorseName.bind(this);
+
+
 
         this.printLessons = _printLessons.bind(this);
         this.printExcel = _printExcel.bind(this);
@@ -147,7 +150,7 @@
 
         this.changeInvoiceTotal = _changeInvoiceTotal.bind(this);
         this.zikuyButton = _zikuyButton.bind(this);
-        
+
 
         this.show4 = _show4.bind(this);
         this.isDateMoreToday = _isDateMoreToday.bind(this);
@@ -169,6 +172,23 @@
         this.StudentTotalLessons = 0;
 
 
+        this.SelectedExpHorseId = "";
+
+
+
+        function _getHorseName(HorseId) {
+
+            if (HorseId) {
+
+
+                var res = this.horses.filter(x => x.Id == HorseId)[0].Name;
+
+                return res;
+
+            }
+
+            return "";
+        }
         function _zikuyButton(expense) {
 
             if (!expense) {
@@ -182,20 +202,20 @@
 
 
 
-            var sum=0;
+            var sum = 0;
             for (var i in this.expenses) {
                 if (this.expenses[i].ZikuyNumber == expense.Id)
                     sum += this.expenses[i].ZikuySum;
             }
 
-           
+
             if (expense.Price < sum)
                 return true;
             else
                 return false;
 
         }
-       // this.SelectedForZikuyManualId;
+
         function _modalAction(type, expense) {
             if (!type) {
 
@@ -211,7 +231,7 @@
 
             if (type == 1) {
 
-              
+
                 this.submit(true);
                 $('#modalZikuy').modal('hide');
 
@@ -225,15 +245,15 @@
                     this.expenses[i].SelectedForZikuy = false;
                     this.expenses[i].SelectedForZikuyManualId = null;
                 }
-                
+
                 $('#modalZikuy').modal('hide');
 
             }
 
-           
 
 
-           
+
+
 
         }
 
@@ -244,24 +264,35 @@
                 var TableExtenion = "";
 
 
-
+                var Total = 0;
 
                 for (var i in self.expenses) {
 
-                    TableExtenion += "<tr>"
-                        + "<td>" + ((self.expenses[i].Id) ? self.expenses[i].Id : "")
-                        + "</td><td>" + ((self.expenses[i].ZikuyNumber) ? self.expenses[i].ZikuyNumber : "")
-                        + "</td><td>" + moment(self.expenses[i].Date).format('DD/MM/YYYY')
-                        + "</td><td>" + ((self.expenses[i].Details) ? self.expenses[i].Details : "")
-                        + "</td><td>" + ((self.expenses[i].BeforePrice) ? self.expenses[i].BeforePrice : "")
-                        + "</td><td>" + ((self.expenses[i].Discount) ? self.expenses[i].Discount : "")
-                        + "</td><td>" + ((self.expenses[i].Price) ? self.expenses[i].Price : "")
-                        + "</td><td>" + ((self.expenses[i].Paid) ? self.expenses[i].Paid : "")
-                        + "</td><td>" + ((self.expenses[i].Sum) ? self.expenses[i].Sum : "") + "</td></tr>";
+                   
 
+                    if (self.SelectedExpHorseId && self.expenses[i].HorseId != self.SelectedExpHorseId) continue;
+
+                    var back = "";
+                    if (self.expenses[i].Sum != self.expenses[i].Price && self.expenses[i].Price != 0) back = "#ff9980";
+
+                    TableExtenion += "<tr style='background:" + back+"'>"
+                        + "<td style='text-align:right'>" + ((self.expenses[i].Id) ? self.expenses[i].Id : "")
+                        + "</td><td style='text-align:right'>" + ((self.expenses[i].ZikuyNumber) ? self.expenses[i].ZikuyNumber : "")
+                        + "</td><td style='text-align:right'>" + moment(self.expenses[i].Date).format('DD/MM/YYYY')
+                        + "</td><td style='text-align:right'>" + ((self.expenses[i].HorseId) ? self.getHorseName(self.expenses[i].HorseId) : "")
+                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Details) ? self.expenses[i].Details : "")
+                        + "</td><td style='text-align:right'>" + ((self.expenses[i].BeforePrice) ? self.expenses[i].BeforePrice : "")
+                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Discount) ? self.expenses[i].Discount : "")
+                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Price) ? self.expenses[i].Price : "")
+                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Paid) ? self.expenses[i].Paid : "")
+                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Sum) ? self.expenses[i].Sum : "")
+
+                        + "</td><td style='text-align:right'>" + (self.expenses[i].Price - self.expenses[i].Sum) + "</td></tr>";
+
+                    Total += (self.expenses[i].Price - self.expenses[i].Sum);
 
                 }
-
+                TableExtenion += "<tr style='background: #66ccff'><td colspan='9'></td><td>הסכום לתשלום</td><td style='text-align:right' >" + Total+"</td></tr>";
                 text = text.replace("@TableExtenion", TableExtenion);
 
                 var blob = new Blob([text], {
@@ -333,12 +364,17 @@
                 'עלות',
                 'הנחה',
                 'עלות סופית',
+                'חשבונית',
                 'שולם',
+                'יתרה לתשלום',
 
             ]);
 
             for (var i in this.expenses) {
                 // var index = (parseInt(i) + 1);
+
+                if (self.SelectedExpHorseId && self.expenses[i].HorseId != self.SelectedExpHorseId) continue;
+
                 data.push([
 
 
@@ -352,6 +388,7 @@
                     ((self.expenses[i].Price) ? self.expenses[i].Price : ""),
                     ((self.expenses[i].Paid) ? self.expenses[i].Paid : ""),
                     ((self.expenses[i].Sum) ? self.expenses[i].Sum : ""),
+                    ((self.expenses[i].Price) - self.expenses[i].Sum),
 
                 ]);
 
@@ -777,7 +814,7 @@
                 instructorId = this.user.MainInstructorId;
             }
 
-            this.scope.$broadcast('reportMonth.show', this.filterReportMontlyComments(reportdate), this.user.FirstName + " " + this.user.LastName, this.user.Email, this.farm.Name, this.getInstructorName(instructorId),this.user);
+            this.scope.$broadcast('reportMonth.show', this.filterReportMontlyComments(reportdate), this.user.FirstName + " " + this.user.LastName, this.user.Email, this.farm.Name, this.getInstructorName(instructorId), this.user);
 
 
         }
@@ -843,7 +880,7 @@
         // init student
         this.initStudent = function () {
             this.user.AnotherEmail = $.trim(this.user.AnotherEmail);
-           
+
             if (this.user.IsTafus) { alert(" כרטיס תלמיד זה פתוח אצל ''" + this.user.TofesName + "'',לא ניתן לעבוד על אותו כרטיס במקביל") };
             //  this.migration();
             this.initPaymentForm();
@@ -1013,6 +1050,25 @@
         }
 
         function _addExpense() {
+
+
+
+
+           
+            if (this.newExpense.HorseId && this.userhorses.filter(x => x.HorseId == this.newExpense.HorseId).length==0) {
+
+                if (!confirm('הסוס הנבחר אינו ברשימת הסוסים , האם לצרף בכל זאת?')) {
+
+
+                    return;
+
+
+                }
+
+
+            }
+
+
             this.expenses = this.expenses || [];
 
 
@@ -1204,7 +1260,7 @@
         }
 
         function _monthlyReport() {
-           
+
             var LastDate = "";
             this.monthlyReportData = [];
             this.monthlyReportHeader = [];
@@ -1222,7 +1278,7 @@
                 if (monthlyLessons[i].statuses[0].Details || monthlyLessons[i].statuses[0].Mashov) {
 
                     // alert(monthlyLessons[i].statuses[0].Details);
-                    this.monthlyReportData.push({ Date: monthlyLessons[i].start, Details: monthlyLessons[i].statuses[0].Details, Mashov: monthlyLessons[i].statuses[0].Mashov});
+                    this.monthlyReportData.push({ Date: monthlyLessons[i].start, Details: monthlyLessons[i].statuses[0].Details, Mashov: monthlyLessons[i].statuses[0].Mashov });
 
 
                 }
@@ -1678,16 +1734,16 @@
         }
 
 
-        
+
         function _changeInvoiceTotal() {
 
             var Sum = 0;
-            var Details ='';
+            var Details = '';
             for (var total of self.newPayment.InvoiceDetailsArray) {
 
-               
+
                 Sum += total.price;
-                Details += (total.details)? (total.details + ","):"";
+                Details += (total.details) ? (total.details + ",") : "";
 
             }
 
@@ -1703,7 +1759,7 @@
             self.newPayment.InvoiceDetails = '';
 
             self.newPayment.InvoiceDetailsArray = [];
-            
+
             var counter = 1;
             if (self.newPayment.lessons || self.newPayment.month) {
                 if (self.user.PayType == 'lessonCost') {
@@ -1722,7 +1778,7 @@
 
                     if (this.farm.Meta.IsDateInKabala) {
 
-                        self.newPayment.InvoiceDetails +=  this.getLessonsDateNoPaid(self.newPayment.lessons);
+                        self.newPayment.InvoiceDetails += this.getLessonsDateNoPaid(self.newPayment.lessons);
 
                     }
 
@@ -1756,12 +1812,12 @@
 
                 }
 
-                var InvoiceDetailsObj = { 'details': self.newPayment.InvoiceDetails, 'price': self.newPayment.InvoiceSum, 'amount': counter++,'price_inc_vat':true};
+                var InvoiceDetailsObj = { 'details': self.newPayment.InvoiceDetails, 'price': self.newPayment.InvoiceSum, 'amount': counter++, 'price_inc_vat': true };
                 self.newPayment.InvoiceDetailsArray.push(InvoiceDetailsObj);
 
             }
             if (this.expenses !== undefined) {
-               
+
                 for (var expense of this.expenses.filter(function (expense) { return expense.Checked && expense.Price != expense.Sum })) {
 
                     var OneInvoiceSum = expense.Price + ((!expense.ZikuySum) ? 0 : expense.ZikuySum) - ((!expense.Sum) ? 0 : expense.Sum);
@@ -1771,7 +1827,7 @@
                     self.newPayment.InvoiceDetails += OneInvoiceDetails + ",";
 
 
-                    var InvoiceDetailsObj = { 'details': OneInvoiceDetails, 'price': OneInvoiceSum, 'amount': counter++, 'price_inc_vat': true};
+                    var InvoiceDetailsObj = { 'details': OneInvoiceDetails, 'price': OneInvoiceSum, 'amount': counter++, 'price_inc_vat': true };
                     self.newPayment.InvoiceDetailsArray.push(InvoiceDetailsObj);
 
 
@@ -2518,12 +2574,12 @@
                 if (newPayment.parents)
                     newPayment.parents = (newPayment.parents).join();
 
-              
+
 
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
-                  
+
                     if (response.data == "-1") {
                         alert('לא ניתן להנפיק מסמך , תעודת זהות קיימת במערכת');
                         return;
@@ -2708,15 +2764,15 @@
 
                     // צחי עדכן
                     if (newPayment.doc_type == "Zikuy") {
-                       
+
                         payment.ZikuyNumber = newPayment.InvoiceNum;
                         payment.ZikuyPdf = newPayment.InvoicePdf;
                         //debugger
                         if (payment.ParentInvoiceNum) {
-                           
+
                             for (var x in thisCtrl.payments) {
                                 if (thisCtrl.payments[x].InvoiceNum == payment.ParentInvoiceNum) {
-                                
+
 
                                     // רק במידה ויש שיעורים בחשבונית שאתה מצמיד אליה זיכוי תעשה הורדת שיעורים
                                     if (thisCtrl.user.PayType == "lessonCost" && thisCtrl.payments[x].lessons > 0) {
@@ -2724,7 +2780,7 @@
                                         thisCtrl.payments[x].lessons = Math.floor(difflessons);
                                     }
 
-                                    
+
                                     else if (thisCtrl.user.PayType == "monthCost") {
 
                                         if (thisCtrl.payments[x].untilmonth && thisCtrl.payments[x].untilmonth != thisCtrl.payments[x].month) {
@@ -2736,7 +2792,7 @@
 
                                         } else {
 
-                                            if ((newPayment.InvoiceSum * -1) >= thisCtrl.payments[x].Price) { 
+                                            if ((newPayment.InvoiceSum * -1) >= thisCtrl.payments[x].Price) {
                                                 thisCtrl.payments[x].month = null;
                                                 thisCtrl.payments[x].untilmonth = null;
                                             }
@@ -2758,7 +2814,7 @@
 
                         else if (payment.doc_type == "Mas") {
 
-                            newPayment.InvoiceSumFakeZikuy =  newPayment.InvoiceSum;
+                            newPayment.InvoiceSumFakeZikuy = newPayment.InvoiceSum;
                             newPayment.InvoiceSum = 0;
 
                         }
@@ -2771,8 +2827,8 @@
 
                         else if (thisCtrl.user.PayType == "monthCost") {
 
-                          
-                           
+
+
                             if (payment.untilmonth && payment.untilmonth != payment.month) {
                                 var diffMonth = (moment(payment.untilmonth).startOf('month')).diff(moment(payment.month).startOf('month'), 'months', true);
                                 var diffMoney = ((diffMonth * payment.Price) + newPayment.InvoiceSum) / payment.Price;
@@ -2788,7 +2844,7 @@
 
                             }
 
-                           
+
 
                         }
 
