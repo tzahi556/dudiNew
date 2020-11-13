@@ -520,6 +520,7 @@ namespace FarmsApi.Services
                         ex.Price = (PensionPrice ?? 0) + (TrainingCost ?? 0);
                         ex.BeforePrice = (PensionPrice ?? 0) + (TrainingCost ?? 0);
                         ex.UserId = UserH.UserId;
+                        ex.HorseId = UserH.HorseId;
                         string MonthPay = DateTime.Now.Month.ToString();
                         string YearPay = DateTime.Now.Year.ToString();
                         ex.Details = " תשלום חודש " + MonthPay + "/" + YearPay + " עבור סוס:  " + UserH.Name + " " + addExpen;

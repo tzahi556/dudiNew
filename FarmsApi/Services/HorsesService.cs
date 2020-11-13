@@ -1044,6 +1044,7 @@ namespace FarmsApi.Services
                         e.Price = (cost ?? 0) - (discount ?? 0);
                         e.UserId = (int)hv.UserId;
                         e.Date = date;
+                        e.HorseId = horseId;
                         Context.Expenses.Add(e);
                         Context.SaveChanges();
                         res = e.Id;
@@ -1089,6 +1090,7 @@ namespace FarmsApi.Services
                     e.Discount = (discount ?? 0);
                     e.Price = (cost ?? 0) - (discount ?? 0);
                     e.UserId = uh.UserId;
+                    e.HorseId = horseId;
                     e.Date = date;
                     Context.Expenses.Add(e);
                     Context.SaveChanges();

@@ -257,42 +257,99 @@
 
         }
 
-        function _printExtention() {
+        function _printExtention(isShulam) {
             $.get('app/students/ReportExtenion.html?sssd=' + new Date(), function (text) {
                 text = text.replace("@StudentName", self.user.FirstName + " " + self.user.LastName);
+                text = text.replace("@CurrentDate", moment().format('DD/MM/YYYY'));
+
+              
+
 
                 var TableExtenion = "";
 
 
                 var Total = 0;
+                var TotalHorse = 0;
+                var expensesArray = [];
+                if (self.SelectedExpHorseId) {
+                   
+                    expensesArray = self.expenses.filter(x => x.HorseId == self.SelectedExpHorseId);
+                }
+                else { 
+                 
+                    expensesArray = self.expenses.sort((a, b) => (a.HorseId > b.HorseId) ? 1 : -1);
+                }
 
-                for (var i in self.expenses) {
+
+                if (!isShulam) {
+
+                    expensesArray = expensesArray.filter(x => x.Sum != x.Price && x.Price != 0);
+
+                } else {
+                    expensesArray = expensesArray.filter(x => x.Sum >= x.Price || x.Price == 0);
+                  
+                }
+
+
+
+
+                var TempHorseId = expensesArray[0].HorseId;
+
+              
+
+
+                for (var i in expensesArray) {
+
+                   // if (self.SelectedExpHorseId && self.expenses[i].HorseId != self.SelectedExpHorseId) continue;
+
+                    if (expensesArray[i].HorseId != TempHorseId) {
+
+
+                        TableExtenion += "<tr style='background: Gray;color:white'><td colspan='6' style='text-align:left;padding-left:10px'>סה''כ  " + self.getHorseName(TempHorseId)+"</td><td style='text-align:right' >" + TotalHorse + "</td></tr>";
+                        TotalHorse = 0;
+                        TempHorseId = expensesArray[i].HorseId;
+
+                    }
+
+
+
+                  
+
+                    //var back = "";
+                    //if (self.expenses[i].Sum != self.expenses[i].Price && self.expenses[i].Price != 0) back = "#ff9980";
+
+                    TableExtenion += "<tr>"
+                        //+ "<td style='text-align:right'>" + ((expensesArray[i].Id) ? expensesArray[i].Id : "")
+                        //+ "</td><td style='text-align:right'>" + ((expensesArray[i].ZikuyNumber) ? expensesArray[i].ZikuyNumber : "")
+                        + "</td><td style='text-align:right'>" + moment(expensesArray[i].Date).format('DD/MM/YYYY')
+                        + "</td><td style='text-align:right'>" + ((expensesArray[i].HorseId) ? self.getHorseName(expensesArray[i].HorseId) : "")
+                        + "</td><td style='text-align:right'>" + ((expensesArray[i].Details) ? expensesArray[i].Details : "")
+                        + "</td><td style='text-align:right'>" + ((expensesArray[i].BeforePrice) ? expensesArray[i].BeforePrice : "")
+                        + "</td><td style='text-align:right'>" + ((expensesArray[i].Discount) ? expensesArray[i].Discount : "")
+                        + "</td><td style='text-align:right'>" + ((expensesArray[i].Price) ? expensesArray[i].Price : "")
+                        //+ "</td><td style='text-align:right'>" + ((expensesArray[i].Paid) ? expensesArray[i].Paid : "")
+                        //+ "</td><td style='text-align:right'>" + ((expensesArray[i].Sum) ? expensesArray[i].Sum : "")
+
+                        + "</td><td style='text-align:right'>" + (expensesArray[i].Price - expensesArray[i].Sum) + "</td></tr>";
+
+                    Total += (expensesArray[i].Price - expensesArray[i].Sum);
+                    TotalHorse += (expensesArray[i].Price - expensesArray[i].Sum);
+
 
                    
+                    if ((eval(i) + 1) == expensesArray.length) {
 
-                    if (self.SelectedExpHorseId && self.expenses[i].HorseId != self.SelectedExpHorseId) continue;
-
-                    var back = "";
-                    if (self.expenses[i].Sum != self.expenses[i].Price && self.expenses[i].Price != 0) back = "#ff9980";
-
-                    TableExtenion += "<tr style='background:" + back+"'>"
-                        + "<td style='text-align:right'>" + ((self.expenses[i].Id) ? self.expenses[i].Id : "")
-                        + "</td><td style='text-align:right'>" + ((self.expenses[i].ZikuyNumber) ? self.expenses[i].ZikuyNumber : "")
-                        + "</td><td style='text-align:right'>" + moment(self.expenses[i].Date).format('DD/MM/YYYY')
-                        + "</td><td style='text-align:right'>" + ((self.expenses[i].HorseId) ? self.getHorseName(self.expenses[i].HorseId) : "")
-                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Details) ? self.expenses[i].Details : "")
-                        + "</td><td style='text-align:right'>" + ((self.expenses[i].BeforePrice) ? self.expenses[i].BeforePrice : "")
-                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Discount) ? self.expenses[i].Discount : "")
-                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Price) ? self.expenses[i].Price : "")
-                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Paid) ? self.expenses[i].Paid : "")
-                        + "</td><td style='text-align:right'>" + ((self.expenses[i].Sum) ? self.expenses[i].Sum : "")
-
-                        + "</td><td style='text-align:right'>" + (self.expenses[i].Price - self.expenses[i].Sum) + "</td></tr>";
-
-                    Total += (self.expenses[i].Price - self.expenses[i].Sum);
+                        TableExtenion += "<tr style='background:Gray ;color:white'><td colspan='6' style='text-align:left;padding-left:10px'>סה''כ  " + ((expensesArray[i].HorseId) ? self.getHorseName(expensesArray[i].HorseId):'')+"</td><td style='text-align:right' >" + TotalHorse + "</td></tr>";
+                    }
+                 
 
                 }
-                TableExtenion += "<tr style='background: #66ccff'><td colspan='9'></td><td>הסכום לתשלום</td><td style='text-align:right' >" + Total+"</td></tr>";
+
+
+              
+
+
+                TableExtenion += "<tr style='background: #66ccff;font-size:18px;  font-weight: bold;'><td colspan='5'></td><td style='text-align:left;padding-left:10px'>הסכום לתשלום</td><td style='text-align:right' >" + Total+"</td></tr>";
                 text = text.replace("@TableExtenion", TableExtenion);
 
                 var blob = new Blob([text], {
@@ -352,43 +409,78 @@
         }
 
 
-        function _printExcelExpensive() {
+        function _printExcelExpensive(isShulam) {
 
 
             var data = [];
+
+            data.push(['דו"ח הוצאות אחרות']);
+            data.push([self.user.FirstName + " " + self.user.LastName]);
+            data.push(['תאריך הפקת דו"ח', moment().format('DD/MM/YYYY')]);
+            data.push([]);
+            data.push([]);
+
+
+
+
             data.push([
-                '#',
-                'זיכוי',
+                //'#',
+                //'זיכוי',
                 'תאריך',
+                'סוס',
                 'תיאור',
                 'עלות',
                 'הנחה',
                 'עלות סופית',
-                'חשבונית',
-                'שולם',
+                //'חשבונית',
+                //'שולם',
                 'יתרה לתשלום',
 
             ]);
 
-            for (var i in this.expenses) {
-                // var index = (parseInt(i) + 1);
 
-                if (self.SelectedExpHorseId && self.expenses[i].HorseId != self.SelectedExpHorseId) continue;
+
+            var expensesArray = [];
+            if (self.SelectedExpHorseId) {
+
+                expensesArray = self.expenses.filter(x => x.HorseId == self.SelectedExpHorseId);
+            }
+            else {
+
+                expensesArray = self.expenses.sort((a, b) => (a.HorseId > b.HorseId) ? 1 : -1);
+            }
+
+
+            if (!isShulam) {
+
+                expensesArray = expensesArray.filter(x => x.Sum != x.Price && x.Price != 0);
+
+            } else {
+                expensesArray = expensesArray.filter(x => x.Sum >= x.Price || x.Price == 0);
+
+            }
+
+
+
+        
+            for (var i in expensesArray) {
+                
 
                 data.push([
 
 
 
-                    ((self.expenses[i].Id) ? self.expenses[i].Id : ""),
-                    ((self.expenses[i].ZikuyNumber) ? self.expenses[i].ZikuyNumber : ""),
-                    moment(self.expenses[i].Date).format('DD/MM/YYYY'),
-                    ((self.expenses[i].Details) ? self.expenses[i].Details : ""),
-                    ((self.expenses[i].BeforePrice) ? self.expenses[i].BeforePrice : ""),
-                    ((self.expenses[i].Discount) ? self.expenses[i].Discount : ""),
-                    ((self.expenses[i].Price) ? self.expenses[i].Price : ""),
-                    ((self.expenses[i].Paid) ? self.expenses[i].Paid : ""),
-                    ((self.expenses[i].Sum) ? self.expenses[i].Sum : ""),
-                    ((self.expenses[i].Price) - self.expenses[i].Sum),
+                    //((expensesArray[i].Id) ? expensesArray[i].Id : ""),
+                    //((expensesArray[i].ZikuyNumber) ? expensesArray[i].ZikuyNumber : ""),
+                    moment(expensesArray[i].Date).format('DD/MM/YYYY'),
+                    ((expensesArray[i].HorseId) ? self.getHorseName(expensesArray[i].HorseId) : ""),
+                    ((expensesArray[i].Details) ? expensesArray[i].Details : ""),
+                    ((expensesArray[i].BeforePrice) ? expensesArray[i].BeforePrice : ""),
+                    ((expensesArray[i].Discount) ? expensesArray[i].Discount : ""),
+                    ((expensesArray[i].Price) ? expensesArray[i].Price : ""),
+                    //((expensesArray[i].Paid) ? expensesArray[i].Paid : ""),
+                    //((expensesArray[i].Sum) ? expensesArray[i].Sum : ""),
+                    ((expensesArray[i].Price) - expensesArray[i].Sum),
 
                 ]);
 

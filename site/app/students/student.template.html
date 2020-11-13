@@ -785,21 +785,20 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
 
-                        <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printExtention()"> הדפסת הוצאות </button>
-                        <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-click="$ctrl.printExcelExpensive()"> הורדה לאקסל </button>
                         <div style="float:left">
-                            <select type="text"  ng-options="horse.Id as horse.Name for horse in $ctrl.horses |filter:{Active:'!notActive'}" ng-model="$ctrl.SelectedExpHorseId">
+                            <select type="text" ng-options="horse.Id as horse.Name for horse in $ctrl.horses |filter:{Active:'!notActive'}" ng-model="$ctrl.SelectedExpHorseId">
                                 <option value="" selected="selected">--בחר סוס/ה--</option>
 
                             </select>
                         </div>
-
-
                         הוצאות אחרות
                     </div>
 
                     <uib-tabset active="active" class="tab-form-demo" style="padding:5px">
                         <uib-tab index="0" heading="לא שולם">
+                            <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printExtention(false)"> הדפסת הוצאות </button>
+                            <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-click="$ctrl.printExcelExpensive(false)"> הורדה לאקסל </button>
+                            
 
                             <table class="table" expandable>
                                 <thead>
@@ -819,7 +818,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-if="expense.Sum!=expense.Price && expense.Price!=0 && (expense.HorseId==$ctrl.SelectedExpHorseId || !$ctrl.SelectedExpHorseId)" ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index"  style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}} >
+                                    <tr ng-if="expense.Sum!=expense.Price && expense.Price!=0 && (expense.HorseId==$ctrl.SelectedExpHorseId || !$ctrl.SelectedExpHorseId)" ng-repeat="expense in $ctrl.expenses | orderByDateDesc track by $index" style=background:{{(expense.BeforePrice<0)?'#ffeeee':''}} >
                                     <td><input ng-if="$ctrl.newExpense.IsZikuy && expense.BeforePrice>0" type="checkbox" ng-change="$ctrl.setExpensiveZikuy(expense)" ng-model="expense.SelectedForZikuy" /></td>
 
                                     <td>{{expense.Id}}</td>
@@ -846,6 +845,10 @@
 
                         </uib-tab>
                         <uib-tab index="1" heading="שולם">
+                            <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printExtention(true)"> הדפסת הוצאות </button>
+                            <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-click="$ctrl.printExcelExpensive(true)"> הורדה לאקסל </button>
+                           
+
                             <table class="table" expandable>
                                 <thead>
                                     <tr>
