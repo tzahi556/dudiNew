@@ -59,10 +59,12 @@
 
         this.getLessonByStartAndResource = _getLessonByStartAndResource.bind(this);
         this.getLessonsByInstructorAndTime = _getLessonsByInstructorAndTime.bind(this);
-
+        this.getLessonsByInstructorAndTimeExcel = _getLessonsByInstructorAndTimeExcel.bind(this);
+        
         
 
         this.printLessons = _printLessons.bind(this);
+        this.printExcel = _printExcel.bind(this);
         this.searchDate = new Date();
         this.lessToDrop = "";
 
@@ -85,8 +87,112 @@
         this.viewCalenderType = "agendaDay";
         this.setExex = _setExex.bind(this);
 
-        // this.reloadCalendarData();
-      
+       
+        function _printExcel() {
+
+
+            var prevInstructorId = "";
+            var HeaderTemplate = "<table width='100%' border='1' dir='rtl' style='border-collapse:collapse; table-layout:fixed;' ><tr><th style='width:80px;background:yellow;'>שעה</th>";
+            var BodyTemplate = "";
+
+
+            var InstructArray = [];
+
+            //מדריכים
+            for (var i in this.instructors) {
+
+                if (prevInstructorId != this.instructors[i].Id) {
+
+                    if (this.instructors[i].Show) {
+
+
+                        HeaderTemplate += "<th style='background:yellow;width:270px'>" + this.instructors[i].FirstName + " " + this.instructors[i].LastName + "</th>";
+                        InstructArray.push(this.instructors[i].Id);
+
+
+                    }
+
+                    prevInstructorId = this.instructors[i].Id;
+
+                 
+
+                }
+            }
+
+
+            var quarterHours = ["00", "15", "30", "45"];
+            var times = [];
+            for (var i = 7; i < 24; i++) {
+                for (var j = 0; j < 4; j++) {
+                    var hour = i.toString();
+                    if (i < 10)
+                        hour = "0" + hour;
+
+                    var CurrentTime = hour + ":" + quarterHours[j];
+
+                    BodyTemplate += "<tr><td valign='top' align='center' style=''>" + CurrentTime + "</td>";
+
+
+                    for (var m in InstructArray) {
+
+                        var CurrentLessons = this.lessons.filter(x => moment(x.start).format("HH:mm") == CurrentTime && x.resourceId == InstructArray[m]);
+
+
+                        if (CurrentLessons.length != 0) {
+
+                            var startDate = moment(CurrentLessons[0].start)
+                                , endDate = moment(CurrentLessons[0].end)
+
+
+                            var diffMiniuts = (endDate.startOf('minute')).diff(startDate.startOf('minute'), 'minutes', true);
+
+                            var lessonTime = diffMiniuts / 15;
+
+
+                            var currentInstructor = this.instructors.filter(n => n.Id == InstructArray[m]);
+
+
+                            BodyTemplate += "<td valign='top' class='dvLesson' style=''  rowspan='" + lessonTime + "' style='text-align:right;background:" + currentInstructor[0].EventsColor + "'>" + this.getLessonsByInstructorAndTimeExcel(CurrentLessons[0]) + "</td>";
+                        } else {
+
+
+                            var time = moment(this.searchDate).toDate(); 
+                            time.setHours(i);
+                            time.setMinutes(quarterHours[j]);
+
+
+                            var Tafus = this.lessons.filter(x => moment(x.start) < time && moment(x.end) > time && x.resourceId == InstructArray[m]);
+                            if (Tafus.length == 0)
+                                BodyTemplate += "<td></td>";
+
+                        }
+
+                    }
+
+
+                    BodyTemplate += "</tr>";
+
+
+                }
+            }
+
+
+            var self = this;
+            $.get('app/lessons/Report.html?sssd=' + new Date(), function (text) {
+                text = text.replace("@FromDate", moment(self.searchDate).format('DD/MM/YYYY'));
+                text = text.replace("@TableLessons", HeaderTemplate + BodyTemplate + "</table>");
+             
+                var blob = new Blob([text], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                });
+
+                var dateFrom = moment().toDate();
+                var repDate = moment(dateFrom).format('DD/MM/YYYY HH:mm');
+                saveAs(blob, " לוח שיעורים " + repDate + ".xls");
+
+            });
+
+        }
 
         function _printLessons() {
 
@@ -210,6 +316,92 @@
                 saveAs(blob, " לוח שיעורים " + new Date() + ".html");
 
             });
+
+        }
+
+        function _getLessonsByInstructorAndTimeExcel(less) {
+
+
+
+            var starttime = moment(less.start).format("HH:mm");
+            var endtime = moment(less.end).format("HH:mm");
+            var res = "";
+
+            res += "<div class='dvTime'>" + starttime + "-" + endtime + "</div><div>";
+
+            for (var i in less.students) {
+
+                for (var x in this.students) {
+
+                    if (less.students[i] == this.students[x].Id) {
+
+                        var horseName = "";
+                        var status = less.statuses.filter(n => n.StudentId == this.students[x].Id);
+                        var horseObj = this.horses.filter(x => x.Id == status[0].HorseId);
+                        if (horseObj.length > 0) {
+
+
+                            horseName = "(" + horseObj[0].Name + ")";
+
+                        }
+
+
+                        var statusName = "";
+                        if (status.length > 0) {
+
+                            switch (status[0].Status) {
+
+                                case 'attended':
+                                    statusName = 'הגיע'
+                                    break;
+                                case 'notAttended':
+                                    statusName = 'לא הגיע'
+                                    break;
+                                case 'notAttendedCharge':
+                                    statusName = 'לא הגיע לחייב'
+                                    break;
+                                case 'notAttendedDontCharge':
+                                    statusName = 'לא הגיע לא לחייב'
+                                    break;
+                                case 'completionReq':
+                                case 'completionReqCharge':
+                                    statusName = 'השלמה'
+                                    break;
+                                default:
+                                    statusName = '';
+                                    break;
+
+
+                            }
+
+
+                            if (status[0].Status == 'completion') {
+                                if ((status.IsComplete == 4)) {
+                                    statusName = 'הגיע';
+                                }
+
+                                if ((status.IsComplete == 6)) {
+                                    statusName = 'לא הגיע לחייב'
+                                }
+
+
+                                if ((status.IsComplete == 3)) {
+                                    statusName = 'לא הגיע'
+                                }
+
+                            }
+
+                        }
+
+
+
+                        res += "<div>" + this.students[x].FirstName + " " + this.students[x].LastName + " " + horseName + ((statusName)?(" - " + statusName ):'')+ "</div>";
+                    }
+                }
+
+            }
+
+            return res;//+ "</div>";
 
         }
 

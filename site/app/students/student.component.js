@@ -134,7 +134,7 @@
         this.printExtention = _printExtention.bind(this);
 
         this.getHorseName = _getHorseName.bind(this);
-
+        this.setAutoForexp = _setAutoForexp.bind(this);
 
 
         this.printLessons = _printLessons.bind(this);
@@ -262,7 +262,7 @@
                 text = text.replace("@StudentName", self.user.FirstName + " " + self.user.LastName);
                 text = text.replace("@CurrentDate", moment().format('DD/MM/YYYY'));
 
-              
+
 
 
                 var TableExtenion = "";
@@ -272,11 +272,11 @@
                 var TotalHorse = 0;
                 var expensesArray = [];
                 if (self.SelectedExpHorseId) {
-                   
+
                     expensesArray = self.expenses.filter(x => x.HorseId == self.SelectedExpHorseId);
                 }
-                else { 
-                 
+                else {
+
                     expensesArray = self.expenses.sort((a, b) => (a.HorseId > b.HorseId) ? 1 : -1);
                 }
 
@@ -287,7 +287,7 @@
 
                 } else {
                     expensesArray = expensesArray.filter(x => x.Sum >= x.Price || x.Price == 0);
-                  
+
                 }
 
 
@@ -295,17 +295,17 @@
 
                 var TempHorseId = expensesArray[0].HorseId;
 
-              
+
 
 
                 for (var i in expensesArray) {
 
-                   // if (self.SelectedExpHorseId && self.expenses[i].HorseId != self.SelectedExpHorseId) continue;
+                    // if (self.SelectedExpHorseId && self.expenses[i].HorseId != self.SelectedExpHorseId) continue;
 
                     if (expensesArray[i].HorseId != TempHorseId) {
 
 
-                        TableExtenion += "<tr style='background: Gray;color:white'><td colspan='6' style='text-align:left;padding-left:10px'>סה''כ  " + self.getHorseName(TempHorseId)+"</td><td style='text-align:right' >" + TotalHorse + "</td></tr>";
+                        TableExtenion += "<tr style='background: Gray;color:white'><td colspan='6' style='text-align:left;padding-left:10px'>סה''כ  " + self.getHorseName(TempHorseId) + "</td><td style='text-align:right' >" + TotalHorse + "</td></tr>";
                         TotalHorse = 0;
                         TempHorseId = expensesArray[i].HorseId;
 
@@ -313,7 +313,7 @@
 
 
 
-                  
+
 
                     //var back = "";
                     //if (self.expenses[i].Sum != self.expenses[i].Price && self.expenses[i].Price != 0) back = "#ff9980";
@@ -336,20 +336,20 @@
                     TotalHorse += (expensesArray[i].Price - expensesArray[i].Sum);
 
 
-                   
+
                     if ((eval(i) + 1) == expensesArray.length) {
 
-                        TableExtenion += "<tr style='background:Gray ;color:white'><td colspan='6' style='text-align:left;padding-left:10px'>סה''כ  " + ((expensesArray[i].HorseId) ? self.getHorseName(expensesArray[i].HorseId):'')+"</td><td style='text-align:right' >" + TotalHorse + "</td></tr>";
+                        TableExtenion += "<tr style='background:Gray ;color:white'><td colspan='6' style='text-align:left;padding-left:10px'>סה''כ  " + ((expensesArray[i].HorseId) ? self.getHorseName(expensesArray[i].HorseId) : '') + "</td><td style='text-align:right' >" + TotalHorse + "</td></tr>";
                     }
-                 
+
 
                 }
 
 
-              
 
 
-                TableExtenion += "<tr style='background: #66ccff;font-size:18px;  font-weight: bold;'><td colspan='5'></td><td style='text-align:left;padding-left:10px'>הסכום לתשלום</td><td style='text-align:right' >" + Total+"</td></tr>";
+
+                TableExtenion += "<tr style='background: #66ccff;font-size:18px;  font-weight: bold;'><td colspan='5'></td><td style='text-align:left;padding-left:10px'>הסכום לתשלום</td><td style='text-align:right' >" + Total + "</td></tr>";
                 text = text.replace("@TableExtenion", TableExtenion);
 
                 var blob = new Blob([text], {
@@ -462,9 +462,9 @@
 
 
 
-        
+
             for (var i in expensesArray) {
-                
+
 
                 data.push([
 
@@ -1146,8 +1146,8 @@
 
 
 
-           
-            if (this.newExpense.HorseId && this.userhorses.filter(x => x.HorseId == this.newExpense.HorseId).length==0) {
+
+            if (this.newExpense.HorseId && this.userhorses.filter(x => x.HorseId == this.newExpense.HorseId).length == 0) {
 
                 if (!confirm('הסוס הנבחר אינו ברשימת הסוסים , האם לצרף בכל זאת?')) {
 
@@ -1919,6 +1919,7 @@
                     self.newPayment.InvoiceDetails += OneInvoiceDetails + ",";
 
 
+
                     var InvoiceDetailsObj = { 'details': OneInvoiceDetails, 'price': OneInvoiceSum, 'amount': counter++, 'price_inc_vat': true };
                     self.newPayment.InvoiceDetailsArray.push(InvoiceDetailsObj);
 
@@ -2605,7 +2606,7 @@
             this.disablBtn = true;
 
             var UserTypePaid = this.user.PayType;
-            this.newPayment.customer_name = (this.user.Organzion ? (this.user.Organzion + "-") : "") + this.user.FirstName + ' ' + this.user.LastName;
+            this.newPayment.customer_name = (this.user.Organzion ? (this.user.Organzion + "-") : "") + ((this.TempFirstName) ? this.TempFirstName : this.user.FirstName) + ' ' + ((this.TempLastName) ? this.TempLastName : this.user.LastName);
             this.newPayment.customer_email = this.user.AnotherEmail;
             this.newPayment.customer_address = this.user.Address;
             this.newPayment.UserId = this.user.Id;
@@ -2614,6 +2615,8 @@
             this.newPayment.customer_crn = this.user.IdNumber;
             this.newPayment.c_accounting_num = this.user.ClientNumber;
 
+            // 
+            this.newPayment.temp_customer_crn = ((this.TempIdNumber) ? this.TempIdNumber : this.user.IdNumber);
             // הוספת טאג 
             this.newPayment.tag_id = this.tag_id;
 
@@ -2623,7 +2626,7 @@
 
             this.newPayment.comment =
                 'מס לקוח: ' + (this.user.ClientNumber || "") +
-                ', ת.ז.: ' + (this.user.IdNumber || "");
+                ', ת.ז.: ' + (((this.TempIdNumber) ? this.TempIdNumber : this.user.IdNumber) || "");
 
 
             // במידה וקיים כבר טוקן על הכרטיס תלמיד תשלום עם טוקן
@@ -2964,6 +2967,70 @@
             return "";
 
         }
+
+        function _setAutoForexp() {
+            this.newPayment.InvoiceDetailsArray = [];
+
+            var Sum = this.TempTotal;
+            var SumTotal = 0;
+
+            debugger
+            var counter = 1;
+
+            
+
+            for (var i in this.expenses) {
+                this.expenses[i].Checked = false;
+               
+                var ToPaid = this.expenses[i].Price + this.expenses[i].ZikuySum - this.expenses[i].Sum;
+
+                if (
+                    (this.expenses[i].Price + this.expenses[i].ZikuySum) != this.expenses[i].Sum &&
+                    (this.expenses[i].Price + this.expenses[i].ZikuySum) > 0 &&
+                    Sum != 0
+
+                ) {
+
+
+                    if (Sum > ToPaid) {
+                        SumTotal = ToPaid;
+                        Sum = Sum - ToPaid;
+                    } else {
+
+                        SumTotal = Sum;
+                        Sum = 0;
+                    }
+                    this.expenses[i].Checked = true;
+
+                    var InvoiceDetailsObj = { 'details': this.expenses[i].Details, 'price': SumTotal, 'amount': counter++, 'price_inc_vat': true };
+                    this.newPayment.InvoiceDetailsArray.push(InvoiceDetailsObj);
+                    //if (Sum <= ToPaid) {
+                    //    Sum = 0;
+                    //}
+                    //else {
+
+                    //    Sum = Sum - ToPaid;
+                    //}
+
+
+
+
+
+                    
+                    //this.countTotal();
+                }
+
+            }
+
+            this.changeInvoiceTotal();
+
+
+            // alert(this.TempTotal);
+
+
+        }
+
+
 
         function _setCheckboxForClose(pay) {
 

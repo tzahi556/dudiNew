@@ -223,6 +223,9 @@ namespace FarmsApi.Services
 
                     KlalitAPI.SupplierRequest kp = new KlalitAPI.SupplierRequest();
 
+
+                   // kp.Url = "https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx";
+                   
                     string xml = @"
                                     <XMLInput>
 	                                    <ActionCode>11</ActionCode>
@@ -243,7 +246,7 @@ namespace FarmsApi.Services
 
            
 
-                XmlDocument XmlRes = new XmlDocument();
+                    XmlDocument XmlRes = new XmlDocument();
                     XmlRes.LoadXml(resXML.ToString());
 
                     var Result = XmlRes.DocumentElement.SelectSingleNode("Result").InnerText;// 1 נקלטה

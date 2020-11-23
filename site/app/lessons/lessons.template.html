@@ -13,6 +13,7 @@
 
         <div id="addminusrowheight" class="fc-button-group">
             <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.printLessons()"> הדפסה </button>
+            <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.printExcel()"> אקסל </button>
 
             <button type="button" class="fc-next-button fc-button fc-state-default fc-corner-left" ng-click='$ctrl.customFont(-5)'>
                 <span class="fc-icon fc-icon-down-triangle"></span>

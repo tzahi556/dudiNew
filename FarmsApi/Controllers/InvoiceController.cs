@@ -494,7 +494,7 @@ namespace FarmsApi.Controllers
 
                         customer_name = (string)Params.customer_name,
                         customerAction = "ASSOC_CREATE",
-                        customer_crn = (string)Params.customer_crn,
+                        customer_crn =  (string.IsNullOrEmpty((string)Params.temp_customer_crn))? (string)Params.customer_crn: (string)Params.temp_customer_crn,
                         c_accounting_num = (string)Params.c_accounting_num,
                         tag_id = (string)Params.tag_id,
 

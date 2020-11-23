@@ -462,8 +462,12 @@ namespace FarmsApi.Services
             {
 
                 var UserHorsesList = Context.UserHorses.Where(u => u.UserId == Id).ToList();
+                //foreach (var item in UserHorsesList)
+                //{
+                //    Horse h = Context.Horses.Where();
 
-
+                //}
+               
                 return UserHorsesList;
             }
         }

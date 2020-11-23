@@ -354,6 +354,7 @@
                                         </div>
 
                                         <div class="col-md-4">
+
                                             <label>חיוב הוצאות אחרות</label>
                                             <table class="table" border="1">
                                                 <tr>
@@ -533,6 +534,49 @@
                             </table>
 
                             <div class="form-group">
+                                <div class="col-md-12" style="border:solid 1px silver;border-radius:5px;padding:10px">
+
+
+                                    <div class="col-md-3">
+                                        <label style="color:brown">
+                                            שינוי פרטי חשבונית <br />
+                                            <span style="font-size:10px">(במידה ושדות אלו ריקים יילקחו הנתונים מהכרטיס)</span>
+                                        </label>
+                                    </div>
+
+
+
+                                    <div class="col-md-3">
+                                        <input type="text" placeholder="שם פרטי" class="form-control" ng-model="$ctrl.TempFirstName" />
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <input type="text" placeholder="שם משפחה" class="form-control" ng-model="$ctrl.TempLastName" />
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <input type="text" placeholder="ת''ז\ח''פ" class="form-control" ng-model="$ctrl.TempIdNumber" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12" ng-hide="" style="border:solid 1px silver;border-radius:5px;padding:10px;margin-top:3px">
+
+
+                                    <div class="col-md-3">
+                                        <label style="color:burlywood">
+                                          מילוי  אוטמטי <br />
+                                            <span style="font-size:10px">( מילוי סכומי הוצאות אחרות אוטמטי)</span>
+                                        </label>
+                                    </div>
+
+
+
+                                    <div class="col-md-3">
+                                        <input type="number" placeholder="סכום לחלוקה" class="form-control" ng-change="$ctrl.setAutoForexp()" ng-model="$ctrl.TempTotal" />
+                                    </div>
+
+                                   
+                                </div>
                                 <label>בחירת הוצאות אחרות</label>
                                 <table class="table">
                                     <thead>
