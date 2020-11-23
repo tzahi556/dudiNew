@@ -2973,9 +2973,19 @@
 
             var Sum = this.TempTotal;
             var SumTotal = 0;
-
-            debugger
             var counter = 1;
+           
+            if (!this.TempTotal) {
+               
+                for (var i in this.expenses) {
+                    this.expenses[i].Checked = false;
+                }
+
+                this.changeInvoiceTotal();
+             //   this.countTotal();
+                return;
+
+            }
 
             
 
