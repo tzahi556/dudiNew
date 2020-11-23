@@ -20,7 +20,7 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
                 var Horses = Context.Horses.ToList();
-               // var Horses = Context.Horses.Where(x => x.Id == 17).ToList();
+                // var Horses = Context.Horses.Where(x => x.Id == 17).ToList();
                 foreach (Horse Horsef in Horses)
                 {
 
@@ -2321,13 +2321,16 @@ namespace FarmsApi.Services
                             if (item.IsDo && !item.PrevIsDo)
                             {
 
+                                Lesson l = Context.Lessons.Where(x => x.Id == LessonId).FirstOrDefault();
+
+
                                 Horse f = Context.Horses.Where(x => x.Id == item.HorseId).FirstOrDefault();
                                 HorseShoeings NewShoeings = new HorseShoeings();
 
                                 NewShoeings.HorseId = item.HorseId;
                                 NewShoeings.Id = 0;
-                                NewShoeings.ShoerName = UsersService.GetCurrentUser().FirstName + " " + UsersService.GetCurrentUser().LastName;
-                                NewShoeings.Date = DateTime.Now;
+                                NewShoeings.ShoerName = (UsersService.GetCurrentUser().Role == "shoeing") ? (UsersService.GetCurrentUser().FirstName + " " + UsersService.GetCurrentUser().LastName) : "";
+                                NewShoeings.Date = l.Start;//DateTime.Now;
                                 NewShoeings.Cost = item.Cost;
                                 NewShoeings.Discount = 0;
 
@@ -2340,7 +2343,7 @@ namespace FarmsApi.Services
 
 
 
-                                CreatePirzulNotifacions(Context, item.HorseId, LessonId, MefarzelLessonId, GroupName, CurrentFarm);
+                                CreatePirzulNotifacions(Context, item.HorseId, l.Start, MefarzelLessonId, GroupName, CurrentFarm);
 
                             }
                             //}
@@ -2533,12 +2536,13 @@ namespace FarmsApi.Services
 
         }
 
-        private static void CreatePirzulNotifacions(Context context, int horseId, int lessonId, int? mefarzelLessonId, string GroupName, Farm CurrentFarm)
+        private static void CreatePirzulNotifacions(Context context, int horseId, DateTime date, int? mefarzelLessonId, string GroupName, Farm CurrentFarm)
         {
             Horse h = context.Horses.Where(x => x.Id == horseId).FirstOrDefault();
 
             Notification Pirzul = new Notification();
-            Pirzul.Date = DateTime.Now.AddDays(49);
+
+            Pirzul.Date = date.AddDays(49);
             Pirzul.EntityType = "horse";
             Pirzul.EntityId = horseId;
             Pirzul.FarmId = h.Farm_Id;
