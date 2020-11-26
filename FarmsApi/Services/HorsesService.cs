@@ -2098,6 +2098,7 @@ namespace FarmsApi.Services
                                 NewVaccinations.Date = DateTime.Now;
                                 NewVaccinations.Cost = item.Cost;
                                 NewVaccinations.Discount = 0;
+                                NewVaccinations.Type = item.Vaccination;
 
                                 string name = " חיסון " + GetHebrewVac(item.Vaccination);// item.Vaccination;
                                 int? ExpensesId = AddToExpensesTable(item.Cost, 0, item.HorseId, f.Name, name, DateTime.Now);

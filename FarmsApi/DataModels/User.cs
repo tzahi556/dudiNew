@@ -91,7 +91,7 @@ namespace FarmsApi.DataModels
         
         public string TofesName { get; set; }
 
-       
+        public int? Gender { get; set; }
 
     }
 }

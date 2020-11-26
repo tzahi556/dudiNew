@@ -150,7 +150,9 @@
 
         this.changeInvoiceTotal = _changeInvoiceTotal.bind(this);
         this.zikuyButton = _zikuyButton.bind(this);
+        this.getStudentAge = _getStudentAge.bind(this);
 
+        
 
         this.show4 = _show4.bind(this);
         this.isDateMoreToday = _isDateMoreToday.bind(this);
@@ -174,6 +176,20 @@
 
         this.SelectedExpHorseId = "";
 
+
+
+        function _getStudentAge() {
+
+          
+            if (!this.user.BirthDate) return "0";
+
+            var diffyear = (moment()).diff(moment(this.user.BirthDate), 'year', true);
+
+            if (isNaN(diffyear)) return "0";
+          
+            return Math.round(diffyear);
+           
+        }
 
 
         function _getHorseName(HorseId) {
@@ -1831,11 +1847,12 @@
 
             var Sum = 0;
             var Details = '';
+            var expListCounter = 0;
             for (var total of self.newPayment.InvoiceDetailsArray) {
 
 
                 Sum += total.price;
-                Details += (total.details) ? (total.details + ",") : "";
+                Details += ((total.details) ? (total.details + ",") : "");
 
             }
 
@@ -1909,14 +1926,16 @@
 
             }
             if (this.expenses !== undefined) {
+                var expListCounter = 0;
+                var expList = this.expenses.filter(function (expense) { return expense.Checked && expense.Price != expense.Sum });
+                for (var expense of expList) {
 
-                for (var expense of this.expenses.filter(function (expense) { return expense.Checked && expense.Price != expense.Sum })) {
-
+                    expListCounter++;
                     var OneInvoiceSum = expense.Price + ((!expense.ZikuySum) ? 0 : expense.ZikuySum) - ((!expense.Sum) ? 0 : expense.Sum);
                     self.newPayment.InvoiceSum += OneInvoiceSum;
 
                     var OneInvoiceDetails = expense.Details;
-                    self.newPayment.InvoiceDetails += OneInvoiceDetails + ",";
+                    self.newPayment.InvoiceDetails += OneInvoiceDetails + ((expListCounter != expList.length)? "," : ".");
 
 
 
@@ -2670,7 +2689,17 @@
                     newPayment.parents = (newPayment.parents).join();
 
 
+                // במידה ונבחר רק שורת סיכום
+                if (this.IsSendOnlyTotal) {
 
+                    newPayment.InvoiceDetailsArray = [];
+
+                    var InvoiceDetailsObj = { 'details': newPayment.InvoiceDetails, 'price': newPayment.InvoiceSum, 'amount': 1, 'price_inc_vat': true };
+                    newPayment.InvoiceDetailsArray.push(InvoiceDetailsObj);
+
+                }
+
+             
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
@@ -2969,6 +2998,8 @@
         }
 
         function _setAutoForexp() {
+
+          //  צחי//
             this.newPayment.InvoiceDetailsArray = [];
 
             var Sum = this.TempTotal;
@@ -2989,7 +3020,7 @@
 
             
 
-            for (var i in this.expenses) {
+            for (var i = this.expenses.length - 1; i >= 0;i--) {
                 this.expenses[i].Checked = false;
                
                 var ToPaid = this.expenses[i].Price + this.expenses[i].ZikuySum - this.expenses[i].Sum;

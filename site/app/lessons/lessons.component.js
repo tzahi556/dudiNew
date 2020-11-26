@@ -190,6 +190,7 @@
                 var repDate = moment(dateFrom).format('DD/MM/YYYY HH:mm');
                 saveAs(blob, " לוח שיעורים " + repDate + ".xls");
 
+
             });
 
         }

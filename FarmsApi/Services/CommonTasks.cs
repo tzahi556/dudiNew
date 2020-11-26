@@ -319,7 +319,7 @@ namespace FarmsApi.Services
                 lgstaet.RequestEzea = "";
                 lgstaet.RequestTimeStamp = DateTime.Now;
                 lgstaet.StudentId = 9999;
-              //  lgstaet.UserId = UsersService.GetCurrentUser().Id;
+             
 
                 lgstaet.Response = "";
                 lgstaet.ResponseTimeStamp = DateTime.Now;
@@ -330,7 +330,8 @@ namespace FarmsApi.Services
 
 
                 var UsersChecks = Context.Checks.Where(x =>x.checks_date== CurrentDate && x.checks_auto).ToList();
-
+                //בשביל להביא קודמים שלא עלו
+               // var UsersChecks = Context.Checks.Where(x => x.checks_date < CurrentDate && x.checks_auto).ToList();
                 foreach (var uc in UsersChecks)
                 {
                     var User = Context.Users.Where(y => y.Id == uc.UserId).FirstOrDefault();
