@@ -151,7 +151,7 @@
         this.changeInvoiceTotal = _changeInvoiceTotal.bind(this);
         this.zikuyButton = _zikuyButton.bind(this);
         this.getStudentAge = _getStudentAge.bind(this);
-
+        this.gethorsesList = _gethorsesList.bind(this);
         
 
         this.show4 = _show4.bind(this);
@@ -177,6 +177,30 @@
         this.SelectedExpHorseId = "";
 
 
+        function _gethorsesList() {
+
+
+            var currentuserhorses = [];
+            var farmhorses = [];
+            for (var i in this.horses) {
+
+                var horse = this.userhorses.filter(x => x.HorseId == this.horses[i].Id);
+                if (horse.length>0) {
+
+                    this.horses[i].IsUsersOwner = true;
+
+                    currentuserhorses.push(this.horses[i]);
+                } else {
+
+                    farmhorses.push(this.horses[i]);
+                }
+
+            }
+
+
+            return currentuserhorses.concat(farmhorses);
+
+        }
 
         function _getStudentAge() {
 
@@ -1010,7 +1034,7 @@
             this.user.DateForMonthlyPay = moment(this.user.DateForMonthlyPay).startOf('day').toDate();
 
             this.user.Active = this.user.Active || 'active';
-
+            this.user.PayType = this.user.PayType || 'lessonCost';
             // set default farm
             if (this.farms.length == 1) {
                 this.user.Farm_Id = this.user.Farm_Id || this.farms[0].Id;
@@ -2590,7 +2614,9 @@
             this.disablBtn = false;
         }
 
+        this.ZikuySum = 0;
         function _addPayment() {
+            this.ZikuySum = 0;
 
             if (this.newPayment.payment_type == 'check') {
                 var TotalSumFromChecks = 0;
@@ -2703,11 +2729,19 @@
 
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
-
+                 
                     if (response.data == "-1") {
                         alert('לא ניתן להנפיק מסמך , תעודת זהות קיימת במערכת');
                         return;
                     }
+                    if (response.data == "-2") {
+                        alert('לא ניתן להזין זיכוי על חשבוניות מסוג שונה');
+                        return;
+                    }
+
+
+
+
                     if (this.newPayment.payment_type == 'ashrai' || this.newPayment.payment_type == 'token') {
 
                         if (response.data.errMsg) {
@@ -2802,7 +2836,11 @@
                         }
                     });
                     this.payments = this.payments || [];
-                    if (newPayment.isZikuy) newPayment.InvoiceSum = newPayment.InvoiceSum * -1;
+                    if (newPayment.isZikuy) {
+                        this.ZikuySum = newPayment.InvoiceSum;
+                        newPayment.InvoiceSum = newPayment.InvoiceSum * -1;
+                      
+                    }
                     this.payments.push(newPayment);
                     this.createNewPayment(newPayment);
                     this.submit();
@@ -2833,7 +2871,10 @@
 
                     }
                 });
-                if (newPayment.isZikuy) newPayment.InvoiceSum = newPayment.InvoiceSum * -1;
+                if (newPayment.isZikuy) {
+                    this.ZikuySum = newPayment.InvoiceSum;
+                    newPayment.InvoiceSum = newPayment.InvoiceSum * -1;
+                }
                 this.payments.push(newPayment);
                 this.createNewPayment(newPayment);
                 this.submit();
@@ -2862,6 +2903,8 @@
             this.payments.map(function (payment) {
 
                 if (payment.SelectedForInvoiceTemp) {
+
+                    
                     // newPayment.SelectedForInvoice = true;
                     if (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") {
 
@@ -2888,7 +2931,7 @@
 
                     // צחי עדכן
                     if (newPayment.doc_type == "Zikuy") {
-
+                       
                         payment.ZikuyNumber = newPayment.InvoiceNum;
                         payment.ZikuyPdf = newPayment.InvoicePdf;
                         //debugger
@@ -2945,8 +2988,23 @@
 
                         // רק במידה ויש שיעורים בחשבונית שאתה מצמיד אליה זיכוי תעשה הורדת שיעורים
                         else if (thisCtrl.user.PayType == "lessonCost" && payment.lessons > 0) {
-                            var difflessons = ((payment.lessons * payment.Price) + newPayment.InvoiceSum) / payment.Price;
-                            payment.lessons = Math.floor(difflessons);
+                            var lessPay = payment.lessons * payment.Price;
+
+                            // אם הזיכוי גדול או שווה לסכום החשבונית תרוקן שיעורים בחשבונית
+                            if (thisCtrl.ZikuySum >= lessPay) {
+
+                                payment.lessons = null;
+                                thisCtrl.ZikuySum = thisCtrl.ZikuySum - lessPay;
+
+                            } else if (thisCtrl.ZikuySum > 0){
+                                var difflessons = ((lessPay) - thisCtrl.ZikuySum) / payment.Price;
+                                payment.lessons = Math.floor(difflessons);
+                                thisCtrl.ZikuySum = 0;
+                            }
+
+                           
+                          
+
                         }
 
                         else if (thisCtrl.user.PayType == "monthCost") {

@@ -568,7 +568,7 @@
             this.addVaccineNotification('tetanus', 'חיסון טטנוס עבור סוס: ');
             this.addVaccineNotification('rabies', 'חיסון כלבת עבור סוס: ');
             this.addVaccineNotification('herpes', 'חיסון הרפס עבור סוס: ');
-            this.addVaccineNotification('worming', 'תילוע עבור סוס: ');
+            this.addVaccineNotification('Deworming', 'תילוע עבור סוס: ');
         }
 
         function _addPregnancyNotification() {
@@ -634,7 +634,7 @@
             var second = vaccine.second ? first.add(vaccine.second, 'days') : null;
             var interval = vaccine.interval;
 
-            if (vaccineName == 'worming') {
+            if (vaccineName == 'Deworming') {
                 interval = horseAge >= 2 ? vaccine.interval2 : vaccine.interval1;
             }
 

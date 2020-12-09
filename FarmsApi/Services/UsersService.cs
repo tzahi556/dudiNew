@@ -467,7 +467,7 @@ namespace FarmsApi.Services
                 //    Horse h = Context.Horses.Where();
 
                 //}
-               
+
                 return UserHorsesList;
             }
         }
@@ -1220,6 +1220,67 @@ namespace FarmsApi.Services
                             Newitem = item;
                         }
                         Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+
+                        if (item.HorseId != null)
+                        {
+
+                            var HorseShoeingsF = Context.HorseShoeings.Where(x => x.HorseId == item.HorseId && x.ExpensesId == item.Id).FirstOrDefault();
+                            var HorseVaccinationsF = Context.HorseVaccinations.Where(x => x.HorseId == item.HorseId && x.ExpensesId == item.Id).FirstOrDefault();
+                            var HorseTreatmentsF = Context.HorseTreatments.Where(x => x.HorseId == item.HorseId && x.ExpensesId == item.Id).FirstOrDefault();
+                            var HorseTilufingsF = Context.HorseTilufings.Where(x => x.HorseId == item.HorseId && x.ExpensesId == item.Id).FirstOrDefault();
+
+                            var HorsePregnanciesStatesF = Context.HorsePregnanciesStates.Where(x => x.HorseId == item.HorseId && x.ExpensesId == item.Id).FirstOrDefault();
+                            var HorseHozimsF = Context.HorseHozims.Where(x => x.HorseId == item.HorseId && x.ExpensesId == item.Id).FirstOrDefault();
+
+
+
+
+                            if (HorseShoeingsF != null)
+                            {
+                                HorseShoeingsF.Cost = item.BeforePrice;
+                                HorseShoeingsF.Discount = item.Discount;
+                                Context.Entry(HorseShoeingsF).State = System.Data.Entity.EntityState.Modified;
+                            }
+
+                            if (HorseVaccinationsF != null)
+                            {
+                                HorseVaccinationsF.Cost = item.BeforePrice;
+                                HorseVaccinationsF.Discount = item.Discount;
+                                Context.Entry(HorseVaccinationsF).State = System.Data.Entity.EntityState.Modified;
+                            }
+
+
+                            if (HorseTreatmentsF != null)
+                            {
+                                HorseTreatmentsF.Cost = item.BeforePrice;
+                                HorseTreatmentsF.Discount = item.Discount;
+                                Context.Entry(HorseTreatmentsF).State = System.Data.Entity.EntityState.Modified;
+                            }
+
+                            if (HorseTilufingsF != null)
+                            {
+                                HorseTilufingsF.Cost = item.BeforePrice;
+                                HorseTilufingsF.Discount = item.Discount;
+                                Context.Entry(HorseTilufingsF).State = System.Data.Entity.EntityState.Modified;
+                            }
+
+
+                            if (HorsePregnanciesStatesF != null)
+                            {
+                                HorsePregnanciesStatesF.Cost = item.BeforePrice;
+                               // HorsePregnanciesStatesF.Discount = item.Discount;
+                                Context.Entry(HorsePregnanciesStatesF).State = System.Data.Entity.EntityState.Modified;
+                            }
+                            if (HorseHozimsF != null)
+                            {
+                                HorseHozimsF.Cost = item.BeforePrice;
+                                // HorsePregnanciesStatesF.Discount = item.Discount;
+                                Context.Entry(HorseHozimsF).State = System.Data.Entity.EntityState.Modified;
+                            }
+
+
+                        }
+
                     }
 
                 }

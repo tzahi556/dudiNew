@@ -13,9 +13,9 @@ namespace FarmsApi.Services
         [HttpGet]
         public string UpdateUsersLessons()
         {
-            UploadFromAccess uac = new UploadFromAccess();
-            uac.UpdateUsersLessons();
-            return "sdsdsdsd";
+           // UploadFromAccess uac = new UploadFromAccess();
+            //uac.UpdateUsersLessons();
+            return "צחיאל";
         }
 
 

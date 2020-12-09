@@ -98,6 +98,8 @@
             }
         });
 
+      
+
         $stateProvider.state('farms', {
             url: '/farms/',
             views: {

@@ -1585,7 +1585,7 @@
                         _getVaccineDate('tetanus', horse),
                         _getVaccineDate('rabies', horse),
                         _getVaccineDate('herpes', horse),
-                        _getVaccineDate('worming', horse),
+                        _getVaccineDate('Deworming', horse),
                         _getShoeingDate(horse)
                     ]);
                 });
@@ -1633,7 +1633,7 @@
             var second = vaccine.second ? first.add(vaccine.second, 'days') : null;
             var interval = vaccine.interval;
 
-            if (vaccineName == 'worming') {
+            if (vaccineName == 'Deworming') {
                 interval = horseAge >= 2 ? vaccine.interval2 : vaccine.interval1;
             }
 

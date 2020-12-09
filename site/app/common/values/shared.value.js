@@ -115,7 +115,7 @@
             { id: "tetanus", name: "טטנוס", first: moment.duration(3, 'months').asDays(), second: moment.duration(6, 'months').asDays(), interval: moment.duration(12, 'months').asDays() },
             { id: "rabies", name: "כלבת", first: moment.duration(3, 'months').asDays(), interval: moment.duration(12, 'months').asDays() },
             { id: "herpes", name: "הרפס", interval: moment.duration(12, 'months').asDays() },
-            { id: "worming", name: "תילוע", first: moment.duration(2, 'months').asDays(), interval1: moment.duration(2, 'months').asDays(), interval2: moment.duration(6, 'months').asDays() },
+            { id: "Deworming", name: "תילוע", first: moment.duration(2, 'months').asDays(), interval1: moment.duration(2, 'months').asDays(), interval2: moment.duration(6, 'months').asDays() },
             { id: "other", name: "אחר" }
         ]
     });

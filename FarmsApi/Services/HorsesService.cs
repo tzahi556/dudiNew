@@ -1771,7 +1771,7 @@ namespace FarmsApi.Services
 
                                 }
 
-                                if (vac.Type == "worming")
+                                if (vac.Type == "Deworming")
                                 {
                                     item.worming = true;
                                     item.wormingLastDate = vac.Date;
@@ -2205,7 +2205,7 @@ namespace FarmsApi.Services
 
             }
 
-            if (Vaccination == "worming")
+            if (Vaccination == "Deworming")
             {
                 if (HorseAge >= 2)
                     DateVaction = DateTime.Now.AddMonths(6);

@@ -394,8 +394,36 @@ namespace FarmsApi.Controllers
 
 
                                 string parentList = (string)Params.parents;
+
+
                                 var Pays = Context.Payments.Where(x => (parentList).Contains(x.doc_uuid)).ToList();
-                                foreach (var item in Pays)
+                                if(Pays.Count > 1)
+                                {
+                                  
+                                    foreach (var Pay in Pays)
+                                    {
+                                        bool IsExist = Pays.Any(x => x.doc_type != Pay.doc_type);
+
+                                        if (IsExist)
+                                        {
+                                            lg.Details = " תקלה בהפקת זיכוי " + (string)Params.payment_type;
+                                            lg.RequestTimeStamp = DateTime.Now;
+                                           
+                                            lg.Response = " תקלה בהפקת זיכוי ";
+                                            lg.ResponseTimeStamp = DateTime.Now;
+                                            return Ok("-2");
+                                        }
+
+                                    }
+
+
+                                }
+
+
+                                //צחי שינה שיש ריבוי חשבוניות לזיכוי
+                                var item = Context.Payments.Where(x => (parentList).Contains(x.doc_uuid)).FirstOrDefault();
+                                
+                                if(item!=null)
                                 {
                                     var doc_type = item.doc_type;
 
