@@ -13,9 +13,19 @@ namespace FarmsApi.Services
         [HttpGet]
         public string UpdateUsersLessons()
         {
-           // UploadFromAccess uac = new UploadFromAccess();
-            //uac.UpdateUsersLessons();
-            return "צחיאל";
+            //using (var Context = new Context())
+            //{
+            //    var ddd = Context.AvailableHours.Toli;
+            //    Context.Lessons.Where(l => l.ParentId == LessonId).ToList();
+            //}
+         //   string sdsd = UsersService.CreateLoopLessons();
+            return "hjkjhk";
+
+          // return Ok(UsersService.getAvailablehours(5));
+
+
+
+           // return "צחיאל";
         }
 
 
@@ -25,7 +35,7 @@ namespace FarmsApi.Services
         {
             KlalitAPIClass uac = new KlalitAPIClass();
             return uac.SendKlalitAPIFunc();
-           
+
         }
 
 

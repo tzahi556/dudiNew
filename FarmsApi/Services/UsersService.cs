@@ -15,6 +15,59 @@ namespace FarmsApi.Services
 
     public class UsersService
     {
+        public static string CreateLoopLessons()
+        {
+            using (var Context = new Context())
+            {
+
+                var AddsLessons = Context.Temps.Where(x=>x.total<0 && x.UserId!=null).ToList();
+                var startDate = DateTime.Now.AddYears(-1);
+             
+                foreach (var item in AddsLessons)
+                {
+                    for (int i = 0; i < (item.total * -1); i++)
+                    {
+                        Lesson less = new Lesson();
+                        less.Instructor_Id = 11;
+                        less.Start = startDate.AddDays(-1 * i);
+                        less.End = startDate.AddDays(-1 * i);
+                        less.Details = "";
+                        less.ParentId = 0;
+
+                        Context.Lessons.Add(less);
+                        Context.SaveChanges();
+
+                        StudentLessons sl = new StudentLessons()
+                        {
+                            Lesson_Id = less.Id,
+                            User_Id = (int)item.UserId,
+                            Status = "attended"
+
+
+
+
+                        };
+                        Context.StudentLessons.Add(sl);
+
+
+
+
+                    }
+
+                }
+
+                return "dfsdssfd.Count.ToString()";
+            }
+        }
+
+
+        
+
+
+
+
+
+
         // public static List<int> UsersEnter;
 
         //public static void UpdateUsers()

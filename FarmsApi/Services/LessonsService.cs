@@ -689,24 +689,24 @@ namespace FarmsApi.Services
 
         private static void InsertIntoLog(int LessonId, int Type, Context context, string Details, StudentLessons sl = null)
         {
-            var Lesson = context.Lessons.Where(x => x.Id == LessonId).FirstOrDefault();
+            //var Lesson = context.Lessons.Where(x => x.Id == LessonId).FirstOrDefault();
 
-            LogsLessons lg = new LogsLessons();
-            lg.Type = Type;
-            lg.TimeStamp = DateTime.Now;
-            lg.LessonDate = Lesson.Start;
-            lg.LessonId = LessonId;
-            lg.Instructor_Id = Lesson.Instructor_Id;
-            lg.Details = Details;
-            if (sl != null)
-            {
-                lg.StudentId = sl.User_Id;
-                lg.Status = sl.Status;
-            }
+            //LogsLessons lg = new LogsLessons();
+            //lg.Type = Type;
+            //lg.TimeStamp = DateTime.Now;
+            //lg.LessonDate = Lesson.Start;
+            //lg.LessonId = LessonId;
+            //lg.Instructor_Id = Lesson.Instructor_Id;
+            //lg.Details = Details;
+            //if (sl != null)
+            //{
+            //    lg.StudentId = sl.User_Id;
+            //    lg.Status = sl.Status;
+            //}
 
-            lg.UserId = UsersService.GetCurrentUser().Id;
+            //lg.UserId = UsersService.GetCurrentUser().Id;
 
-            context.LogsLessons.Add(lg);
+            //context.LogsLessons.Add(lg);
 
         }
 

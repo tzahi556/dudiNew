@@ -1032,7 +1032,7 @@
             }
             this.user.BirthDate = moment(this.user.BirthDate).startOf('day').toDate();
             this.user.DateForMonthlyPay = moment(this.user.DateForMonthlyPay).startOf('day').toDate();
-
+           
             this.user.Active = this.user.Active || 'active';
             this.user.PayType = this.user.PayType || 'lessonCost';
             // set default farm
@@ -2943,8 +2943,23 @@
 
                                     // רק במידה ויש שיעורים בחשבונית שאתה מצמיד אליה זיכוי תעשה הורדת שיעורים
                                     if (thisCtrl.user.PayType == "lessonCost" && thisCtrl.payments[x].lessons > 0) {
-                                        var difflessons = ((thisCtrl.payments[x].lessons * thisCtrl.payments[x].Price) + newPayment.InvoiceSum) / thisCtrl.payments[x].Price;
-                                        thisCtrl.payments[x].lessons = Math.floor(difflessons);
+
+                                        var lessPay = payments[x].lessons * payments[x].Price;
+                                        // אם הזיכוי גדול או שווה לסכום החשבונית תרוקן שיעורים בחשבונית
+                                        if (thisCtrl.ZikuySum >= lessPay) {
+
+                                            payments[x].lessons = null;
+                                            thisCtrl.ZikuySum = thisCtrl.ZikuySum - lessPay;
+
+                                        } else if (thisCtrl.ZikuySum > 0) {
+                                            var difflessons = ((lessPay) - thisCtrl.ZikuySum) / payments[x].Price;
+                                            payments[x].lessons = Math.floor(difflessons);
+                                            thisCtrl.ZikuySum = 0;
+                                        }
+
+
+                                        //var difflessons = ((thisCtrl.payments[x].lessons * thisCtrl.payments[x].Price) + newPayment.InvoiceSum) / thisCtrl.payments[x].Price;
+                                        //thisCtrl.payments[x].lessons = Math.floor(difflessons);
                                     }
 
 
@@ -2989,7 +3004,6 @@
                         // רק במידה ויש שיעורים בחשבונית שאתה מצמיד אליה זיכוי תעשה הורדת שיעורים
                         else if (thisCtrl.user.PayType == "lessonCost" && payment.lessons > 0) {
                             var lessPay = payment.lessons * payment.Price;
-
                             // אם הזיכוי גדול או שווה לסכום החשבונית תרוקן שיעורים בחשבונית
                             if (thisCtrl.ZikuySum >= lessPay) {
 

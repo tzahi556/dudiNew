@@ -55,12 +55,26 @@ namespace FarmsApi.DataModels
 
         public DbSet<HorseVaccinationLists> HorseVaccinationLists { get; set; }
 
-        
+        public DbSet<Temps> Temps { get; set; }
+
+
         public Context() : base("Farms") { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+
         }
+
+     
+
+
+
     }
+
+
+  
+
+
+
 }
