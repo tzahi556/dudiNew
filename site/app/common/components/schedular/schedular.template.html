@@ -84,7 +84,7 @@
                         <table class="table tableFixHead">
                             <thead>
                                 <tr>
-
+                                 
                                     <th>שם הסוס</th>
                                     <th>מחיר</th>
                                     <th>האם בוצע</th>
@@ -93,11 +93,11 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="horseslist in $ctrl.horseslists">
-
+                                   
                                     <td>{{horseslist.SusName}}</td>
-                                    <td><input class="" style="width:100px;" type="text" ng-model="horseslist.Cost"></td>
-                                    <td><input class="" type="checkbox" ng-model="horseslist.IsDo"></td>
-                                    <td><button ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1" class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorse(horseslist)">הסר</button></td>
+                                    <td><input class="" ng-disabled="horseslist.IsPaid" style="width:100px;" type="text" ng-model="horseslist.Cost"></td>
+                                    <td><input class="" ng-disabled="horseslist.IsPaid" type="checkbox" ng-model="horseslist.IsDo"></td>
+                                    <td><button ng-disabled="horseslist.IsPaid" type="checkbox" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1" class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorse(horseslist)">הסר</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -164,9 +164,11 @@
 
                                 <td>{{horsesVaccinationlist.SusName}}</td>
                                 <td>{{horsesVaccinationlist.HebName}}</td>
-                                <td><input class="" style="width:100px;" type="text" ng-model="horsesVaccinationlist.Cost"></td>
-                                <td><input class="" type="checkbox" ng-model="horsesVaccinationlist.IsDo"></td>
-                                <td><button class="btn btn-xs btn-danger"  ng-click="$ctrl.removeVaccinationHorse(horsesVaccinationlist)">הסר</button></td>
+                                <td><input class="" ng-disabled="horsesVaccinationlist.IsPaid" style="width:100px;" type="text" ng-model="horsesVaccinationlist.Cost"></td>
+                                <td><input class="" ng-disabled="horsesVaccinationlist.IsPaid" type="checkbox" ng-model="horsesVaccinationlist.IsDo"></td>
+                                <td><button ng-disabled="horsesVaccinationlist.IsPaid" class="btn btn-xs btn-danger"  ng-click="$ctrl.removeVaccinationHorse(horsesVaccinationlist)">הסר</button></td>
+                            
+                            
                             </tr>
                         </tbody>
                     </table>

@@ -2188,7 +2188,34 @@ namespace FarmsApi.Services
 
                 if (HorsePirzulLists == null)
                 {
-                    return Context.HorsePirzulLists.Where(u => u.LessonId == LessonId || u.MefarzelLessonId == LessonId).ToList();
+
+
+
+                    SqlParameter TypePara = new SqlParameter("Type", 1);
+                    SqlParameter LessonIdPara = new SqlParameter("LessonId", LessonId);
+                    var query = Context.Database.SqlQuery<HorsePirzulLists>
+                    ("GetHorseListForDashboard @Type,@LessonId", TypePara, LessonIdPara);
+                    var Objects = query.ToList();
+                   
+
+                    //var ReturnData = Context.HorsePirzulLists.Where(u => u.LessonId == LessonId || u.MefarzelLessonId == LessonId).ToList();
+                    //foreach (var item in ReturnData)
+                    //{
+
+                    //    if (item.ShoeingId != null)
+                    //    {
+
+
+
+
+                    //    }
+
+                    //}
+
+                    return Objects;
+
+
+
                 }
                 else
                 {
@@ -2398,7 +2425,17 @@ namespace FarmsApi.Services
 
                 if (HorseVaccinationLists == null)
                 {
-                    return Context.HorseVaccinationLists.Where(u => u.LessonId == LessonId).ToList();
+                  //  return Context.HorseVaccinationLists.Where(u => u.LessonId == LessonId).ToList();
+
+
+                    SqlParameter TypePara = new SqlParameter("Type", 2);
+                    SqlParameter LessonIdPara = new SqlParameter("LessonId", LessonId);
+                    var query = Context.Database.SqlQuery<HorseVaccinationLists>
+                    ("GetHorseListForDashboard @Type,@LessonId", TypePara, LessonIdPara);
+                    var Objects = query.ToList();
+                   
+
+                    return Objects;
                 }
                 else
                 {

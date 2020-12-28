@@ -504,7 +504,7 @@
             if (isDelete) {
                 var m = this.horseslists.length;
                 while (m--) {
-                    //if (this.horseslists[m].IsDo) continue;
+                   if (this.horseslists[m].IsPaid) continue;
                   
                     this.horseslists.splice(m, 1);
                   
@@ -593,7 +593,7 @@
                 var m = this.horsesVaccinationlists.length;
                 while (m--) {
 
-                    if (this.horsesVaccinationlists[m].IsDo) continue;
+                    if (this.horsesVaccinationlists[m].IsPaid) continue;
                     this.horsesVaccinationlists.splice(m, 1);
 
                 }

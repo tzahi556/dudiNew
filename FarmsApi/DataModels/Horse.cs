@@ -447,7 +447,11 @@ namespace FarmsApi.DataModels
         public string GroupName { get; set; }
 
         public int? ShoeingId { get; set; }
+
+       
+        public bool IsPaid { get; set; }
         
+
 
 
 
@@ -470,10 +474,14 @@ namespace FarmsApi.DataModels
         [NotMapped]
         public bool PrevIsDo { get; set; }
 
-
+      
+        public bool IsPaid { get; set; }
 
 
     }
+
+
+
 
 
 
