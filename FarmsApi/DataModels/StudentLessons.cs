@@ -24,5 +24,7 @@ namespace FarmsApi.DataModels
 
         public string HMO { get; set; }
 
+     
+
     }
 }

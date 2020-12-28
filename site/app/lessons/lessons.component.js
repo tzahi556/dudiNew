@@ -1123,7 +1123,7 @@
         function _reloadLessons() {
 
 
-
+          
             //  צחי שינה הוריד עוד יום
             var fakendDate = moment(this.endDate).add(-1, 'days').format('YYYY-MM-DD');//moment(this.endDate).add(6, 'day').format('YYYY-MM-DD');
 

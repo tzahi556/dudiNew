@@ -20,19 +20,75 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
-                var AddsLessons = Context.Temps.Where(x=>x.total<0 && x.UserId!=null).ToList();
-                var startDate = DateTime.Now.AddYears(-1);
-             
-                foreach (var item in AddsLessons)
+                //var AddsLessons = Context.Temps.Where(x=>x.total<0 && x.UserId!=null).ToList();
+                //var startDate = DateTime.Now.AddYears(-1);
+
+                //foreach (var item in AddsLessons)
+                //{
+                //    for (int i = 0; i < (item.total * -1); i++)
+                //    {
+                //        Lesson less = new Lesson();
+                //        less.Instructor_Id = 11;
+                //        less.Start = startDate.AddDays(-1 * i);
+                //        less.End = startDate.AddDays(-1 * i);
+                //        less.Details = "";
+                //        less.ParentId = 0;
+
+                //        Context.Lessons.Add(less);
+                //        Context.SaveChanges();
+
+                //        StudentLessons sl = new StudentLessons()
+                //        {
+                //            Lesson_Id = less.Id,
+                //            User_Id = (int)item.UserId,
+                //            Status = "attended"
+
+
+
+
+                //        };
+                //        Context.StudentLessons.Add(sl);
+
+
+
+
+                //    }
+
+                //}
+
+
+                var LessonList = Context.InsertedLessonsTemps.ToList();
+
+                foreach (var item in LessonList)
                 {
-                    for (int i = 0; i < (item.total * -1); i++)
+                    Lesson Firstless = new Lesson();
+                    Firstless.Instructor_Id = item.InstructorId;
+                    Firstless.Start = item.Start;
+                    Firstless.End = item.End;
+                    Firstless.Details = "";
+                    Firstless.ParentId = 0;
+
+                    Context.Lessons.Add(Firstless);
+                    Context.SaveChanges();
+
+                    StudentLessons slFirst = new StudentLessons()
                     {
+                        Lesson_Id = Firstless.Id,
+                        User_Id = (int)item.UserId,
+                        Status = null
+                    };
+
+                    Context.StudentLessons.Add(slFirst);
+
+                    for (int i = 1; i < 30; i++)
+                    {
+
                         Lesson less = new Lesson();
-                        less.Instructor_Id = 11;
-                        less.Start = startDate.AddDays(-1 * i);
-                        less.End = startDate.AddDays(-1 * i);
+                        less.Instructor_Id = item.InstructorId;
+                        less.Start = item.Start.AddDays(7 * i);
+                        less.End = item.End.AddDays(7 * i);
                         less.Details = "";
-                        less.ParentId = 0;
+                        less.ParentId = Firstless.Id;
 
                         Context.Lessons.Add(less);
                         Context.SaveChanges();
@@ -41,32 +97,20 @@ namespace FarmsApi.Services
                         {
                             Lesson_Id = less.Id,
                             User_Id = (int)item.UserId,
-                            Status = "attended"
-
-
-
-
+                            Status = null
                         };
+
                         Context.StudentLessons.Add(sl);
-
-
-
-
                     }
 
+
                 }
+
+                Context.SaveChanges();
 
                 return "dfsdssfd.Count.ToString()";
             }
         }
-
-
-        
-
-
-
-
-
 
         // public static List<int> UsersEnter;
 

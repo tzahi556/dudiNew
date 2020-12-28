@@ -51,7 +51,8 @@
         this.getHorsesGroup = _getHorsesGroup.bind(this);
         this.actionHorsesGroup = _actionHorsesGroup.bind(this);
         this.getFreeHorses = _getFreeHorses.bind(this);
-
+      
+        
         this.role = localStorage.getItem('currentRole');
 
 
@@ -223,6 +224,7 @@
 
                 var horse = this.horses.filter(y => y.Id == res[i].HorseId);
                 res[i].Name = horse[0].Name;
+                res[i].ShoeingTimeZone = horse[0].ShoeingTimeZone;
 
             }
 
@@ -231,27 +233,30 @@
         }
 
         $scope.makeDropHorse = function (newEvent, currentHorseId, currentGroupeId) {
-
+          
             if (currentGroupeId == 0 || currentHorseId == 0) return;
 
-            //if (currentGroupeId == "dvAllHorses") {
 
-            //    for (var i in $scope.$ctrl.horsegroupshorses) {
-            //        if ($scope.$ctrl.horsegroupshorses[i].HorseId == currentHorseId) {
-            //            $scope.$ctrl.horsegroupshorses.splice(i, 1);
-            //        }
-            //    }
+            var currentHorsesList = $scope.$ctrl.getHorsesGroup(currentGroupeId);
+
+            if (currentHorsesList.length>0) {
+
+                var FirstShoeingTimeZone =  currentHorsesList[0].ShoeingTimeZone;
+                var horse = $scope.$ctrl.horses.filter(y => y.Id == currentHorseId);
+                if (horse[0].ShoeingTimeZone != FirstShoeingTimeZone) {
 
 
-            //} else {
+                    alert("לא ניתן לשייך פרקי זמן שונים בין פרזולים לאותה קבוצה...");
+                    return;
+                }
+
+
+            }
+           
 
             $scope.$ctrl.horsegroupshorses.push({ HorseGroupsId: currentGroupeId, HorseId: currentHorseId, Id: 0, FarmId: localStorage.getItem('FarmId') });
 
-            //   }
-
-
-
-
+           
 
 
             $scope.$ctrl.horsesService.getSetHorseGroupsHorses(2, $scope.$ctrl.horsegroupshorses).then(function (res) {
@@ -354,6 +359,8 @@
 
         }
 
+     
+        
         //function _addNewTag() {
 
 

@@ -1,7 +1,7 @@
 ﻿<div class="event-background" ng-if="$ctrl.selectedStudentSchedular != null">
-    <div class="event" style="border: 1px gray!important;">
-        <uib-tabset active="active" class="tab-form-demo">
-            <uib-tab index="0" heading="תזמון משימות" style="border:solid 0px; ">
+    <div class="event" style="border: 1px gray!important;" >
+        <uib-tabset active="$ctrl.activeTab" class="tab-form-demo">
+            <uib-tab index="0" ng-hide="$ctrl.horsesVaccinationlists.length>0 || $ctrl.horseslists.length>0" heading="תזמון משימות" style="border:solid 0px; ">
                 <div style="padding:3px;text-align:right">
 
 
@@ -36,79 +36,119 @@
                 </div>
 
             </uib-tab>
-            <uib-tab index="1" heading="פירזול" style="border:solid 0px ">
+          
+            <uib-tab index="1" heading="פירזול" ng-hide="$ctrl.horsesVaccinationlists.length>0 || $ctrl.newSchedular.Id!=0" style="border:solid 0px ">
 
-                <div class="col-md-6" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1">
-                    <div class="form-group">
-                        <select class="form-control" ng-change="$ctrl.addHorseToList(2)" ng-options="group as group.Name for group in $ctrl.groups" ng-model="$ctrl.newGroup">
-                            <option value="">בחר קבוצה</option>
-                        </select>
+                <div class="row">
+
+                    <div class="col-md-4" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1">
+                        <div class="form-group">
+                            <select class="form-control" ng-change="$ctrl.addHorseToList(2)" ng-options="group as group.Name for group in $ctrl.groups" ng-model="$ctrl.newGroup">
+                                <option value="">בחר קבוצה</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
 
 
-                <div class="col-md-6" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1">
-                    <div class="form-group">
-                        <select class="form-control" ng-change="$ctrl.addHorseToList(1)" ng-options="horse as horse.Name for horse in $ctrl.horses |filter:{Active:'!notActive'} " ng-model="$ctrl.newHorse">
-                            <option value="">בחר סוס</option>
-                        </select>
+                    <div class="col-md-4" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1">
+                        <div class="form-group">
+                            <select class="form-control" ng-change="$ctrl.addHorseToList(1)" ng-options="horse.Id as horse.Name + ' - ' + ((horse.ShoeingTimeZone)?horse.ShoeingTimeZone:7) for horse in $ctrl.horses |filter:{Active:'!notActive'} " ng-model="$ctrl.newHorse">
+                                <option value="">בחר סוס</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
 
-                <div>
-                    <label style="color:red">שימו לב, לא ניתן לשנות פירזול לאחר שסומן בוצע!</label>
-                    <table class="table">
-                        <thead>
-                            <tr>
-
-                                <th>שם הסוס</th>
-                                <th>מחיר</th>
-                                <th>האם בוצע</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="horseslist in $ctrl.horseslists">
-
-                                <td>{{horseslist.SusName}}</td>
-                                <td><input class="" ng-disabled="horseslist.IsDo" style="width:100px;" type="text" ng-model="horseslist.Cost"></td>
-                                <td><input class="" ng-disabled="horseslist.IsDo" type="checkbox" ng-model="horseslist.IsDo"></td>
-                                <td><button ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1 && !horseslist.IsDo" class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorse(horseslist)">הסר</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="col-md-4" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1">
+                        <div class="form-group">
+                            <select class="form-control" ng-change="$ctrl.addHorseToList(3)" ng-options="week.Id as week.Name for week in $ctrl.weeks" ng-model="$ctrl.newWeeks">
+                                <option value="">לפי שבועות</option>
+                            </select>
+                        </div>
+                    </div>
 
                 </div>
-                <hr />
-                <a class="btn btn-danger" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1" ng-click="$ctrl.savePirzul(1)" href="">מחק הכל</a>
-                <a class="btn btn-success" style="float:left;" ng-click="$ctrl.savePirzul()" href="">שמור</a>
-                <a class="btn btn-default" style="float:left;margin-left:2px" ng-click="$ctrl.hide()" href="">סגור</a>
 
+                <style>
+
+                    .tableFixHead thead th {
+                        position: sticky;
+                        top: 0;
+                        background: white;
+                    }
+                </style>
+
+
+                <div class="row">
+                    <div class="" style="height:250px;overflow-y:auto">
+                        <!--<label style="color:red">שימו לב, לא ניתן לשנות פירזול לאחר שסומן בוצע!</label>-->
+                        <table class="table tableFixHead">
+                            <thead>
+                                <tr>
+
+                                    <th>שם הסוס</th>
+                                    <th>מחיר</th>
+                                    <th>האם בוצע</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="horseslist in $ctrl.horseslists">
+
+                                    <td>{{horseslist.SusName}}</td>
+                                    <td><input class="" style="width:100px;" type="text" ng-model="horseslist.Cost"></td>
+                                    <td><input class="" type="checkbox" ng-model="horseslist.IsDo"></td>
+                                    <td><button ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1" class="btn btn-xs btn-danger" ng-click="$ctrl.removeHorse(horseslist)">הסר</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="clearfix"></div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <hr />
+                    <a class="btn btn-danger" ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1" ng-click="$ctrl.savePirzul(1)" href="">מחק הכל</a>
+                    <a class="btn btn-success" style="float:left;" ng-click="$ctrl.savePirzul()" href="">שמור</a>
+                    <a class="btn btn-default" style="float:left;margin-left:2px" ng-click="$ctrl.hide()" href="">סגור</a>
+                </div>
 
             </uib-tab>
 
-            <uib-tab index="2" heading="חיסונים" style="border:solid 0px " ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <select class="form-control" ng-change="$ctrl.addHorseVaccinationToList(1)" required ng-options="horse as horse.Name for horse in $ctrl.horses |filter:{Active:'!notActive'} " ng-model="$ctrl.newVaccinationHorse">
-                            <option value="">בחר סוס</option>
-                        </select>
+            <uib-tab index="2" heading="חיסונים" ng-hide="$ctrl.horseslists.length>0 || $ctrl.newSchedular.Id!=0"  style="border:solid 0px " ng-show="(['vetrinar','shoeing'].indexOf($ctrl.role))==-1">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control" ng-change="$ctrl.addHorseVaccinationToList(1)" ng-model="$ctrl.newVaccination.Vaccination" required ng-options="vaccination.id as vaccination.name for vaccination in $ctrl.vaccinationsHorse">
+                                <option value="">בחר חיסון</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control" ng-change="$ctrl.addHorseVaccinationToList(1)"  ng-options="horse as horse.Name for horse in $ctrl.horses |filter:{Active:'!notActive'} " ng-model="$ctrl.newVaccinationHorse">
+                                <option value="">בחר סוס</option>
+                              
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+
+                            <select class="form-control" ng-change="$ctrl.addHorseVaccinationToList(1)" ng-model="$ctrl.newVaccinationAllHorse">
+                                <option value="">כל הסוסים</option>
+                                <option value="1">כן</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <select class="form-control" ng-change="$ctrl.addHorseVaccinationToList(1)" ng-model="$ctrl.newVaccination.Vaccination" required ng-options="vaccination.id as vaccination.name for vaccination in $ctrl.vaccinationsHorse">
-                            <option value="">בחר חיסון</option>
-                        </select>
-                    </div>
-                </div>
 
 
-
-
-                <div>
-                    <label style="color:red">שימו לב, לא ניתן לשנות חיסון לאחר שסומן בוצע!</label>
-                    <table class="table">
+                <div class="row"  style="height:250px;overflow-y:auto">
+                    <!--<label style="color:red">שימו לב, לא ניתן לשנות חיסון לאחר שסומן בוצע!</label>-->
+                    <table class="table tableFixHead">
                         <thead>
                             <tr>
 
@@ -124,9 +164,9 @@
 
                                 <td>{{horsesVaccinationlist.SusName}}</td>
                                 <td>{{horsesVaccinationlist.HebName}}</td>
-                                <td><input class="" ng-disabled="horsesVaccinationlist.IsDo" style="width:100px;" type="text" ng-model="horsesVaccinationlist.Cost"></td>
-                                <td><input class="" type="checkbox" ng-disabled="horsesVaccinationlist.IsDo" ng-model="horsesVaccinationlist.IsDo"></td>
-                                <td><button class="btn btn-xs btn-danger" ng-show="!horsesVaccinationlist.IsDo" ng-click="$ctrl.removeVaccinationHorse(horsesVaccinationlist)">הסר</button></td>
+                                <td><input class="" style="width:100px;" type="text" ng-model="horsesVaccinationlist.Cost"></td>
+                                <td><input class="" type="checkbox" ng-model="horsesVaccinationlist.IsDo"></td>
+                                <td><button class="btn btn-xs btn-danger"  ng-click="$ctrl.removeVaccinationHorse(horsesVaccinationlist)">הסר</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -139,7 +179,6 @@
 
 
             </uib-tab>
-
 
         </uib-tabset>
 

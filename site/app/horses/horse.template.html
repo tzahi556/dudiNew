@@ -159,15 +159,23 @@
                     <div class="form-group">
 
 
+
+
+                        <div class="col-md-6">
+                            <label>פרק זמן בין פרזולים(בשבועות)</label>
+                            <input type="number" class="form-control" ng-model="$ctrl.horse.ShoeingTimeZone" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>מחיר פירזול</label>
+                            <input type="number" class="form-control" ng-model="$ctrl.horse.ShoeingCost" />
+                        </div>
+
                         <div class="col-md-6">
                             <label>תאריך לידה</label>
                             <input type="date" class="form-control" ng-disabled="$ctrl.diffHorseFarm" ng-model="$ctrl.horse.BirthDate" required />
                         </div>
-                        <div class="col-md-6">
-                            <label>מחיר פירזול</label>
-                            <input type="number" class="form-control"  ng-model="$ctrl.horse.ShoeingCost" />
-                        </div>
-                      
+
                     </div>
 
 

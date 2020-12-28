@@ -46,11 +46,11 @@ namespace FarmsApi.DataModels
         public string Image { get; set; }
 
         public double? ShoeingCost { get; set; }
+        public int? ShoeingTimeZone { get; set; }
 
-        
 
 
-         [NotMapped]
+        [NotMapped]
         public bool IsShoeings { get; set; }
         [NotMapped]
         public bool IsTilufings { get; set; }
@@ -435,6 +435,7 @@ namespace FarmsApi.DataModels
 
         public int HorseId { get; set; }
         public int LessonId { get; set; }
+        public int? NextLessonId { get; set; }
 
         public int? MefarzelLessonId { get; set; }
         public double? Cost { get; set; }
@@ -445,8 +446,11 @@ namespace FarmsApi.DataModels
       
         public string GroupName { get; set; }
 
-
+        public int? ShoeingId { get; set; }
         
+
+
+
     }
 
     public class HorseVaccinationLists
@@ -456,6 +460,9 @@ namespace FarmsApi.DataModels
         public int HorseId { get; set; }
         public int LessonId { get; set; }
 
+        public int? VaccinationId { get; set; }
+
+        public int? NextLessonId { get; set; }
         public string Vaccination { get; set; }
 
         public double? Cost { get; set; }

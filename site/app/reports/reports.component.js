@@ -776,7 +776,7 @@
         }
 
         function _getTotalPerStyle(Id, res) {
-
+           
             var myObj =
             {
                 OneTipuli: 0,
@@ -815,7 +815,8 @@
                         (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
                     ) {
 
-                        if (res[i].Style == "treatment" || res[i].Style == "privateTreatment") {
+                        if (["privateTreatment", "maccabiGold", "maccabiSheli", "klalit",
+                            "klalitPlatinum", "klalitDikla", "meuhedet", "leumit"].indexOf(res[i].HMO) != -1) {//res[i].Style == "treatment" || res[i].Style == "privateTreatment") {
 
                             var result = DateExist.filter(d => d.Date == res[i].Start);
                             if (result.length > 0) {
@@ -829,9 +830,9 @@
 
                         }
 
-                        if (res[i].Style == "western") { myObj.western++ }
-                        if (res[i].Style == "karting") { myObj.karting++ }
-                        if (res[i].Style == "english") { myObj.english++ }
+                        if (res[i].HMO == "western") { myObj.western++ }
+                        if (res[i].HMO == "karting") { myObj.karting++ }
+                        if (res[i].HMO == "english") { myObj.english++ }
 
 
 
@@ -873,8 +874,8 @@
                         (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
                     ) {
 
-                        if (res[i].Style == "treatment") {
-
+                        if (["maccabiGold", "maccabiSheli", "klalit",
+                            "klalitPlatinum", "klalitDikla", "meuhedet", "leumit"].indexOf(res[i].HMO) != -1) {
                           
                             if (res[i].HMO == "maccabiSheli") res[i].HMO = "maccabiGold";
                             if (res[i].HMO == "klalitPlatinum") res[i].HMO = "klalit";
@@ -1356,14 +1357,19 @@
 
                 self.users = users.reduce(function (acc, value) { return acc.concat(value); });
 
-                lessonsService.getLessons(null, self.fromDate, self.toDate).then(function (lessons) {
+              //  debugger
+              //  self.fromDate = moment(self.fromDate).startOf('day').toDate();
+              //  self.toDate = moment(self.toDate).startOf('day').toDate();
+                lessonsService.getLessons(null, self.fromDate,self.toDate).then(function (lessons) {
+
+                  
+
                     var data = [];
                     data.push([
                         'מס לקוח',
                         'ת.ז.',
                         'תאריך',
                         'שעה',
-
                         'שם מדריך',
                         'שם תלמיד',
                         'סטטוס',
@@ -1387,8 +1393,11 @@
                                 var studentClientNumber = student.ClientNumber || "";
                                 var studentIdNumber = student.IdNumber;
                               
+                                //var studentHMO = status.HMO;
+                                //var studentCost = student.Cost;
+                              //  debugger
                                 var studentHMO = status.HMO;
-                                var studentCost = student.Cost;
+                                var studentCost = status.LessPrice;
 
                                 var startHour = (new Date(lesson.start)).toLocaleTimeString();
                                 var endHour = (new Date(lesson.end)).toLocaleTimeString();

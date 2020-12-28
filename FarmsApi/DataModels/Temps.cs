@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FarmsApi.DataModels
 {
@@ -15,5 +16,21 @@ namespace FarmsApi.DataModels
         public string invoicenum { get; set; }
 
     }
+
+
+    public class InsertedLessonsTemps
+    {
+        public int Id { get; set; }
+        public int? UserId { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+
+        public int InstructorId { get; set; }
+     
+
+    }
+
+
+
 
 }

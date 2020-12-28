@@ -261,6 +261,14 @@ namespace FarmsApi.Services
                             {
                                 StudentLesson.LessonPayType = Status["lessonpaytype"].Value<int>();
                             }
+                            // קופת חולים אם שלחתי לעדכון 
+                            if (Status["lessonHMO"] != null)
+                            {
+                                StudentLesson.HMO = Status["lessonHMO"].Value<string>();
+                            }
+
+
+                            
 
 
                             if (Status["status"] != null)

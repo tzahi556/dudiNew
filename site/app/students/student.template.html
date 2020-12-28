@@ -233,7 +233,7 @@
                         <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
                             <label>סגנון רכיבה</label>
                             <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles"
-                                    ng-model="$ctrl.user.Style" ng-change="$ctrl.user.HMO=''"
+                                    ng-model="$ctrl.user.Style" ng-change="$ctrl.user.HMO=null;$ctrl.changeLessonsData()" 
                                     required>
                                 <option value="">בחר סגנון רכיבה</option>
                             </select>
@@ -244,7 +244,7 @@
                         <div class="form-group" ng-if="$ctrl.user.Style.indexOf('treatment')!=-1 && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
                             <label>קופ"ח</label>
                             <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs"
-                                    ng-model="$ctrl.user.HMO" required>
+                                    ng-model="$ctrl.user.HMO"  ng-change="$ctrl.changeLessonsData()" required>
                                 <option value="">בחר קופת חולים</option>
                             </select>
                         </div>

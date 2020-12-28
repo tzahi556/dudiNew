@@ -225,7 +225,7 @@
                                 ondragstart="dragStart(event)"
                                 ng-repeat="horse in $ctrl.getFreeHorses() | filter:$ctrl.filter"
                                 class="fc-draggable dvDragElement  btn btn-info">
-                            {{horse.Name}}
+                            {{horse.Name}} <span style="color:blue;font-weight:bold">({{(horse.ShoeingTimeZone)?horse.ShoeingTimeZone:7}})</span>
                         </button>
 
                     </div>
@@ -244,7 +244,7 @@
                         <div class="panel-body" id="{{horsegroup.Id}}" ondrop="drop(event)" ondragover="allowDrop(event)">
                             <button style="margin:2px"
                                     ng-repeat="horse in $ctrl.getHorsesGroup(horsegroup.Id)" ng-click="$ctrl.actionHorsesGroup(3,horse.HorseId)" class="col-md-12 btn btn-info">
-                                {{horse.Name}}
+                                {{horse.Name}}<span style="color:blue;font-weight:bold">({{(horse.ShoeingTimeZone)?horse.ShoeingTimeZone:7}})</span>
                             </button>
                         </div>
                     </div>

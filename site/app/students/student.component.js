@@ -912,23 +912,10 @@
             return newDate.getDay();
         }
 
-        function _changeLessonsData() {
+      
 
 
-
-
-            for (var i in this.lessons) {
-
-                if (moment(this.lessons[i].start).format('YYYY-MM-DD') >= moment().format('YYYY-MM-DD')) {
-                    this.lessons[i].lessprice = this.user.Cost;
-                    this.lessons[i].lessonpaytype = (this.user.PayType == "lessonCost") ? 1 : 2;
-                    this.setLessPrice(this.lessons[i]);
-
-                }
-
-            }
-
-        }
+        
 
         function _openComments(statusIndex, lesson) {
 
@@ -1486,6 +1473,28 @@
 
         //}
 
+
+
+
+        function _changeLessonsData() {
+
+
+
+
+            for (var i in this.lessons) {
+
+                if (moment(this.lessons[i].start).format('YYYY-MM-DD') >= moment().format('YYYY-MM-DD')) {
+                    this.lessons[i].lessprice = this.user.Cost;
+                    this.lessons[i].lessonpaytype = (this.user.PayType == "lessonCost") ? 1 : 2;
+                    this.lessons[i].HMO = (this.user.Style == 'treatment') ? this.user.HMO : this.user.Style;
+                    this.setLessPrice(this.lessons[i]);
+
+                }
+
+            }
+
+        }
+
         function _setLessPrice(lesson, index) {
 
 
@@ -1497,12 +1506,13 @@
 
                     this.lessonStatusesToUpdate[i].lessprice = eval(lesson.lessprice);
                     this.lessonStatusesToUpdate[i].lessonpaytype = lesson.lessonpaytype;
+                    this.lessonStatusesToUpdate[i].lessonHMO = lesson.HMO;
                     found = true;
                 }
             }
             if (!found) {
 
-                this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: lesson.id, lessprice: eval(lesson.lessprice), lessonpaytype: lesson.lessonpaytype });
+                this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: lesson.id, lessprice: eval(lesson.lessprice), lessonpaytype: lesson.lessonpaytype, lessonHMO: lesson.HMO });
             }
 
 

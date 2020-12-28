@@ -52,7 +52,9 @@
         this.saveVaccination = _saveVaccination.bind(this);
         this.addHorseVaccinationToList = _addHorseVaccinationToList.bind(this);
         this.removeVaccinationHorse = _removeVaccinationHorse.bind(this);
-        
+
+        // this.getPirzulByTimeZone = _getPirzulByTimeZone.bind(this);
+
         this.scope.$on('schedular.show', this.onShow);
 
         function _isExec(schedular) {
@@ -125,23 +127,26 @@
         }
 
 
-
+        this.activeTab = 0;
 
         function _onShow(event, lesson) {
 
 
-
+            this.activeTab = 0;
 
 
             this.selectedStudentSchedular = lesson;
 
             this.lessonId = lesson.id;
             this.resourceId = lesson.resourceId;
+          //  this.vaccinationsHorse = "";
+          
 
             this.lessonsService.getSetSchedularTask(lesson.id, lesson.resourceId, null, 0).then(function (res) {
 
                 if (res[0]) {
                     res = res[0];
+
                     this.newSchedular = [];
                     this.newSchedular.Id = res.Id;
                     this.newSchedular.Title = res.Title;
@@ -153,6 +158,10 @@
                     this.newSchedular.EndDate = moment(res.EndDate).startOf('day').toDate();
                     this.newSchedular.Days = res.Days;
                     this.affectChildren = false;
+
+
+
+
                 } else {
 
                     this.newSchedular = [];
@@ -174,19 +183,51 @@
 
             }.bind(this));
 
-          
 
+            this.newWeeks = "";
+            this.newGroup = "";
+            this.newHorse = "";
+            this.newVaccinationHorse = "";
+            this.newVaccinationAllHorse = "";
+           
+            var thisCtrl = this;
             this.horsesService.getHorses().then(function (hss) {
+
+
                 this.horses = hss;
+
+
+                this.weeks = [];
+
+                for (var i in this.horses) {
+
+                    var CurrentShoeingTimeZone = this.horses[i].ShoeingTimeZone;
+                    if (this.horses[i].Active != "notActive" && this.weeks.filter(x => x.Id == CurrentShoeingTimeZone).length == 0) {
+                        this.weeks.push({ Id: CurrentShoeingTimeZone, Name: ((CurrentShoeingTimeZone) ? CurrentShoeingTimeZone : 7) + " שבועות" });
+
+                    }
+
+                }
+
+
+
+
                 //פירזולים
                 this.horsesService.getSetPirzulHorse(0, this.lessonId, null).then(function (res) {
                     this.horseslists = res;
+
+                 
                     for (var i in this.horseslists) {
 
                         this.horseslists[i].SusName = this.horses.filter(x => x.Id == this.horseslists[i].HorseId)[0].Name;
                         this.horseslists[i].PrevIsDo = this.horseslists[i].IsDo;
+                       
+
 
                     }
+
+
+                    if (this.horseslists.length > 0) thisCtrl.activeTab = 1;
 
 
                 }.bind(this));
@@ -201,16 +242,13 @@
                         this.horsesVaccinationlists[i].HebName = this.vaccinationsHorse.filter(x => x.id == this.horsesVaccinationlists[i].Vaccination)[0].name;
                     }
 
+                    if (this.horsesVaccinationlists.length > 0) thisCtrl.activeTab = 2;
+
 
                 }.bind(this));
 
 
             }.bind(this));
-
-
-
-          
-
 
             this.horsesService.getSetHorseGroupsHorses(1).then(function (res) {
 
@@ -219,10 +257,7 @@
             }.bind(this));
 
 
-            //horsegroupshorses: function (horsesService) {
-            //    return horsesService.getSetHorseGroupsHorses(1);
-            //},
-
+         
 
 
         }
@@ -266,7 +301,7 @@
 
         function _close(schedular, type) {
 
-         
+
             if (this.horseslists.length > 0) {
                 alert("לא ניתן למחוק משימה שיש פירזולים");
                 return;
@@ -331,28 +366,126 @@
         }
 
         //******************************************* פירזול ***************************
+        //function _getPirzulByTimeZone() {
 
+
+
+
+
+        //    return this.weeks;
+
+
+
+        //}
         function _addHorseToList(type) {
             //הוספת סוס
             if (type == 1) {
 
-                this.horseslists.push({ SusName: this.newHorse.Name, Id: 0, Cost: this.newHorse.ShoeingCost, isDo: false, HorseId: this.newHorse.Id, LessonId: this.lessonId});
+
+                var CurrentHorse = this.horses.filter(x => x.Id == this.newHorse)[0];
+                var CurrentShoeingTimeZone = CurrentHorse.ShoeingTimeZone;
+                if (this.horseslists.length > 0) {
+                    var FirstShoeingTimeZone = this.horseslists[0].ShoeingTimeZone;
+                    if (FirstShoeingTimeZone != CurrentShoeingTimeZone) {
+
+
+                        alert("לא ניתן לצרף סוסים עם פרקי זמן של פירזול שונים...");
+                        return;
+                    }
+
+
+                }
+
+                if (this.horseslists.filter(x => x.HorseId == this.newHorse).length > 0) {
+                    return;
+                }
+
+                this.horseslists.push({ ShoeingTimeZone: CurrentShoeingTimeZone, SusName: CurrentHorse.Name, Id: 0, Cost: CurrentHorse.ShoeingCost, isDo: false, HorseId: CurrentHorse.Id, LessonId: this.lessonId });
             }
 
             //הוספת קבוצה
             if (type == 2) {
 
-               
+
                 var horselist = this.horsegroupshorses.filter(x => x.HorseGroupsId == this.newGroup.Id);
                 var groupName = this.groups.filter(x => x.Id == this.newGroup.Id)[0].Name;
+
+               
+
+                if (this.horseslists.filter(x => x.GroupName).length > 0) {
+                    alert("לא ניתן לצרף יותר מקבוצה אחת...");
+                    return;
+
+                }
+
+
                 for (var i in horselist) {
 
                     var currentHorse = this.horses.filter(y => y.Id == horselist[i].HorseId);
                     if (currentHorse.length > 0) {
 
-                        this.horseslists.push({ SusName: currentHorse[0].Name, Id: 0, Cost: currentHorse[0].ShoeingCost, isDo: false, HorseId: currentHorse[0].Id, LessonId: this.lessonId, GroupName: groupName});
+                        if (this.horseslists.length > 0 && currentHorse[0].ShoeingTimeZone != this.horseslists[0].ShoeingTimeZone) {
+                            alert("לא ניתן לצרף סוסים עם פרקי זמן של פירזול שונים...");
+                            return;
+                        }
+
+                        if (this.horseslists.filter(x => x.HorseId == currentHorse.Id).length > 0) {
+                            continue;
+                        }
+
+
+                        this.horseslists.push({ ShoeingTimeZone: currentHorse[0].ShoeingTimeZone, SusName: currentHorse[0].Name, Id: 0, Cost: currentHorse[0].ShoeingCost, isDo: false, HorseId: currentHorse[0].Id, LessonId: this.lessonId, GroupName: groupName });
                     }
                 }
+
+            }
+
+
+            //הוספת לפי שבועות
+            if (type == 3) {
+
+                // alert(this.newWeeks);
+
+                var currentHorses = this.horses.filter(y => y.Active != "notActive" && y.ShoeingTimeZone == this.newWeeks);
+                //var horselist = this.horsegroupshorses.filter(x => x.HorseGroupsId == this.newGroup.Id);
+                if (this.horseslists.length > 0) {
+
+                    var FirstHorse = this.horses.filter(y => y.Id == this.horseslists[0].HorseId)[0];
+
+                    if (FirstHorse.ShoeingTimeZone != currentHorses[0].ShoeingTimeZone) {
+
+                        alert("לא ניתן לצרף סוסים עם פרקי זמן של פירזול שונים...");
+                        return;
+
+                    }
+
+
+
+
+                }
+
+                // var groupName = this.groups.filter(x => x.Id == this.newGroup.Id)[0].Name;
+                for (var i in currentHorses) {
+
+                    if (this.horseslists.filter(x => x.HorseId == currentHorses[i].Id).length > 0) {
+                        continue;
+                    }
+                    this.horseslists.push({ ShoeingTimeZone: currentHorses[i].ShoeingTimeZone, SusName: currentHorses[i].Name, Id: 0, Cost: currentHorses[i].ShoeingCost, isDo: false, HorseId: currentHorses[i].Id, LessonId: this.lessonId, GroupName: "" });
+
+                }
+
+                //for (var i in horselist) {
+
+                //    var currentHorse = this.horses.filter(y => y.Id == horselist[i].HorseId);
+                //    if (currentHorse.length > 0) {
+
+                //        if (this.horseslists.length > 0 && currentHorse[0].ShoeingTimeZone != this.horseslists[0].ShoeingTimeZone) {
+
+                //        }
+
+                //        this.horseslists.push({ ShoeingTimeZone: currentHorse[0].ShoeingTimeZone, SusName: currentHorse[0].Name, Id: 0, Cost: currentHorse[0].ShoeingCost, isDo: false, HorseId: currentHorse[0].Id, LessonId: this.lessonId, GroupName: groupName });
+                //    }
+                //}
 
             }
         }
@@ -371,19 +504,15 @@
             if (isDelete) {
                 var m = this.horseslists.length;
                 while (m--) {
-                    if (this.horseslists[m].IsDo) continue;
-                  //  if (this.horsegroupshorses[m].HorseGroupsId == obj.Id) {
+                    //if (this.horseslists[m].IsDo) continue;
+                  
                     this.horseslists.splice(m, 1);
-                   // }
+                  
                 }
-
-
-
-
 
             }
 
-
+           
             this.horsesService.getSetPirzulHorse(1, this.lessonId, this.horseslists).then(function (res) {
 
                 this.closeCallback(null);
@@ -393,7 +522,7 @@
 
 
         }
-         //******************************************* חיסונים ***************************
+        //******************************************* חיסונים ***************************
 
         function _removeVaccinationHorse(horsesVaccinationlist) {
             //הוספת סוס
@@ -404,25 +533,59 @@
             }
         }
 
-        
+
 
 
         function _addHorseVaccinationToList(type) {
-          
+
             var Vaccination = this.newVaccination.Vaccination;
             var Horse = this.newVaccinationHorse;
 
-            if (!Vaccination || !Horse) return;
-           
+            var IsAllHorses = this.newVaccinationAllHorse;
+
+            if (!Vaccination || (!Horse && IsAllHorses != 1)) return;
+
+            if (this.horsesVaccinationlists.filter(x => x.Vaccination != Vaccination).length > 0) {
+                alert("לא ניתן לצרף חיסונים שונים באותו זמן...");
+                return;
+            }
+
+          
             //הוספת סוס
             if (type == 1) {
                 var name = this.vaccinationsHorse.filter(x => x.id == Vaccination)[0].name;
-                
-                this.horsesVaccinationlists.push({ SusName: this.newVaccinationHorse.Name, Vaccination: Vaccination, HebName:name, Id: 0, Cost: 0, isDo: false, HorseId: this.newVaccinationHorse.Id, LessonId: this.lessonId });
+
+                if (IsAllHorses == 1) {
+
+                    var currentHorses = this.horses.filter(y => y.Active != "notActive");
+                    for (var i in currentHorses) {
+
+                        if (this.horsesVaccinationlists.filter(x => x.HorseId == currentHorses[i].Id).length > 0) {
+                            continue;
+                        }
+
+                        this.horsesVaccinationlists.push({ SusName: currentHorses[i].Name, Vaccination: Vaccination, HebName: name, Id: 0, Cost: 0, isDo: false, HorseId: currentHorses[i].Id, LessonId: this.lessonId });
+
+                    }
+
+
+
+                } else {
+
+                    // אם קיים כבר סוס ברשימה
+                    if (this.horsesVaccinationlists.filter(x => x.HorseId == this.newVaccinationHorse.Id).length > 0) {
+                        return;
+                    }
+
+                    this.horsesVaccinationlists.push({ SusName: this.newVaccinationHorse.Name, Vaccination: Vaccination, HebName: name, Id: 0, Cost: 0, isDo: false, HorseId: this.newVaccinationHorse.Id, LessonId: this.lessonId });
+
+                }
+
+
             }
 
-           
-           
+
+
         }
         function _saveVaccination(isDelete) {
 
@@ -432,7 +595,7 @@
 
                     if (this.horsesVaccinationlists[m].IsDo) continue;
                     this.horsesVaccinationlists.splice(m, 1);
-                   
+
                 }
 
 
@@ -451,7 +614,7 @@
 
 
         }
-        
+
 
 
     }
