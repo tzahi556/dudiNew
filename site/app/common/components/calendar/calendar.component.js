@@ -203,11 +203,11 @@
                     for (var i in event.statuses) {
 
                       
-                      
+                        CounterAttend++;
                         //בלי סטטוס
                         if (!event.statuses[i].Status || event.statuses[i].Status == '') {
 
-                            CounterAttend++;
+                          
                             //  $(element).addClass('warning-icon');
                         }
                         //לא הגיע 
@@ -230,7 +230,7 @@
                         // שמו אותו  כאן אבל עדיין לא הגיע
                         else if (event.statuses[i].Status == 'completion' && (event.statuses[i].IsComplete == 3 || event.statuses[i].IsComplete == 5)) {
                             // $(element).addClass('returnred-iconfloat');
-                            CounterAttend++;
+                           // CounterAttend++;
                         }
 
                         // שמו אותו איפה שהוא והגיע 
@@ -276,7 +276,6 @@
                     }
 
                     if (CounterAttend>1) {
-
                         
                          $(element).addClass('kvutza-icon');
                     }
