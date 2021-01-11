@@ -62,6 +62,8 @@ namespace FarmsApi.DataModels
         public string HMO { get; set; }
         public int? Leave { get; set; }
         public int? StudentId { get; set; }
+
+        public int? IsHiyuvInHashlama { get; set; }
     }
 
     public class HMOReport

@@ -2340,6 +2340,13 @@ namespace FarmsApi.Services
                     var Less = Context.Lessons.Where(p => p.Id == LessonId).FirstOrDefault();
                     if (HorsePirzulLists.Count > 0)
                     {
+                        int HorsesCount = 30 + HorsePirzulLists.Count * 15;
+                        Less.End = Less.Start.AddMinutes(HorsesCount);
+                        if(Less.End.Date > Less.Start.Date)
+                        {
+                            Less.End = new DateTime(Less.Start.Year, Less.Start.Month, Less.Start.Day, 23, 59, 59);
+
+                        }
 
                         Less.Details = "פירזול " + HorsePirzulLists[0].GroupName + "</br>" + GetHorseList(HorsePirzulLists, Context);
                         Context.Entry(Less).State = System.Data.Entity.EntityState.Modified;
@@ -2556,6 +2563,19 @@ namespace FarmsApi.Services
                   //  var Less = Context.Lessons.Where(p => p.Id == LessonId).FirstOrDefault();
                     if (HorseVaccinationLists.Count > 0)
                     {
+                        //***************************************************************************************
+                       // string LessDetails = "פירזול " + HorsePirzulLists[0].GroupName + "</br>" + GetHorseList(HorsePirzulLists.Where(x => x.IsDo).ToList(), context);
+                        int HorsesCount = 30 + (HorseVaccinationLists).Count * 15;
+                        //***************************************************************************************
+                        l.End = l.Start.AddMinutes(HorsesCount);
+
+                        if (l.End.Date > l.Start.Date)
+                        {
+                            l.End = new DateTime(l.Start.Year, l.Start.Month, l.Start.Day, 23, 59, 59);
+
+                        }
+
+
                         l.Details = " חיסוני סוסים - " + CurrentVact + "</br>" + GetHorseListVact(HorseVaccinationLists, Context);
                         Context.Entry(l).State = System.Data.Entity.EntityState.Modified;
                     }
@@ -2681,7 +2701,7 @@ namespace FarmsApi.Services
 
 
 
-
+            int HorsesCount = 30 + (HorseVaccinationLists.Where(x => x.IsDo).ToList()).Count * 15;
 
 
             int NewLessonId = 0;
@@ -2690,11 +2710,19 @@ namespace FarmsApi.Services
             Lesson NewLesson = new Lesson();
             NewLesson.Id = 0;
             NewLesson.Start = DateVaction;
-            NewLesson.End = DateVaction.AddMinutes(30);
+            NewLesson.End = DateVaction.AddMinutes(HorsesCount);
+
+            if (NewLesson.End.Date > NewLesson.Start.Date)
+            {
+                NewLesson.End = new DateTime(NewLesson.Start.Year, NewLesson.Start.Month, NewLesson.Start.Day, 23, 59, 59);
+
+            }
             NewLesson.Instructor_Id = Less.Instructor_Id;
             NewLesson.Details = LessDetails;
             context.Lessons.Add(NewLesson);
             context.SaveChanges();
+
+            NewLesson.ParentId = Less.Id;
             NewLessonId = NewLesson.Id;
 
 
@@ -2827,12 +2855,6 @@ namespace FarmsApi.Services
             }
 
 
-
-
-
-
-
-
         }
 
         private static void CreateFutureLessonsNew(List<HorsePirzulLists> HorsePirzulLists, List<HorsePirzulLists> HorsePirzulListsFromSql, Context context, string details, Farm currentFarm)
@@ -2864,8 +2886,7 @@ namespace FarmsApi.Services
             //if (HorsePirzulListsCount>0 && AllDoList != null && ExistNextLesson==null)
             //{
 
-            string LessDetails = "פירזול " + HorsePirzulLists[0].GroupName + "</br>" + GetHorseList(HorsePirzulLists.Where(x => x.IsDo).ToList(), context);
-
+           
 
             int LessonId = HorsePirzulLists[0].LessonId;
             int? MefarzelLessonId = HorsePirzulLists[0].MefarzelLessonId;
@@ -2874,6 +2895,13 @@ namespace FarmsApi.Services
             Horse h = context.Horses.Where(p => p.Id == HorseId).FirstOrDefault();
             var Less = context.Lessons.Where(p => p.Id == LessonId).FirstOrDefault();
             var LessMefarzel = context.Lessons.Where(p => p.Id == MefarzelLessonId).FirstOrDefault();
+         
+            //***************************************************************************************
+            string LessDetails = "פירזול " + HorsePirzulLists[0].GroupName + "</br>" + GetHorseList(HorsePirzulLists.Where(x => x.IsDo).ToList(), context);
+            int HorsesCount = 30 + (HorsePirzulLists.Where(x => x.IsDo).ToList()).Count * 15;
+            //***************************************************************************************
+
+          
 
             int NewLessonId = 0;
             int? NewMefarzelLessonId = null;
@@ -2881,11 +2909,20 @@ namespace FarmsApi.Services
             Lesson NewLesson = new Lesson();
             NewLesson.Id = 0;
             NewLesson.Start = Less.Start.AddDays(7 * ((h.ShoeingTimeZone != null) ? (int)h.ShoeingTimeZone : 7));
-            NewLesson.End = Less.End.AddDays(7 * ((h.ShoeingTimeZone != null) ? (int)h.ShoeingTimeZone : 7));
+            NewLesson.End = Less.Start.AddMinutes(HorsesCount).AddDays(7 * ((h.ShoeingTimeZone != null) ? (int)h.ShoeingTimeZone : 7));
+            if (NewLesson.End.Date > NewLesson.Start.Date)
+            {
+                NewLesson.End = new DateTime(NewLesson.Start.Year, NewLesson.Start.Month, NewLesson.Start.Day, 23, 59, 59);
+
+            }
+
+
+
             NewLesson.Instructor_Id = Less.Instructor_Id;
             NewLesson.Details = LessDetails;
             context.Lessons.Add(NewLesson);
             context.SaveChanges();
+            NewLesson.ParentId = Less.Id;
             NewLessonId = NewLesson.Id;
 
 
@@ -2895,11 +2932,19 @@ namespace FarmsApi.Services
                 Lesson NewLessonMefarzel = new Lesson();
                 NewLessonMefarzel.Id = 0;
                 NewLessonMefarzel.Start = LessMefarzel.Start.AddDays(7 * ((h.ShoeingTimeZone != null) ? (int)h.ShoeingTimeZone : 7));
-                NewLessonMefarzel.End = LessMefarzel.End.AddDays(7 * ((h.ShoeingTimeZone != null) ? (int)h.ShoeingTimeZone : 7));
+                NewLessonMefarzel.End = LessMefarzel.Start.AddMinutes(HorsesCount).AddDays(7 * ((h.ShoeingTimeZone != null) ? (int)h.ShoeingTimeZone : 7));
+
+                if (NewLessonMefarzel.End.Date > NewLessonMefarzel.Start.Date)
+                {
+                    NewLessonMefarzel.End = new DateTime(NewLessonMefarzel.Start.Year, NewLessonMefarzel.Start.Month, NewLessonMefarzel.Start.Day, 23, 59, 59);
+
+                }
+
                 NewLessonMefarzel.Instructor_Id = LessMefarzel.Instructor_Id;
                 NewLessonMefarzel.Details = LessDetails;
                 context.Lessons.Add(NewLessonMefarzel);
                 context.SaveChanges();
+                NewLessonMefarzel.ParentId = LessMefarzel.Id;
                 NewMefarzelLessonId = NewLessonMefarzel.Id;
 
 
@@ -2977,8 +3022,15 @@ namespace FarmsApi.Services
 
             // res.AddRange(AllHorses);
 
+            string combindedString = "";
 
-            string combindedString = string.Join(",", AllHorses);
+            for (int i = 0; i < AllHorses.Count; i++)
+            {
+                combindedString += "<b>" + (i+1).ToString() + ") " +  AllHorses[i] + "</b></br>";
+            }
+
+
+           // string combindedString = string.Join("</br>", AllHorses);
 
             return combindedString;
         }
@@ -2994,7 +3046,15 @@ namespace FarmsApi.Services
             // res.AddRange(AllHorses);
 
 
-            string combindedString = string.Join(",", AllHorses);
+            string combindedString = "";
+
+            for (int i = 0; i < AllHorses.Count; i++)
+            {
+                combindedString += "<b>" + (i + 1).ToString() + ") " + AllHorses[i] + "</b></br>";
+            }
+
+
+           // string combindedString = string.Join("</br>", AllHorses);
 
             return combindedString;
         }

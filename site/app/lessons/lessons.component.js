@@ -1022,11 +1022,11 @@
 
             if (this.eventToChange) {
 
-                if (this.eventToChange.IsMazkirut == "1" && changeChildren) {
+                //if (this.eventToChange.IsMazkirut == "1" && changeChildren) {
 
-                    alert("לא ניתן להזיז אירועים עתידיים של משימות חוזרות");
-                    return;
-                }
+                //    alert("לא ניתן להזיז אירועים עתידיים של משימות חוזרות");
+                //    return;
+                //}
 
                 var event = this.eventToChange;
                 this.eventToChange = null;

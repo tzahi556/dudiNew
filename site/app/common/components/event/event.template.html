@@ -85,6 +85,7 @@
                 <tr ng-repeat-start="studentId in $ctrl.event.students track by $index">
                     <td colspan="3">
                         <a href="" ui-sref="student({id:studentId})">{{$ctrl.studentDataById(studentId).FirstName}} {{$ctrl.studentDataById(studentId).LastName}}</a>
+                        <b>{{$ctrl.getStudentAge(studentId)}}</b>
                         <a href="tel:{{$ctrl.studentDataById(studentId).PhoneNumber}}">{{$ctrl.studentDataById(studentId).PhoneNumber}}</a>
 
                         <a class="pull-left close" ng-show="!$ctrl.IsInstructorBlock" ng-click="$ctrl.removeStudentFromEvent(studentId)" href="">&times;</a>

@@ -248,6 +248,24 @@ namespace FarmsApi.Controllers
                     List<dynamic> Payment = new List<dynamic>();
                     switch ((string)Params.payment_type)
                     {
+                        case "PayPal":
+                        case "Pay":
+                        case "Bit":
+                        case "PayBox":
+
+                            Payment.Add(
+                            new
+                            {
+                                payment_type = 91,
+                                date = (string)Params.payment_date,
+                                payment = (decimal)Params.payment,
+                                wt_vendor= (string)Params.payment_type,
+                            }
+
+                            );
+
+
+                            break;
                         case "cash":
 
                             Payment.Add(

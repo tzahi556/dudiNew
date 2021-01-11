@@ -50,7 +50,7 @@
         this.isEventHaveChild = false;
         this.onlyMultiple = 0;
         this.modalAppendClick = _modalAppendClick.bind(this);
-
+        this.getStudentAge = _getStudentAge.bind(this);
         this.IsInstructorBlock = $rootScope.IsInstructorBlock;
 
 
@@ -72,6 +72,21 @@
 
 
     }
+
+    function _getStudentAge(studentId) {
+      
+        var student = this.students.filter(x => x.Id == studentId)[0];
+        if (!student.BirthDate) return "";
+
+        var diffyear = (moment()).diff(moment(student.BirthDate), 'year', true);
+
+        if (isNaN(diffyear)) return "";
+
+        return "("+Math.round(diffyear)+")";
+
+    }
+
+
 
     function _changeHorseValidation(studentId) {
         var HorseId = this.horsesarray[studentId];
@@ -503,6 +518,7 @@
     }
 
 
+    
 
     function _studentDataById(studentId) {
         for (var i in this.students) {

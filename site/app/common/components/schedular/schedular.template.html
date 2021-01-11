@@ -87,7 +87,7 @@
                                  
                                     <th>שם הסוס</th>
                                     <th>מחיר</th>
-                                    <th>האם בוצע</th>
+                                    <th> <input type="checkbox" ng-model="$ctrl.checkAllPirzul" ng-click="$ctrl.checkAll(1)"> האם בוצע</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -155,7 +155,7 @@
                                 <th>שם הסוס</th>
                                 <th>חיסון</th>
                                 <th>מחיר</th>
-                                <th>האם בוצע</th>
+                                <th><input type="checkbox" ng-model="$ctrl.checkAllVact" ng-click="$ctrl.checkAll(2)"> האם בוצע</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -165,7 +165,7 @@
                                 <td>{{horsesVaccinationlist.SusName}}</td>
                                 <td>{{horsesVaccinationlist.HebName}}</td>
                                 <td><input class="" ng-disabled="horsesVaccinationlist.IsPaid" style="width:100px;" type="text" ng-model="horsesVaccinationlist.Cost"></td>
-                                <td><input class="" ng-disabled="horsesVaccinationlist.IsPaid" type="checkbox" ng-model="horsesVaccinationlist.IsDo"></td>
+                                <td><input class="" ng-disabled="horsesVaccinationlist.IsPaid"  type="checkbox" ng-model="horsesVaccinationlist.IsDo"></td>
                                 <td><button ng-disabled="horsesVaccinationlist.IsPaid" class="btn btn-xs btn-danger"  ng-click="$ctrl.removeVaccinationHorse(horsesVaccinationlist)">הסר</button></td>
                             
                             

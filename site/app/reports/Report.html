@@ -63,58 +63,92 @@
         מספר תלמידים לא פעילים:<span>@notActiveUser</span><br />
         מספר פנסיון פעילים: <span>@ActivePension</span><br />
         מספר פנסיון לא פעילים:<span>@notActivePension</span><br />
+        מספר מדריכים:<span>@instructorUser</span><br /><br /><br />
 
-        מספר מדריכים:<span>@instructorUser</span><br /><br />
+        מספר שיעורים בפועל:<span style="font-size:25px;font-weight:bold">@TotalLessons</span><br /><br /><br />
 
 
         <span style="text-decoration:underline">מדריכים</span><br />
 
     </div>
-    <div class="dvTable">
-
+    <div class="dvTable" style="margin-right:20px;">
+        <div style="text-align:right;color:blue;font-weight:bold">חישוב לפי שעות עבודה</div><br />
         <table width="100%" border="1" dir="rtl" style="border-collapse: collapse;">
-
-            <tr>
-                <td colspan="7" style="background:#42ecf5;">
-                    חישוב לפי שיעורים
-                </td>
-
-
-                <td colspan="6" style="background:#f5e942;">
-                    חישוב לפי ראש
-                </td>
-                <td  style="background:#a83242;">
-                 
-                </td>
-
-            </tr>
-
-
             <tr>
                 <th style="background:#42ecf5;">שם המדריך</th>
                 <th style="background:#42ecf5;">מס' ימי עבודה </th>
+                @HeadersDynamicHours
                 <th style="background:#42ecf5;">מס' שעות</th>
-                <th style="background:#42ecf5;">מס' שיעורים בפועל <br />(התלמיד היה בשיעור)</th>
-                <th style="background:#42ecf5;">מס' שיעורים שלא נכחו</th>
-                <th style="background:#42ecf5;">מס' שיעורים שלא נכחו,לחייב</th>
-                <th style="background:#42ecf5;">מס' שיעורים שלא צויין כלום</th>
-
-                <th style="background:#f5e942;">מס' תלמידים בשיעור בודד</th>
-                <th style="background:#f5e942;">מס' תלמידים בשיעור זוגי</th>
-                <th style="background:#f5e942;">מס' תלמידים בשיעור קבוצתי(3 ומעלה)</th>
-                <th style="background:#f5e942;">מערבי</th>
-                <th style="background:#f5e942;">קאטינג</th>
-                <th style="background:#f5e942;">אינגליש</th>
-                
-                <th style="background:#a83242;">תלמידים שעזבו</th>
 
             </tr>
 
             @TableInstructor
 
         </table>
+    </div>
+
+    <div class="dvTable" style="margin-right:20px;">
+        <div style="text-align:right;color:blue;font-weight:bold">חישוב לפי שיעורים</div><br />
+        <table width="100%" border="1" dir="rtl" style="border-collapse: collapse;">
+            <tr>
+                <th style="background:#42ecf5;">שם המדריך</th>
+
+                <th style="background:#42ecf5;">מס' שיעורים בפועל <br />(התלמיד היה בשיעור)</th>
+                <th style="background:#42ecf5;">מס' שיעורים שלא נכחו</th>
+                <th style="background:#42ecf5;">מס' שיעורים שלא נכחו,לחייב</th>
+                <th style="background:#42ecf5;">מס' שיעורים שלא צויין כלום</th>
+                <th style="background:#42ecf5;">סך שיעורים</th>
+                <th style="background:#a83242;">תלמידים שעזבו</th>
+
+            </tr>
+
+            @TableInstructorLess
+
+        </table>
+    </div>
+
+    <div class="dvTable" style="margin-right:20px;">
+        <div style="text-align:right;color:blue;font-weight:bold">חישוב לפי חלוקה לקבוצות</div><br />
+        <table width="100%" border="1" dir="rtl" style="border-collapse: collapse;">
+            <tr>
+                <th style="background:#42ecf5;">שם המדריך</th>
+                <th style="background:#42ecf5;">שיעור בודד </th>
+                @HeadersDynamicHoursSep
+                <th style="background:#42ecf5;">סך תלמידים</th>
+
+            </tr>
+
+            @TableInstructorSep
+
+        </table>
+    </div>
+
+    <div class="dvSubtitle">
+       
+
+        <span style="text-decoration:underline">חישוב לפי סגנון רכיבה - חווה</span><br />
 
     </div>
+
+    <div class="dvTable" style="">
+       
+        <table width="100%" border="1" dir="rtl" style="border-collapse: collapse;">
+
+
+            @HtmlDynamicHoursStyle
+
+
+        </table>
+    </div>
+
+
+
+
+
+
+
+
+
 
     <div class="dvTable">
 
@@ -164,7 +198,7 @@
 
 
             סה"כ חייבים: <span>@AllMinusCount</span>     סה"כ כסף:<span>₪</span><span> @AllMinusSum </span><br /><br />
-            <span style="text-decoration:underline">סה"כ כמות שעורים בחתכים השונים</span><br />
+            <!--<span style="text-decoration:underline">סה"כ כמות שעורים בחתכים השונים</span><br />
 
 
             <table width="30%" border="1" dir="rtl" style="border-collapse: collapse;float:right">
@@ -275,7 +309,7 @@
 
 
             <br />
-            <br />
+            <br />-->
 
 
 
@@ -290,18 +324,18 @@
 
     <div class="dvTable">
         <div style="clear:both"><br /></div>
+    </div>
+    <!--
+
+
+
+
+    </div>
+    <div style="clear:both"></div>
+    <div class="dvTable">
+        <div class="dvSubtitle">
+             <span style="text-decoration:underline">סיכום</span><br /><br />
         </div>
-        <!--
-
-
-
-
-        </div>
-        <div style="clear:both"></div>
-        <div class="dvTable">
-            <div class="dvSubtitle">
-                 <span style="text-decoration:underline">סיכום</span><br /><br />
-            </div>
-        </div>-->
+    </div>-->
 </body>
 </html>

@@ -136,6 +136,8 @@
       
         this.isDelete = false;
 
+        
+
         $scope.$on('submit', function (event, args) {
             if (!this.isDelete)
                 this.submit(true);
@@ -609,7 +611,8 @@
                         return 0;
                 });
                 var lastShoeing = this.shoeings[this.shoeings.length - 1];
-                shoeingDate = moment(lastShoeing.Date).add(sharedValues.shoeing.interval, 'days');
+                debugger
+                shoeingDate = moment(lastShoeing.Date).add(((this.horse.ShoeingTimeZone) ? (this.horse.ShoeingTimeZone * 7) : sharedValues.shoeing.interval), 'days');
             }
             else if (this.isFuture(first)) {
                 shoeingDate = first;

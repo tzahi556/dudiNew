@@ -165,7 +165,7 @@
         function _updateLesson(lesson, changeChildren, lessonsQty) {
          
            
-           // debugger
+            debugger
             changeChildren = changeChildren || false;
             var deferred = $q.defer();
             $http.post(sharedValues.apiUrl + 'lessons/updateLesson/' + changeChildren + "/" + lessonsQty, lesson).then(function (res) {

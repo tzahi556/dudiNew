@@ -93,5 +93,8 @@ namespace FarmsApi.DataModels
 
         public int? Gender { get; set; }
 
+        public bool IsHozeHatum { get; set; }
+        
+
     }
 }

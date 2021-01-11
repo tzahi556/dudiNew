@@ -88,7 +88,6 @@
 
                 </div>
 
-
                 <div class="panel-body" ng-show="!$ctrl.IsInstructorBlock">
 
                     <div class="form-group">
@@ -158,44 +157,59 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>מספר לקוח</label>
-                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
-                    </div>
 
-                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                        <label>שם ארגון</label>
-                        <input type="text" name="Organzion" class="form-control" ng-model="$ctrl.user.Organzion" />
-                    </div>
                     <div class="form-group">
-                        <label>שם פרטי </label>
-                        <input type="text" name="firstName" class="form-control" ng-model="$ctrl.user.FirstName" required />
-                    </div>
-                    <div class="form-group">
-                        <label>שם משפחה</label>
-                        <input type="text" name="lastName" class="form-control" ng-model="$ctrl.user.LastName" required />
-                    </div>
-                    <div class="form-group">
-                        <label>       {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1)?"ת.ז":"ת.ז/ח.פ"}}</label>
-                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.IdNumber" required />
-                    </div>
-                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                        <div class="row">
-                            <div class="col-md-8">
+                        <div class="row" style="border:solid 1px gray;border-radius:3px;padding:5px;background:#fdffe5">
+                            <div class="col-md-6">
+                                <label> האם קיים טוקן <input type="checkbox" ng-disabled="true" ng-checked="$ctrl.user.cc_token?true:false" /></label>
+                            </div>
+                            <div class="col-md-6">
 
-                                <label>תאריך לידה</label>
-                                <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" />
+                                <label>  האם יש חוזה חתום <input type="checkbox" ng-model="$ctrl.user.IsHozeHatum" /></label>
+
                             </div>
 
-                            <div class="col-md-4">
-                                <label>גיל</label><br />
-                                <div style="border:solid 1px gray;border-radius:3px;padding:5px;background:#fdffe5">
-                                    <b>{{$ctrl.getStudentAge()}}</b>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>מספר לקוח</label>
+                            <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
+                        </div>
+
+                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                            <label>שם ארגון</label>
+                            <input type="text" name="Organzion" class="form-control" ng-model="$ctrl.user.Organzion" />
+                        </div>
+                        <div class="form-group">
+                            <label>שם פרטי </label>
+                            <input type="text" name="firstName" class="form-control" ng-model="$ctrl.user.FirstName" required />
+                        </div>
+                        <div class="form-group">
+                            <label>שם משפחה</label>
+                            <input type="text" name="lastName" class="form-control" ng-model="$ctrl.user.LastName" required />
+                        </div>
+                        <div class="form-group">
+                            <label>       {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1)?"ת.ז":"ת.ז/ח.פ"}}</label>
+                            <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.IdNumber" required />
+                        </div>
+                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                            <div class="row">
+                                <div class="col-md-8">
+
+                                    <label>תאריך לידה</label>
+                                    <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label>גיל</label><br />
+                                    <div style="border:solid 1px gray;border-radius:3px;padding:5px;background:#fdffe5">
+                                        <b>{{$ctrl.getStudentAge()}}</b>
+                                    </div>
+
                                 </div>
 
                             </div>
-
-                        </div>
 
 
                         </div>
@@ -233,7 +247,7 @@
                         <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
                             <label>סגנון רכיבה</label>
                             <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles"
-                                    ng-model="$ctrl.user.Style" ng-change="$ctrl.user.HMO=null;$ctrl.changeLessonsData()" 
+                                    ng-model="$ctrl.user.Style" ng-change="$ctrl.user.HMO=null;$ctrl.changeLessonsData()"
                                     required>
                                 <option value="">בחר סגנון רכיבה</option>
                             </select>
@@ -244,7 +258,7 @@
                         <div class="form-group" ng-if="$ctrl.user.Style.indexOf('treatment')!=-1 && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
                             <label>קופ"ח</label>
                             <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs"
-                                    ng-model="$ctrl.user.HMO"  ng-change="$ctrl.changeLessonsData()" required>
+                                    ng-model="$ctrl.user.HMO" ng-change="$ctrl.changeLessonsData()" required>
                                 <option value="">בחר קופת חולים</option>
                             </select>
                         </div>
@@ -729,6 +743,12 @@
                                     <option value="token" ng-if="$ctrl.newPayment.IsToken">חיוב בטוקן</option>
                                     <option value="credit card">כרטיס אשראי</option>
                                     <option value="bank transfer">בנק</option>
+
+                                    <option value="PayPal">PayPal</option>
+                                    <option value="Pay">Pay</option>
+                                    <option value="Bit">Bit</option>
+                                    <option value="PayBox">PayBox</option>
+
                                 </select>
                             </div>
 

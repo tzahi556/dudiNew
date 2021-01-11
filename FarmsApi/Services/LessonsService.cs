@@ -87,7 +87,7 @@ namespace FarmsApi.Services
                             HearotStatus = l.HearotStatus,
                             Mashov = l.Mashov,
                             LessPrice = l.Price,
-                            HMO=l.HMO
+                            HMO = l.HMO
                         }).Distinct().ToArray();
                         var studentsArray = students.Select(s => s.StudentName).ToArray();
                         var horsesArray = lessons.Where(l => l.Id == Lesson.Id && l.User_Id != null && l.HorseName != null).Select(l => new { HorseName = l.HorseName }).ToArray();
@@ -118,7 +118,7 @@ namespace FarmsApi.Services
                                 HearotStatus = s.HearotStatus,
                                 Mashov = s.Mashov,
                                 LessPrice = s.LessPrice,
-                                HMO=s.HMO
+                                HMO = s.HMO
 
 
                             }).ToArray(),
@@ -268,7 +268,7 @@ namespace FarmsApi.Services
                             }
 
 
-                            
+
 
 
                             if (Status["status"] != null)
@@ -280,7 +280,7 @@ namespace FarmsApi.Services
                                 StudentLesson.IsComplete = Status["isComplete"].Value<int>();
 
 
-                                InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס מהכרטיס  " + StudentLesson.IsComplete, StudentLesson);
+                                // InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס מהכרטיס  " + StudentLesson.IsComplete, StudentLesson);
                             }
 
                             if (Status["officedetails"] != null)
@@ -337,6 +337,7 @@ namespace FarmsApi.Services
         public static JObject UpdateLesson(JObject Lesson, bool changeChildren, int? lessonsQty)
         {
             int LessonId = Lesson["id"].Value<int>();
+            int? IsMazkirut =(Lesson["IsMazkirut"]==null)?0:Lesson["IsMazkirut"].Value<int?>();
             int Instructor_Id = 0;
             DateTime Start = DateTime.Now;
             DateTime End = DateTime.Now;
@@ -378,20 +379,22 @@ namespace FarmsApi.Services
             }
             if (changeChildren)
             {
-                UpdateChildrenLessons(LessonId);
+                UpdateChildrenLessons(LessonId, IsMazkirut);
             }
             return Lesson;
         }
 
-        private static void UpdateChildrenLessons(int parentLessonId)
+        private static void UpdateChildrenLessons(int parentLessonId, int? IsMazkirut)
         {
             int? ChildLessonId = null;
 
             using (var Context = new Context())
             {
+                // שיעור מקור
                 var ParentLesson = Context.Lessons.SingleOrDefault(l => l.Id == parentLessonId);
                 var ParentStudents = Context.StudentLessons.Where(l => l.Lesson_Id == ParentLesson.Id).ToList();
 
+                // שיעור נלווה
                 var ChildLesson = Context.Lessons.SingleOrDefault(l => l.ParentId == parentLessonId);
                 if (ChildLesson != null)
                 {
@@ -401,38 +404,24 @@ namespace FarmsApi.Services
 
                     ChildLessonId = ChildLesson.Id;
                     ChildLesson.Instructor_Id = ParentLesson.Instructor_Id;
-                    ChildLesson.Start = ParentLesson.Start.AddDays(7); //new DateTime(ChildLesson.Start.Year, ChildLesson.Start.Month, ChildLesson.Start.Day, ParentLesson.Start.Hour, ParentLesson.Start.Minute, 0);
-                    //ParentLesson.Start.AddDays(7); צחי הוריד ושם את זה
-                    ChildLesson.End = ParentLesson.End.AddDays(7);//new DateTime(ChildLesson.End.Year, ChildLesson.End.Month, ChildLesson.End.Day, ParentLesson.End.Hour, ParentLesson.End.Minute, 0);//.AddDays(7);
 
-                    ////add students that doesn't exists
-                    //var ChildStudents = Context.StudentLessons.Where(l => l.Lesson_Id == ChildLesson.Id).ToList();
-                    //foreach (var ParentStudent in ParentStudents)
-                    //{
-                    //    var FoundStudent = ChildStudents.SingleOrDefault(cs => cs.User_Id == ParentStudent.User_Id);
-                    //    if (FoundStudent == null)
-                    //    {
-                    //        Context.StudentLessons.Add(new StudentLessons() { Lesson_Id = ChildLesson.Id, User_Id = ParentStudent.User_Id, Status = null });
-                    //    }
-                    //}
-                    ////remove students that doesn't exists in parent and has no status
-                    //ChildStudents = Context.StudentLessons.Where(l => l.Lesson_Id == ChildLesson.Id).ToList();
-                    //foreach (var ChildStudent in ChildStudents)
-                    //{
-                    //    if (String.IsNullOrEmpty(ChildStudent.Status))
-                    //    {
-                    //        var FoundStudent = ParentStudents.SingleOrDefault(ps => ps.User_Id == ChildStudent.User_Id);
-                    //        if (FoundStudent == null)
-                    //        {
-                    //            Context.StudentLessons.Remove(ChildStudent);
-                    //        }
-                    //    }
-
-                    //}
-                    foreach (var sl in ParentStudents)
+                    if (IsMazkirut == 1)
                     {
-                        InsertIntoLog(ChildLesson.Id, 2, Context, "עדכון שעורים נלווים", sl);
+
+                        ChildLesson.Start = new DateTime(ChildLesson.Start.Year, ChildLesson.Start.Month, ChildLesson.Start.Day, ParentLesson.Start.Hour, ParentLesson.Start.Minute, 0);
+                        ChildLesson.End = new DateTime(ChildLesson.End.Year, ChildLesson.End.Month, ChildLesson.End.Day, ParentLesson.End.Hour, ParentLesson.End.Minute, 0);//.AddDays(7);
+
                     }
+                    else
+                    {
+                        ChildLesson.Start = ParentLesson.Start.AddDays(7); //new DateTime(ChildLesson.Start.Year, ChildLesson.Start.Month, ChildLesson.Start.Day, ParentLesson.Start.Hour, ParentLesson.Start.Minute, 0);
+                        ChildLesson.End = ParentLesson.End.AddDays(7);//new DateTime(ChildLesson.End.Year, ChildLesson.End.Month, ChildLesson.End.Day, ParentLesson.End.Hour, ParentLesson.End.Minute, 0);//.AddDays(7);
+
+                    }
+                    //foreach (var sl in ParentStudents)
+                    //{
+                    //    InsertIntoLog(ChildLesson.Id, 2, Context, "עדכון שעורים נלווים", sl);
+                    //}
 
                 }
 
@@ -443,7 +432,7 @@ namespace FarmsApi.Services
 
             if (ChildLessonId.HasValue)
             {
-                UpdateChildrenLessons(ChildLessonId.Value);
+                UpdateChildrenLessons(ChildLessonId.Value,IsMazkirut);
             }
         }
 
@@ -687,7 +676,7 @@ namespace FarmsApi.Services
             Context.Lessons.Add(newLesson);
             Context.SaveChanges();
             Lesson["id"] = newLesson.Id;
-            InsertIntoLog(newLesson.Id, 1, Context, "שיעור חדש", null);
+            // InsertIntoLog(newLesson.Id, 1, Context, "שיעור חדש", null);
             Context.SaveChanges();
 
 
@@ -810,7 +799,7 @@ namespace FarmsApi.Services
                         // Delete Lesson
                         Context.Lessons.Remove(Lesson);
 
-                        InsertIntoLog(Lesson.Id, 5, Context, "מחיקת שיעור", null);
+                        // InsertIntoLog(Lesson.Id, 5, Context, "מחיקת שיעור", null);
                         Context.SaveChanges();
                     }
                 }
@@ -931,24 +920,7 @@ namespace FarmsApi.Services
                 var EndDate = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, CurrentLesson.End.Hour, CurrentLesson.End.Minute, 0);
 
 
-                // var res = Context.Lessons.Where(x => x.Instructor_Id == resourceId && ((StartDate >= x.Start && StartDate < x.End)
-                //|| (StartDate <= x.Start && EndDate >= x.End) || (EndDate > x.Start && EndDate <= x.End))).FirstOrDefault();
 
-                // if (res != null)
-                // {
-                //     return res.Start.ToString("dd/MM/yyyy HH:mm");
-
-
-                // }
-
-
-
-                //if(CurrentLesson.Start== CurrentDate)
-                //{
-
-
-
-                //}
 
 
                 Lesson less = new Lesson();
@@ -960,9 +932,6 @@ namespace FarmsApi.Services
 
                 lList.Add(less);
 
-                //Context.Lessons.Add(less);
-                //  Context.SaveChanges();
-                //   ParentId = less.Id;
 
                 if (Schedular.EveryDay)
                     CurrentDate = CurrentDate.AddDays(1);
@@ -975,21 +944,7 @@ namespace FarmsApi.Services
                 else
                     CurrentDate = ((DateTime)LastDay).AddDays(1);
 
-                //SchedularTasks st = new SchedularTasks();
-                //st.LessonId = less.Id;
-                //st.ResourceId = resourceId;
-                //st.Title = Schedular.Title;
-                //st.Desc = Schedular.Desc;
-                //st.Days = Schedular.Days;
-                //st.EveryDay = Schedular.EveryDay;
-                //st.EveryWeek = Schedular.EveryWeek;
-                //st.EveryMonth = Schedular.EveryMonth;
-                //st.EndDate = Schedular.EndDate;
-                //st.IsExe = false;
 
-                //stList.Add(st);
-                //  Context.SchedularTasks.Add(st);
-                //  Context.SaveChanges();
 
             }
 
@@ -997,12 +952,21 @@ namespace FarmsApi.Services
 
 
 
-            // EntityFrameworkManager.DefaultEntityFrameworkPropagationValue = false;
             Context.Lessons.AddRange(lList);
-            // Context.SchedularTasks.AddRange(stList);
-
-            // Context.BulkSaveChanges(false);
             Context.SaveChanges();
+
+            for (int i = 0; i < lList.Count; i++)
+            {
+                if (i != 0)
+                {
+
+                    lList[i].ParentId = lList[i - 1].Id;
+                    Context.Entry(lList[i]).State = System.Data.Entity.EntityState.Modified;
+                }
+            }
+
+
+
             int startHour = CurrentLesson.Start.Hour;
             int startMinutes = CurrentLesson.Start.Minute;
             // int resourceId = CurrentLesson.Instructor_Id;
@@ -1230,7 +1194,7 @@ namespace FarmsApi.Services
 
         }
 
-        public static MonthlyReports GetSetMonthlyReports(int id, string date, string text,int type)
+        public static MonthlyReports GetSetMonthlyReports(int id, string date, string text, int type)
         {
             var Res = new MonthlyReports();
             if (text == "null") text = "";
@@ -1238,7 +1202,7 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
                 Res = Context.MonthlyReports.Where(x => x.UserId == id && x.Date == FirstDate).FirstOrDefault();
-                if (type==1)
+                if (type == 1)
                 {
 
 

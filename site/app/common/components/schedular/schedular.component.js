@@ -53,6 +53,8 @@
         this.addHorseVaccinationToList = _addHorseVaccinationToList.bind(this);
         this.removeVaccinationHorse = _removeVaccinationHorse.bind(this);
 
+        this.checkAll = _checkAll.bind(this);
+        
         // this.getPirzulByTimeZone = _getPirzulByTimeZone.bind(this);
 
         this.scope.$on('schedular.show', this.onShow);
@@ -134,7 +136,8 @@
 
             this.activeTab = 0;
 
-
+            this.checkAllVact = false;
+            this.checkAllPirzul = false;
             this.selectedStudentSchedular = lesson;
 
             this.lessonId = lesson.id;
@@ -489,6 +492,37 @@
 
             }
         }
+
+
+
+
+        
+
+        function _checkAll(type) {
+           
+            if (type == 1) {
+
+                for (var i in this.horseslists) {
+                    if (!this.horseslists[i].IsPaid) {
+                        this.horseslists[i].IsDo = this.checkAllPirzul;
+                    }
+                }
+
+            }
+
+            if (type == 2) {
+
+                for (var i in this.horsesVaccinationlists) {
+                    if (!this.horsesVaccinationlists[i].IsPaid) {
+                        this.horsesVaccinationlists[i].IsDo = this.checkAllVact;
+                    }
+                }
+
+            }
+
+          
+        }
+
 
         function _removeHorse(horse) {
             //הוספת סוס

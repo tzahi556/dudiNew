@@ -23,21 +23,21 @@
         self.getHebStatus = _getHebStatus;
         self.getHebHMO = _getHebHMO;
         self.getInstructorCounter = _getInstructorCounter;
-        self.getTotalPerStyle = _getTotalPerStyle;
+      //  self.getTotalPerStyle = _getTotalPerStyle;
         self.getRound = _getRound;
 
         self.getPartaniK = _getPartaniK;
-        
+
         self.reports = [
             { name: 'רשימת תלמידים כולל פרטים', callback: self.studentsReport },
             { name: 'רשימת שיעורים', callback: self.lessonsReport },
             { name: 'רשימת סוסים + טיפולים עתידיים', callback: self.horsesReport }
         ]
 
-        
-        if (["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role)!=-1 ) {
-           
-           
+
+        if (["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1) {
+
+
             self.reports = [
                 { name: 'רשימת לקוחות כולל פרטים', callback: self.studentsReport },
                 { name: 'רשימת סוסים + טיפולים עתידיים', callback: self.horsesReport }
@@ -61,12 +61,12 @@
                 for (var lesson of lessonsList) {
 
                     if (moment(lesson.start).day() == Day) {
-                       
+
                         for (var status of lesson.statuses) {
 
                             var student = getUser(status.StudentId);
                             var Phone = (student.PhoneNumber) ? student.PhoneNumber : student.PhoneNumber2;
-                            html += "<div>" + getName(status.StudentId) + " " + ((Phone) ? "<div style='float:left'> - " + Phone + "</div>" : "" )  +"</div></br>";
+                            html += "<div>" + getName(status.StudentId) + " " + ((Phone) ? "<div style='float:left'> - " + Phone + "</div>" : "") + "</div></br>";
 
                         }
 
@@ -110,14 +110,14 @@
                 $.get('app/reports/ReportInsructor.html?sss=' + new Date(), function (text) {
 
                     text = text.replace("@NameHava", localStorage.getItem('FarmName'));
-                 
+
                     var startOfWeek = moment().startOf('week').toDate();
                     var endOfWeek = moment(startOfWeek).add(5, 'day').toDate();//
-                   
+
                     lessonsService.getLessons(null, startOfWeek, endOfWeek).then(function (lessons) {
 
                         var html = "";
-                     
+
                         var lessonsSort = self.sortArrayOfObjects(lessons, "resourceId");
 
                         var prevInstructorId = "";
@@ -158,7 +158,7 @@
                                     + "          <td>" + getAllStudentInDay(lesson.resourceId, 6, lessonsSort) + "</td>"
                                     + "       </tr></table></div>";
 
-                                 
+
                                 prevInstructorId = lesson.resourceId;
                             }
 
@@ -178,7 +178,7 @@
 
                     });
 
-                   
+
 
 
 
@@ -189,7 +189,7 @@
 
         }
 
-      
+
 
 
         function _sortArrayOfObjects(arr, key) {
@@ -204,7 +204,7 @@
 
 
 
-            $.get('app/reports/ReportDebt' + ((["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1)?"Horse":"")+'.html?sdss=' + new Date(), function (text) {
+            $.get('app/reports/ReportDebt' + ((["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1) ? "Horse" : "") + '.html?sdss=' + new Date(), function (text) {
 
                 text = text.replace("@NameHava", localStorage.getItem('FarmName'));
 
@@ -235,7 +235,7 @@
                         var Style = res[i].Style;
                         var ClientNumber = (res[i].ClientNumber) ? res[i].ClientNumber : "";
 
-                        if (HMO && HMO!="") {
+                        if (HMO && HMO != "") {
 
                             if (HMO == "klalit" || HMO == "klalitPlatinum") {
                                 CountKlalit++;
@@ -259,8 +259,8 @@
                                     + "</td><td style='text-align:right'>" + LastName
                                     + "</td><td style='direction:ltr;text-align:right'>" + Total + "</td>"
                                     + "</td><td style='direction:ltr;text-align:right'>" + TotalPayForMacabi + "</td></tr>";
-                                
-                            
+
+
 
 
                             } else if (HMO == "klalitDikla") {
@@ -462,11 +462,195 @@
         }
 
         function _ReportManger() {
+            self.fromDate = "2021-01-01";
+            self.toDate = "2021-01-12";
 
+
+            function IsStatusOk(Status, IsComplete, IsHiyuvInHashlama) {
+
+                if (Status == "attended" || Status == "notAttendedCharge" || (IsHiyuvInHashlama == 1 && Status == "completionReqCharge")
+                    || (IsHiyuvInHashlama == 0 && Status == "completion" && (IsComplete == 4 || IsComplete == 6)))
+
+                    return true;
+
+                return false;
+
+            }
+
+            function getDynamicData(type, data, HeadersDynamicHours,isRemoveTotal4) {
+                // מביא סך הכל שיעורים
+                if (type == 0) {
+                    var Counter = 0;
+                    var DateExist = [];
+                    var res = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
+                    for (var i = 0; i < res.length; i++) {
+                        var result = DateExist.filter(d => d.Date == res[i].Start);
+                        if (result.length == 0) {
+                            DateExist.push({ Date: res[i].Start });
+                            Counter++;
+                          
+                        } 
+                    }
+
+                    return Counter;
+                   
+                }
+
+                // מביא כותרות של חלוקי לפי זמני שיעורים 30 45 וכו
+                if (type == 1) {
+                    let unique = [...new Set(data.map(item => item.Diff))];
+                    return unique.sort();
+                }
+
+                // מביא את הדטה לפי כותרות שיעורים
+                if (type == 2) {
+
+                    var res = "";
+                    var DateExist = [];
+                    var Counter = 0;
+                    var HeadersDynamicHoursA = [];
+
+
+                    for (var i = 0; i < HeadersDynamicHours.length; i++) {
+
+                        HeadersDynamicHoursA[i] = { Counter: 0, Date: '' };  // .Counter = 0;
+                        var less = data.filter(x => x.Diff == HeadersDynamicHours[i] && IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
+                        for (var x = 0; x < less.length; x++) {
+                            var result = DateExist.filter(d => d.Date == less[x].Start);
+                            if (result.length == 0) {
+                                DateExist.push({ Date: less[x].Start });
+                                HeadersDynamicHoursA[i].Counter += less[x].Diff;
+                                HeadersDynamicHoursA[i].Date += moment(less[x].OnlyDate).format("DD/MM/YYYY") + ",";
+                                Counter = Counter + less[x].Diff;
+                            }
+
+                        }
+
+                    }
+
+                    for (var i = 0; i < HeadersDynamicHoursA.length; i++) {
+                        res += "<td title=" + HeadersDynamicHoursA[i].Date + ">" + ((HeadersDynamicHoursA[i].Counter == 0) ? "" : (HeadersDynamicHoursA[i].Counter / 60).toString()) + "</td>";
+                    }
+                    res += "<td>" + ((Counter == 0) ? "" : (Counter / 60).toString()) + "</td>";
+                    return res;
+
+                }
+
+                //מביא כותרות של קבוצות דינאמי
+                if (type == 3) {
+                    var DateExist = [];
+                    var res = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
+                    for (var i = 0; i < res.length; i++) {
+                        var result = DateExist.filter(d => d.Date == res[i].Start);
+                        if (result.length > 0) {
+                            result[0]["Count"] += 1;
+
+                        } else {
+                            DateExist.push({ Date: res[i].Start, Count: 1});
+                        }
+                    }
+
+
+                    let unique = [...new Set(DateExist.map(item => item.Count))];
+                    return unique.sort();
+                }
+
+                // מביא דטה של הקבוצות
+                if (type == 4) {
+                    var DateExist = [];
+                    var resData = "";
+                    var resAtten = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
+                    for (var i = 0; i < resAtten.length; i++) {
+                        var result = DateExist.filter(d => d.Date == resAtten[i].Start);
+                        if (result.length > 0) {
+                            result[0]["Count"] += 1;
+
+                        } else {
+                            DateExist.push({ Date: resAtten[i].Start, Count: 1 });
+                        }
+                    }
+                   
+                    var res = DateExist.filter(x => 1 == x.Count);
+                    resData += "<td>" + (res.length == 0 ? "" : res.length) + "</td>";
+
+                    for (var i = 0; i < HeadersDynamicHours.length; i++) {
+                        if (HeadersDynamicHours[i] == 1) continue;
+                        res = DateExist.filter(x => HeadersDynamicHours[i] == x.Count);
+                        resData += "<td>" + (res.length == 0 ? "" : res.length * res[0].Count ) + "</td>";
+                    }
+                   
+                    if (!isRemoveTotal4)resData += "<td>" + (resAtten.length == 0 ? "" : resAtten.length) + "</td>";
+
+                    return resData;
+                    
+                }
+
+
+                if (type == 5) {
+                    var resHeader = "<tr>";
+                    var resBody = "<tr>";
+                    var resData = "<tr>";
+
+                    for (var i in data) {
+
+                        if (data[i].HMO == "maccabiSheli") data[i].HMO = "maccabiGold";
+                        if (data[i].HMO == "klalitPlatinum") data[i].HMO = "klalit";
+
+
+                        var IsHMO = sharedValues.HMOs.filter(x => x.id == data[i].HMO);
+                        var IsStyle = sharedValues.styles.filter(x => x.id == data[i].HMO);
+
+                        if (IsHMO.length > 0) data[i].HMO = IsHMO[0].name;
+
+                        if (IsStyle.length > 0) data[i].HMO = IsStyle[0].name;
+                    }
+
+
+                    let unique = [...new Set(data.map(item => (item.HMO)))];
+
+
+
+                   
+
+                    for (var i in unique.sort()) {
+
+                        var CounterStyle = 0;
+                        var ObjAllLessonsInHmo = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama) && x.HMO == unique[i]);
+                        if (ObjAllLessonsInHmo.length > 0) {
+                           
+                            var ObjAllGroupsInHmo = getDynamicData(3, ObjAllLessonsInHmo, false);
+                            resHeader += "<td align='center' colspan=" + ObjAllGroupsInHmo.length+" style='background:#42ecf5;'>" + unique[i] + "</td>";
+
+                           // DataObj.push({ Style: unique[i], ObjAllGroupsInHmo: ObjAllGroupsInHmo, });
+                           
+                            for (var i in ObjAllGroupsInHmo.sort()) {
+
+                                if (ObjAllGroupsInHmo[i] == 1)
+                                    resBody  += "<td align='center' style='background:#42ecf5;'>שיעור בודד </td>";
+                                else
+                                      resBody += "<td align='center' style='background:#42ecf5;'>" + ObjAllGroupsInHmo[i] + " - תלמידים </td>";
+
+                            }
+                            
+                            resData += getDynamicData(4, ObjAllLessonsInHmo, ObjAllGroupsInHmo.sort(),true);
+                           
+                        }
+
+                    }
+                    resHeader += "</tr>";
+                    resBody += "</tr>";
+                    resData += "</tr>";
+
+
+                    return resHeader + resBody + resData;
+                }
+
+            }
+            // פיתוח
 
             if (!self.toDate || !self.fromDate) { alert("חובה לבחור תאריכים לדו''ח"); return; }
-            var ReportFileName = (["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1) ?"ReportAdminFarmHorse":"Report"; 
-            $.get('app/reports/' + ReportFileName+'.html?sssd=' + new Date(), function (text) {
+            var ReportFileName = (["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1) ? "ReportAdminFarmHorse" : "Report";
+            $.get('app/reports/' + ReportFileName + '.html?sssd=' + new Date(), function (text) {
 
                 // var CurrentDate = self.fromDate;
                 //    if (!CurrentDate) CurrentDate = new Date();
@@ -514,25 +698,61 @@
 
 
                         var HtmlTable = "";
+                        var HtmlTableLess = "";
+                        var HtmlTableSep = "";
+
+
                         var ExistInstructor = [];
                         var HtmlHorsesTable = "";
                         var ExistHorses = [];
                         var FarmWorkHoursSus = 0;
 
-                        var MakabiOne = 0;
-                        var MakabiTwoUp = 0;
+                        //var MakabiOne = 0;
+                        //var MakabiTwoUp = 0;
 
-                        var KlalitOne = 0;
-                        var KlalitTwoUp = 0;
+                        //var KlalitOne = 0;
+                        //var KlalitTwoUp = 0;
 
-                        var DiklaOne = 0;
-                        var DiklaTwoUp = 0;
+                        //var DiklaOne = 0;
+                        //var DiklaTwoUp = 0;
 
-                        var MeuhedetOne = 0;
-                        var MeuhedetTwoUp = 0;
+                        //var MeuhedetOne = 0;
+                        //var MeuhedetTwoUp = 0;
 
-                        var LeumitOne = 0;
-                        var LeumitTwoUp = 0;
+                        //var LeumitOne = 0;
+                        //var LeumitTwoUp = 0;
+
+
+                        //****************************** הכנסת כותרות לשעות דינאמי
+                        var HeadersDynamicHours = getDynamicData(1, res);
+                        var TempHtmlTH = "";
+                        for (var i = 0; i < HeadersDynamicHours.length; i++) {
+
+                            TempHtmlTH += "<th style='background:#42ecf5;'>שיעור " + HeadersDynamicHours[i] + " דקות</th>";
+
+                        }
+                        text = text.replace("@HeadersDynamicHours", TempHtmlTH);
+
+                        //****************************** הכנסת כותרות לשעות דינאמי
+
+
+                        //****************************** הכנסת כותרות לשעות טבךה 3
+                       var HeadersDynamicHoursGroup = getDynamicData(3, res);
+                        var TempHtmlTH = "";
+                        for (var i = 0; i < HeadersDynamicHoursGroup.length; i++) {
+                            if (HeadersDynamicHoursGroup[i] == 1) continue;
+                            TempHtmlTH += "<th style='background:#42ecf5;'>  " + HeadersDynamicHoursGroup[i] + " - תלמידים</th>";
+
+                        }
+                        text = text.replace("@HeadersDynamicHoursSep", TempHtmlTH);
+
+                        //****************************** הכנסת כותרות לשעות דינאמי
+
+                        // הבאת סך שיעורים
+                        text = text.replace("@TotalLessons", getDynamicData(0, res));
+
+                        // בניית טבלת ריכוז לפי סגנון רכיבה
+                        text = text.replace("@HtmlDynamicHoursStyle", getDynamicData(5, res));
 
                         // מעדכן את המערך של השיעורים שיהיה מפולטר לפי מדריך של שיעור אחרון
                         self.getInstructorCounter(0, res, "FilterByLastLesson");
@@ -543,46 +763,59 @@
 
 
 
-                                var ObjOfAMount = self.getTotalPerStyle(res[i].Id, res);
+                                //var ObjOfAMount = self.getTotalPerStyle(res[i].Id, res);
 
-                                MakabiOne += ObjOfAMount.MakabiOne;
-                                MakabiTwoUp += ObjOfAMount.MakabiTwoUp;
+                                //MakabiOne += ObjOfAMount.MakabiOne;
+                                //MakabiTwoUp += ObjOfAMount.MakabiTwoUp;
 
-                                KlalitOne += ObjOfAMount.KlalitOne;
-                                KlalitTwoUp += ObjOfAMount.KlalitTwoUp;
+                                //KlalitOne += ObjOfAMount.KlalitOne;
+                                //KlalitTwoUp += ObjOfAMount.KlalitTwoUp;
 
-                                DiklaOne += ObjOfAMount.DiklaOne;
-                                DiklaTwoUp += ObjOfAMount.DiklaTwoUp;
+                                //DiklaOne += ObjOfAMount.DiklaOne;
+                                //DiklaTwoUp += ObjOfAMount.DiklaTwoUp;
 
-                                MeuhedetOne += ObjOfAMount.MeuhedetOne;
-                                MeuhedetTwoUp += ObjOfAMount.MeuhedetTwoUp;
+                                //MeuhedetOne += ObjOfAMount.MeuhedetOne;
+                                //MeuhedetTwoUp += ObjOfAMount.MeuhedetTwoUp;
 
-                                LeumitOne += ObjOfAMount.LeumitOne;
-                                LeumitTwoUp += ObjOfAMount.LeumitTwoUp;
+                                //LeumitOne += ObjOfAMount.LeumitOne;
+                                //LeumitTwoUp += ObjOfAMount.LeumitTwoUp;
 
 
 
                                 ExistInstructor.push(res[i].Id);
-                                HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName + "</td><td >" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
-                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "HourNumber")
+
+                                HtmlTable += "<tr><td style='text-align:right'>" + res[i].FullName
+
+                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "DayInMonth")
+                                    + getDynamicData(2, res.filter(x => x.Id == res[i].Id), HeadersDynamicHours);
+                                + "</td></tr>";
+
+
+
+                                HtmlTableLess += "<tr><td style='text-align:right'>" + res[i].FullName
+
+
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "Attend")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttend")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NotAttendCharge")
                                     + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "NoStatus")
-
-                                    + "</td><td>" + ObjOfAMount.OneTipuli
-                                    + "</td><td>" + ObjOfAMount.TwoTupuli
-                                    + "</td><td>" + ObjOfAMount.ThreeUp
-                                    + "</td><td>" + ObjOfAMount.western
-                                    + "</td><td>" + ObjOfAMount.karting
-                                    + "</td><td>" + ObjOfAMount.english
-
+                                    + "</td><td>" + self.getInstructorCounter(res[i].Id, res, "AllLessons")
                                     + "</td><td style='background:#a83242;'>" + self.getInstructorCounter(res[i].Id, res, "IsLeave")
-                                    + "</td></tr>"
-                                    ;
+                                   
+                                    + "</td></tr>";
+
+
+
+                                HtmlTableSep += "<tr><td style='text-align:right'>" + res[i].FullName + "</td>"
+
+                                    + getDynamicData(4, res.filter(x => x.Id == res[i].Id), HeadersDynamicHoursGroup);
+                                    + "</td></tr>";
+
+
+
+
+
                             }
-
-
 
                             if (res[i].Name && ExistHorses.indexOf(res[i].Name) == "-1") {
 
@@ -597,34 +830,29 @@
 
                             }
 
-
-
-
                         }
 
                         text = text.replace("@TableInstructor", HtmlTable);
-
-                        text = text.replace("@MakabiOne", MakabiOne);
-                        text = text.replace("@MakabiTwoUp", MakabiTwoUp);
-
-                        text = text.replace("@KlalitOne", KlalitOne);
-                        text = text.replace("@KlalitTwoUp", KlalitTwoUp);
-
-                        text = text.replace("@DiklaOne", DiklaOne);
-                        text = text.replace("@DiklaTwoUp", DiklaTwoUp);
+                        text = text.replace("@TableInstructorLess", HtmlTableLess);
+                        text = text.replace("@TableInstructorSep", HtmlTableSep);
 
 
-                        text = text.replace("@MeuhedetOne", MeuhedetOne);
-                        text = text.replace("@MeuhedetTwoUp", MeuhedetTwoUp);
+                        //text = text.replace("@MakabiOne", MakabiOne);
+                        //text = text.replace("@MakabiTwoUp", MakabiTwoUp);
+
+                        //text = text.replace("@KlalitOne", KlalitOne);
+                        //text = text.replace("@KlalitTwoUp", KlalitTwoUp);
+
+                        //text = text.replace("@DiklaOne", DiklaOne);
+                        //text = text.replace("@DiklaTwoUp", DiklaTwoUp);
 
 
-                        text = text.replace("@LeumitOne", LeumitOne);
-                        text = text.replace("@LeumitTwoUp", LeumitTwoUp);
+                        //text = text.replace("@MeuhedetOne", MeuhedetOne);
+                        //text = text.replace("@MeuhedetTwoUp", MeuhedetTwoUp);
 
 
-                 
-
-
+                        //text = text.replace("@LeumitOne", LeumitOne);
+                        //text = text.replace("@LeumitTwoUp", LeumitTwoUp);
 
                         horsesService.getHorsesReport(1).then(function (horses) {
                             var HorseCount = 0,
@@ -645,10 +873,10 @@
 
 
                             horses.forEach(function (horse) {
-                              
+
                                 HorseCount++;
 
-                               
+
                                 if (horse.Active == "active") {
 
                                     HorseActiveCount++;
@@ -727,20 +955,27 @@
                             text = text.replace("@HorseMan", HorseMan);
                             text = text.replace("@HorseWoman", HorseWoman);
                             text = text.replace("@HorseSirus", HorseSirus);
-                           
+
 
                             text = text.replace("@HorseSchoolPercent", self.getRound((FarmWorkHoursSus / (ExistHorses.length * daysInMonth * 4)) * 100));
 
 
                             text = text.replace("@TableHorses", HtmlHorsesTable);
 
+                            //**************************
+                            var divText = text;
+                            var myWindow = window.open('', '', 'width=800,height=600');
+                            var doc = myWindow.document;
+                            doc.open();
+                            doc.write(divText);
+                            doc.close();
+                            //**************************
 
-                            var blob = new Blob([text], {
-                                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                            });
-
-
-                            saveAs(blob, "Leads " + new Date() + ".html");
+                            //window.open("http://localhost:51517/app/reports/Report.html", "Upload Chapter content", "width=600,height=600");
+                            //var blob = new Blob([text], {
+                            //    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                            //});
+                            //saveAs(blob, "Leads " + new Date() + ".html");
 
                         });
 
@@ -765,7 +1000,7 @@
 
         }
 
-       
+
 
         function _getRound(number) {
 
@@ -775,207 +1010,200 @@
 
         }
 
-        function _getTotalPerStyle(Id, res) {
-           
-            var myObj =
-            {
-                OneTipuli: 0,
-                TwoTupuli: 0,
-                ThreeUp: 0,
-                western: 0,
-                karting: 0,
-                english: 0,
+        //function _getTotalPerStyle(Id, res) {
 
-                MakabiOne: 0,
-                MakabiTwoUp: 0,
+        //    var myObj =
+        //    {
+        //        OneTipuli: 0,
+        //        TwoTupuli: 0,
+        //        ThreeUp: 0,
+        //        western: 0,
+        //        karting: 0,
+        //        english: 0,
 
-                KlalitOne: 0,
-                KlalitTwoUp: 0,
+        //        MakabiOne: 0,
+        //        MakabiTwoUp: 0,
 
-                DiklaOne: 0,
-                DiklaTwoUp: 0,
+        //        KlalitOne: 0,
+        //        KlalitTwoUp: 0,
 
-                MeuhedetOne: 0,
-                MeuhedetTwoUp: 0,
+        //        DiklaOne: 0,
+        //        DiklaTwoUp: 0,
 
-                LeumitOne: 0,
-                LeumitTwoUp: 0
+        //        MeuhedetOne: 0,
+        //        MeuhedetTwoUp: 0,
 
+        //        LeumitOne: 0,
+        //        LeumitTwoUp: 0
 
 
-            }
 
-            var DateExist = [];
+        //    }
 
-            for (var i = 0; i < res.length; i++) {
+        //    var DateExist = [];
 
-                if (Id == res[i].Id) {
+        //    for (var i = 0; i < res.length; i++) {
 
-                    if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
-                        (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
-                    ) {
+        //        if (Id == res[i].Id) {
 
-                        if (["privateTreatment", "maccabiGold", "maccabiSheli", "klalit",
-                            "klalitPlatinum", "klalitDikla", "meuhedet", "leumit"].indexOf(res[i].HMO) != -1) {//res[i].Style == "treatment" || res[i].Style == "privateTreatment") {
+        //            if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
+        //                (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
+        //            ) {
 
-                            var result = DateExist.filter(d => d.Date == res[i].Start);
-                            if (result.length > 0) {
+        //                if (["privateTreatment", "maccabiGold", "maccabiSheli", "klalit",
+        //                    "klalitPlatinum", "klalitDikla", "meuhedet", "leumit"].indexOf(res[i].HMO) != -1) {//res[i].Style == "treatment" || res[i].Style == "privateTreatment") {
 
-                                result[0]["Count"] += 1;
+        //                    var result = DateExist.filter(d => d.Date == res[i].Start);
+        //                    if (result.length > 0) {
 
-                            } else {
+        //                        result[0]["Count"] += 1;
 
-                                DateExist.push({ Date: res[i].Start, Count: 1});
-                            }
+        //                    } else {
 
-                        }
+        //                        DateExist.push({ Date: res[i].Start, Count: 1 });
+        //                    }
 
-                        if (res[i].HMO == "western") { myObj.western++ }
-                        if (res[i].HMO == "karting") { myObj.karting++ }
-                        if (res[i].HMO == "english") { myObj.english++ }
+        //                }
 
+        //                if (res[i].HMO == "western") { myObj.western++ }
+        //                if (res[i].HMO == "karting") { myObj.karting++ }
+        //                if (res[i].HMO == "english") { myObj.english++ }
 
 
-                    }
 
-                }
+        //            }
 
+        //        }
 
-            }
 
+        //    }
+        //    for (var m = 0; m < DateExist.length; m++) {
+        //        if (DateExist[m].Count == 1) {
 
-            for (var m = 0; m < DateExist.length; m++) {
-                if (DateExist[m].Count == 1) {
+        //            myObj.OneTipuli++;
 
-                    myObj.OneTipuli++;
+        //        }
+        //        if (DateExist[m].Count == 2) {
 
-                }
-                if (DateExist[m].Count == 2) {
+        //            myObj.TwoTupuli += 2;
 
-                    myObj.TwoTupuli += 2;
+        //        }
 
-                }
+        //        if (DateExist[m].Count >= 3) {
 
-                if (DateExist[m].Count >= 3) {
+        //            myObj.ThreeUp += DateExist[m].Count;
 
-                    myObj.ThreeUp += DateExist[m].Count;
+        //        }
 
-                }
+        //    }
 
-            }
 
+        //    //var DateExistHMO = [];
+        //    //for (var i = 0; i < res.length; i++) {
 
-            var DateExistHMO = [];
-            for (var i = 0; i < res.length; i++) {
+        //    //    if (Id == res[i].Id) {
 
-                if (Id == res[i].Id) {
-                   
-                    if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
-                        (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
-                    ) {
+        //    //        if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
+        //    //            (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
+        //    //        ) {
 
-                        if (["maccabiGold", "maccabiSheli", "klalit",
-                            "klalitPlatinum", "klalitDikla", "meuhedet", "leumit"].indexOf(res[i].HMO) != -1) {
-                          
-                            if (res[i].HMO == "maccabiSheli") res[i].HMO = "maccabiGold";
-                            if (res[i].HMO == "klalitPlatinum") res[i].HMO = "klalit";
+        //    //            if (["maccabiGold", "maccabiSheli", "klalit",
+        //    //                "klalitPlatinum", "klalitDikla", "meuhedet", "leumit"].indexOf(res[i].HMO) != -1) {
 
-                            var result = DateExistHMO.filter(d => d.Date == res[i].Start && d.HMO == res[i].HMO);
-                            if (result.length > 0) {
+        //    //                if (res[i].HMO == "maccabiSheli") res[i].HMO = "maccabiGold";
+        //    //                if (res[i].HMO == "klalitPlatinum") res[i].HMO = "klalit";
 
-                                result[0]["Count"] += 1;
+        //    //                var result = DateExistHMO.filter(d => d.Date == res[i].Start && d.HMO == res[i].HMO);
+        //    //                if (result.length > 0) {
 
-                            } else {
+        //    //                    result[0]["Count"] += 1;
 
+        //    //                } else {
 
 
-                                DateExistHMO.push({ Date: res[i].Start, Count: 1, HMO: res[i].HMO });
-                            }
 
-                        }
+        //    //                    DateExistHMO.push({ Date: res[i].Start, Count: 1, HMO: res[i].HMO });
+        //    //                }
 
-                    }
+        //    //            }
 
-                }
+        //    //        }
 
+        //    //    }
 
-            }
 
-           
+        //    //}
+        //    //for (var m = 0; m < DateExistHMO.length; m++) {
+        //    //    if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO =="maccabiGold") {
 
-            for (var m = 0; m < DateExistHMO.length; m++) {
-                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO =="maccabiGold") {
+        //    //        myObj.MakabiOne++;
 
-                    myObj.MakabiOne++;
+        //    //    }
+        //    //    if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "maccabiGold") {
 
-                }
-                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "maccabiGold") {
+        //    //        myObj.MakabiTwoUp += DateExistHMO[m].Count;
 
-                    myObj.MakabiTwoUp += DateExistHMO[m].Count;
+        //    //    }
 
-                }
 
+        //    //    if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "klalit") {
 
-                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "klalit") {
+        //    //        myObj.KlalitOne++;
 
-                    myObj.KlalitOne++;
+        //    //    }
+        //    //    if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "klalit") {
 
-                }
-                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "klalit") {
+        //    //        myObj.KlalitTwoUp += DateExistHMO[m].Count;
 
-                    myObj.KlalitTwoUp += DateExistHMO[m].Count;
+        //    //    }
 
-                }
 
+        //    //    if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "klalitDikla") {
 
-                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "klalitDikla") {
+        //    //        myObj.DiklaOne++;
 
-                    myObj.DiklaOne++;
+        //    //    }
+        //    //    if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "klalitDikla") {
 
-                }
-                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "klalitDikla") {
+        //    //        myObj.DiklaTwoUp += DateExistHMO[m].Count;
 
-                    myObj.DiklaTwoUp += DateExistHMO[m].Count;
+        //    //    }
 
-                }
 
+        //    //    if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "meuhedet") {
 
-                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "meuhedet") {
+        //    //        myObj.MeuhedetOne++;
 
-                    myObj.MeuhedetOne++;
+        //    //    }
+        //    //    if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "meuhedet") {
 
-                }
-                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "meuhedet") {
+        //    //        myObj.MeuhedetTwoUp += DateExistHMO[m].Count;
 
-                    myObj.MeuhedetTwoUp += DateExistHMO[m].Count;
+        //    //    }
 
-                }
+        //    //    if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "leumit") {
 
-                if (DateExistHMO[m].Count == 1 && DateExistHMO[m].HMO == "leumit") {
+        //    //        myObj.LeumitOne++;
 
-                    myObj.LeumitOne++;
+        //    //    }
+        //    //    if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "leumit") {
 
-                }
-                if (DateExistHMO[m].Count >= 2 && DateExistHMO[m].HMO == "leumit") {
+        //    //        myObj.LeumitTwoUp += DateExistHMO[m].Count;
 
-                    myObj.LeumitTwoUp += DateExistHMO[m].Count;
+        //    //    }
 
-                }
 
 
+        //    //}
 
-            }
 
-           
 
-            return myObj;
-        }
-
-
+        //    return myObj;
+        //}
 
         function _getInstructorCounter(Id, res, type) {
 
-           
+
             if (type == "FilterByLastLesson") {
 
                 res = res.sort(function (a, b) {
@@ -1013,7 +1241,7 @@
 
 
             }
-            
+
             // כאן id משמש של סוס ולא מדריך
             if (type == "HourNumberHorses") {
 
@@ -1051,8 +1279,6 @@
 
 
                 }
-
-
                 return (counter == 0) ? "" : counter.toString();
 
             }
@@ -1068,7 +1294,7 @@
                         if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
                         ) {
                             DateExist.push(res[i].Start);
-                          //  if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך  
+                            //  if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך  
                             counter += res[i].Diff;
                         }
 
@@ -1079,6 +1305,29 @@
 
 
                 return (counter == 0) ? "" : (counter / 60).toString();
+
+            }
+            if (type == "AllLessons") {
+                var DateExist = [];
+                var counter = 0;
+                for (var i = 0; i < res.length; i++) {
+
+                    if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
+
+                        if (res[i].Status == "attended" || (res[i].Status == "completion" && res[i].IsComplete == 4)
+                            || res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && res[i].IsComplete == 6)) {
+                            DateExist.push(res[i].Start);
+                            //  if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך
+                            counter++;
+                        }
+
+                    }
+
+
+                }
+
+
+                return (counter == 0) ? "" : counter.toString();
 
             }
 
@@ -1100,7 +1349,7 @@
 
                 }
 
-                
+
                 return (counter == 0) ? "" : counter.toString();
 
             }
@@ -1136,7 +1385,7 @@
 
                         if (res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && res[i].IsComplete == 6)) {
                             DateExist.push(res[i].Start);
-                            if (res[i].Leave==1) continue;// אם עזב לא להחשיב למדריך
+                            if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך
                             counter++;
                         }
 
@@ -1174,12 +1423,12 @@
 
 
             if (type == "IsLeave") {
-                
+
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
                     if (Id == res[i].Id && res[i].LastLesson) {
-                         counter++;
+                        counter++;
                     }
 
 
@@ -1196,7 +1445,7 @@
 
             function getActiveHeb(name) {
 
-            
+
                 var res = "פעיל";
 
                 if (name == "notActive") res = "לא פעיל";
@@ -1212,14 +1461,14 @@
 
                     if (self.reportHorses[x].UserId == UserId) {
 
-                        var sValue = ((first)?"":"," ) + self.reportHorses[x].Name ;
-                        res += sValue; 
+                        var sValue = ((first) ? "" : ",") + self.reportHorses[x].Name;
+                        res += sValue;
 
                         first = false;
 
                     }
 
-                } 
+                }
 
 
                 return res;
@@ -1227,7 +1476,7 @@
 
             if (["farmAdminHorse", "vetrinar", "shoeing"].indexOf(self.role) != -1) {
                 usersService.getAllFarmsuseruserhorses().then(function (horses) {
-                 
+
                     self.reportHorses = horses;
                 });
 
@@ -1252,7 +1501,7 @@
                         'טלפון 2',
                         'אימייל',
                         ' סוס ',
-                        
+
                     ]);
                     students.forEach(function (student) {
                         data.push([
@@ -1277,7 +1526,7 @@
                         ]);
                     });
 
-                } else { 
+                } else {
 
                     data.push([
                         'מס לקוח',
@@ -1325,7 +1574,7 @@
             });
         }
 
-       
+
 
         function _lessonsReport() {
 
@@ -1357,12 +1606,12 @@
 
                 self.users = users.reduce(function (acc, value) { return acc.concat(value); });
 
-              //  debugger
-              //  self.fromDate = moment(self.fromDate).startOf('day').toDate();
-              //  self.toDate = moment(self.toDate).startOf('day').toDate();
-                lessonsService.getLessons(null, self.fromDate,self.toDate).then(function (lessons) {
+                //  debugger
+                //  self.fromDate = moment(self.fromDate).startOf('day').toDate();
+                //  self.toDate = moment(self.toDate).startOf('day').toDate();
+                lessonsService.getLessons(null, self.fromDate, self.toDate).then(function (lessons) {
 
-                  
+
 
                     var data = [];
                     data.push([
@@ -1381,10 +1630,10 @@
 
 
 
-                    
+
 
                     for (var lesson of lessons) {
-                       
+
                         for (var status of lesson.statuses) {
                             var instructorName = getName(lesson.resourceId);
                             var student = getUser(status.StudentId);
@@ -1392,21 +1641,21 @@
                                 var studentName = student.FirstName + " " + student.LastName;
                                 var studentClientNumber = student.ClientNumber || "";
                                 var studentIdNumber = student.IdNumber;
-                              
+
                                 //var studentHMO = status.HMO;
                                 //var studentCost = student.Cost;
-                              //  debugger
+                                //  debugger
                                 var studentHMO = status.HMO;
                                 var studentCost = status.LessPrice;
 
                                 var startHour = (new Date(lesson.start)).toLocaleTimeString();
                                 var endHour = (new Date(lesson.end)).toLocaleTimeString();
 
-                                startHour = (startHour.indexOf(':') == 1) ? "0" + startHour.substring(0, 4) : startHour.substring(0, 5) ;
+                                startHour = (startHour.indexOf(':') == 1) ? "0" + startHour.substring(0, 4) : startHour.substring(0, 5);
                                 endHour = (endHour.indexOf(':') == 1) ? "0" + endHour.substring(0, 4) : endHour.substring(0, 5);
 
-                           
-                               
+
+
                                 if (instructorName && studentName) {
                                     data.push([
                                         studentClientNumber,
@@ -1425,16 +1674,16 @@
                             }
                         }
                     }
-                   
+
                     _getReport(data);
                 });
             })
 
-      
+
         }
 
         function _getPartaniK(statuses, StudentId) {
-           
+
             var count = 0;
             for (var i in statuses) {
 
@@ -1459,7 +1708,7 @@
 
         function _getHebStatus(status) {
 
-           
+
             if (status.Status == "completion" && (status.IsComplete == 4)) {
                 return "הגיע משיעור השלמה";
             }
@@ -1569,7 +1818,7 @@
                 ]);
                 horses.forEach(function (horse) {
                     data.push([
-                        (horse.Active == "notActive")? "לא פעיל":"פעיל",
+                        (horse.Active == "notActive") ? "לא פעיל" : "פעיל",
                         horse.Name,
                         horse.Race,
                         horse.Gender,
@@ -1588,7 +1837,7 @@
                         horse.Dinner1,
                         horse.Dinner2,
 
-                      
+
                         _getVaccineDate('flu', horse),
                         _getVaccineDate('nile', horse),
                         _getVaccineDate('tetanus', horse),
@@ -1608,7 +1857,7 @@
 
             var horseBirthDate = horse.BirthDate;
             var shoeingDate = null;
-           // var hasLastShoeing = (typeof (horse.Meta.Shoeings) !== "undefined" && horse.Meta.Shoeings.length > 0);
+            // var hasLastShoeing = (typeof (horse.Meta.Shoeings) !== "undefined" && horse.Meta.Shoeings.length > 0);
             var first = moment(horseBirthDate).add(sharedValues.shoeing.first, 'days');
 
             if (horse.shoeings) {
@@ -1621,7 +1870,7 @@
                 //    else
                 //        return 0;
                 //});
-               // var lastShoeing = horse.Meta.Shoeings[horse.Meta.Shoeings.length - 1];
+                // var lastShoeing = horse.Meta.Shoeings[horse.Meta.Shoeings.length - 1];
                 shoeingDate = moment(horse.shoeingsLastDate).add(sharedValues.shoeing.interval, 'days');
             }
             else if (_isFuture(first)) {
@@ -1668,18 +1917,18 @@
                 var lastVaccination = {};
                 lastVaccination.times = 0;
 
-             
+
                 if (horse[id]) {
 
-                   
-                      var Date = id + "LastDate";
-                  //  for (var i in horse.Meta.Vaccinations) {
-                       // if (horse[id]) {
-                            lastVaccination.age = Math.ceil(moment.duration(moment(horse[Date]).diff(horse.BirthDate)).asDays());
-                            lastVaccination.times++;
-                            lastVaccination.date = horse[Date];
-                        //}
-                   // }
+
+                    var Date = id + "LastDate";
+                    //  for (var i in horse.Meta.Vaccinations) {
+                    // if (horse[id]) {
+                    lastVaccination.age = Math.ceil(moment.duration(moment(horse[Date]).diff(horse.BirthDate)).asDays());
+                    lastVaccination.times++;
+                    lastVaccination.date = horse[Date];
+                    //}
+                    // }
                 }
                 return lastVaccination;
             }
@@ -1752,7 +2001,7 @@
                 return ws;
             }
             var ws = sheet_from_array_of_arrays(data);
-           
+
             /* TEST: add worksheet to workbook */
             wb.SheetNames.push(ws_name);
             wb.Sheets[ws_name] = ws;
