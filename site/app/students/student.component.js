@@ -119,6 +119,8 @@
         this.changeLessonsData = _changeLessonsData.bind(this);
 
         this.getChecsObjList = _getChecsObjList.bind(this);
+        this.getAshraiObjList = _getAshraiObjList.bind(this);
+        
         this.addMakav = _addMakav.bind(this);
         this.removeMakav = _removeMakav.bind(this);
         this.setMakavDesc = _setMakavDesc.bind(this);
@@ -2578,7 +2580,6 @@
 
             // alert(getUrlParameter("http://ynet.co.il?sdsd=1&Shir=3", "Shir"));
 
-            debugger
 
             if (this.newPayment.payment_type == 'ashrai') {
                 this.newPayment.payment_type = 'validate';
@@ -2594,6 +2595,14 @@
                         this.newPayment.cc_customer_name = response.data.cgp_customer_name;
                         this.newPayment.cc_deal_type = (response.data.cgp_num_of_payments == 1) ? "1" : "2";// סוג עסקה לבדוק
                         this.newPayment.cc_type = this.getccType(response.data.cgp_customer_cc_name);
+
+                        if (this.newPayment.isKabala) {
+
+
+
+
+                        }
+
                         this.addPayment();
 
                     } else {
@@ -2696,12 +2705,14 @@
                 this.newPayment.cc_expire_month = this.user.cc_expire_month;
                 this.newPayment.cc_expire_year = this.user.cc_expire_year;
 
+                this.newPayment.cc_type_name = this.getccTypeName(this.newPayment.cc_type);
+
                 this.newPayment.payment_type = 'tokenBuy';
 
             }
 
             var newPayment = angular.copy(this.newPayment);
-            newPayment.cc_type_name = this.getccTypeName(this.newPayment.cc_type);
+           
             newPayment.doc_type = this.getRealDocType(newPayment);//(newPayment.isMasKabala) ? "MasKabala" : ((newPayment.isKabala || newPayment.isKabalaTroma) ? "Kabala" : "");
 
             var TempSum = newPayment.InvoiceSum;
@@ -2736,7 +2747,7 @@
                 }
 
              
-
+                
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
                  
@@ -2782,7 +2793,7 @@
                             var payWind = window.open(response.data.url, "Upload Chapter content", "width=600,height=600" + ",top=" + top + ",left=" + left);
                             //response.data.url אמת
 
-                            debugger
+                            
                             var timer = setInterval(function () {
 
 
@@ -3155,8 +3166,6 @@
 
         }
 
-
-
         function _setCheckboxForClose(pay) {
 
             // אם זה קבלה והשורה היא חשבונית מס ואין לו מסמך אב תציג אופציה לסגירה  || this.newPayment.isKabalaTroma
@@ -3177,9 +3186,6 @@
             else
                 return false;
         }
-
-
-
 
         this.currentCheckindex = 0;
         this.checksCount = 0;
@@ -3254,7 +3260,7 @@
 
 
 
-                usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses, [], this.makav, this.getChecsObjList()).then(function (user) {
+                usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses, [], this.makav, this.getChecsObjList(), this.getAshraiObjList()).then(function (user) {
 
                     if (user.FirstName == "Error") {
                         alert('שגיאה בעת עדכון תלמיד , בדוק אם קיימת תעודת זהות במערכת');
@@ -3340,18 +3346,11 @@
 
             try {
 
-
-
-
-
                 for (var i in this.newPayment.Checks) {
-
-
 
                     this.newPayment.Checks[i].checks_date = moment(this.newPayment.Checks[i].checks_date).format("YYYY-MM-DD");
 
                     CheckList.push(this.newPayment.Checks[i]);
-
 
                 }
 
@@ -3361,6 +3360,49 @@
             }
 
             return CheckList;
+        }
+
+
+        function _getAshraiObjList() {
+
+          
+            var AshraiList = [];
+           
+            try {
+
+                if (this.newPayment.isKabala && this.newPayment.cc_num_of_payments) {
+                    debugger
+                    for (var i = 0; i <= this.newPayment.cc_num_of_payments-1; i++) {
+                     
+                        var AshraiDate = moment(this.newPayment.Date).add(i, 'months').format("YYYY-MM-DD");
+
+                        AshraiList.push({
+                            AshraiDate: AshraiDate,
+                            ashrai_sum: this.newPayment.InvoiceSum / this.newPayment.cc_num_of_payments,
+                            cc_number: this.newPayment.cc_number,
+                            cc_num_of_payments: this.newPayment.cc_num_of_payments,
+                            cc_customer_name: this.newPayment.cc_customer_name,
+                            cc_payment_num: this.newPayment.cc_payment_num,
+                            cc_deal_type: this.newPayment.cc_deal_type,
+                            cc_type: this.newPayment.cc_type,
+                            cc_type_name : this.newPayment.cc_type_name,
+                            ashrai_auto:true
+
+                        });
+                    }
+                   
+
+
+                }
+
+                
+
+            }
+            catch (e) {
+
+            }
+
+            return AshraiList;
         }
 
 

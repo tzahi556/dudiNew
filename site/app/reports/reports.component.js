@@ -462,8 +462,8 @@
         }
 
         function _ReportManger() {
-            self.fromDate = "2021-01-01";
-            self.toDate = "2021-01-12";
+            //self.fromDate = "2021-01-01";
+            //self.toDate = "2021-01-12";
 
 
             function IsStatusOk(Status, IsComplete, IsHiyuvInHashlama) {
@@ -541,12 +541,12 @@
                     var DateExist = [];
                     var res = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
                     for (var i = 0; i < res.length; i++) {
-                        var result = DateExist.filter(d => d.Date == res[i].Start);
+                        var result = DateExist.filter(d => d.Date == res[i].Start && d.Instructor_Id == res[i].Id);
                         if (result.length > 0) {
                             result[0]["Count"] += 1;
 
                         } else {
-                            DateExist.push({ Date: res[i].Start, Count: 1});
+                            DateExist.push({ Date: res[i].Start, Count: 1, Instructor_Id: res[i].Id});
                         }
                     }
 
@@ -561,12 +561,12 @@
                     var resData = "";
                     var resAtten = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
                     for (var i = 0; i < resAtten.length; i++) {
-                        var result = DateExist.filter(d => d.Date == resAtten[i].Start);
+                        var result = DateExist.filter(d => d.Date == resAtten[i].Start && d.Instructor_Id==resAtten[i].Id);
                         if (result.length > 0) {
                             result[0]["Count"] += 1;
 
                         } else {
-                            DateExist.push({ Date: resAtten[i].Start, Count: 1 });
+                            DateExist.push({ Date: resAtten[i].Start, Count: 1, Instructor_Id: resAtten[i].Id });
                         }
                     }
                    
@@ -593,16 +593,23 @@
 
                     for (var i in data) {
 
-                        if (data[i].HMO == "maccabiSheli") data[i].HMO = "maccabiGold";
-                        if (data[i].HMO == "klalitPlatinum") data[i].HMO = "klalit";
+                        //if (data[i].HMO == "maccabiSheli") data[i].HMO = "maccabiGold";
+                        //if (data[i].HMO == "klalitPlatinum") data[i].HMO = "klalit";
 
 
                         var IsHMO = sharedValues.HMOs.filter(x => x.id == data[i].HMO);
                         var IsStyle = sharedValues.styles.filter(x => x.id == data[i].HMO);
 
-                        if (IsHMO.length > 0) data[i].HMO = IsHMO[0].name;
+                        if (IsHMO.length > 0) {
+                            data[i].HMO = IsHMO[0].reportName;
+                            data[i].reportColor = IsHMO[0].reportColor;
 
-                        if (IsStyle.length > 0) data[i].HMO = IsStyle[0].name;
+                        }
+
+                        if (IsStyle.length > 0) {
+                            data[i].HMO = IsStyle[0].name;
+                            data[i].reportColor = IsStyle[0].reportColor;
+                        }
                     }
 
 
@@ -617,18 +624,20 @@
                         var CounterStyle = 0;
                         var ObjAllLessonsInHmo = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama) && x.HMO == unique[i]);
                         if (ObjAllLessonsInHmo.length > 0) {
-                           
-                            var ObjAllGroupsInHmo = getDynamicData(3, ObjAllLessonsInHmo, false);
-                            resHeader += "<td align='center' colspan=" + ObjAllGroupsInHmo.length+" style='background:#42ecf5;'>" + unique[i] + "</td>";
 
+                            var reportColor = ObjAllLessonsInHmo[0].reportColor;
+                            var ObjAllGroupsInHmo = getDynamicData(3, ObjAllLessonsInHmo, false);
+                            resHeader += "<td align='center' colspan=" + ObjAllGroupsInHmo.length + " style='background:" + reportColor +"'>" + unique[i] + "</td>";
+
+                          
                            // DataObj.push({ Style: unique[i], ObjAllGroupsInHmo: ObjAllGroupsInHmo, });
                            
                             for (var i in ObjAllGroupsInHmo.sort()) {
 
                                 if (ObjAllGroupsInHmo[i] == 1)
-                                    resBody  += "<td align='center' style='background:#42ecf5;'>שיעור בודד </td>";
+                                    resBody += "<td align='center' style='background:" + reportColor+"'>שיעור בודד </td>";
                                 else
-                                      resBody += "<td align='center' style='background:#42ecf5;'>" + ObjAllGroupsInHmo[i] + " - תלמידים </td>";
+                                    resBody += "<td align='center' style='background:" + reportColor +"'>" + ObjAllGroupsInHmo[i] + " - תלמידים </td>";
 
                             }
                             
@@ -696,7 +705,7 @@
 
                     usersService.report("2", moment(self.fromDate).format('YYYYMMDD'), moment(self.toDate).format('YYYYMMDD')).then(function (res) {
 
-
+                       
                         var HtmlTable = "";
                         var HtmlTableLess = "";
                         var HtmlTableSep = "";
@@ -963,19 +972,18 @@
                             text = text.replace("@TableHorses", HtmlHorsesTable);
 
                             //**************************
-                            var divText = text;
-                            var myWindow = window.open('', '', 'width=800,height=600');
-                            var doc = myWindow.document;
-                            doc.open();
-                            doc.write(divText);
-                            doc.close();
+                            //var divText = text;
+                            //var myWindow = window.open('', '', 'width=800,height=600');
+                            //var doc = myWindow.document;
+                            //doc.open();
+                            //doc.write(divText);
+                            //doc.close();
                             //**************************
 
-                            //window.open("http://localhost:51517/app/reports/Report.html", "Upload Chapter content", "width=600,height=600");
-                            //var blob = new Blob([text], {
-                            //    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                            //});
-                            //saveAs(blob, "Leads " + new Date() + ".html");
+                            var blob = new Blob([text], {
+                                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                            });
+                            saveAs(blob, "Leads " + new Date() + ".html");
 
                         });
 

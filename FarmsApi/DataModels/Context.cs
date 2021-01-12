@@ -23,6 +23,8 @@ namespace FarmsApi.DataModels
         public DbSet<AvailableHours> AvailableHours { get; set; }
         public DbSet<Makavs> Makavs { get; set; }
         public DbSet<Checks> Checks { get; set; }
+
+        public DbSet<Ashrais> Ashrais { get; set; }
         public DbSet<SchedularTasks> SchedularTasks { get; set; }
 
 
@@ -48,7 +50,6 @@ namespace FarmsApi.DataModels
         public DbSet<HorsesMultipleFiles> HorsesMultipleFiles { get; set; }
         public DbSet<HorseVetrinars> HorseVetrinars { get; set; }
 
-
         public DbSet<HorseGroups> HorseGroups { get; set; }
         public DbSet<HorseGroupsHorses> HorseGroupsHorses { get; set; }
         public DbSet<HorsePirzulLists> HorsePirzulLists { get; set; }
@@ -58,7 +59,6 @@ namespace FarmsApi.DataModels
         public DbSet<Temps> Temps { get; set; }
 
         public DbSet<InsertedLessonsTemps> InsertedLessonsTemps { get; set; }
-        
 
 
         public Context() : base("Farms") { }

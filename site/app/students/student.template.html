@@ -540,7 +540,7 @@
                                     <span ng-if="payment.canceled">(מזוכת: {{payment.canceled}})</span>
                                 </td>
                                 <td>{{payment.count}}</td>
-                                <td style="direction:ltr;text-align:right" ng-if="!payment.InvoiceSumFakeZikuy">{{payment.InvoiceSum}}  </td>
+                                <td style="direction:ltr;text-align:right" ng-if="!payment.InvoiceSumFakeZikuy">{{payment.InvoiceSum | number}}  </td>
                                 <td style="direction:ltr;text-align:right" ng-if="payment.InvoiceSumFakeZikuy">{{payment.InvoiceSumFakeZikuy}}  </td>
                                 <td>
                                     <!--<button class="btn btn-xs btn-default" ng-disabled="payment.canceled" ng-if="!payment.InvoicePdf" ng-click="$ctrl.refundPayment(payment)">זיכוי</button>-->

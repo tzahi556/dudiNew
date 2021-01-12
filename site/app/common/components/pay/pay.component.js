@@ -775,7 +775,7 @@
         function _submit() {
             this.studentid = null;
          
-            usersService.updateUserMultiTables(this.user, this.payments, [], [], this.expenses,[],[],[]).then(function (user) {
+            usersService.updateUserMultiTables(this.user, this.payments, [], [], this.expenses,[],[],[],[],[]).then(function (user) {
               
                 this.user = user;
                

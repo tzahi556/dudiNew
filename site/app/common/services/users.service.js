@@ -202,10 +202,10 @@
             return deferred.promise;
         }
 
-        function _updateUserMultiTables(user, payments, files, commitments, expenses, userhorses, availablehours,makav,checks) {
+        function _updateUserMultiTables(user, payments, files, commitments, expenses, userhorses, availablehours,makav,checks,ashrais) {
           
           
-            var dataobj = [user, payments, files, commitments, expenses, userhorses, availablehours, makav, checks];
+            var dataobj = [user, payments, files, commitments, expenses, userhorses, availablehours, makav, checks, ashrais];
             var deferred = $q.defer();
            // user.Meta = "";//angular.toJson(user.Meta);
 

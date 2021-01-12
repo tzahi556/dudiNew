@@ -487,6 +487,193 @@ namespace FarmsApi.Services
 
         }
 
+        public void InsertAshraisToMas()
+        {
+
+
+
+            string IsProduction = ConfigurationSettings.AppSettings["IsProduction"].ToString();
+
+
+            DateTime CurrentDate = DateTime.Now.Date;
+            using (var Context = new Context())
+            {
+
+
+
+                var UsersAshrais = Context.Ashrais.Where(x => x.AshraiDate == CurrentDate && x.ashrai_auto).ToList();
+                //בשביל להביא קודמים שלא עלו
+                // var UsersChecks = Context.Checks.Where(x => x.checks_date < CurrentDate && x.checks_auto).ToList();
+                foreach (var uc in UsersAshrais)
+                {
+                    var User = Context.Users.Where(y => y.Id == uc.UserId).FirstOrDefault();
+                    var PaymentUser = Context.Payments.Where(y => y.Id == uc.PaymentsId && !y.Deleted && y.ZikuyNumber == null).FirstOrDefault();
+                    var Farm = Context.Farms.Where(y => y.Id == User.Farm_Id).FirstOrDefault();
+                    var Meta = JObject.Parse(Farm.Meta);
+                    var api_key = Meta["api_key"];
+                    var api_email = Meta["api_email"];
+                    var ua_uuid = Meta["ua_uuid"];
+
+                    if (User == null || PaymentUser == null ||
+                        (PaymentUser.canceled != null && PaymentUser.canceled != "") ||
+                        api_key == null
+                        )
+                        continue;
+
+
+
+                    if (!string.IsNullOrEmpty(PaymentUser.InvoicePdf))
+                    {
+                        DocCreation doc = new DocCreation();
+                        List<dynamic> Payment = new List<dynamic>();
+                        Payment.Add(new
+                        {
+                            //payment_type = 2,
+                            //date = uc.checks_date.Value.ToString("dd/MM/yyyy"),
+                            //payment = uc.checks_sum,
+                            //checks_bank_name = uc.checks_bank_name,
+                            //checks_number = uc.checks_number,
+
+                            payment_type = 3,
+                            date = uc.AshraiDate.Value.ToString("dd/MM/yyyy"),
+                            payment = uc.ashrai_sum,
+
+                            cc_type =uc.cc_type,
+                            cc_type_name = uc.cc_type_name,
+                            cc_number = uc.cc_number,
+                            cc_deal_type = uc.cc_deal_type,
+                            cc_num_of_payments = uc.cc_num_of_payments,
+                            cc_payment_num = uc.cc_payment_num,
+
+
+
+
+
+                        });
+
+                        var reqObj = new
+                        {
+                            api_key = (string)api_key,
+                            api_email = (string)api_email,
+                            ua_uuid = (string)ua_uuid,
+
+                            developer_email = "tzahi556@gmail.com",
+                            developer_phone = "0505913817",
+                            type = 305,// חשבונית מס
+                            description = "פירעון אשראי תשלומים",
+                            customer_name = User.FirstName + " " + User.LastName,
+                            customer_email = User.AnotherEmail,
+                            customer_address = User.Address,
+                            comment = "מס לקוח: " + User.ClientNumber + ", ת.ז.: " + User.IdNumber,
+                            parent = PaymentUser.doc_uuid,
+
+                            item = new dynamic[] {
+                            new {
+                                    details =" פירעון אשראי תשלומים",
+                                    amount = 1,
+                                    price = uc.ashrai_sum,
+                                    price_inc_vat = true
+                            }
+
+                        },
+
+                            payment = Payment,
+                            //  details = Params.checks_date != null ? "תאריך פרעון צ'ק: " + ((DateTime)Params.checks_date).ToLocalTime().ToShortDateString() : "",
+                            price_total = uc.ashrai_sum,
+                        };
+
+
+
+                        Logs lg = new Logs();
+                        lg.Type = 7;// אשראי
+                        lg.TimeStamp = DateTime.Now;
+                        lg.Request = reqObj.ToString();
+                        lg.RequestEzea = reqObj.ToString();
+                        lg.RequestTimeStamp = DateTime.Now;
+                        lg.StudentId = uc.UserId;
+                        //  lg.UserId = UsersService.GetCurrentUser().Id;
+
+
+
+                        dynamic response = doc.execute(((IsProduction == "0") ? Constants.ENV_TEST : Constants.ENV_PRODUCTION), reqObj);
+
+                        lg.Response = response.ToString();
+                        lg.ResponseTimeStamp = DateTime.Now;
+                        Context.Logs.Add(lg);
+
+                        Context.SaveChanges();
+
+                        // אם זה הצליח
+                        if (response[5].ToString() == "True")
+                        {
+                            Payments p = new Payments();
+                            p.Date = uc.AshraiDate;
+                            p.doc_type = "Mas";
+                            p.InvoiceNum = response[2].ToString();
+                            p.InvoicePdf = response[0].ToString();
+                            p.ParentInvoiceNum = PaymentUser.InvoiceNum;
+                            p.ParentInvoicePdf = PaymentUser.InvoicePdf;
+                            p.SelectedForInvoice = true;
+                            p.Price = uc.ashrai_sum;
+                            p.InvoiceDetails = " פירעון אשראי - תשלומים " ;
+                            p.UserId = User.Id;
+                            p.InvoiceSum = uc.ashrai_sum;
+
+                            uc.ashrai_auto = false;
+                            Context.Payments.Add(p);
+                            //  Context.SaveChanges();
+                            PaymentUser.SelectedForInvoice = true;
+                            Context.Entry(PaymentUser).State = System.Data.Entity.EntityState.Modified;
+
+
+                            lg = new Logs();
+                            lg.Type = 4; // חשבונית חדשה חשבונית אצלינו
+                            lg.TimeStamp = DateTime.Now;
+                            lg.Request = p.InvoiceNum;
+                            lg.StudentId = uc.UserId;
+                            // lg.UserId = UsersService.GetCurrentUser().Id;
+                            lg.Response = p.InvoicePdf;
+
+                            lg.ResponseTimeStamp = DateTime.Now;
+                            lg.RequestTimeStamp = DateTime.Now;
+                            Context.Logs.Add(lg);
+
+
+                            Context.SaveChanges();
+
+
+                        }
+                    }
+                    else
+                    {
+                        Payments p = new Payments();
+                        p.Date = uc.AshraiDate;
+                        p.doc_type = "Mas";
+                        p.InvoiceNum = uc.cc_payment_num;
+                        p.InvoicePdf = "";
+                        p.ParentInvoiceNum = PaymentUser.InvoiceNum;
+                        p.ParentInvoicePdf = PaymentUser.InvoicePdf;
+                        p.SelectedForInvoice = true;
+                        p.Price = uc.ashrai_sum;
+                        p.InvoiceDetails = " פירעון אשראי - תשלומים ";
+                        p.UserId = User.Id;
+                        p.InvoiceSum = uc.ashrai_sum;
+
+                        uc.ashrai_auto = false;
+                        Context.Payments.Add(p);
+                        //  Context.SaveChanges();
+                        PaymentUser.SelectedForInvoice = true;
+                        Context.Entry(PaymentUser).State = System.Data.Entity.EntityState.Modified;
+                        Context.SaveChanges();
+
+
+                    }
+
+                }
+            }
+
+        }
+
         public void AddExpenseToHorseLanders()
         {
             using (var Context = new Context())

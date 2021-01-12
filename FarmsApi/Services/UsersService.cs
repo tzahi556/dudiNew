@@ -841,6 +841,9 @@ namespace FarmsApi.Services
                 List<Checks> ch = dataObj[8].ToObject<List<Checks>>();
                 UpdateChecksObject(ch, u, NewId);
 
+                List<Ashrais> ah = dataObj[9].ToObject<List<Ashrais>>();
+                UpdateAshraisObject(ah, u, NewId);
+
             }
             catch (Exception ex)
             {
@@ -949,6 +952,73 @@ namespace FarmsApi.Services
                 {
                     CommonTasks Tasking = new CommonTasks();
                     Tasking.InsertChecksToMas();
+                }
+
+
+
+            }
+        }
+
+        private static void UpdateAshraisObject(List<Ashrais> objList, User u, int PaymentsId)
+        {
+            using (var Context = new Context())
+            {
+
+                foreach (Ashrais item in objList)
+                {
+
+                    item.UserId = u.Id;
+                    item.PaymentsId = PaymentsId;
+                    if (item.Id == 0)
+                    {
+                        Context.Ashrais.Add(item);
+                        //  Context.SaveChanges();
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        //  Context.SaveChanges();
+
+                    }
+
+                }
+
+                try
+                {
+
+                    //var result = Context.Checks.Where(p => p.UserId == u.Id).ToList();
+                    //IEnumerable<Checks> differenceQuery = result.Except(objList);
+
+                    //foreach (Checks item in differenceQuery)
+                    //{
+                    //    Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                    //    // Context.SaveChanges();
+                    //}
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+                // 
+
+                // Context.UserHorses.AddRange(uhs);
+                //User u = UpdateUser(User);
+
+
+
+
+                Context.SaveChanges();
+
+                if (objList.Count > 0)
+                {
+                    CommonTasks Tasking = new CommonTasks();
+                    Tasking.InsertAshraisToMas();
                 }
 
 

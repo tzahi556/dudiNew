@@ -44,6 +44,8 @@ namespace FarmsApi
 
                     Tasking.InsertChecksToMas();
 
+                    Tasking.InsertAshraisToMas();
+
                     Tasking.InsertSchedularToken();
 
                 }
