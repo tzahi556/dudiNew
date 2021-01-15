@@ -21,7 +21,7 @@
 
         function _setKlalitHistoris(klalithistoris) {
 
-
+            debugger
 
             var deferred = $q.defer();
             $http.post(sharedValues.apiUrl + 'farms/setKlalitHistoris/', klalithistoris).then(function (res) {

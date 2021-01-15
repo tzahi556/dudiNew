@@ -51,14 +51,15 @@
         this.getHorsesGroup = _getHorsesGroup.bind(this);
         this.actionHorsesGroup = _actionHorsesGroup.bind(this);
         this.getFreeHorses = _getFreeHorses.bind(this);
-      
+        this.checkAll = _checkAll.bind(this);
+        
         
         this.role = localStorage.getItem('currentRole');
 
 
 
         function _setKlalitHistoriPage(type, klalitId) {
-
+           
             if (this.klalitsBefore.length > 0) {
 
                 $('#modalKlalitSend').modal('show');
@@ -67,6 +68,19 @@
                 var ctrlthis = this;
                 ctrlthis.endMessage = false;
                 ctrlthis.currentElement = 0;
+               
+                for (var i in ctrlthis.klalitsBefore) {
+
+                    ctrlthis.klalitsBefore[i].ResultXML = null;
+                    ctrlthis.klalitsBefore[i].UserName = ctrlthis.klalitsBefore[i].UserName.replace(' ', ',');
+                    //
+
+                }
+               
+               // ctrlthis.klalitsBefore.filter(x => x.ResultNumber == -1).forEach(x => x.Result = null);
+                    
+               
+
                 ctrlthis.setPostToKlalit(0, ctrlthis);
 
             }
@@ -79,7 +93,7 @@
 
         function _setPostToKlalit(index, ctrlthis) {
 
-
+         
             $http.post(sharedValues.apiUrl + 'farms/setKlalitHistoris/', ctrlthis.klalitsBefore[index]).then(function (response) {
 
                 ctrlthis.returnUserName = response.data.UserName;
@@ -99,29 +113,47 @@
 
         }
 
+        function _checkAll() {
+
+          //  this.klalits.find(x => x.ResultNumber == -1).IsDo = this.checkAllc;
+
+            this.klalits.filter(x => x.ResultNumber == -1)
+                .forEach(x => x.IsDo = this.checkAllc);
+        }
+
+     
 
         function _getKlalitHistoriPage(type, klalitId) {
 
+          
+            if (type == 5) {
+              
+                this.klalitsBefore = this.klalits.filter(x => x.IsDo);
+                if (this.klalitsBefore.length == 0) {
+                    alert("עלייך לבחור רשומות לשליחה חוזרת!");
+                    return;
+                }
 
+                $('#modalKlalit').modal('show');
 
+                return;
+                
+            }
 
-
-
+           
             var startDate = moment(this.dateFromClalit).format('YYYY-MM-DD');
             var endDate = moment(this.dateToClalit).format('YYYY-MM-DD');
 
             // שליחה עצמה
-            if (type == 2) {
-                this.SaveData(2, true);
-            }
+            //if (type == 2) {
+            //    this.SaveData(2, true);
+            //}
 
             // פתיחת חלון מקדים
             if (type == 4) $('#modalKlalit').modal('show');
 
-
-
             farmsService.getKlalitHistoris(this.farmmanager.FarmId, startDate, endDate, type, klalitId, null).then(function (res) {
-
+              
                 if (type == 2 && res[0].Id < 0) {
 
                     if (res[0].Id == -1) alert("אין הגדרות למדריכים");
@@ -134,7 +166,9 @@
 
                     this.klalitsBefore = res;
 
-                } else {
+                }
+
+                else {
                     this.klalits = res;
                 }
 

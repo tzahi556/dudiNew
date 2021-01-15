@@ -6,32 +6,8 @@
     
 
     <uib-tabset active="active" class="tab-form-demo">
-
-        <uib-tab index="0" heading="קישורים">
-
-
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        קישורים
-
-                    </div>
-                    <div class="panel-body">
-
-
-
-                        <a target="_blank" class="btn btn-primary" href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a><br /><br />
-                        <a target="_blank" class="btn btn-primary" href="//drive.google.com">Google Drive</a><br /><br />
-                        <a target="_blank" class="btn btn-primary" href="//www.dropbox.com">DropBox</a>
-                    </div>
-                    <div class="panel-footer">
-
-                    </div>
-                </div>
-            </div>
-
-        </uib-tab>
-        <uib-tab index="1" heading="דיווחי כללית" ng-if="$ctrl.role!='farmAdminHorse'">
+        <!--ng-if="$ctrl.role!='farmAdminHorse'"-->
+        <uib-tab index="1" heading="דיווחי כללית">
             <div class="col-md-3" ng-if="$ctrl.role!='farmAdminHorse'">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -111,17 +87,32 @@
                     </div>
                     <div class="panel-body">
 
-                        <div class="col-md-4 form-group">
-                            <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-model="$ctrl.filter.UserName" />
+                        <div class="col-md-3 form-group">
+                            <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-change="$ctrl.checkAllc=false;$ctrl.checkAll()" ng-model="$ctrl.filter.UserName" />
                         </div>
 
-                        <div class="col-md-3 form-group">
-                            <input type="date" name="dateFromClalit" class="form-control" ng-model="$ctrl.dateFromClalit" />
+                        <div class="col-md-2 form-group">
+                            <input type="date" name="dateFromClalit" ng-change="$ctrl.getKlalitHistoriPage()" class="form-control" ng-model="$ctrl.dateFromClalit" />
                         </div>
 
-                        <div class="col-md-3 form-group">
-                            <input type="date" name="dateToClalit" class="form-control" ng-model="$ctrl.dateToClalit" />
+                        <div class="col-md-2 form-group">
+                            <input type="date" name="dateToClalit" ng-change="$ctrl.getKlalitHistoriPage()" class="form-control" ng-model="$ctrl.dateToClalit" />
                         </div>
+
+
+
+
+                        <div class="col-md-2 form-group">
+                            <select class="form-control" ng-model="ResultNumberFilter">
+                                <option value="" selected>בחר הכל</option>
+                                <option value="1">תביעה נקלטה</option>
+                                <option value="-1">כישלון</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 form-group">
+                            <button class="btn btn-default" ng-click="$ctrl.getKlalitHistoriPage(5)">שלח שוב מסומנים</button>
+                        </div>
+
                         <div class="col-md-1 form-group">
                             <button class="btn btn-primary" ng-click="$ctrl.getKlalitHistoriPage()">חפש</button>
                         </div>
@@ -134,6 +125,7 @@
 
 
                                     <tr>
+                                        <th><input type="checkbox" ng-model="$ctrl.checkAllc" ng-click="$ctrl.checkAll()"></th>
                                         <th>תאריך שליחה</th>
                                         <th>תאריך שיעור</th>
                                         <th>ת.ז</th>
@@ -143,16 +135,17 @@
 
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody style="border:solid 1px gray">
 
-                                    <tr ng-repeat="klalit in $ctrl.klalits  | filter:$ctrl.filter">
-
-                                        <td>{{klalit.DateSend | ildate: 'DD/MM/YYYY'}}</td>
+                                    <tr ng-if="ResultNumberFilter==klalit.ResultNumber || !ResultNumberFilter" ng-repeat="klalit in $ctrl.klalits | orderBy:['UserName','DateSend'] |  filter:$ctrl.filter" style="background:{{(klalit.ResultNumber==-1)?'#ffeeee':''}}">
+                                        <td><input class="" type="checkbox" ng-if="klalit.ResultNumber==-1" ng-model="klalit.IsDo"></td>
+                                        <td>{{klalit.DateSend | ildate: 'HH:mm DD/MM/YYYY'}}</td>
                                         <td>{{klalit.DateLesson | ildate: 'DD/MM/YYYY'}}</td>
                                         <td>{{klalit.Taz}}</td>
                                         <td>{{klalit.UserName}}</td>
                                         <td>{{klalit.Result}}</td>
-                                        <td><button class="btn btn-xs btn-default" ng-click="$ctrl.getKlalitHistoriPage(1,klalit.Id)">שלח שוב</button></td>
+                                        <td ng-if="klalit.ResultNumber==-1"><button class="btn btn-xs btn-default" ng-click="$ctrl.getKlalitHistoriPage(1,klalit.Id)">שלח שוב</button></td>
+                                        <td ng-if="klalit.ResultNumber==1">&nbsp;</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -166,6 +159,31 @@
             </div>
 
         </uib-tab>
+        <uib-tab index="0" heading="קישורים">
+
+
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        קישורים
+
+                    </div>
+                    <div class="panel-body">
+
+
+
+                        <a target="_blank" class="btn btn-primary" href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a><br /><br />
+                        <a target="_blank" class="btn btn-primary" href="//drive.google.com">Google Drive</a><br /><br />
+                        <a target="_blank" class="btn btn-primary" href="//www.dropbox.com">DropBox</a>
+                    </div>
+                    <div class="panel-footer">
+
+                    </div>
+                </div>
+            </div>
+
+        </uib-tab>
+
 
         <uib-tab index="2" heading="קבוצות פירזולים">
 

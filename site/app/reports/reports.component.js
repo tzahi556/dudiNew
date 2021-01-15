@@ -654,6 +654,62 @@
                     return resHeader + resBody + resData;
                 }
 
+                if (type == 6) {
+                    var DateExist = [];
+                    var resData = "";
+                    var resAtten = data;//.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
+                    for (var i = 0; i < resAtten.length; i++) {
+                        var result = DateExist.filter(d => d.Date == resAtten[i].Start && d.Instructor_Id == resAtten[i].Id);
+                        if (result.length > 0) {
+                            result[0]["Count"] += 1;
+
+                        } else {
+                            DateExist.push({
+                                Date: resAtten[i].Start, Count: 1, Instructor_Id: resAtten[i].Id,
+                                Status: resAtten[i].Status, IsHiyuvInHashlama: resAtten[i].IsHiyuvInHashlama,IsComplete:resAtten[i].IsComplete});
+                        }
+                    }
+
+                    //if (res[i].Status == "attended" ||
+                    //    (res[i].IsHiyuvInHashlama == 0 && res[i].Status == "completion" && res[i].IsComplete == 4) ||
+                    //    (res[i].IsHiyuvInHashlama == 1 && res[i].Status == "completionReqCharge")
+
+
+                    //הגיע
+                    var res = DateExist.filter(x => 1 == x.Count &&
+                        (x.Status == 'attended' ||
+                        (x.IsHiyuvInHashlama == 0 && x.Status == "completion" && x.IsComplete == 4) ||
+                        (x.IsHiyuvInHashlama == 1 && x.Status == "completionReqCharge")
+                        )
+                     );
+                    resData += "<td>" + (res.length == 0 ? "" : res.length) + "</td>";
+
+
+                    res = DateExist.filter(x => 1 == x.Count &&
+                        (x.Status == 'attended' ||
+                            (x.IsHiyuvInHashlama == 0 && x.Status == "completion" && x.IsComplete == 4) ||
+                            (x.IsHiyuvInHashlama == 1 && x.Status == "completionReqCharge")
+                        )
+                    );
+                    resData += "<td>" + (res.length == 0 ? "" : res.length) + "</td>";
+
+
+
+
+                 
+
+                    //for (var i = 0; i < HeadersDynamicHours.length; i++) {
+                    //    if (HeadersDynamicHours[i] == 1) continue;
+                    //    res = DateExist.filter(x => HeadersDynamicHours[i] == x.Count);
+                    //    resData += "<td>" + (res.length == 0 ? "" : res.length * res[0].Count) + "</td>";
+                    //}
+
+                    //if (!isRemoveTotal4) resData += "<td>" + (resAtten.length == 0 ? "" : resAtten.length) + "</td>";
+
+                    return resData;
+
+                }
+
             }
             // פיתוח
 
@@ -1291,39 +1347,46 @@
 
             }
 
-            if (type == "HourNumber") {
+            //if (type == "HourNumber") {
 
-                var DateExist = [];
-                var counter = 0;
-                for (var i = 0; i < res.length; i++) {
+            //    var DateExist = [];
+            //    var counter = 0;
+            //    for (var i = 0; i < res.length; i++) {
 
-                    if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
+            //        if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
 
-                        if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
-                        ) {
-                            DateExist.push(res[i].Start);
-                            //  if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך  
-                            counter += res[i].Diff;
-                        }
+            //            if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
+            //            ) {
+            //                DateExist.push(res[i].Start);
+            //                //  if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך  
+            //                counter += res[i].Diff;
+            //            }
 
-                    }
-
-
-                }
+            //        }
 
 
-                return (counter == 0) ? "" : (counter / 60).toString();
+            //    }
 
-            }
+
+            //    return (counter == 0) ? "" : (counter / 60).toString();
+
+            //}
+
             if (type == "AllLessons") {
                 var DateExist = [];
                 var counter = 0;
                 for (var i = 0; i < res.length; i++) {
 
+
+
                     if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
 
-                        if (res[i].Status == "attended" || (res[i].Status == "completion" && res[i].IsComplete == 4)
-                            || res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && res[i].IsComplete == 6)) {
+
+                        if (res[i].Status == "attended" ||
+                            res[i].Status == "notAttendedCharge" ||
+                            (res[i].IsHiyuvInHashlama == 1 && res[i].Status == "completionReqCharge")||
+                            (res[i].IsHiyuvInHashlama == 0 && res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))) {  
+                       
                             DateExist.push(res[i].Start);
                             //  if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך
                             counter++;
@@ -1334,7 +1397,7 @@
 
                 }
 
-
+                if (Id == 57) { debugger }
                 return (counter == 0) ? "" : counter.toString();
 
             }
@@ -1346,9 +1409,14 @@
 
                     if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
 
-                        if (res[i].Status == "attended" || (res[i].Status == "completion" && res[i].IsComplete == 4)) {
+                        if ( res[i].Status == "attended" ||
+                            (res[i].IsHiyuvInHashlama == 0 && res[i].Status == "completion" && res[i].IsComplete == 4) || 
+                            (res[i].IsHiyuvInHashlama == 1 && res[i].Status == "completionReqCharge")
+
+
+                        ) {
                             DateExist.push(res[i].Start);
-                            if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך
+                            //if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך
                             counter++;
                         }
 
@@ -1357,7 +1425,7 @@
 
                 }
 
-
+                if (Id == 57) { debugger }
                 return (counter == 0) ? "" : counter.toString();
 
             }
@@ -1391,9 +1459,9 @@
 
                     if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
 
-                        if (res[i].Status == "notAttendedCharge" || (res[i].Status == "completion" && res[i].IsComplete == 6)) {
+                        if (res[i].Status == "notAttendedCharge" || (res[i].IsHiyuvInHashlama == 0 && res[i].Status == "completion" && res[i].IsComplete == 6)) {
                             DateExist.push(res[i].Start);
-                            if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך
+                          //  if (res[i].Leave == 1) continue;// אם עזב לא להחשיב למדריך
                             counter++;
                         }
 
@@ -1402,7 +1470,7 @@
 
                 }
 
-
+                if (Id == 57) { debugger }
                 return (counter == 0) ? "" : counter.toString();
 
             }
@@ -1428,7 +1496,6 @@
                 return (counter == 0) ? "" : counter.toString();
 
             }
-
 
             if (type == "IsLeave") {
 
