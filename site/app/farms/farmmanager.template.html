@@ -6,8 +6,32 @@
     
 
     <uib-tabset active="active" class="tab-form-demo">
-        <!--ng-if="$ctrl.role!='farmAdminHorse'"-->
-        <uib-tab index="1" heading="דיווחי כללית">
+        <!---->
+        <uib-tab index="0" heading="קישורים">
+
+
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        קישורים
+
+                    </div>
+                    <div class="panel-body">
+
+
+
+                        <a target="_blank" class="btn btn-primary" href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a><br /><br />
+                        <a target="_blank" class="btn btn-primary" href="//drive.google.com">Google Drive</a><br /><br />
+                        <a target="_blank" class="btn btn-primary" href="//www.dropbox.com">DropBox</a>
+                    </div>
+                    <div class="panel-footer">
+
+                    </div>
+                </div>
+            </div>
+
+        </uib-tab>
+        <uib-tab index="1" heading="דיווחי כללית" ng-if="$ctrl.role!='farmAdminHorse'">
             <div class="col-md-3" ng-if="$ctrl.role!='farmAdminHorse'">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -159,30 +183,7 @@
             </div>
 
         </uib-tab>
-        <uib-tab index="0" heading="קישורים">
 
-
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        קישורים
-
-                    </div>
-                    <div class="panel-body">
-
-
-
-                        <a target="_blank" class="btn btn-primary" href="https://www.ezcount.co.il/backoffice">הנהלת חשבונות</a><br /><br />
-                        <a target="_blank" class="btn btn-primary" href="//drive.google.com">Google Drive</a><br /><br />
-                        <a target="_blank" class="btn btn-primary" href="//www.dropbox.com">DropBox</a>
-                    </div>
-                    <div class="panel-footer">
-
-                    </div>
-                </div>
-            </div>
-
-        </uib-tab>
 
 
         <uib-tab index="2" heading="קבוצות פירזולים">
@@ -373,9 +374,10 @@
 
 
                     <div class="col-md-12" ng-if="!$ctrl.endMessage" style="font-size:18px;font-weight:bold;text-decoration:underline">
-                        אנחנו מתחילים לדווח תביעה על <span>{{$ctrl.klalitsBefore.length}}</span> תלמידים
-                        <br />
-                        <label style="color:brown">נא לא לסגור בעת הדיווח!</label>
+                        <div style="float:right"> אנחנו מתחילים לדווח תביעה על <span>{{$ctrl.klalitsBefore.length}}</span> תלמידים</div>  
+                       
+                        <!--<label style="color:brown">נא לא לסגור בעת הדיווח!</label>-->
+                        <div style="float:left"> <button class="btn btn-danger" ng-click="$ctrl.IsStop=true">עצור דיווח!</button></div>  
 
                         <br />
 

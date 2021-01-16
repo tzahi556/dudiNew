@@ -57,9 +57,9 @@
         this.role = localStorage.getItem('currentRole');
 
 
-
+        this.IsStop = false;
         function _setKlalitHistoriPage(type, klalitId) {
-           
+            this.IsStop = false;
             if (this.klalitsBefore.length > 0) {
 
                 $('#modalKlalitSend').modal('show');
@@ -93,7 +93,13 @@
 
         function _setPostToKlalit(index, ctrlthis) {
 
-         
+
+            if (this.IsStop) {
+
+                alert("השידור לכללית נעצר!");
+                return;
+            }
+          
             $http.post(sharedValues.apiUrl + 'farms/setKlalitHistoris/', ctrlthis.klalitsBefore[index]).then(function (response) {
 
                 ctrlthis.returnUserName = response.data.UserName;
