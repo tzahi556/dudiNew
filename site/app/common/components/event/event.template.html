@@ -101,7 +101,7 @@
                 <tr ng-repeat-end class="status-row">
                     <td>
                         <div class="form-group">
-                            <select class="form-control" ng-change="$ctrl.changeStudentstatus(studentId)" ng-model="$ctrl.statuses[studentId]" ng-options="status.id as status.name for status in $ctrl.getStatusofStudent(studentId) | filter:{hide:false}">
+                            <select ng-disabled="!$ctrl.getStatusofStudent(studentId)" class="form-control" ng-change="$ctrl.changeStudentstatus(studentId)" ng-model="$ctrl.statuses[studentId]" ng-options="status.id as status.name for status in $ctrl.sharedValues.lessonStatuses">
                                 <option value="">סטטוס</option>
                             </select>
                         </div>

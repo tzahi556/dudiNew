@@ -205,21 +205,25 @@
     }
 
     function _getStatusofStudent(StudentId) {
+     
         var role = localStorage.getItem('currentRole');
+        var currentStatus = this.statuses[StudentId];
+        if (role == "instructor" && (currentStatus != "attended" && currentStatus != "notAttended" ))
+            return false;
+
+        return true;
+        //if (role == "sysAdmin" || role == "farmAdmin") {
+
+        //    for (var i in this.sharedValues.lessonStatuses) {
+        //        this.sharedValues.lessonStatuses[i].hide = false;
 
 
-        if (role == "sysAdmin" || role == "farmAdmin") {
+        //        if (this.isComplete[StudentId] > 2 && i > 2)
+        //            this.sharedValues.lessonStatuses[i].hide = true;
 
-            for (var i in this.sharedValues.lessonStatuses) {
-                this.sharedValues.lessonStatuses[i].hide = false;
-
-
-                if (this.isComplete[StudentId] > 2 && i > 2)
-                    this.sharedValues.lessonStatuses[i].hide = true;
-
-            }
-        }
-        return this.sharedValues.lessonStatuses;
+        //    }
+        //}
+        //return this.sharedValues.lessonStatuses;
 
         //  alert(StudentId);
 

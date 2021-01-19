@@ -52,36 +52,44 @@
         this.actionHorsesGroup = _actionHorsesGroup.bind(this);
         this.getFreeHorses = _getFreeHorses.bind(this);
         this.checkAll = _checkAll.bind(this);
-        
-        
+
+        this.init = _init.bind(this);
         this.role = localStorage.getItem('currentRole');
 
-
+        this.IsPopUp = false;
         this.IsStop = false;
         function _setKlalitHistoriPage(type, klalitId) {
             this.IsStop = false;
+
             if (this.klalitsBefore.length > 0) {
-
-                $('#modalKlalitSend').modal('show');
-
-
-                var ctrlthis = this;
-                ctrlthis.endMessage = false;
-                ctrlthis.currentElement = 0;
                
-                for (var i in ctrlthis.klalitsBefore) {
+                // $('#modalKlalitSend').modal('show');
+                var fromSend = getUrlParameter("fromSend");
+                if (fromSend) {
 
-                    ctrlthis.klalitsBefore[i].ResultXML = null;
-                    ctrlthis.klalitsBefore[i].UserName = ctrlthis.klalitsBefore[i].UserName.replace(' ', ',');
-                    //
+                  
+                    $('#modalKlalitSend').modal('show');
+                    var ctrlthis = this;
+                    ctrlthis.endMessage = false;
+                    ctrlthis.currentElement = 0;
+
+                    for (var i in ctrlthis.klalitsBefore) {
+
+                        ctrlthis.klalitsBefore[i].ResultXML = null;
+                        ctrlthis.klalitsBefore[i].UserName = ctrlthis.klalitsBefore[i].UserName.replace(' ', ',');
+                        //
+
+                    }
+
+                    ctrlthis.setPostToKlalit(0, ctrlthis);
+
+                } else {
+
+                    var payWind = window.open("http://localhost:51517/#/farmmanager/?fromSend=fromSend", "Upload Chapter content", "width=700,height=350,top=200,left=500");
+
 
                 }
-               
-               // ctrlthis.klalitsBefore.filter(x => x.ResultNumber == -1).forEach(x => x.Result = null);
-                    
-               
 
-                ctrlthis.setPostToKlalit(0, ctrlthis);
 
             }
 
@@ -99,7 +107,7 @@
                 alert("השידור לכללית נעצר!");
                 return;
             }
-          
+
             $http.post(sharedValues.apiUrl + 'farms/setKlalitHistoris/', ctrlthis.klalitsBefore[index]).then(function (response) {
 
                 ctrlthis.returnUserName = response.data.UserName;
@@ -121,19 +129,19 @@
 
         function _checkAll() {
 
-          //  this.klalits.find(x => x.ResultNumber == -1).IsDo = this.checkAllc;
+            //  this.klalits.find(x => x.ResultNumber == -1).IsDo = this.checkAllc;
 
             this.klalits.filter(x => x.ResultNumber == -1)
                 .forEach(x => x.IsDo = this.checkAllc);
         }
 
-     
+
 
         function _getKlalitHistoriPage(type, klalitId) {
 
-          
+
             if (type == 5) {
-              
+
                 this.klalitsBefore = this.klalits.filter(x => x.IsDo);
                 if (this.klalitsBefore.length == 0) {
                     alert("עלייך לבחור רשומות לשליחה חוזרת!");
@@ -143,10 +151,10 @@
                 $('#modalKlalit').modal('show');
 
                 return;
-                
+
             }
 
-           
+
             var startDate = moment(this.dateFromClalit).format('YYYY-MM-DD');
             var endDate = moment(this.dateToClalit).format('YYYY-MM-DD');
 
@@ -156,10 +164,10 @@
             //}
 
             // פתיחת חלון מקדים
-            if (type == 4) $('#modalKlalit').modal('show');
+           // if (type == 4) 
 
             farmsService.getKlalitHistoris(this.farmmanager.FarmId, startDate, endDate, type, klalitId, null).then(function (res) {
-              
+
                 if (type == 2 && res[0].Id < 0) {
 
                     if (res[0].Id == -1) alert("אין הגדרות למדריכים");
@@ -170,12 +178,31 @@
 
                 if (type == 4) {
 
-                    this.klalitsBefore = res;
+                    if (res[0] && res[0].Id == -1) {
+
+                        alert("עברת את מכסת התביעות האוטמטיות היומיות,ניתן לנסות מחר...");
+                        return;
+
+                    } else {
+                        this.klalitsBefore = res;
+                        window.klalitsBefore = res;
+                        $('#modalKlalit').modal('show');
+                    }
+                  
 
                 }
 
                 else {
                     this.klalits = res;
+                    for (var i in this.klalits) {
+
+                        this.klalits[i].KlalitHistorisId = this.klalits[i].Id;
+                        //  ctrlthis.klalitsBefore[i].UserName = ctrlthis.klalitsBefore[i].UserName.replace(' ', ',');
+                        //
+
+                    }
+
+
                 }
 
             }.bind(this));
@@ -183,11 +210,32 @@
         }
 
 
+        var getUrlParameter = function getUrlParameter(sParam) {
+
+          
+            var sPageURL = window.location.href;
+
+            if (sPageURL.indexOf("fromSend") != -1) return true;
+
+            else return false;
+             
+        };
 
 
+        function _init() {
+           
+          
 
-        function init() {
+            if (getUrlParameter("fromSend")) {
+              
+                this.IsPopUp = true;
 
+                this.klalitsBefore = window.opener.klalitsBefore;
+
+                this.setKlalitHistoriPage(4, 0);
+
+            }
+           
             //   alert(self.farminstructors.length);
 
             //self.farm.Meta = self.farm.Meta || {};
@@ -201,7 +249,7 @@
 
         }
 
-        init();
+        this.init();
 
 
         this.dateFromClalit = moment().add(0, 'months').toDate();
@@ -222,7 +270,7 @@
 
 
             if (type == 2) {
-              
+
                 this.farmsService.setMangerFarm(this.farmmanager).then(function (farm) {
 
                     if (!isNoAlert) alert('נשמר בהצלחה');
@@ -273,15 +321,15 @@
         }
 
         $scope.makeDropHorse = function (newEvent, currentHorseId, currentGroupeId) {
-          
+
             if (currentGroupeId == 0 || currentHorseId == 0) return;
 
 
             var currentHorsesList = $scope.$ctrl.getHorsesGroup(currentGroupeId);
 
-            if (currentHorsesList.length>0) {
+            if (currentHorsesList.length > 0) {
 
-                var FirstShoeingTimeZone =  currentHorsesList[0].ShoeingTimeZone;
+                var FirstShoeingTimeZone = currentHorsesList[0].ShoeingTimeZone;
                 var horse = $scope.$ctrl.horses.filter(y => y.Id == currentHorseId);
                 if (horse[0].ShoeingTimeZone != FirstShoeingTimeZone) {
 
@@ -292,11 +340,11 @@
 
 
             }
-           
+
 
             $scope.$ctrl.horsegroupshorses.push({ HorseGroupsId: currentGroupeId, HorseId: currentHorseId, Id: 0, FarmId: localStorage.getItem('FarmId') });
 
-           
+
 
 
             $scope.$ctrl.horsesService.getSetHorseGroupsHorses(2, $scope.$ctrl.horsegroupshorses).then(function (res) {
@@ -336,7 +384,7 @@
 
                         var m = this.horsegroupshorses.length;
                         while (m--) {
-    
+
                             if (this.horsegroupshorses[m].HorseGroupsId == obj.Id) {
                                 this.horsegroupshorses.splice(m, 1);
                             }
@@ -399,8 +447,8 @@
 
         }
 
-     
-        
+
+
         //function _addNewTag() {
 
 

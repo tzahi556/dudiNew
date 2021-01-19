@@ -7,6 +7,9 @@ namespace FarmsApi.DataModels
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+        [NotMapped]
+        public int? KlalitHistorisId { get; set; }
+        
         public int FarmId { get; set; }
 
         public DateTime DateSend { get; set; }

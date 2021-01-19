@@ -29,10 +29,10 @@ namespace FarmsApi.Services
         private static List<Farm> GetFarmsByRole(Context context, User currentUser)
         {
 
-            var FarmList = context.FarmManagers.Where(x=>x.MefarzelUser==currentUser.Email || x.VetrinarUser == currentUser.Email).ToList();
+            var FarmList = context.FarmManagers.Where(x => x.MefarzelUser == currentUser.Email || x.VetrinarUser == currentUser.Email).ToList();
 
             var Farms = context.Farms.ToList();
-            var ReturnFarms = Farms.Where(y => y.Id == currentUser.Farm_Id || FarmList.Any(f=>f.FarmId==y.Id)).ToList();
+            var ReturnFarms = Farms.Where(y => y.Id == currentUser.Farm_Id || FarmList.Any(f => f.FarmId == y.Id)).ToList();
 
             return ReturnFarms;
 
@@ -99,7 +99,7 @@ namespace FarmsApi.Services
 
                 var InstructorList = from u in Context.Users
                                      from um in Context.FarmInstructors.Where(x => x.UserId == u.Id).DefaultIfEmpty()//  on u.Id equals um.UserId
-                                     where u.Role == "instructor" && u.Farm_Id == CurrentUserFarmId && !u.Deleted && u.IsMazkirut != 1
+                                     where (u.Role == "instructor" || u.Role == "profAdmin") && u.Farm_Id == CurrentUserFarmId && /*!u.Deleted &&*/ u.IsMazkirut != 1
                                      select new { Id = u.Id, ClalitNumber = um.ClalitNumber, UserId = u.Id, InstructorName = u.FirstName + " " + u.LastName };
 
 
@@ -131,7 +131,7 @@ namespace FarmsApi.Services
 
                 }
 
-                
+
                 Context.SaveChanges();
 
             }
@@ -199,34 +199,34 @@ namespace FarmsApi.Services
             }
         }
 
-        
+
 
         public static KlalitHistoris SetKlalitHistoris(KlalitHistoris khv)
         {
 
           
 
-                using (var Context = new Context())
-                {
-                    var item = khv;
-                    FarmManagers fm = Context.FarmManagers.Where(x => x.FarmId == item.FarmId).FirstOrDefault();
-                    IEnumerable<FarmInstructors> fi = GetMangerInstructorFarm();
+            using (var Context = new Context())
+            {
+                var item = khv;
+                FarmManagers fm = Context.FarmManagers.Where(x => x.FarmId == item.FarmId).FirstOrDefault();
+                IEnumerable<FarmInstructors> fi = GetMangerInstructorFarm();
 
-                    FarmInstructors fs = fi.Where(y => y.UserId == item.Instructor_Id).FirstOrDefault();
-
-
+                FarmInstructors fs = fi.Where(y => y.UserId == item.Instructor_Id).FirstOrDefault();
 
 
-                    string FirstName = item.UserName.Split(',')[0];
-                    string LastName = item.UserName.Split(',')[1];
-                    string DateStart = item.DateLesson.ToString("ddMMyyyy");
-
-                    KlalitAPI.SupplierRequest kp = new KlalitAPI.SupplierRequest();
 
 
-                   // kp.Url = "https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx";
-                   
-                    string xml = @"
+                string FirstName = item.UserName.Split(',')[0];
+                string LastName = item.UserName.Split(',')[1];
+                string DateStart = item.DateLesson.ToString("ddMMyyyy");
+
+                KlalitAPI.SupplierRequest kp = new KlalitAPI.SupplierRequest();
+
+
+                // kp.Url = "https://sapaktest.clalit.co.il/mushlamsupplierservice/SupplierRequest.asmx";
+
+                string xml = @"
                                     <XMLInput>
 	                                    <ActionCode>11</ActionCode>
 	                                    <UserName>" + fm.UserName + @"</UserName>
@@ -242,19 +242,23 @@ namespace FarmsApi.Services
 	                                    <DoctorID>" + fs.ClalitNumber + @"</DoctorID>
 	                                    <OnlineServiceType>0</OnlineServiceType>
                                     </XMLInput>";
-                  var resXML = kp.SendXML(xml); //203700003 //203700007
+                var resXML = kp.SendXML(xml); //203700003 //203700007
 
-           
 
-                    XmlDocument XmlRes = new XmlDocument();
-                    XmlRes.LoadXml(resXML.ToString());
 
-                    var Result = XmlRes.DocumentElement.SelectSingleNode("Result").InnerText;// 1 נקלטה
-                    var AnswerDetails = XmlRes.DocumentElement.SelectSingleNode("AnswerDetails");// התשובה כאן
-                    var ErrorDescription = XmlRes.DocumentElement.SelectSingleNode("ErrorDescription");// השגיאה כאן
-                    var ClaimNumber = XmlRes.DocumentElement.SelectSingleNode("ClaimNumber");// מספר תביעה
+                XmlDocument XmlRes = new XmlDocument();
+                XmlRes.LoadXml(resXML.ToString());
 
-                    KlalitHistoris kh = new KlalitHistoris();
+                var Result = XmlRes.DocumentElement.SelectSingleNode("Result").InnerText;// 1 נקלטה
+                var AnswerDetails = XmlRes.DocumentElement.SelectSingleNode("AnswerDetails");// התשובה כאן
+                var ErrorDescription = XmlRes.DocumentElement.SelectSingleNode("ErrorDescription");// השגיאה כאן
+                var ClaimNumber = XmlRes.DocumentElement.SelectSingleNode("ClaimNumber");// מספר תביעה
+
+                KlalitHistoris kh = item;
+
+                if (item.KlalitHistorisId == null)
+                {
+                    kh = new KlalitHistoris();
                     kh.Id = 0;
                     kh.UserId = item.UserId;
                     kh.UserName = khv.UserName;
@@ -266,15 +270,36 @@ namespace FarmsApi.Services
                     kh.ResultNumber = Result;
                     kh.Result = (Int32.Parse(Result) > 0) ? AnswerDetails.InnerText : ErrorDescription.InnerText;
 
-                    if (kh.Result.Contains("קיימת פניה דומה")) kh.Result = "קיימת כבר תביעה לתאריך";
+                    if (Result=="1" && string.IsNullOrEmpty(kh.Result)) kh.Result = "קיימת כבר תביעה לתאריך";
 
 
                     kh.Instructor_Id = item.Instructor_Id;
                     Context.KlalitHistoris.Add(kh);
-                    Context.SaveChanges();
-                    return kh;
+
                 }
-          
+                else
+                {
+                    kh.DateSend = DateTime.Now;
+                    kh.DateLesson = item.DateLesson;
+                    kh.ClaimNumber = (ClaimNumber == null) ? "" : ClaimNumber.InnerText;
+                    kh.ResultXML = resXML.ToString();
+                    kh.ResultNumber = Result;
+                    kh.Result = (Int32.Parse(Result) > 0) ? AnswerDetails.InnerText : ErrorDescription.InnerText;
+
+                    if (kh.Result.Contains("קיימת פניה דומה")) kh.Result = "קיימת כבר תביעה לתאריך";
+
+
+                    kh.Instructor_Id = item.Instructor_Id;
+                    Context.Entry(kh).State = System.Data.Entity.EntityState.Modified;
+
+
+
+                }
+
+                Context.SaveChanges();
+                return kh;
+            }
+
         }
 
         public static List<KlalitHistoris> GetKlalitHistoris(int FarmId, string startDate = null, string endDate = null, int? type = null, int? klalitId = null)
@@ -310,12 +335,6 @@ namespace FarmsApi.Services
                     return GetKlalitHistoris(FarmId, startDate, endDate, -1, 0);
 
                 }
-
-
-
-
-
-
 
                 return Objects;
 
@@ -391,10 +410,9 @@ namespace FarmsApi.Services
                     var ErrorDescription = XmlRes.DocumentElement.SelectSingleNode("ErrorDescription");// השגיאה כאן
                     var ClaimNumber = XmlRes.DocumentElement.SelectSingleNode("ClaimNumber");// מספר תביעה
 
-                    KlalitHistoris kh = new KlalitHistoris();
-                    kh.Id = 0;
-                    kh.UserId = item.UserId;
-                    kh.FarmId = item.FarmId;
+
+                    KlalitHistoris kh = Objects[0];
+
                     kh.DateSend = DateTime.Now;
                     kh.DateLesson = item.DateLesson;
                     kh.ClaimNumber = (ClaimNumber == null) ? "" : ClaimNumber.InnerText;
@@ -402,11 +420,27 @@ namespace FarmsApi.Services
                     kh.ResultNumber = Result;
                     kh.Result = (Int32.Parse(Result) > 0) ? AnswerDetails.InnerText : ErrorDescription.InnerText;
 
-                    if (kh.Result.Contains("קיימת פניה דומה")) kh.Result = "קיימת כבר תביעה לתאריך";
+                    if (Result == "1" && string.IsNullOrEmpty(kh.Result)) kh.Result = "קיימת כבר תביעה לתאריך";
 
 
                     kh.Instructor_Id = item.Instructor_Id;
-                    Context.KlalitHistoris.Add(kh);
+                    Context.Entry(kh).State = System.Data.Entity.EntityState.Modified;
+                    //KlalitHistoris kh = new KlalitHistoris();
+                    //kh.Id = 0;
+                    //kh.UserId = item.UserId;
+                    //kh.FarmId = item.FarmId;
+                    //kh.DateSend = DateTime.Now;
+                    //kh.DateLesson = item.DateLesson;
+                    //kh.ClaimNumber = (ClaimNumber == null) ? "" : ClaimNumber.InnerText;
+                    //kh.ResultXML = resXML.ToString();
+                    //kh.ResultNumber = Result;
+                    //kh.Result = (Int32.Parse(Result) > 0) ? AnswerDetails.InnerText : ErrorDescription.InnerText;
+
+                    //if (kh.Result.Contains("קיימת פניה דומה")) kh.Result = "קיימת כבר תביעה לתאריך";
+
+
+                    //kh.Instructor_Id = item.Instructor_Id;
+                    //Context.KlalitHistoris.Add(kh);
 
                 }
 
