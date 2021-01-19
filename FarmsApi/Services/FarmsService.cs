@@ -272,7 +272,7 @@ namespace FarmsApi.Services
 
                     if (Result=="1" && string.IsNullOrEmpty(kh.Result)) kh.Result = "קיימת כבר תביעה לתאריך";
 
-
+                    kh.CounterSend = 1;
                     kh.Instructor_Id = item.Instructor_Id;
                     Context.KlalitHistoris.Add(kh);
 
@@ -288,7 +288,7 @@ namespace FarmsApi.Services
 
                     if (kh.Result.Contains("קיימת פניה דומה")) kh.Result = "קיימת כבר תביעה לתאריך";
 
-
+                    kh.CounterSend += 1;
                     kh.Instructor_Id = item.Instructor_Id;
                     Context.Entry(kh).State = System.Data.Entity.EntityState.Modified;
 
@@ -322,7 +322,7 @@ namespace FarmsApi.Services
                 ("GetKlalitHistoris  @FarmId,@StartDate,@EndDate,@Type,@KlalitId", FarmIdPara, StartDatePara, EndDatePara, TypePara, KlalitIdPara);
                 var Objects = query.ToList();
 
-                if (type == 2 || type == 1)
+                if ((type == 2 || type == 1) && Objects.Count >0 && Objects[0].Id!=-1)
                 {
 
 
@@ -422,7 +422,7 @@ namespace FarmsApi.Services
 
                     if (Result == "1" && string.IsNullOrEmpty(kh.Result)) kh.Result = "קיימת כבר תביעה לתאריך";
 
-
+                    kh.CounterSend += 1;
                     kh.Instructor_Id = item.Instructor_Id;
                     Context.Entry(kh).State = System.Data.Entity.EntityState.Modified;
                     //KlalitHistoris kh = new KlalitHistoris();

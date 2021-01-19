@@ -27,6 +27,8 @@ namespace FarmsApi.DataModels
       
         public int? Instructor_Id { get; set; }
 
+        public int? CounterSend { get; set; }
+        
 
     }
 }

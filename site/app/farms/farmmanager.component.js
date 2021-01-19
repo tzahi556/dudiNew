@@ -84,7 +84,7 @@
                     ctrlthis.setPostToKlalit(0, ctrlthis);
 
                 } else {
-
+                    //https://www.giddyup.co.il/#/farmmanager/?fromSend=fromSend
                     var payWind = window.open("http://localhost:51517/#/farmmanager/?fromSend=fromSend", "Upload Chapter content", "width=700,height=350,top=200,left=500");
 
 
@@ -139,7 +139,10 @@
 
         function _getKlalitHistoriPage(type, klalitId) {
 
+            var startDate = moment(this.dateFromClalit).format('YYYY-MM-DD');
+            var endDate = moment(this.dateToClalit).format('YYYY-MM-DD');
 
+            // בחירת מסומנים
             if (type == 5) {
 
                 this.klalitsBefore = this.klalits.filter(x => x.IsDo);
@@ -148,15 +151,33 @@
                     return;
                 }
 
-                $('#modalKlalit').modal('show');
 
-                return;
+                farmsService.getKlalitHistoris(this.farmmanager.FarmId, startDate, endDate, 5, null, null).then(function (res) {
+                    if (res[0] && res[0].Id == -1) {
+                      
+                        this.klalitsBefore = this.klalitsBefore.slice(0, res[0].CounterSend);// סתם משתמש בשדה הזה לבדוק עוד כמה נותר לו
+                        window.klalitsBefore = this.klalitsBefore;
+
+                        if (this.klalitsBefore.length == 0) {
+
+                            alert("עברת את מכסת התביעות האוטמטיות היומיות,ניתן לנסות מחר...");
+
+                        } else { 
+                            $('#modalKlalit').modal('show');
+                        }
+
+                    }
+
+                    return;
+
+                }.bind(this));
+
+               
 
             }
 
 
-            var startDate = moment(this.dateFromClalit).format('YYYY-MM-DD');
-            var endDate = moment(this.dateToClalit).format('YYYY-MM-DD');
+           
 
             // שליחה עצמה
             //if (type == 2) {
@@ -189,6 +210,21 @@
                         $('#modalKlalit').modal('show');
                     }
                   
+
+                }
+                else if (type == 1) {
+
+
+                    if (res[0] && res[0].Id == -1) {
+
+                        alert("עברת את מכסת התביעות האוטמטיות היומיות,ניתן לנסות מחר...");
+                        return;
+
+                    } 
+
+
+
+
 
                 }
 
