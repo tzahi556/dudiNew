@@ -74,10 +74,37 @@
                 '<div class="image-picker">\
                 <label ng-bind="imageLabel"></label>\
                 <div class="form-group">\
-                <input type="file" class="form-control" filename="model" />\
+                <input type="file" class="form-control imgUpload" filename="model" />\
                 </div>\
                 <img style="width:100%;height:auto;" ng-src="' + sharedValues.apiUrl + 'uploads/{{model}}" ng-if="model" />\
                 <div><button ng-click="delete()" type="button" style="width:100%;margin-top:5px;" ng-show="model" class="btn btn-danger">מחיקה</button></div>\
+                </div>',
+
+            replace: true,
+        }
+    });
+
+    app.directive("imagepickerstudent", function (sharedValues, filesService) {
+        return {
+            scope: {
+                imageLabel: "@",
+                model: "=",
+            },
+            link: function (scope, element, attributes) {
+                scope.delete = _delete;
+                function _delete() {
+                    filesService.delete(scope.model);
+                    scope.model = null;
+                }
+            },
+            template:
+                '<div class="image-picker">\
+                <label ng-bind="imageLabel"></label>\
+                <div class="form-group">\
+                <input type="file" class="" style="width:82px" filename="model" />\
+                </div>\
+                <img style="width:100%;height:90px;margin-top:2px" ng-src="' + sharedValues.apiUrl + 'uploads/{{model}}" ng-if="model" />\
+                <div><button ng-click="delete()" type="button" style="width:100%;margin-top:15px;" ng-show="model" class="btn btn-danger btn-xs">מחיקה</button></div>\
                 </div>',
 
             replace: true,

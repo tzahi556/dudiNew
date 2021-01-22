@@ -13,33 +13,48 @@
 
     <uib-tabset active="active" class="tab-form-demo">
         <uib-tab ng-if="$ctrl.role!='farmAdminHorse'" active="true" index="0" heading="פעילים - {{$ctrl.activeStudent}}" style="font-weight:bold">
+
+
+            <div class="col-md-6">
+
+                <div class="col-md-4">
+                    <input type="text" class="form-control" ng-model="$ctrl.filter.FirstName" placeholder="שם פרטי" />
+                </div>
+                <div class="col-md-4">
+
+                    <input type="text" class="form-control " ng-model="$ctrl.filter.LastName" placeholder="שם משפחה" />
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <button ng-click="$ctrl.changeStatus(1)" class="form-control btn btn-success btn-xs"> העבר/י מסומנים ללא פעילים ----</button>
+
+                </div>
+            </div>
+
+           
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th></th>
                         <th>שם מלא</th>
                         <th>ת.ז.</th>
+                        <th>סגנון רכיבה</th>
+                        <th>קופת חולים</th>
+                        <th>מצב חשבון</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="3">
-                            <div class="input-group">
-                                <input type="text" class="form-control" ng-model="$ctrl.filter.FirstName" placeholder="שם פרטי" />
-                                <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control " ng-model="$ctrl.filter.LastName" placeholder="שם משפחה" />
-                                <span class="input-group-addon"></span>
-                                <button ng-click="$ctrl.changeStatus(1)" class="form-control btn btn-success btn-xs"> העבר/י מסומנים ללא פעילים ----</button>
 
-                            </div>
-
-                            <!--</div>-->
-                        </td>
-                    </tr>
-                    <tr ng-if="user.Active == 'active'" ng-repeat="user in $ctrl.users | filter:$ctrl.filter | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
+                    <tr ng-if="user.Active == 'active' && user.Style != 'horseHolder'" ng-repeat="user in $ctrl.users | filter:$ctrl.filter | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
                         <td width="5%"><input type="checkbox" ng-model="user.IsSelected" /></td>
-                        <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}} <span ng-if="user.Active == 'notActive'">(לא פעיל)</span></td>
+                        <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}}</td>
                         <td>{{user.Email}}</td>
+
+                        <td>{{$ctrl.getHebStyleHMO(1,user.Style)}}</td>
+                        <td>{{$ctrl.getHebStyleHMO(2,user.HMO)}}</td>
+                        <td>5</td>
                     </tr>
                 </tbody>
             </table>
@@ -47,33 +62,51 @@
         </uib-tab>
 
         <uib-tab ng-if="$ctrl.role!='farmAdminHorse'" index="1" heading="לא פעילים - {{$ctrl.notActiveStudent}}" style="font-weight:bold">
+
+
+
+
+            <div class="col-md-6">
+
+                <div class="col-md-4">
+                    <input type="text" class="form-control" ng-model="$ctrl.filter.FirstName" placeholder="שם פרטי" />
+                </div>
+                <div class="col-md-4">
+
+                    <input type="text" class="form-control " ng-model="$ctrl.filter.LastName" placeholder="שם משפחה" />
+
+                </div>
+
+                <div class="col-md-4">
+                    <button ng-click="$ctrl.changeStatus(2)" class="form-control btn btn-success btn-xs"> ----- העבר/י מסומנים לפעילים</button>
+
+                </div>
+            </div>
+
+
+
+
+
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th></th>
                         <th>שם מלא</th>
                         <th>ת.ז.</th>
+                        <th>סגנון רכיבה</th>
+                        <th>קופת חולים</th>
+                        <th>מצב חשבון</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="3">
-                            <div class="input-group">
-                                <input type="text" class="form-control" ng-model="$ctrl.filter.FirstName" placeholder="שם פרטי" />
-                                <span class="input-group-addon">-</span>
-                                <input type="text" class="form-control " ng-model="$ctrl.filter.LastName" placeholder="שם משפחה" />
-
-                                <span class="input-group-addon"></span>
-                                <button ng-click="$ctrl.changeStatus(2)" class="form-control btn btn-success btn-xs"> ----- העבר/י מסומנים לפעילים</button>
-
-                            </div>
-                            <!--</div>-->
-                        </td>
-                    </tr>
-                    <tr ng-if="user.Active == 'notActive'" ng-repeat="user in $ctrl.users  | filter:$ctrl.filter  | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
+                   
+                    <tr ng-if="user.Active == 'notActive' && user.Style != 'horseHolder'" ng-repeat="user in $ctrl.users  | filter:$ctrl.filter  | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
                         <td width="5%"><input type="checkbox" ng-model="user.IsSelected2" /></td>
                         <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}} <span ng-if="user.Active == 'notActive'" style="font-weight:bold;color:red">(לא פעיל)</span></td>
                         <td>{{user.Email}}</td>
+                        <td>{{$ctrl.getHebStyleHMO(1,user.Style)}}</td>
+                        <td>{{$ctrl.getHebStyleHMO(2,user.HMO)}}</td>
+                        <td>5</td>
                     </tr>
                 </tbody>
             </table>

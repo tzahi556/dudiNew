@@ -3,7 +3,17 @@
     .selected {
         background: #03fcca;
     }
+
+    input[type="file"] {
+        float: right;
+        justify-content: flex-end;
+        display: flex;
+    }
 </style>
+
+
+
+
 
 <div class="row" ng-show="!$ctrl.user.IsTafus">
     <div class="col-md-3">
@@ -15,6 +25,12 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)!=-1)?'לקוח':'תלמיד '}}
+
+                    <!--<label>פעיל</label>-->
+                    <select class="" ng-model="$ctrl.user.Active" required>
+                        <option value="active">פעיל</option>
+                        <option value="notActive">לא פעיל</option>
+                    </select>
                     <button type="submit" class="btn btn-xs btn-success pull-left" ng-disabled="studentForm.$invalid">שמור</button>
                 </div>
 
@@ -29,8 +45,6 @@
                     </div>
 
                     <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                        
-                        
                         <imagepicker model="$ctrl.user.Image" image-label="תמונת {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)!=-1)?'לקוח':'תלמיד '}}" />
                     </div>
                     <div class="form-group">
@@ -43,7 +57,7 @@
                     </div>
                     <div class="form-group">
                         <!--<label>תאריך לידה</label>
-        <input type="date" name="birthDate" ng-disabled="true" class="form-control" ng-model="$ctrl.user.BirthDate" />-->
+                        <input type="date" name="birthDate" ng-disabled="true" class="form-control" ng-model="$ctrl.user.BirthDate" />-->
 
                         <div class="row">
                             <div class="col-md-8">
@@ -108,26 +122,66 @@
                         <label>מזהה</label>
                         <input type="number" disabled class="form-control" ng-model="$ctrl.user.Id" />
                     </div>
-                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                        <imagepicker model="$ctrl.user.Image" image-label="תמונת {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)!=-1)?'לקוח':'תלמיד '}}" />
+
+
+
+                    <div class="row">
+
+                        <div class="col-md-8">
+
+                            <label>שם פרטי </label>
+                            <input type="text" name="firstName" class="form-control" ng-model="$ctrl.user.FirstName" required />
+                            <label>שם משפחה</label>
+                            <input type="text" name="lastName" class="form-control" ng-model="$ctrl.user.LastName" required />
+                            <label>       {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1)?"ת.ז":"ת.ז/ח.פ"}}</label>
+                            <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.IdNumber" required />
+
+                        </div>
+                        <div class="col-md-4" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                            <imagepickerstudent model="$ctrl.user.Image" image-label="תמונת {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)!=-1)?'לקוח':'תלמיד '}}" />
+                        </div>
+
+
+
                     </div>
+                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <div class="row">
+
+
+
+
+                            <div class="col-md-8">
+
+                                <label>תאריך לידה</label>
+                                <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label>גיל</label><br />
+                                <div style="border:solid 1px gray;border-radius:3px;padding:5px;background:#fdffe5">
+                                    <b>{{$ctrl.getStudentAge()}}</b>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
                     <div class="form-group">
 
 
 
                         <div class="row">
 
-                            <div class="col-md-6">
-                                <label>פעיל</label>
-                                <select class="form-control" ng-model="$ctrl.user.Active" required>
-                                    <option value="active">פעיל</option>
-                                    <option value="notActive">לא פעיל</option>
-                                </select>
 
-                            </div>
-                            <div class="col-md-6">
-                                <label>מין</label><br />
-                                <div>
+                            <div class="col-md-12" style=" ">
+
+                                <div style="text-align:center;border: solid 1px gray; border-radius: 3px; padding: 5px; background: #fdffe5">
+                                    <label>מין</label> -
                                     <input type="radio" name="Gender" value="1" ng-model="$ctrl.user.Gender">
                                     <label for="rdoTitleDisc">זכר</label>
 
@@ -159,147 +213,146 @@
 
 
                     <div class="form-group">
-                        <div class="row" style="border:solid 1px gray;border-radius:3px;padding:5px;background:#fdffe5">
+                        <div class="col-md-12" style="border:solid 1px gray;border-radius:3px;padding:5px;background:#fdffe5">
                             <div class="col-md-6">
-                                <label> האם קיים טוקן <input type="checkbox" ng-disabled="true" ng-checked="$ctrl.user.cc_token?true:false" /></label>
+                                <label>  טוקן <input type="checkbox" ng-disabled="true" ng-checked="$ctrl.user.cc_token?true:false" /></label>
                             </div>
                             <div class="col-md-6">
 
-                                <label>  האם יש חוזה חתום <input type="checkbox" ng-model="$ctrl.user.IsHozeHatum" /></label>
+                                <label>   חוזה חתום <input type="checkbox" ng-model="$ctrl.user.IsHozeHatum" /></label>
 
                             </div>
 
-                            </div>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label>מספר לקוח</label>
-                            <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
-                        </div>
+                    <div class="form-group">
+                        <label>מספר לקוח</label>
+                        <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
+                    </div>
 
-                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                            <label>שם ארגון</label>
-                            <input type="text" name="Organzion" class="form-control" ng-model="$ctrl.user.Organzion" />
-                        </div>
-                        <div class="form-group">
-                            <label>שם פרטי </label>
-                            <input type="text" name="firstName" class="form-control" ng-model="$ctrl.user.FirstName" required />
-                        </div>
-                        <div class="form-group">
-                            <label>שם משפחה</label>
-                            <input type="text" name="lastName" class="form-control" ng-model="$ctrl.user.LastName" required />
-                        </div>
-                        <div class="form-group">
-                            <label>       {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1)?"ת.ז":"ת.ז/ח.פ"}}</label>
-                            <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.IdNumber" required />
-                        </div>
-                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                            <div class="row">
-                                <div class="col-md-8">
-
-                                    <label>תאריך לידה</label>
-                                    <input type="date" name="birthDate" class="form-control" ng-model="$ctrl.user.BirthDate" />
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label>גיל</label><br />
-                                    <div style="border:solid 1px gray;border-radius:3px;padding:5px;background:#fdffe5">
-                                        <b>{{$ctrl.getStudentAge()}}</b>
-                                    </div>
-
-                                </div>
-
-                            </div>
+                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>שם ארגון</label>
+                        <input type="text" name="Organzion" class="form-control" ng-model="$ctrl.user.Organzion" />
+                    </div>
 
 
-                        </div>
-                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                    <!--<div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>שם אם</label>
+                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName2" />
+                    </div>
+                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>שם אב</label>
+                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName" />
+                    </div>-->
+                    <div class="form-group">
+                        <label>כתובת</label>
+                        <input type="text" name="address" class="form-control" ng-model="$ctrl.user.Address" />
+                    </div>
+
+                    <div class="row" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+
+                        <div class="col-md-6">
                             <label>שם אם</label>
                             <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName2" />
                         </div>
-                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <div class="col-md-6">
+
                             <label>שם אב</label>
                             <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName" />
+
                         </div>
-                        <div class="form-group">
-                            <label>כתובת</label>
-                            <input type="text" name="address" class="form-control" ng-model="$ctrl.user.Address" />
-                        </div>
-                        <div class="form-group">
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6">
                             <label>טלפון</label>
                             <input type="tel" name="phoneNumber" class="form-control" ng-model="$ctrl.user.PhoneNumber" />
                         </div>
-                        <div class="form-group">
+                        <div class="col-md-6">
+
                             <label>טלפון 2</label>
                             <input type="tel" name="phoneNumber2" class="form-control" ng-model="$ctrl.user.PhoneNumber2" />
-                        </div>
-                        <div class="form-group">
-                            <label>אימייל</label>
-                            <input type="email" name="email" class="form-control" ng-model="$ctrl.user.AnotherEmail" />
-                        </div>
 
-                        <div class="form-group" ng-if="$ctrl.role =='sysAdmin' ">
-                            <label>חווה</label>
-                            <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.user.Farm_Id" required>
-                                <option value="">בחר חווה</option>
-                            </select>
-                        </div>
-                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                            <label>סגנון רכיבה</label>
-                            <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles"
-                                    ng-model="$ctrl.user.Style" ng-change="$ctrl.user.HMO=null;$ctrl.changeLessonsData()"
-                                    required>
-                                <option value="">בחר סגנון רכיבה</option>
-                            </select>
-                        </div>
-
-
-
-                        <div class="form-group" ng-if="$ctrl.user.Style.indexOf('treatment')!=-1 && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                            <label>קופ"ח</label>
-                            <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs"
-                                    ng-model="$ctrl.user.HMO" ng-change="$ctrl.changeLessonsData()" required>
-                                <option value="">בחר קופת חולים</option>
-                            </select>
-                        </div>
-                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                            <label>חבר נבחרת</label>
-                            <select class="form-control" ng-model="$ctrl.user.TeamMember">
-                                <option value="">בחר אפשרות</option>
-                                <option value="yes">כן</option>
-                                <option value="no">לא</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                            <label>מדריך קבוע</label>
-                            <select class="form-control" ng-options="instructor.Id as instructor.FirstName + ' ' +instructor.LastName  for instructor in $ctrl.instructors|filter:{IsMazkirut:'!1'}|filter:{Deleted:'false'}"
-                                    ng-model="$ctrl.user.MainInstructorId">
-                                <option value="">בחר מדריך</option>
-                            </select>
-                        </div>
-
-
-
-
-                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                            <label>עלות</label>
-                            <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
-                        </div>
-                        <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                            <label>סוג תשלום</label>
-                            <select class="form-control" ng-model="$ctrl.user.PayType" ng-change="$ctrl.changeLessonsData()" required>
-                                <option value="">בחר אפשרות</option>
-                                <option value="lessonCost">עלות שיעור</option>
-                                <option value="monthCost">עלות חודשית</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>הערות</label>
-                            <textarea class="form-control" ng-model="$ctrl.user.Details"></textarea>
                         </div>
                     </div>
-                <div class="panel-footer" >
+
+
+
+                    <div class="form-group">
+
+                    </div>
+                    <div class="form-group">
+
+                    </div>
+                    <div class="form-group">
+                        <label>אימייל</label>
+                        <input type="email" name="email" class="form-control" ng-model="$ctrl.user.AnotherEmail" />
+                    </div>
+
+                    <div class="form-group" ng-if="$ctrl.role =='sysAdmin' ">
+                        <label>חווה</label>
+                        <select class="form-control" ng-options="farm.Id as farm.Name for farm in $ctrl.farms" ng-model="$ctrl.user.Farm_Id" required>
+                            <option value="">בחר חווה</option>
+                        </select>
+                    </div>
+                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>סגנון רכיבה</label>
+                        <select class="form-control" ng-options="style.id as style.name for style in $ctrl.styles"
+                                ng-model="$ctrl.user.Style" ng-change="$ctrl.user.HMO=null;$ctrl.changeLessonsData()"
+                                required>
+                            <option value="">בחר סגנון רכיבה</option>
+                        </select>
+                    </div>
+
+
+
+                    <div class="form-group" ng-if="$ctrl.user.Style.indexOf('treatment')!=-1 && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>קופ"ח</label>
+                        <select class="form-control" ng-options="HMO.id as HMO.name for HMO in $ctrl.HMOs"
+                                ng-model="$ctrl.user.HMO" ng-change="$ctrl.changeLessonsData()" required>
+                            <option value="">בחר קופת חולים</option>
+                        </select>
+                    </div>
+                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>חבר נבחרת</label>
+                        <select class="form-control" ng-model="$ctrl.user.TeamMember">
+                            <option value="">בחר אפשרות</option>
+                            <option value="yes">כן</option>
+                            <option value="no">לא</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>מדריך קבוע</label>
+                        <select class="form-control" ng-options="instructor.Id as instructor.FirstName + ' ' +instructor.LastName  for instructor in $ctrl.instructors|filter:{IsMazkirut:'!1'}|filter:{Deleted:'false'}"
+                                ng-model="$ctrl.user.MainInstructorId">
+                            <option value="">בחר מדריך</option>
+                        </select>
+                    </div>
+
+
+
+
+                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>עלות</label>
+                        <input type="number" name="cost" class="form-control" ng-model="$ctrl.user.Cost" ng-change="$ctrl.changeLessonsData()" required />
+                    </div>
+                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>סוג תשלום</label>
+                        <select class="form-control" ng-model="$ctrl.user.PayType" ng-change="$ctrl.changeLessonsData()" required>
+                            <option value="">בחר אפשרות</option>
+                            <option value="lessonCost">עלות שיעור</option>
+                            <option value="monthCost">עלות חודשית</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>הערות</label>
+                        <textarea class="form-control" ng-model="$ctrl.user.Details"></textarea>
+                    </div>
+                </div>
+                <div class="panel-footer">
                     <button type="submit" class="btn btn-success" ng-disabled="studentForm.$invalid">שמור</button>
                     <button type="button" ng-show="!$ctrl.IsInstructorBlock" class="btn btn-default" ng-click="$ctrl.delete()">מחק</button>
                 </div>
@@ -916,9 +969,9 @@
                     <div class="panel-heading">
 
                         <div style="float:left">
-                            <select  ng-options="horse.Id as horse.Name for horse in $ctrl.horses |filter:{Active:'!notActive'}" ng-model="$ctrl.SelectedExpHorseId">
+                            <select ng-options="horse.Id as horse.Name for horse in $ctrl.horses |filter:{Active:'!notActive'}" ng-model="$ctrl.SelectedExpHorseId">
                                 <option value="" selected="selected">--בחר סוס/ה--</option>
-                              
+
                             </select>
                         </div>
                         הוצאות אחרות
@@ -958,12 +1011,12 @@
 
                                     <td width="40%">
                                         <input type="text" class="" ng-if="expense.BeforePrice>0" ng-model="expense.Details" placeholder="" style="width:90%" title="{{expense.Details}}" />
-                                               
+
                                         <span ng-if="expense.Paid">(שולם: {{expense.Paid}})</span>
                                     </td>
 
                                     <td style="">
-                                      
+
                                         <input type="number" class="" ng-if="expense.BeforePrice>0" ng-model="expense.BeforePrice" ng-change="$ctrl.changeExpense(expense)"  placeholder="" style="width:90px"
 
                                     </td>
@@ -1546,11 +1599,11 @@
                     </table>
                     <div class="panel-footer">
                         <!--<div class="form-group">
-                <textarea rows="4" type="text" class="form-control" placeholder="טקסט" ng-model="$ctrl.newTextDetail.Text"></textarea>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-success" ng-click="$ctrl.addTextDetail()">הוספה</button>
-            </div>-->
+                            <textarea rows="4" type="text" class="form-control" placeholder="טקסט" ng-model="$ctrl.newTextDetail.Text"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" ng-click="$ctrl.addTextDetail()">הוספה</button>
+                        </div>-->
                     </div>
                 </div>
 
@@ -1567,15 +1620,15 @@
                 </div>
 
                 <!--<div class="panel panel-default">
-        <div class="panel-heading">
-            מטרות על
-        </div>
-        <div class="panel-body">
-            <textarea class="form-control" rows="7" ng-model="$ctrl.user.MatrotAl"></textarea>
+                    <div class="panel-heading">
+                        מטרות על
+                    </div>
+                    <div class="panel-body">
+                        <textarea class="form-control" rows="7" ng-model="$ctrl.user.MatrotAl"></textarea>
 
 
-        </div>
-    </div>-->
+                    </div>
+                </div>-->
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -1780,3 +1833,15 @@
         </div>
     </div>
 </div>
+
+<!--<script>
+
+
+
+    $(document).ready(function () {
+       
+
+       // setTimeout(function () { $("input[type='file']").removeClass("form-control"); }, 3000);
+       // 
+    });
+</script>-->

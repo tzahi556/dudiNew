@@ -484,9 +484,9 @@
                     var DateExist = [];
                     var res = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
                     for (var i = 0; i < res.length; i++) {
-                        var result = DateExist.filter(d => d.Date == res[i].Start);
+                        var result = DateExist.filter(d => d.Date == res[i].Start && d.Instructor_Id == res[i].Id);
                         if (result.length == 0) {
-                            DateExist.push({ Date: res[i].Start });
+                            DateExist.push({ Date: res[i].Start, Instructor_Id :res[i].Id });
                             Counter++;
                           
                         } 

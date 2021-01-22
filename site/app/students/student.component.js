@@ -1000,6 +1000,9 @@
 
         // init student
         this.initStudent = function () {
+
+
+           
             this.user.AnotherEmail = $.trim(this.user.AnotherEmail);
 
             if (this.user.IsTafus) { alert(" כרטיס תלמיד זה פתוח אצל ''" + this.user.TofesName + "'',לא ניתן לעבוד על אותו כרטיס במקביל") };
@@ -3236,7 +3239,7 @@
 
         function _submit(isalert) {
 
-
+          
 
             if ($scope.studentForm.$valid && !this.user.IsTafus) {
 

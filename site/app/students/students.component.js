@@ -17,6 +17,7 @@
         this.role = localStorage.getItem('currentRole');
         
         var self = this;
+        this.sharedValues = sharedValues;
         this.usersService = usersService;
         this.horsesService = horsesService;
         this.upload = _upload.bind(this);
@@ -26,6 +27,7 @@
         this.getFilerArray = _getFilerArray.bind(this);
         this.openModal = _openModal.bind(this);
         this.action = _action.bind(this);
+        this.getHebStyleHMO = _getHebStyleHMO.bind(this);
         this.activeStudent = 0;
         this.notActiveStudent = 0;
         this.pensionStudent = 0;
@@ -35,7 +37,24 @@
         this.getCounter();
 
 
+        function _getHebStyleHMO(type,id) {
+      
+            if (type == 1 && id) {
 
+              
+                return this.sharedValues.styles.filter(x => x.id == id)[0].name;
+            }
+
+            if (type == 2 && id) {
+
+              
+                return this.sharedValues.HMOs.filter(x => x.id == id)[0].name;
+            }
+
+
+            return "";
+
+        }
 
 
         function _action(type, horsevetrinar) {

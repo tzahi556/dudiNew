@@ -27,7 +27,7 @@
         this.openComments = _openComments.bind(this);
         this.openMatrotal = _openMatrotal.bind(this);
 
-        
+
 
         this.createNewStudent = _createNewStudent.bind(this);
         this.studentDataById = _studentDataById.bind(this);
@@ -74,7 +74,7 @@
     }
 
     function _getStudentAge(studentId) {
-      
+
         var student = this.students.filter(x => x.Id == studentId)[0];
         if (!student.BirthDate) return "";
 
@@ -82,7 +82,7 @@
 
         if (isNaN(diffyear)) return "";
 
-        return "("+Math.round(diffyear)+")";
+        return "(" + Math.round(diffyear) + ")";
 
     }
 
@@ -204,14 +204,33 @@
         }
     }
 
-    function _getStatusofStudent(StudentId) {
-     
+    function _getStatusofStudent(StudentId, type) {
+
         var role = localStorage.getItem('currentRole');
         var currentStatus = this.statuses[StudentId];
-        if (role == "instructor" && (currentStatus != "attended" && currentStatus != "notAttended" ))
-            return false;
 
-        return true;
+        if (type == 1) {
+            if (role == "instructor" && (currentStatus != "attended" && currentStatus != "notAttended" && currentStatus))
+                return false;
+
+            return true;
+
+        }
+
+        if (type == 2) {
+
+            if (role == "instructor" && (currentStatus == "attended" || currentStatus == "notAttended" || !currentStatus)) {
+               
+              
+                return this.sharedValues.lessonStatuses.filter(x=>!x.hide);
+
+            } else {
+                return this.sharedValues.lessonStatuses;
+
+            }
+
+
+        }
         //if (role == "sysAdmin" || role == "farmAdmin") {
 
         //    for (var i in this.sharedValues.lessonStatuses) {
@@ -231,10 +250,10 @@
 
     function _onShow(event, selectedLesson, studentTemplate) {
 
-       // alert(this.FarmId );
-       // this.FarmId = localStorage.getItem('FarmId');
+        // alert(this.FarmId );
+        // this.FarmId = localStorage.getItem('FarmId');
 
-       
+
         // debugger
         this.isEventHaveChild = false;
         if (selectedLesson.students.length > 0) this.isEventHaveChild = true;
@@ -253,10 +272,10 @@
         var role = localStorage.getItem('currentRole');
         var IsHiyuvInHashlama = localStorage.getItem('IsHiyuvInHashlama');
 
-     
+
         //this.IsHiyuvInHashlama = this.farm.IsHiyuvInHashlama;
         ////אם לחייב אז תוריד את דרוש שיעור השלמה הרגיל
-        if (IsHiyuvInHashlama == 1 && this.sharedValues.lessonStatuses.length>5) {
+        if (IsHiyuvInHashlama == 1 && this.sharedValues.lessonStatuses.length > 5) {
 
             this.sharedValues.lessonStatuses.splice(4, 1);
 
@@ -266,7 +285,7 @@
         }
 
 
-     
+
         //if (role == "sysAdmin" || role == "farmAdmin") {
 
         //    for (var i in this.sharedValues.lessonStatuses) {
@@ -522,7 +541,7 @@
     }
 
 
-    
+
 
     function _studentDataById(studentId) {
         for (var i in this.students) {
@@ -573,18 +592,18 @@
         //   alert(studentId);
     }
 
-    function _openMatrotal(studentId,mode) {
-       
+    function _openMatrotal(studentId, mode) {
+
         var user = this.studentDataById(studentId);
-        
+
 
 
         this.selectedStudentmatrot = studentId;
         this.mode = mode;
 
-        
+
         this.scope.$broadcast('matrolal.show', studentId, this.mode, user, this.event.id);
-        
+
 
     }
 
