@@ -1435,16 +1435,14 @@
 
                     if (CurrentStatus == 'completionReq' || (this.IsHiyuvInHashlama == 1 && (studentsStatusObj.IsComplete > "3"))) continue;
 
-
+                    
 
                     var IsPast = parseInt(moment(this.lessons[i].start).format('YYYYMMDD')) < parseInt(moment().format('YYYYMMDD'));
 
+                    if (IsPast && !CurrentStatus) return false;
 
-                    if (
-                        LessonsPaidCounter > 0 &&
-                        (!IsPast || ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(CurrentStatus) != -1)
-
-                    ) {
+                    if (LessonsPaidCounter > 0 && (!IsPast || ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(CurrentStatus) != -1))
+                    {
                         if (TotalPAID > 0) {
                             TotalPAID--;
 
@@ -1926,7 +1924,16 @@
 
                     if (this.farm.Meta.IsDateInKabala) {
 
-                        self.newPayment.InvoiceDetails += this.getLessonsDateNoPaid(self.newPayment.lessons);
+                        var dayforpaylist = this.getLessonsDateNoPaid(self.newPayment.lessons);
+                        if (!dayforpaylist) {
+                            alert("יש לשים לב כי ישנם שיעורים בעבר ללא סטטוס , יש לגשת לשיעורים ולעדכן סטטוס");
+                            self.newPayment.lessons = "";
+
+                            return;
+
+
+                        }
+                        self.newPayment.InvoiceDetails += dayforpaylist;
 
                     }
 
@@ -2598,13 +2605,13 @@
                         this.newPayment.cc_customer_name = response.data.cgp_customer_name;
                         this.newPayment.cc_deal_type = (response.data.cgp_num_of_payments == 1) ? "1" : "2";// סוג עסקה לבדוק
                         this.newPayment.cc_type = this.getccType(response.data.cgp_customer_cc_name);
-
-                        if (this.newPayment.isKabala) {
-
-
+                        this.newPayment.isSlika = true;
+                        //if (this.newPayment.isKabala) {
 
 
-                        }
+
+
+                        //}
 
                         this.addPayment();
 
@@ -2929,31 +2936,27 @@
             this.payments.map(function (payment) {
 
                 if (payment.SelectedForInvoiceTemp) {
-
-                    
-                    // newPayment.SelectedForInvoice = true;
-                    if (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") {
-
+                    if ((payment.doc_type == "Kabala" && newPayment.doc_type == "Mas") || (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala")) {
                         payment.ParentInvoiceNum = newPayment.InvoiceNum;
                         payment.ParentInvoicePdf = newPayment.InvoicePdf;
-
-                        //newPayment.ParentInvoiceNum = payment.InvoiceNum;
-                        //newPayment.ParentInvoicePdf = payment.InvoicePdf;
                         payment.SelectedForInvoice = true;
                     }
+                    //if (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") {
 
-                    if (payment.doc_type == "Kabala" && newPayment.doc_type == "Mas") {
+                    //    payment.ParentInvoiceNum = newPayment.InvoiceNum;
+                    //    payment.ParentInvoicePdf = newPayment.InvoicePdf;
+                    //    payment.SelectedForInvoice = true;
+                    //}
 
-                        //payment.ParentInvoiceNum = newPayment.InvoiceNum;
-                        //payment.ParentInvoicePdf = newPayment.InvoicePdf;
-                        newPayment.ParentInvoiceNum = payment.InvoiceNum;
-                        newPayment.ParentInvoicePdf = payment.InvoicePdf;
+                    //if (payment.doc_type == "Kabala" && newPayment.doc_type == "Mas") {
 
+                     
+                    //    newPayment.ParentInvoiceNum = payment.InvoiceNum;
+                    //    newPayment.ParentInvoicePdf = payment.InvoicePdf;
 
-                        // payment.SelectedForInvoice = true;
+                    //    newPayment.SelectedForInvoice = true;
+                    //}
 
-                        newPayment.SelectedForInvoice = true;
-                    }
 
                     // צחי עדכן
                     if (newPayment.doc_type == "Zikuy") {
@@ -3181,7 +3184,7 @@
 
                 return true;
             }
-            else if ((this.newPayment.isZikuy) && (pay.doc_type != 'Zikuy' && !pay.canceled)) {
+            else if ((this.newPayment.isZikuy) && !pay.ZikuyNumber && (pay.doc_type != 'Zikuy' && !pay.canceled)) {
 
                 return true;
             }
@@ -3368,13 +3371,13 @@
 
         function _getAshraiObjList() {
 
-          
+           
             var AshraiList = [];
            
             try {
 
-                if (this.newPayment.isKabala && this.newPayment.cc_num_of_payments) {
-                    debugger
+                if (this.newPayment.isKabala && this.newPayment.cc_num_of_payments && this.newPayment.isSlika) {
+                   
                     for (var i = 0; i <= this.newPayment.cc_num_of_payments-1; i++) {
                      
                         var AshraiDate = moment(this.newPayment.Date).add(i, 'months').format("YYYY-MM-DD");

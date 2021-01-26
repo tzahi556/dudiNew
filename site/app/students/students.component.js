@@ -38,10 +38,12 @@
 
 
         function _getHebStyleHMO(type,id) {
-      
+
+         
+         
             if (type == 1 && id) {
 
-              
+               
                 return this.sharedValues.styles.filter(x => x.id == id)[0].name;
             }
 

@@ -39,7 +39,7 @@
         this.getStatusIndex = _getStatusIndex.bind(this);
         this.hide = _hide.bind(this);
         this.countTotal = _countTotal.bind(this);
-        //    this.countSherit = _countSherit.bind(this);
+        this.getRealDocType = _getRealDocType.bind(this);
         this.onShow = _onShow.bind(this);
         // this.getIfExpensiveInMas = _getIfExpensiveInMas.bind(this);
         this.disablBtn = false;
@@ -625,9 +625,28 @@
 
             var TempSum = newPayment.InvoiceSum;
 
+            
+            // במידה וקיים כבר טוקן על הכרטיס תלמיד תשלום עם טוקן
+            if (this.user.cc_token && this.newPayment.payment_type == 'token') {
+
+                this.newPayment.cc_token = this.user.cc_token;
+                this.newPayment.cc_type_id = this.user.cc_type_id;
+                this.newPayment.cc_type_name = this.user.cc_type_name;
+                this.newPayment.cc_4_digits = this.user.cc_4_digits;
+                this.newPayment.cc_payer_name = this.user.cc_payer_name;
+                this.newPayment.cc_payer_id = this.user.cc_payer_id;
+                this.newPayment.cc_expire_month = this.user.cc_expire_month;
+                this.newPayment.cc_expire_year = this.user.cc_expire_year;
+
+                this.newPayment.cc_type_name = this.getccTypeName(this.newPayment.cc_type);
+
+                this.newPayment.payment_type = 'tokenBuy';
+
+            }
+
+            var newPayment = angular.copy(this.newPayment);
+            newPayment.doc_type = this.getRealDocType(newPayment);
            
-
-
 
             if (newPayment.isMasKabala) {
 
@@ -681,22 +700,22 @@
 
                     }
 
-                    //if (this.newPayment.payment_type == 'tokenBuy') {
+                    if (this.newPayment.payment_type == 'tokenBuy') {
 
-                    //    if (!response.data.success) {
+                        if (!response.data.success) {
 
-                    //        alert("תקלה בחיוב הטוקן!");
-                    //        return;
-                    //    }
+                            alert("תקלה בחיוב הטוקן!");
+                            return;
+                        }
 
-                    //    this.newPayment.payment_type = 'token';
-                    //}
+                        this.newPayment.payment_type = 'token';
+                    }
 
-                    //if (response.data.errMsg) {
+                    if (response.data.errMsg) {
 
-                    //    alert("תקלה בהפקת חשבוניות!");
-                    //    return;
-                    //}
+                        alert("תקלה בהפקת חשבוניות!");
+                        return;
+                    }
 
 
 
@@ -774,7 +793,7 @@
 
         function _submit() {
             this.studentid = null;
-         
+           
             usersService.updateUserMultiTables(this.user, this.payments, [], [], this.expenses,[],[],[],[],[]).then(function (user) {
               
                 this.user = user;
@@ -785,6 +804,17 @@
 
           
           
+        }
+
+
+        function _getRealDocType(pay) {
+
+            if (pay.isMasKabala) return "MasKabala";
+            if (pay.isKabala || pay.isKabalaTroma) return "Kabala";
+            if (pay.isMas) return "Mas";
+            if (pay.isZikuy) return "Zikuy";
+            return "";
+
         }
     }
 

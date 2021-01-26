@@ -672,6 +672,29 @@ namespace FarmsApi.Services
             }
         }
 
+        public static List<UsersList> GetStudents()
+        {
+            using (var Context = new Context())
+            {
+                var CurrentUserFarmId = GetCurrentUser().Farm_Id;
+
+                SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUserFarmId);
+
+
+                var query = Context.Database.SqlQuery<UsersList>
+                ("GetStudents @Farm_Id", Farm_IdPara);
+                var res = query.ToList();
+                return res;
+
+
+             
+            }
+        }
+
+
+
+
+
         private static List<User> FilterByUser(List<User> Users)
         {
             var CurrentUser = GetCurrentUser();
@@ -1435,7 +1458,7 @@ namespace FarmsApi.Services
                             if (HorsePregnanciesStatesF != null)
                             {
                                 HorsePregnanciesStatesF.Cost = item.BeforePrice;
-                               // HorsePregnanciesStatesF.Discount = item.Discount;
+                                // HorsePregnanciesStatesF.Discount = item.Discount;
                                 Context.Entry(HorsePregnanciesStatesF).State = System.Data.Entity.EntityState.Modified;
                             }
                             if (HorseHozimsF != null)

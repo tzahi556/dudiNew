@@ -485,7 +485,7 @@ namespace FarmsApi.Controllers
                                         Payment.Add(
                                                      new
                                                      {
-                                                         payment_type = 1,
+                                                         payment_type = GetPaymentTypeByString(item.payment_type),
                                                          date = (string)Params.payment_date,
                                                          payment = p
                                                      }
@@ -495,17 +495,7 @@ namespace FarmsApi.Controllers
                                         responseZikuy = GetEzcountRes(Params, listProduct, Payment, DocType, IsProduction, doc, ref lg, p);
 
                                     }
-
-                                
-
-
-
-
-
-
                                 }
-
-
                                 return Ok(responseZikuy);
 
 
@@ -585,6 +575,33 @@ namespace FarmsApi.Controllers
 
                 }
 
+            }
+        }
+
+        private object GetPaymentTypeByString(string payment_type)
+        {
+
+
+            switch (payment_type)
+            {
+                case "PayPal":
+                case "Pay":
+                case "Bit":
+                case "PayBox":
+                    return 91;
+                case "cash":
+                    return 1;
+                case "check":
+                    return 2;
+                case "credit card":
+                    return 3;
+                case "bank transfer":
+                    return 4;
+             
+
+                default:
+                    return 1;
+                   
             }
         }
 

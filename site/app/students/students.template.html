@@ -15,69 +15,135 @@
         <uib-tab ng-if="$ctrl.role!='farmAdminHorse'" active="true" index="0" heading="פעילים - {{$ctrl.activeStudent}}" style="font-weight:bold">
 
 
-            <div class="col-md-6">
+            <div class="col-md-10">
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <input type="text" class="form-control" ng-model="$ctrl.filter.FirstName" placeholder="שם פרטי" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
 
                     <input type="text" class="form-control " ng-model="$ctrl.filter.LastName" placeholder="שם משפחה" />
 
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <select class="form-control" ng-options="style.id as style.name for style in $ctrl.sharedValues.styles" ng-model="Style">
+                            <option value="">בחר סגנון רכיבה</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <select class="form-control" ng-options="hmo.id as hmo.name for hmo in $ctrl.sharedValues.HMOs" ng-model="HMO">
+                            <option value="">בחר קופת חולים</option>
+                        </select>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-md-2" >
+               
+
+                <div class="col-md-12">
 
                     <button ng-click="$ctrl.changeStatus(1)" class="form-control btn btn-success btn-xs"> העבר/י מסומנים ללא פעילים ----</button>
 
                 </div>
             </div>
 
-           
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>שם מלא</th>
-                        <th>ת.ז.</th>
-                        <th>סגנון רכיבה</th>
-                        <th>קופת חולים</th>
-                        <th>מצב חשבון</th>
-                    </tr>
-                </thead>
-                <tbody>
 
-                    <tr ng-if="user.Active == 'active' && user.Style != 'horseHolder'" ng-repeat="user in $ctrl.users | filter:$ctrl.filter | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
-                        <td width="5%"><input type="checkbox" ng-model="user.IsSelected" /></td>
-                        <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}}</td>
-                        <td>{{user.Email}}</td>
 
-                        <td>{{$ctrl.getHebStyleHMO(1,user.Style)}}</td>
-                        <td>{{$ctrl.getHebStyleHMO(2,user.HMO)}}</td>
-                        <td>5</td>
-                    </tr>
-                </tbody>
-            </table>
 
-        </uib-tab>
+            <table class="table table-hover" >
+                    <thead>
+                        <tr>
+                            <th width="5%"></th>
+                            <th width="20%">שם מלא</th>
+                            <th width="10%">ת.ז.</th>
+                            <!--<th width="20%">סגנון רכיבה</th>
+                            <th width="15%">קופת חולים</th>-->
+
+
+                            <th width="20%">
+                                <a href="" ng-click="orderByField='Style'; reverseSort = !reverseSort">
+                                    סגנון רכיבה <span ng-show="orderByField == 'Style'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort">v</span></span>
+                                </a>
+                            </th>
+                            <th width="15%">
+                                <a href="" ng-click="orderByField='HMO'; reverseSort = !reverseSort">
+                                    קופת חולים <span ng-show="orderByField == 'HMO'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort">v</span></span>
+                                </a>
+                            </th>
+                            <th width="30%">
+                                <a href="" ng-click="orderByField='Total'; reverseSort = !reverseSort">
+                                    מצב חשבון <span ng-show="orderByField == 'Total'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort">v</span></span>
+                                </a>
+                            </th>
+                            <!--<th ></th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr ng-if="user.Active == 'active' && user.Style != 'horseHolder' && (user.Style==Style || !Style) && (user.HMO==HMO || !HMO) " ng-repeat="user in $ctrl.users | filter:$ctrl.filter | limitTo : 1000 |orderBy:['FirstName','LastName'] |orderBy:orderByField:reverseSort  ">
+                            <td width="5%"><input type="checkbox" ng-model="user.IsSelected" /></td>
+                            <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}}</td>
+                            <td>{{user.Email}}</td>
+
+                            <td>{{$ctrl.getHebStyleHMO(1,user.Style)}}</td>
+                            <td>{{$ctrl.getHebStyleHMO(2,user.HMO)}}</td>
+                            <td style="font-weight:bold;text-align:right;direction:ltr;color:{{(user.Total < 0)?'red':''}}">{{user.Total}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+</uib-tab>
 
         <uib-tab ng-if="$ctrl.role!='farmAdminHorse'" index="1" heading="לא פעילים - {{$ctrl.notActiveStudent}}" style="font-weight:bold">
 
 
 
 
-            <div class="col-md-6">
+        
 
-                <div class="col-md-4">
+            <div class="col-md-10">
+
+                <div class="col-md-2">
                     <input type="text" class="form-control" ng-model="$ctrl.filter.FirstName" placeholder="שם פרטי" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
 
                     <input type="text" class="form-control " ng-model="$ctrl.filter.LastName" placeholder="שם משפחה" />
 
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <select class="form-control" ng-options="style.id as style.name for style in $ctrl.sharedValues.styles" ng-model="nStyle">
+                            <option value="">בחר סגנון רכיבה</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <select class="form-control" ng-options="hmo.id as hmo.name for hmo in $ctrl.sharedValues.HMOs" ng-model="nHMO">
+                            <option value="">בחר קופת חולים</option>
+                        </select>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-md-2">
+
+
+                <div class="col-md-12">
+
                     <button ng-click="$ctrl.changeStatus(2)" class="form-control btn btn-success btn-xs"> ----- העבר/י מסומנים לפעילים</button>
 
                 </div>
@@ -86,27 +152,44 @@
 
 
 
-
             <table class="table table-hover">
                 <thead>
+                   
                     <tr>
-                        <th></th>
-                        <th>שם מלא</th>
-                        <th>ת.ז.</th>
-                        <th>סגנון רכיבה</th>
-                        <th>קופת חולים</th>
-                        <th>מצב חשבון</th>
+                        <th width="5%"></th>
+                        <th width="20%">שם מלא</th>
+                        <th width="10%">ת.ז.</th>
+                     
+
+
+                        <th width="20%">
+                            <a href="" ng-click="norderByField='Style'; nreverseSort = !nreverseSort">
+                                סגנון רכיבה <span ng-show="norderByField == 'Style'"><span ng-show="!nreverseSort">^</span><span ng-show="nreverseSort">v</span></span>
+                            </a>
+                        </th>
+                        <th width="15%">
+                            <a href="" ng-click="norderByField='HMO'; nreverseSort = !nreverseSort">
+                                קופת חולים <span ng-show="norderByField == 'HMO'"><span ng-show="!nreverseSort">^</span><span ng-show="nreverseSort">v</span></span>
+                            </a>
+                        </th>
+                        <th width="30%">
+                            <a href="" ng-click="norderByField='Total'; nreverseSort = !nreverseSort">
+                                מצב חשבון <span ng-show="norderByField == 'Total'"><span ng-show="!nreverseSort">^</span><span ng-show="nreverseSort">v</span></span>
+                            </a>
+                        </th>
+                        <!--<th ></th>-->
                     </tr>
+                    
                 </thead>
                 <tbody>
-                   
-                    <tr ng-if="user.Active == 'notActive' && user.Style != 'horseHolder'" ng-repeat="user in $ctrl.users  | filter:$ctrl.filter  | limitTo : 1000 | orderBy:['FirstName','LastName'] ">
+
+                    <tr ng-if="user.Active == 'notActive' && user.Style != 'horseHolder' && (user.Style==nStyle || !nStyle) && (user.HMO==nHMO || !nHMO)" ng-repeat="user in $ctrl.users  | filter:$ctrl.filter  | limitTo : 1000 |orderBy:['FirstName','LastName'] |orderBy:norderByField:nreverseSort ">
                         <td width="5%"><input type="checkbox" ng-model="user.IsSelected2" /></td>
                         <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}} <span ng-if="user.Active == 'notActive'" style="font-weight:bold;color:red">(לא פעיל)</span></td>
                         <td>{{user.Email}}</td>
                         <td>{{$ctrl.getHebStyleHMO(1,user.Style)}}</td>
                         <td>{{$ctrl.getHebStyleHMO(2,user.HMO)}}</td>
-                        <td>5</td>
+                        <td style="font-weight:bold;text-align:right;direction:ltr;color:{{(user.Total < 0)?'red':''}}">{{user.Total}}</td>
                     </tr>
                 </tbody>
             </table>

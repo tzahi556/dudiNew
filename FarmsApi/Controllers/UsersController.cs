@@ -137,6 +137,18 @@ namespace FarmsApi.Services
         }
 
         [Authorize]
+        [Route("getStudents")]
+        [HttpGet]
+        public IHttpActionResult GetStudents()
+        {
+            return Ok(UsersService.GetStudents());
+        }
+
+
+
+        
+
+        [Authorize]
         [Route("getUser/{id?}")]
         [HttpGet]
         public IHttpActionResult GetUser(int? id = null)

@@ -34,6 +34,8 @@
         this.report = _report;
         this.reportHMO = _reportHMO;
         this.reportDebt = _reportDebt;
+        this.getStudents = _getStudents;
+        
         
         
 
@@ -41,22 +43,27 @@
             var deferred = $q.defer();
           
             $http.get(sharedValues.apiUrl + 'users/getusers' + (role ? '/' + role : '') + (includeDeleted ? '/' + includeDeleted : '')).then(function (res) {
-                
-
               
                 var users = res.data;
-             
-                
-                //for (var i in users) {
-                //    users[i].Meta = JSON.parse(users[i].Meta);
-                //}
-
-               
                 deferred.resolve(users);
               
             });
 
             
+            return deferred.promise;
+        }
+
+        function _getStudents() {
+            var deferred = $q.defer();
+
+            $http.get(sharedValues.apiUrl + 'users/getStudents').then(function (res) {
+
+                var users = res.data;
+                deferred.resolve(users);
+
+            });
+
+
             return deferred.promise;
         }
 

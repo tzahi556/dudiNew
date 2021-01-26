@@ -444,7 +444,7 @@
                     controllerAs: '$ctrl',
                     resolve: {
                         users: function (usersService) {
-                            return usersService.getUsers('student');
+                            return usersService.getStudents();
                         },
                         horsevetrinars: function (horsesService) {
 
