@@ -34,6 +34,8 @@ namespace FarmsApi.DataModels
 
         public string HMO { get; set; }
 
+        public int? IsPaid { get; set; }
+
 
         // id = lesson.Id,
         //prevId = lesson.ParentId,

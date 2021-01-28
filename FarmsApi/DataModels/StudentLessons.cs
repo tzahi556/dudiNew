@@ -24,7 +24,9 @@ namespace FarmsApi.DataModels
 
         public string HMO { get; set; }
 
-     
+        public int? IsPaid { get; set; }
+
+
 
     }
 }

@@ -102,6 +102,7 @@ namespace FarmsApi.Services
                             editable = true,
                             resourceId = Lesson.Instructor_Id,
                             lessprice = Lesson.Price,
+                            IsPaid=Lesson.IsPaid,
                             lessonpaytype = Lesson.LessonPayType,
                             details = Lesson.Details,
                             students = students.Select(s => s.StudentId).ToArray(),
@@ -267,7 +268,10 @@ namespace FarmsApi.Services
                                 StudentLesson.HMO = Status["lessonHMO"].Value<string>();
                             }
 
-
+                            if (Status["IsPaid"] != null)
+                            {
+                                StudentLesson.IsPaid = Status["IsPaid"].Value<int>();
+                            }
 
 
 
