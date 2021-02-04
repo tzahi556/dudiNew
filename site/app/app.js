@@ -320,7 +320,7 @@
                     controllerAs: '$ctrl',
                     resolve: {
                         users: function (usersService) {
-                            return usersService.getUsers();
+                            return usersService.getUsers(['instructor', 'profAdmin','farmAdmin']);
                         },
                         farms: function (farmsService) {
                             return farmsService.getFarms();

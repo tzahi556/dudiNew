@@ -140,6 +140,7 @@
 
         function _getKlalitHistoriPage(type, klalitId) {
 
+          
             var startDate = moment(this.dateFromClalit).format('YYYY-MM-DD');
             var endDate = moment(this.dateToClalit).format('YYYY-MM-DD');
 
@@ -189,7 +190,7 @@
            // if (type == 4) 
 
             farmsService.getKlalitHistoris(this.farmmanager.FarmId, startDate, endDate, type, klalitId, null).then(function (res) {
-
+               
                 if (type == 2 && res[0].Id < 0) {
 
                     if (res[0].Id == -1) alert("אין הגדרות למדריכים");
@@ -223,7 +224,7 @@
 
                     } 
 
-
+                    this.getKlalitHistoriPage(null, null);
 
 
 

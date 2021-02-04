@@ -18,7 +18,7 @@ namespace FarmsApi.Services
             //    var ddd = Context.AvailableHours.Toli;
             //    Context.Lessons.Where(l => l.ParentId == LessonId).ToList();
             //}
-            //   string sdsd = UsersService.CreateLoopLessons();
+              string sdsd = UsersService.CreateLoopLessons();
 
 
             // return Ok(UsersService.getAvailablehours(5));

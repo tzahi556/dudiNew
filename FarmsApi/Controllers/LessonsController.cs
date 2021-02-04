@@ -19,12 +19,12 @@ namespace FarmsApi.Services
         }
 
         [Authorize]
-        [Route("updateStudentLessonsStatuses")]
+        [Route("updateStudentLessonsStatuses/{studentId?}")]
         [HttpPost]
-        public IHttpActionResult UpdateStudentLessonsStatuses(JArray Statuses)
+        public IHttpActionResult UpdateStudentLessonsStatuses(JArray Statuses , int? studentId = null)
         {
             LessonsService.UpdateStudentLessonsStatuses(Statuses);
-            return Ok();
+            return Ok(LessonsService.GetLessons(studentId,null, null, false));
         }
 
         [Authorize]

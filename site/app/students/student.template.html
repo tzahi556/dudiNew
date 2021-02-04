@@ -138,7 +138,7 @@
 
                         </div>
                         <div class="col-md-4" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                            <imagepickerstudent model="$ctrl.user.Image" image-label="תמונת {{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)!=-1)?'לקוח':'תלמיד '}}" />
+                            <imagepickerstudent model="$ctrl.user.Image" image-label="תמונה " /> <!--{{(['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)!=-1)?'לקוח':'תלמיד '}}-->
                         </div>
 
 
@@ -394,7 +394,7 @@
 
                             <tr ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1" style="background-color: #fdffe5" ng-show="$ctrl.user.PayType == 'lessonCost'">
                                 <td>יתרת שיעורים</td>
-                                <td style="direction:ltr;text-align:right;">{{$ctrl.creditPaidLessons}}</td>
+                                <td style="direction:ltr;text-align:right;">{{$ctrl.creditPaidLessons + $ctrl.creditPaidLessonsRemind}}</td>
                             </tr>
 
                             <tr ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1" style="background-color: #ebffe5" ng-show="$ctrl.user.PayType != 'lessonCost'">
@@ -1259,8 +1259,9 @@
 
                                 </td>
                                 <td>
+                                    <button class="btn btn-xs btn-danger" ng-show="(lesson.statuses[0].Status=='' || !lesson.statuses[0].Status) " ng-click="$ctrl.removeLesson(lesson)">מחק</button>
                                     <i class="fa fa-check-circle-o green" ng-show="lesson.paid" aria-hidden="true"></i>
-                                    <button class="btn btn-xs btn-danger" ng-show="!lesson.paid && (lesson.statuses[0].Status=='' || !lesson.statuses[0].Status) " ng-click="$ctrl.removeLesson(lesson)">מחק</button>
+
                                 </td>
                             </tr>
                         </tbody>

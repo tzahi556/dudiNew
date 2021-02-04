@@ -1420,11 +1420,18 @@
 
         function _getLessonsDateNoPaid(LessonsPaidCounter) {
 
+          
             if (!LessonsPaidCounter || LessonsPaidCounter == 0) return "";
             var results = "תאריכי שיעורים- ";
             var TotalPAID = this.creditPaidLessons;
 
+
+
+           
+
             for (var i in this.lessons) {
+
+                if (this.lessons[i].isPaidInInvoice) this.lessons[i].paid = false;
 
                 if (!this.lessons[i].paid && this.lessons[i].lessprice && this.lessons[i].lessprice > 0) {
 
@@ -1442,12 +1449,16 @@
 
                     if (IsPast && !CurrentStatus) return false;
 
+                   
+                  
                     if (LessonsPaidCounter > 0 && (!IsPast || ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(CurrentStatus) != -1)) {
                         if (TotalPAID > 0) {
                             TotalPAID--;
+                           
 
                         } else {
-
+                            this.lessons[i].isPaidInInvoice = true;
+                            this.lessons[i].paid = true;
                             results += moment(this.lessons[i].start).format('DD/MM/YYYY') + ",  ";
                             LessonsPaidCounter--;
 
@@ -1531,17 +1542,25 @@
             this.lessReport = [];
             this.getStatusLengthFrom1 = 0, this.getStatusLengthFrom2 = 0, this.getStatusLengthFrom3 = 0, this.getStatusLengthFrom4 = 0, this.getStatusLengthFrom5 = 0;
 
-            this.lessons = this.lessons.sort(function (a, b) {
-                if (a.start > b.start)
-                    return 1;
-                if (a.start < b.start)
-                    return -1;
-                return 0;
-            });
+            //this.lessons = this.lessons.sort(function (a, b) {
+            //    if (a.start > b.start)
+            //        return 1;
+            //    if (a.start < b.start)
+            //        return -1;
+            //    return 0;
+            //});
+
+          
+            this.lessons = this.lessons.sort((a, b) => (a.IsPaid < b.IsPaid) ? 1 : ((b.IsPaid < a.IsPaid) ? -1 : 0));
+
+           // var LessonPayed = this.lessons.filter(x => x.IsPaid == 1);
+
+           
+
 
 
             this.creditPaidLessons = this.paidLessons //+ this.commitmentLessons;
-
+            this.creditPaidLessonsRemind = 0;
             this.creditPaidMonth = this.paidMonths;
 
             this.results = [];
@@ -1618,69 +1637,85 @@
 
 
 
-                //if (this.lessons[i].statuses[ststIndex].IsComplete < 7) {
+                if (this.lessons[i].statuses[ststIndex].IsComplete < 7) {
 
 
-                //    var res = this.setPaid(this.lessons[i]);
-                //    this.lessons[i].paid = res[0];
-                //    this.lessons[i].lessprice = eval(res[1]);
+                    var res = this.setPaid(this.lessons[i]);
+                    this.lessons[i].paid = res[0];
+                    this.lessons[i].lessprice = eval(res[1]);
 
-                //    // אם השיעור התלמיד הגיע
-                //    if (res[2]) {
+                    // אם השיעור התלמיד הגיע
+                    if (res[2]) {
 
-                //        this.newPrice += eval(res[1]);
+                        this.newPrice += eval(res[1]);
 
-                //        //*******************************************
-                //        var lprice = [];
-                //        lprice.price = this.lessons[i].lessprice;
-                //        lprice.type = this.lessons[i].lessonpaytype;
-                //        //1 שיעור    
-                //        //2 חודשים
-                //        lprice.count = 1;
+                        //*******************************************
+                        var lprice = [];
+                        lprice.price = this.lessons[i].lessprice;
+                        lprice.type = this.lessons[i].lessonpaytype;
+                        //1 שיעור    
+                        //2 חודשים
+                        lprice.count = 1;
 
-                //        var isExist = false;
-                //        for (var i = 0; i < this.lessReport.length; i++) {
-                //            if (this.lessReport[i]["price"] === lprice.price && this.lessReport[i]["type"] === lprice.type) {
+                        var isExist = false;
+                        for (var i = 0; i < this.lessReport.length; i++) {
+                            if (this.lessReport[i]["price"] === lprice.price && this.lessReport[i]["type"] === lprice.type) {
 
-                //                this.lessReport[i]["count"] += 1;
-                //                isExist = true;
-                //            }
-                //        }
+                                this.lessReport[i]["count"] += 1;
+                                isExist = true;
+                            }
+                        }
 
-                //        if (!isExist) this.lessReport.push(lprice);
-
-
-                //        this.StudentTotalLessons += 1;
-                //        //**************************************
-                //    }
+                        if (!isExist) this.lessReport.push(lprice);
 
 
+                        this.StudentTotalLessons += 1;
+                        //**************************************
+                    }
 
 
-                //}
 
-                this.lessons[i].paid = false;
+
+                }
+
+                //this.lessons[i].paid = false;
             }
 
-            debugger
-         
+
+          
+           
             // ראשית אלו שכבר סומנו כשולם
-            var allPaidLessons = this.lessons.filter(x => x.IsPaid == 1 && ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(x.statuses[0].Status) != -1);
-            this.setLessonArray(allPaidLessons);
+            //var allPaidLessons = this.lessons.filter(x => x.IsPaid == 1);
+            //this.setLessonArray(allPaidLessons);
 
 
-            // היתרה הולכת ליתרה
-            allPaidLessons = this.lessons.filter(x => (!x.IsPaid || x.IsPaid == 0) && ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(x.statuses[0].Status) != -1);
-            this.setLessonArray(allPaidLessons);
+            //// היתרה הולכת ליתרה
+            //allPaidLessons = this.lessons.filter(x => (!x.IsPaid || x.IsPaid == 0) && ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(x.statuses[0].Status) != -1);
+            //this.setLessonArray(allPaidLessons);
 
 
-            // מי שלא
-            allPaidLessons = this.lessons.filter(x => ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(x.statuses[0].Status) == -1);
-            for (var i in allPaidLessons) {
-                allPaidLessons[i].paid = false; //allPaidLessons[i];
-                allPaidLessons[i].lessprice = eval(allPaidLessons[i].lessprice);
 
-            }
+
+            //// מי שלא
+            ////allPaidLessons = this.lessons.filter(x => (!x.IsPaid || x.IsPaid == 0) && ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(x.statuses[0].Status) == -1);
+            ////for (var i in allPaidLessons) {
+            ////    allPaidLessons[i].paid = false; //allPaidLessons[i];
+            ////    allPaidLessons[i].lessprice = eval(allPaidLessons[i].lessprice);
+
+            ////}
+
+          
+            //allPaidLessons = this.lessons.filter(x => (!x.IsPaid || x.IsPaid == 0) && (!x.statuses[0].Status));
+            //this.setLessonArray(allPaidLessons,true);
+
+
+            //for (var i in allPaidLessons) {
+            //    allPaidLessons[i].paid = false; //allPaidLessons[i];
+            //    allPaidLessons[i].lessprice = eval(allPaidLessons[i].lessprice);
+
+            //}
+
+
 
 
 
@@ -1689,12 +1724,78 @@
 
         }
 
-        function _setLessonArray(allPaidLessons) {
         
+
+        function _setPaid(lesson) {
+
+
+            var Price = this.user.Cost;
+
+            //completionReq
+            var studentsStatusObj = lesson.statuses[this.getStatusIndex(lesson)];
+            var studentsStatus = studentsStatusObj.Status;  //|| (['completion'].indexOf(studentsStatus) != -1 && lesson.IsComplete==4)
+            if (['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(studentsStatus) != -1  || (lesson.IsPaid == 1 && !studentsStatus)) {
+                // במידה ומדובר בחווה שהחיוב הוא רק בעת הדרוש שיעור השלמה 
+                var isArrived = ['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(studentsStatus) != -1;
+
+                if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) {
+
+                    return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
+                }
+
+                //this.attendedLessons = this.attendedLessons || 0;
+                //this.attendedLessons++;
+                if (lesson.lessonpaytype == 1) {
+
+                    if (this.creditPaidLessons-- > 0) {
+                        if (!isArrived) this.creditPaidLessonsRemind++;
+                        return [true, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, isArrived];
+                    }
+                    else {
+                        if (!isArrived) this.creditPaidLessonsRemind++;
+                        return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, isArrived];
+                    }
+                }
+                else {
+
+
+                    var monthOnly = moment(lesson.start).format("YYYYMM");
+                    if (this.results.indexOf(monthOnly) == -1) {
+                        this.results.push(monthOnly);
+
+                        if (this.creditPaidMonth-- > 0) {
+                            return [true, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, true];
+                        }
+                        else {
+                            return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, true];
+                        }
+                    } else
+                        if (this.creditPaidMonth >= 0) {
+                            return [true, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
+
+                        }
+
+                }
+
+            }
+         
+            //if (lesson.IsPaid == 1 && studentsStatus) {
+                
+            //    this.creditPaidLessons--;
+            //   // this.newPrice -= eval((lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price);
+
+             
+            //}
+
+            return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
+        }
+
+        function _setLessonArray(allPaidLessons, isRemind) {
+
             for (var i in allPaidLessons.filter(x => x.lessonpaytype == 1)) {
                 var studentsStatusObj = allPaidLessons[i].statuses[0];
                 if (this.creditPaidLessons > 0) {
-                  
+
                     if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) {
 
                         allPaidLessons[i].paid = false; //allPaidLessons[i];
@@ -1712,7 +1813,7 @@
                 } else {
 
                     if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) { }
-                    else { 
+                    else if (!isRemind) {
                         this.newPrice += eval(allPaidLessons[i].lessprice);
                         this.creditPaidLessons -= 1;
                     }
@@ -1735,10 +1836,10 @@
 
                     }
 
-                   
+
                 }
                 else if (this.creditPaidMonth >= 0) {
-                        allPaidLessons[i].paid = true;
+                    allPaidLessons[i].paid = true;
 
                 }
 
@@ -1769,59 +1870,8 @@
             return doc_type == 'Zikuy';
         }
 
-        function _setPaid(lesson) {
 
 
-            var Price = this.user.Cost;
-
-            //completionReq
-            var studentsStatusObj = lesson.statuses[this.getStatusIndex(lesson)];
-            var studentsStatus = studentsStatusObj.Status;  //|| (['completion'].indexOf(studentsStatus) != -1 && lesson.IsComplete==4)
-            if (['attended', 'notAttendedCharge', 'completionReqCharge'].indexOf(studentsStatus) != -1) {
-                // במידה ומדובר בחווה שהחיוב הוא רק בעת הדרוש שיעור השלמה 
-
-                if ((studentsStatusObj.IsComplete == "4" || studentsStatusObj.IsComplete == "6") && this.IsHiyuvInHashlama == 1) {
-
-                    return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
-                }
-
-                this.attendedLessons = this.attendedLessons || 0;
-                this.attendedLessons++;
-                if (lesson.lessonpaytype == 1) {
-
-                    if (this.creditPaidLessons-- > 0) {
-
-                        return [true, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, true];
-                    }
-                    else {
-                        return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, true];
-                    }
-                }
-                else {
-
-
-                    var monthOnly = moment(lesson.start).format("YYYYMM");
-                    if (this.results.indexOf(monthOnly) == -1) {
-                        this.results.push(monthOnly);
-
-                        if (this.creditPaidMonth-- > 0) {
-                            return [true, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, true];
-                        }
-                        else {
-                            return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, true];
-                        }
-                    } else
-                        if (this.creditPaidMonth >= 0) {
-                            return [true, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
-
-                        }
-
-                }
-
-            }
-
-            return [false, (lesson.lessprice || lesson.lessprice == 0) ? lesson.lessprice : Price, false];
-        }
 
         function _initPaymentForm() {
 
@@ -2973,6 +3023,20 @@
 
         function _createNewPayment(newPayment) {
 
+            //**************
+            this.lessonStatusesToUpdate = this.lessonStatusesToUpdate || [];
+            for (var i in this.lessons) {
+                var found = this.lessonStatusesToUpdate.filter(x => x.lessonId == this.lessons[i].id);
+                if (found.length > 0) {
+                    found[0].IsPaid = ((this.lessons[i].paid) ? 1 : 0);
+                } else {
+                    this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: this.lessons[i].id, status: this.lessons[i].statuses[0].Status, details: this.lessons[i].statuses[0].Details, isComplete: this.lessons[i].statuses[0].IsComplete, officedetails: this.lessons[i].statuses[0].OfficeDetails, IsPaid: ((this.lessons[i].paid) ? 1 : 0) });
+                }
+            }
+
+            //****************
+
+
             //debugger
             //for (var i in this.payments) {
             //    if (this.payments[i].SelectedForInvoiceTemp) {
@@ -3317,6 +3381,14 @@
                 if (this.role == "farmAdminHorse") { this.user.Style = "horseHolder" }
 
 
+              
+
+                
+           
+
+             
+
+
 
                 usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses, [], this.makav, this.getChecsObjList(), this.getAshraiObjList()).then(function (user) {
 
@@ -3326,7 +3398,12 @@
                         return;
                     }
 
+                    lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate,this.user.Id).then(function (lessons) {
+                       
+                        this.lessons = lessons;
+                        this.initLessons();
 
+                    }.bind(this));
 
 
                     usersService.getUserExpensesByUserId(user.Id).then(function (expenses) {
@@ -3335,48 +3412,12 @@
                             this.expenses[i].SelectedForZikuy = false;
                             this.expenses[i].SelectedForZikuyManualId = null;
                         }
-
-                        //    for (var i in this.expenses) {
-                        //        if (this.newExpense.Price == 0) continue;
-                        //        for (var j in expenses) {
-                        //            if (this.expenses[i].Id == expenses[j].Id) {
-
-                        //                if (this.expenses[i].SelectedForZikuy) {
-                        //                    //debugger
-                        //                    //alert(this.newExpense.isZikuy);
-
-                        //                    if (expenses[j].Price >= this.newExpense.Price) {
-
-                        //                        expenses[j].ZikuySum = this.newExpense.Price;
-                        //                        this.newExpense.Price = 0;
-
-
-                        //                    } else {
-
-                        //                        expenses[j].ZikuySum = this.newExpense.Price - expenses[j].Price;
-                        //                        this.newExpense.Price = this.newExpense.Price - expenses[j].Price;
-
-                        //                    }
-
-                        //                    expenses[j].ZikuyNumber = (expenses.reduce(function (prev, current) {
-                        //                                                return (prev.Id > current.Id) ? prev : current
-                        //                                                })).Id;
-
-                        //                }
-                        //                break;
-                        //            }
-                        //        }
-                        //    }
-
+                      
                         this.expenses = expenses;
                         this.initNewExpense();
                         this.countAllCredits();
 
                     }.bind(this));
-
-
-
-
 
 
                     usersService.getPaymentsByUserId(user.Id).then(function (payments) {
@@ -3389,12 +3430,15 @@
                     }.bind(this));
 
 
-                    var lesstoupdate = [];
-                    for (var i in this.lessons) {
-                        lesstoupdate.push({ studentId: this.user.Id, lessonId: this.lessons[i].id, lessprice: eval(this.lessons[i].lessprice), lessonpaytype: this.lessons[i].lessonpaytype, lessonHMO: this.lessons[i].HMO, IsPaid: ((this.lessons[i].paid) ? 1:0) });
-                    }
+                
+               
 
-                    lessonsService.updateStudentLessonsStatuses(lesstoupdate);
+
+
+
+
+
+
                     this.user = user;
 
                     if (!isalert) alert('נשמר בהצלחה');

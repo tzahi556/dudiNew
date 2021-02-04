@@ -134,10 +134,12 @@
             return deferred.promise;
         }
 
-        function _updateStudentLessonsStatuses(statuses) {
-          
+        function _updateStudentLessonsStatuses(statuses, studentId) {
+
+         
+            studentId = !angular.isUndefined(studentId) ? studentId : '';
             var deferred = $q.defer();
-            $http.post(sharedValues.apiUrl + 'lessons/updateStudentLessonsStatuses/', statuses).then(function (res) {
+            $http.post(sharedValues.apiUrl + 'lessons/updateStudentLessonsStatuses/' + studentId , statuses).then(function (res) {
                 deferred.resolve(res.data);
             });
             return deferred.promise;

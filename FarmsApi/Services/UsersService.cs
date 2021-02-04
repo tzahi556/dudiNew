@@ -652,17 +652,24 @@ namespace FarmsApi.Services
             {
                 var CurrentUserFarmId = GetCurrentUser().Farm_Id;
 
-
+                Context.Database.CommandTimeout = 36000;
 
                 Context.Configuration.ProxyCreationEnabled = false;
                 Context.Configuration.LazyLoadingEnabled = false;
 
-                var Users = Context.Users.Where(u => u.Farm_Id == CurrentUserFarmId).OrderBy(x => x.FirstName).ToList();
-
                 if (CurrentUserFarmId == 0)
                 {
-                    Users = Context.Users.ToList();
+                    string[] keys = Role.Split(',');
+                    var UsersForFarm = Context.Users.Where(u => keys.Any(key=> u.Role.Contains(key))).OrderBy(x => x.FirstName).ToList();
+                    UsersForFarm = FilterDeleted(UsersForFarm, IncludeDeleted);
+                    return UsersForFarm;
+
                 }
+
+
+                var Users = Context.Users.Where(u => u.Farm_Id == CurrentUserFarmId).OrderBy(x => x.FirstName).ToList();
+
+               
 
                 Users = FilterByUser(Users);
                 Users = FilterRole(Users, Role);
@@ -680,7 +687,7 @@ namespace FarmsApi.Services
 
                 SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUserFarmId);
 
-
+                Context.Database.CommandTimeout = 36000;
                 var query = Context.Database.SqlQuery<UsersList>
                 ("GetStudents @Farm_Id", Farm_IdPara);
                 var res = query.ToList();

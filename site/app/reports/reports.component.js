@@ -480,6 +480,7 @@
             function getDynamicData(type, data, HeadersDynamicHours,isRemoveTotal4) {
                 // מביא סך הכל שיעורים
                 if (type == 0) {
+                    debugger
                     var Counter = 0;
                     var DateExist = [];
                     var res = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
@@ -571,7 +572,8 @@
                     }
                    
                     var res = DateExist.filter(x => 1 == x.Count);
-                    resData += "<td>" + (res.length == 0 ? "" : res.length) + "</td>";
+                    if (res.length > 0)
+                            resData += "<td>" + (res.length == 0 ? "" : res.length) + "</td>";
 
                     for (var i = 0; i < HeadersDynamicHours.length; i++) {
                         if (HeadersDynamicHours[i] == 1) continue;
@@ -587,6 +589,7 @@
 
 
                 if (type == 5) {
+                    debugger
                     var resHeader = "<tr>";
                     var resBody = "<tr>";
                     var resData = "<tr>";
@@ -817,6 +820,7 @@
                         text = text.replace("@TotalLessons", getDynamicData(0, res));
 
                         // בניית טבלת ריכוז לפי סגנון רכיבה
+                       
                         text = text.replace("@HtmlDynamicHoursStyle", getDynamicData(5, res));
 
                         // מעדכן את המערך של השיעורים שיהיה מפולטר לפי מדריך של שיעור אחרון
@@ -1397,7 +1401,7 @@
 
                 }
 
-                if (Id == 57) { debugger }
+                //if (Id == 57) { debugger }
                 return (counter == 0) ? "" : counter.toString();
 
             }

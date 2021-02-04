@@ -88,7 +88,7 @@
                     </thead>
                     <tbody>
 
-                        <tr ng-if="user.Active == 'active' && user.Style != 'horseHolder' && (user.Style==Style || !Style) && (user.HMO==HMO || !HMO) " ng-repeat="user in $ctrl.users | filter:$ctrl.filter | limitTo : 1000 |orderBy:['FirstName','LastName'] |orderBy:orderByField:reverseSort  ">
+                        <tr ng-if="user.Active == 'active' && user.Style != 'horseHolder' && (user.Style==Style || !Style) && (user.HMO==HMO || !HMO) " ng-repeat="user in $ctrl.users | filter:$ctrl.filter | limitTo : 2000 |orderBy:['FirstName','LastName'] |orderBy:orderByField:reverseSort  ">
                             <td width="5%"><input type="checkbox" ng-model="user.IsSelected" /></td>
                             <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}}</td>
                             <td>{{user.Email}}</td>
@@ -183,7 +183,7 @@
                 </thead>
                 <tbody>
 
-                    <tr ng-if="user.Active == 'notActive' && user.Style != 'horseHolder' && (user.Style==nStyle || !nStyle) && (user.HMO==nHMO || !nHMO)" ng-repeat="user in $ctrl.users  | filter:$ctrl.filter  | limitTo : 1000 |orderBy:['FirstName','LastName'] |orderBy:norderByField:nreverseSort ">
+                    <tr ng-if="user.Active == 'notActive' && user.Style != 'horseHolder' && (user.Style==nStyle || !nStyle) && (user.HMO==nHMO || !nHMO)" ng-repeat="user in $ctrl.users  | filter:$ctrl.filter  | limitTo : 2000 |orderBy:['FirstName','LastName'] |orderBy:norderByField:nreverseSort ">
                         <td width="5%"><input type="checkbox" ng-model="user.IsSelected2" /></td>
                         <td ui-sref="student({id:user.Id})">{{user.FirstName}} {{user.LastName}} <span ng-if="user.Active == 'notActive'" style="font-weight:bold;color:red">(לא פעיל)</span></td>
                         <td>{{user.Email}}</td>

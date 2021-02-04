@@ -99,7 +99,7 @@ namespace FarmsApi.Services
 
                 var InstructorList = from u in Context.Users
                                      from um in Context.FarmInstructors.Where(x => x.UserId == u.Id).DefaultIfEmpty()//  on u.Id equals um.UserId
-                                     where (u.Role == "instructor" || u.Role == "profAdmin") && u.Farm_Id == CurrentUserFarmId && /*!u.Deleted &&*/ u.IsMazkirut != 1
+                                     where (u.Role == "instructor" || u.Role == "profAdmin") && u.Farm_Id == CurrentUserFarmId && !u.Deleted && u.IsMazkirut != 1
                                      select new { Id = u.Id, ClalitNumber = um.ClalitNumber, UserId = u.Id, InstructorName = u.FirstName + " " + u.LastName };
 
 
@@ -201,10 +201,73 @@ namespace FarmsApi.Services
 
 
 
+        
+
+        public static List<KlalitHistoris> GetKlalitHistoris(int FarmId, string startDate = null, string endDate = null, int? type = null, int? klalitId = null)
+        {
+            using (var Context = new Context())
+            {
+
+
+                if (type == null) type = -1;
+                if (klalitId == null) klalitId = 0;
+
+
+                SqlParameter FarmIdPara = new SqlParameter("FarmId", FarmId);
+                SqlParameter StartDatePara = new SqlParameter("StartDate", startDate);
+                SqlParameter EndDatePara = new SqlParameter("EndDate", endDate);
+                SqlParameter TypePara = new SqlParameter("Type", type);
+                SqlParameter KlalitIdPara = new SqlParameter("KlalitId", klalitId);
+
+                var query = Context.Database.SqlQuery<KlalitHistoris>
+                ("GetKlalitHistoris  @FarmId,@StartDate,@EndDate,@Type,@KlalitId", FarmIdPara, StartDatePara, EndDatePara, TypePara, KlalitIdPara);
+                var Objects = query.ToList();
+
+                if ((type == 2 || type == 1) && Objects.Count >0 && Objects[0].Id!=-1)
+                {
+
+
+                    int res = SendToKlalitAPI(FarmId, Objects, Context);
+                    if (res < 0)
+                    {
+                        return GetError(res);
+                    }
+
+                    return GetKlalitHistoris(FarmId, startDate, endDate, -1, 0);
+
+                }
+
+                return Objects;
+
+            }
+        }
+
+        private static List<KlalitHistoris> GetError(int res)
+        {
+
+            List<KlalitHistoris> kllist = new List<KlalitHistoris>();
+
+            KlalitHistoris kh = new KlalitHistoris();
+            kh.Id = res;
+            kh.UserId = 0;
+            kh.FarmId = 0;
+            kh.DateSend = DateTime.Now;
+            kh.DateLesson = DateTime.Now;
+
+            kllist.Add(kh);
+            return kllist;
+
+
+
+
+        }
+
+
+
         public static KlalitHistoris SetKlalitHistoris(KlalitHistoris khv)
         {
 
-          
+
 
             using (var Context = new Context())
             {
@@ -270,7 +333,7 @@ namespace FarmsApi.Services
                     kh.ResultNumber = Result;
                     kh.Result = (Int32.Parse(Result) > 0) ? AnswerDetails.InnerText : ErrorDescription.InnerText;
 
-                    if (Result=="1" && string.IsNullOrEmpty(kh.Result)) kh.Result = "קיימת כבר תביעה לתאריך";
+                    if (Result == "1" && string.IsNullOrEmpty(kh.Result)) kh.Result = "קיימת כבר תביעה לתאריך";
 
                     kh.CounterSend = 1;
                     kh.Instructor_Id = item.Instructor_Id;
@@ -286,7 +349,7 @@ namespace FarmsApi.Services
                     kh.ResultNumber = Result;
                     kh.Result = (Int32.Parse(Result) > 0) ? AnswerDetails.InnerText : ErrorDescription.InnerText;
 
-                    if (kh.Result.Contains("קיימת פניה דומה")) kh.Result = "קיימת כבר תביעה לתאריך";
+                    if (Result == "1" && string.IsNullOrEmpty(kh.Result)) kh.Result = "קיימת כבר תביעה לתאריך";
 
                     kh.CounterSend += 1;
                     kh.Instructor_Id = item.Instructor_Id;
@@ -299,65 +362,6 @@ namespace FarmsApi.Services
                 Context.SaveChanges();
                 return kh;
             }
-
-        }
-
-        public static List<KlalitHistoris> GetKlalitHistoris(int FarmId, string startDate = null, string endDate = null, int? type = null, int? klalitId = null)
-        {
-            using (var Context = new Context())
-            {
-
-
-                if (type == null) type = -1;
-                if (klalitId == null) klalitId = 0;
-
-
-                SqlParameter FarmIdPara = new SqlParameter("FarmId", FarmId);
-                SqlParameter StartDatePara = new SqlParameter("StartDate", startDate);
-                SqlParameter EndDatePara = new SqlParameter("EndDate", endDate);
-                SqlParameter TypePara = new SqlParameter("Type", type);
-                SqlParameter KlalitIdPara = new SqlParameter("KlalitId", klalitId);
-
-                var query = Context.Database.SqlQuery<KlalitHistoris>
-                ("GetKlalitHistoris  @FarmId,@StartDate,@EndDate,@Type,@KlalitId", FarmIdPara, StartDatePara, EndDatePara, TypePara, KlalitIdPara);
-                var Objects = query.ToList();
-
-                if ((type == 2 || type == 1) && Objects.Count >0 && Objects[0].Id!=-1)
-                {
-
-
-                    int res = SendToKlalitAPI(FarmId, Objects, Context);
-                    if (res < 0)
-                    {
-                        return GetError(res);
-                    }
-
-                    return GetKlalitHistoris(FarmId, startDate, endDate, -1, 0);
-
-                }
-
-                return Objects;
-
-            }
-        }
-
-        private static List<KlalitHistoris> GetError(int res)
-        {
-
-            List<KlalitHistoris> kllist = new List<KlalitHistoris>();
-
-            KlalitHistoris kh = new KlalitHistoris();
-            kh.Id = res;
-            kh.UserId = 0;
-            kh.FarmId = 0;
-            kh.DateSend = DateTime.Now;
-            kh.DateLesson = DateTime.Now;
-
-            kllist.Add(kh);
-            return kllist;
-
-
-
 
         }
 
