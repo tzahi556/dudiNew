@@ -357,6 +357,8 @@ namespace FarmsApi.Controllers
                     {
                         DocType = ((bool)Params.isMasKabala) ? 320 : ((bool)Params.isKabala ? 400 : ((bool)Params.isMas ? 305 : 405));
                         if ((bool)Params.isZikuy) DocType = 330;
+                        if ((bool)Params.isIska) DocType = 300;
+
                     }
                     catch (Exception ex)
                     {

@@ -168,6 +168,7 @@
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DataModels\AvailableHours.cs" />
     <Compile Include="DataModels\Ashrais.cs" />
+    <Compile Include="DataModels\HorsesLessonShibutz.cs" />
     <Compile Include="DataModels\Temps.cs" />
     <Compile Include="DataModels\KlalitHistoris.cs" />
     <Compile Include="DataModels\MonthlyReports.cs" />

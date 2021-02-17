@@ -102,7 +102,7 @@ namespace FarmsApi.Services
                             editable = true,
                             resourceId = Lesson.Instructor_Id,
                             lessprice = Lesson.Price,
-                            IsPaid=Lesson.IsPaid,
+                            IsPaid = Lesson.IsPaid,
                             lessonpaytype = Lesson.LessonPayType,
                             details = Lesson.Details,
                             students = students.Select(s => s.StudentId).ToArray(),
@@ -341,7 +341,7 @@ namespace FarmsApi.Services
         public static JObject UpdateLesson(JObject Lesson, bool changeChildren, int? lessonsQty)
         {
             int LessonId = Lesson["id"].Value<int>();
-            int? IsMazkirut =(Lesson["IsMazkirut"]==null)?0:Lesson["IsMazkirut"].Value<int?>();
+            int? IsMazkirut = (Lesson["IsMazkirut"] == null) ? 0 : Lesson["IsMazkirut"].Value<int?>();
             int Instructor_Id = 0;
             DateTime Start = DateTime.Now;
             DateTime End = DateTime.Now;
@@ -436,7 +436,7 @@ namespace FarmsApi.Services
 
             if (ChildLessonId.HasValue)
             {
-                UpdateChildrenLessons(ChildLessonId.Value,IsMazkirut);
+                UpdateChildrenLessons(ChildLessonId.Value, IsMazkirut);
             }
         }
 
@@ -1249,5 +1249,242 @@ namespace FarmsApi.Services
         }
 
 
+
+        public static List<Lesson> ShibutzSusim(string startDate, bool isDelete)
+        {
+            using (var Context = new Context())
+            {
+
+                DateTime StartDate = startDate != null ? DateTime.Parse(startDate) : DateTime.Now.Date;
+                var CurrentUser = UsersService.GetCurrentUser();
+
+
+
+
+
+                var HorsesList = Context.Horses.Where(x => !x.Deleted && x.Farm_Id == CurrentUser.Farm_Id && x.Ownage == "school" && (x.Active == "active" || x.Active == null));
+                var HorsesMale = HorsesList.Where(x => x.Gender == "male").ToList();
+                var HorsesFeMale = HorsesList.Where(x => x.Gender == "female").ToList();
+                var HorsesCastrated = HorsesList.Where(x => x.Gender == "castrated").ToList();
+
+
+
+
+
+                SqlParameter Farm_IdParam = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
+                SqlParameter StartDateParam = new SqlParameter("StartDate", StartDate);
+                SqlParameter EndDateParam = new SqlParameter("EndDate", StartDate.AddDays(1));
+
+                var query = Context.Database.SqlQuery<HorsesLessonShibutz>
+                (" GetStudentsLessonsForShibutz @Farm_Id, @StartDate, @EndDate", Farm_IdParam, StartDateParam, EndDateParam);
+
+
+
+                var DataFromLessons = query.ToList();
+
+
+                if (isDelete)
+                {
+                    foreach (var item in DataFromLessons)
+                    {
+                        StudentLessons sl = Context.StudentLessons.Where(x => x.User_Id == item.User_Id && x.Lesson_Id == item.Lesson_Id).FirstOrDefault();
+
+                        if (sl != null)
+                        {
+
+                            sl.HorseId = 0;
+                            Context.Entry(sl).State = System.Data.Entity.EntityState.Modified;
+                        }
+
+                    }
+
+                }
+                else
+                {
+
+                    for (int i = 0; i < DataFromLessons.Count; i++)
+                    {
+
+
+
+                        var item = DataFromLessons[i];
+
+                        if (item.HorseId != 0) continue;
+
+
+                        if (item.MainHorseId != null)
+                        {
+
+                            bool IsNotMoreThenHourInDayOrRETZEF = GetIfHorseValidCurrentDate(item.MainHorseId, DataFromLessons, item,
+                                HorsesMale, HorsesFeMale, HorsesCastrated);
+
+
+                            if (IsNotMoreThenHourInDayOrRETZEF) item.HorseId = (int)item.MainHorseId;
+                            else
+                            {
+
+                                foreach (var OptionalHorse in HorsesList)
+                                {
+                                    IsNotMoreThenHourInDayOrRETZEF = GetIfHorseValidCurrentDate(OptionalHorse.Id, DataFromLessons, item,
+                                          HorsesMale, HorsesFeMale, HorsesCastrated);
+
+
+                                    if (IsNotMoreThenHourInDayOrRETZEF)
+                                    {
+                                        item.HorseId = OptionalHorse.Id;
+                                        break;
+                                    }
+                                }
+
+
+                            }
+
+
+                        }
+                        else
+                        {
+                            foreach (var OptionalHorse in HorsesList)
+                            {
+                                bool IsNotMoreThenHourInDayOrRETZEF = GetIfHorseValidCurrentDate(OptionalHorse.Id, DataFromLessons, item,
+                                       HorsesMale, HorsesFeMale, HorsesCastrated);
+
+
+                                if (IsNotMoreThenHourInDayOrRETZEF)
+                                {
+                                    item.HorseId = OptionalHorse.Id;
+                                    break;
+                                }
+                            }
+
+
+                        }
+
+
+
+
+
+                    }
+
+
+                    foreach (var item in DataFromLessons)
+                    {
+                        if (item.HorseId != 0)
+                        {
+
+                            StudentLessons sl = Context.StudentLessons.Where(x => x.User_Id == item.User_Id && x.Lesson_Id == item.Lesson_Id).FirstOrDefault();
+
+                            if (sl != null)
+                            {
+
+                                sl.HorseId = item.HorseId;
+                                Context.Entry(sl).State = System.Data.Entity.EntityState.Modified;
+                            }
+
+
+                        }
+
+
+
+                    }
+
+                }
+
+                Context.SaveChanges();
+            }
+
+            return null;
+        }
+
+        private static bool GetIfHorseValidCurrentDate(int? HorseId, List<HorsesLessonShibutz> DataFromLessons, HorsesLessonShibutz item,
+           List<Horse> HorsesMale, List<Horse> HorsesFeMale, List<Horse> HorsesCastrated)
+        {
+            int HourInDay = 4 * 60;
+            int HourRetzef = 2 * 60;
+            // בדיקה אם הסוס תפוס באותה שעה
+            var ExistInThisHour = DataFromLessons.Where(x => x.HorseId == HorseId && item.Start >= x.Start && item.Start < x.End).FirstOrDefault();
+            if (ExistInThisHour != null) return false;
+
+
+            // בדיקה עם עבר מכסה יומית
+            var ExistMoreThenHoursInDay = DataFromLessons.Where(x => x.HorseId == HorseId).Sum(x => x.MinuteOfLesson);
+            if (ExistMoreThenHoursInDay + item.MinuteOfLesson > HourInDay) return false;
+
+
+            // בדיקת רצף
+            var TotalMinutes = 0;
+            var ExistMoreThenHoursInRetzef = DataFromLessons.Where(x => x.HorseId == HorseId).OrderBy(x => x.Start).ToList();
+            for (int i = 0; i < ExistMoreThenHoursInRetzef.Count; i++)
+            {
+
+                if (i < ExistMoreThenHoursInRetzef.Count)
+                {
+                    TotalMinutes = ExistMoreThenHoursInRetzef[i].MinuteOfLesson;
+
+                    for (int m = i; m < ExistMoreThenHoursInRetzef.Count; m++)
+                    {
+
+                        if (m < ExistMoreThenHoursInRetzef.Count - 1 && ExistMoreThenHoursInRetzef[m].End == ExistMoreThenHoursInRetzef[m + 1].Start)
+                        {
+                            TotalMinutes += ExistMoreThenHoursInRetzef[m + 1].MinuteOfLesson;
+
+                            if (TotalMinutes > HourRetzef) return false;
+
+                        }
+                        else
+                        {
+                            TotalMinutes = ExistMoreThenHoursInRetzef[i].MinuteOfLesson;
+
+                        }
+                    }
+
+                }
+
+            }
+
+
+            var ExistGenderInLesson = DataFromLessons.Where(x => x.Lesson_Id == item.Lesson_Id && x.HorseId != 0).ToList();
+            string GenderHorse = GetGenderSus(HorseId, HorsesMale, HorsesFeMale, HorsesCastrated);
+            foreach (var HorseGender in ExistGenderInLesson)
+            {
+
+                string GenderHorseInLessons = GetGenderSus(HorseGender.HorseId, HorsesMale, HorsesFeMale, HorsesCastrated);
+
+                if ((GenderHorseInLessons == "female" && GenderHorse == "male") ||
+                    (GenderHorseInLessons == "male" && GenderHorse == "female")) return false;
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+            return true;
+        }
+
+        private static string GetGenderSus(int? horseId, List<Horse> horsesMale, List<Horse> horsesFeMale, List<Horse> horsesCastrated)
+        {
+
+
+            bool HorsesMale = horsesMale.Any(x => x.Id == horseId);
+            bool HorsesFeMale = horsesFeMale.Any(x => x.Id == horseId);
+            bool HorsesCastrated = horsesCastrated.Any(x => x.Id == horseId);
+
+
+            if (HorsesMale) return "male";
+            if (HorsesFeMale) return "female";
+
+            else return "castrated";
+
+
+        }
     }
+
+
 }

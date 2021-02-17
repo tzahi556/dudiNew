@@ -12,6 +12,8 @@
         </div>-->
 
         <div id="addminusrowheight" class="fc-button-group">
+            <button  style="float:left;margin-right:3px" class=" btn btn-danger btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'instructor' && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.Shibutz(true)"> ביטול שיבוץ </button>
+            <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'instructor' && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.Shibutz(false)"> 'שיבוץ סוסים אוטו </button>
             <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.printLessons()"> הדפסה </button>
             <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.printExcel()"> אקסל </button>
 

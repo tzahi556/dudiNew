@@ -116,8 +116,17 @@
                             </div>
                             <div class="panel-body">
 
-                                <div class="col-md-3 form-group">
+                                <!--<div class="col-md-3 form-group">
                                     <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-change="$ctrl.checkAllc=false;$ctrl.checkAll()" ng-model="$ctrl.filter.UserName" />
+                                </div>-->
+
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" ng-model="$ctrl.filter.FirstName" placeholder="שם פרטי" />
+                                </div>
+                                <div class="col-md-2">
+
+                                    <input type="text" class="form-control " ng-model="$ctrl.filter.LastName" placeholder="שם משפחה" />
+
                                 </div>
 
                                 <div class="col-md-2 form-group">
@@ -140,12 +149,13 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 form-group">
-                                    <button class="btn btn-default" ng-click="$ctrl.getKlalitHistoriPage(5)">שלח שוב מסומנים</button>
+                                    <button class="btn btn-default" ng-click="$ctrl.getKlalitHistoriPage(5)">שלח מסומנים</button>
+                                    <button class="btn btn-primary" id="btnSearch" ng-click="$ctrl.getKlalitHistoriPage()">חפש</button>
                                 </div>
 
-                                <div class="col-md-1 form-group">
-                                    <button class="btn btn-primary" ng-click="$ctrl.getKlalitHistoriPage()">חפש</button>
-                                </div>
+                                <!--<div class="col-md-1 form-group">
+                                   
+                                </div>-->
 
 
 
@@ -168,13 +178,16 @@
                                         </thead>
                                         <tbody style="border:solid 1px gray">
 
-                                            <tr ng-if="ResultNumberFilter==klalit.ResultNumber || !ResultNumberFilter || (klalit.ResultNumber==2 && ResultNumberFilter==-1)" ng-repeat="klalit in $ctrl.klalits | orderBy:['UserName','DateLesson'] |  filter:$ctrl.filter" style="background:{{(klalit.ResultNumber==-1 || klalit.ResultNumber==2)?'#ffeeee':''}}">
+                                            <tr ng-if="ResultNumberFilter==klalit.ResultNumber || !ResultNumberFilter || (klalit.ResultNumber==2 && ResultNumberFilter==-1)" ng-repeat="klalit in $ctrl.klalits | orderBy:['FirstName','LastName','DateLesson'] |  filter:$ctrl.filter" 
+                                                style="background:{{(klalit.ResultNumber==-1 || klalit.ResultNumber==2)?'#ffa2a2':''}}">
                                                 <td>{{$index + 1}}</td>
                                                 <td><input class="" type="checkbox" ng-if="klalit.ResultNumber==-1 || klalit.ResultNumber==2" ng-model="klalit.IsDo"></td>
-                                                <td>{{klalit.DateSend | ildate: 'HH:mm DD/MM/YYYY'}}</td>
+                                               
+                                                
+                                                <td >{{klalit.DateSend | ildate: 'HH:mm DD/MM/YYYY'}}</td>
                                                 <td>{{klalit.DateLesson | ildate: 'DD/MM/YYYY'}}</td>
                                                 <td>{{klalit.Taz}}</td>
-                                                <td>{{klalit.UserName}}</td>
+                                                <td>{{klalit.FirstName + ' ' +klalit.LastName}}  </td>
                                                 <td>{{klalit.Result}}</td>
                                                 <td ng-if="klalit.ResultNumber==-1 || klalit.ResultNumber==2"><button class="btn btn-xs btn-default" ng-click="$ctrl.getKlalitHistoriPage(1,klalit.Id)">שלח שוב</button></td>
 
@@ -328,7 +341,7 @@
 
                     <div class="col-md-12">
                         <div class="col-md-7">
-                            <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-model="$ctrl.filter.UserName" />
+                            <input type="text" name="UserName" class="form-control" placeholder="חיפוש תלמיד" ng-model="$ctrl.filter.FirstName" />
                         </div>
                         <div class="col-md-3">
                             <button type="button" class="btn btn-primary" ng-click="$ctrl.setKlalitHistoriPage(2)" data-dismiss="modal">שלח/י דיווח לכללית</button>
@@ -359,7 +372,7 @@
 
                                     <td>{{klalit.DateLesson | ildate: 'DD/MM/YYYY'}}</td>
                                     <td>{{klalit.Taz}}</td>
-                                    <td>{{klalit.UserName.replace(',',' ')}}</td>
+                                    <td>{{klalit.FirstName + ' ' + klalit.LastName}}</td>
 
                                 </tr>
                             </tbody>
@@ -409,7 +422,7 @@
                 <tr>
 
                     <td>שם תלמיד:&nbsp;</td>
-                    <td>{{$ctrl.returnUserName}}</td>
+                    <td>{{$ctrl.returnFirstName + ' ' + $ctrl.returnLastName}}</td>
 
                 </tr>
                 <tr>

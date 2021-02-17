@@ -87,6 +87,15 @@ namespace FarmsApi.Services
             return Ok(LessonsService.GetSetMonthlyReports(id, date, text, type));
         }
 
+        [Route("Shibutz")]
+        [HttpGet]
+        public IHttpActionResult ShibutzSusim(string startDate,bool isDelete)
+        {
+            return Ok(LessonsService.ShibutzSusim(startDate,isDelete));
+        }
+
+
+
 
         
 

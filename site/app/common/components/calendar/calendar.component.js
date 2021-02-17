@@ -215,6 +215,11 @@
                             // $(element).addClass('notarrive-icon');
                         }
 
+                        //חדש!!! 
+                        else if (event.statuses[i].Status == 'attendedDontCharge') {
+                            // $(element).addClass('notarrive-icon');
+                        }
+
                         //לא הגיע לא לחייב
                         else if (event.statuses[i].Status == 'notAttendedDontCharge') {
 

@@ -62,6 +62,14 @@
     function _changeStudentstatus(studentId) {
 
 
+        var CurrentStatus = this.statuses[studentId];
+
+       
+        if (['attended', null].indexOf(CurrentStatus) == -1) { 
+
+            this.horsesarray[studentId] = 0;
+
+        }
         //for (var i in this.changeLessonsStudent) {
 
         //    if (this.changeLessonsStudent[i].StudentId == studentId) {
@@ -272,16 +280,33 @@
         var role = localStorage.getItem('currentRole');
         var IsHiyuvInHashlama = localStorage.getItem('IsHiyuvInHashlama');
 
-
+      //  debugger
         //this.IsHiyuvInHashlama = this.farm.IsHiyuvInHashlama;
+
         ////אם לחייב אז תוריד את דרוש שיעור השלמה הרגיל
-        if (IsHiyuvInHashlama == 1 && this.sharedValues.lessonStatuses.length > 5) {
+        //if (IsHiyuvInHashlama == 1 && this.sharedValues.lessonStatuses.length > 5) {
 
-            this.sharedValues.lessonStatuses.splice(4, 1);
+        //    this.sharedValues.lessonStatuses.splice(4, 1);
 
-        } else if (this.sharedValues.lessonStatuses.length > 3) {
+        //} else if (this.sharedValues.lessonStatuses.length > 3) {
 
-            this.sharedValues.lessonStatuses.splice(5, 1);
+        //    this.sharedValues.lessonStatuses.splice(5, 1);
+
+        //}
+       
+        if (IsHiyuvInHashlama == 1) {
+            var index = this.sharedValues.lessonStatuses.findIndex(x => x.id == "completionReq");
+            if (index != -1) {
+
+                this.sharedValues.lessonStatuses.splice(index, 1);
+            }
+        } else {
+            var index = this.sharedValues.lessonStatuses.findIndex(x => x.id == "completionReqCharge");
+            if (index != -1) {
+
+                this.sharedValues.lessonStatuses.splice(index, 1);
+            }
+
         }
 
 

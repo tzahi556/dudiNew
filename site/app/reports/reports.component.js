@@ -468,7 +468,7 @@
 
             function IsStatusOk(Status, IsComplete, IsHiyuvInHashlama) {
 
-                if (Status == "attended" || Status == "notAttendedCharge" || (IsHiyuvInHashlama == 1 && Status == "completionReqCharge")
+                if (Status == "attendedDontCharge" || Status == "attended" || Status == "notAttendedCharge" || (IsHiyuvInHashlama == 1 && Status == "completionReqCharge")
                     || (IsHiyuvInHashlama == 0 && Status == "completion" && (IsComplete == 4 || IsComplete == 6)))
 
                     return true;
@@ -478,6 +478,30 @@
             }
 
             function getDynamicData(type, data, HeadersDynamicHours,isRemoveTotal4) {
+
+
+                // מביא סך הכל תלמידים
+                if (type == 99) {
+                    debugger
+                    var Counter = 0;
+                    var DateExist = [];
+                    var res = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
+                    for (var i = 0; i < res.length; i++) {
+                        //var result = DateExist.filter(d => d.Date == res[i].Start && d.Instructor_Id == res[i].Id);
+                        //if (result.length == 0) {
+                          //  DateExist.push({ Date: res[i].Start, Instructor_Id: res[i].Id });
+                            Counter++;
+
+                        //}
+                    }
+
+                    return Counter;
+
+                }
+
+
+
+
                 // מביא סך הכל שיעורים
                 if (type == 0) {
                     debugger
@@ -818,6 +842,9 @@
 
                         // הבאת סך שיעורים
                         text = text.replace("@TotalLessons", getDynamicData(0, res));
+
+                        text = text.replace("@TotalStudents", getDynamicData(99, res));
+
 
                         // בניית טבלת ריכוז לפי סגנון רכיבה
                        
@@ -1336,7 +1363,7 @@
 
                     if (DateExist.indexOf(res[i].OnlyDate) == "-1" && Id == res[i].Id) {
 
-                        if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" ||
+                        if (res[i].Status == "attended" || res[i].Status == "notAttendedCharge" || res[i].Status == "attendedDontCharge" ||
                             (res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))
                         ) {
                             DateExist.push(res[i].OnlyDate);
@@ -1388,6 +1415,8 @@
 
                         if (res[i].Status == "attended" ||
                             res[i].Status == "notAttendedCharge" ||
+                            res[i].Status == "attendedDontCharge" ||
+                            
                             (res[i].IsHiyuvInHashlama == 1 && res[i].Status == "completionReqCharge")||
                             (res[i].IsHiyuvInHashlama == 0 && res[i].Status == "completion" && (res[i].IsComplete == 4 || res[i].IsComplete == 6))) {  
                        
@@ -1413,7 +1442,9 @@
 
                     if (DateExist.indexOf(res[i].Start) == "-1" && Id == res[i].Id) {
 
-                        if ( res[i].Status == "attended" ||
+                        if (res[i].Status == "attended" ||
+                            res[i].Status == "attendedDontCharge" ||
+                            
                             (res[i].IsHiyuvInHashlama == 0 && res[i].Status == "completion" && res[i].IsComplete == 4) || 
                             (res[i].IsHiyuvInHashlama == 1 && res[i].Status == "completionReqCharge")
 
@@ -1814,6 +1845,12 @@
                     return 'לא הגיע'
                 case 'notAttendedCharge':
                     return 'לא הגיע לחייב'
+                case 'attendedDontCharge':
+                    return 'הגיע לא לחייב'
+
+                    
+
+
                 case 'notAttendedDontCharge':
                     return 'לא הגיע לא לחייב'
                 case 'completionReq':

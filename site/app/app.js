@@ -393,6 +393,7 @@
                             return usersService.getUsers('student', true);
                         },
                         horses: function (horsesService) {
+
                             return horsesService.getHorsesForLessons();
                         },
                         groups: function (horsesService) {
@@ -591,6 +592,9 @@
         //}
 
         $rootScope.role = localStorage.getItem('currentRole');
+      //  $rootScope.subrole = localStorage.getItem('currentSubRole');
+
+        
         $rootScope.FarmInstractorPolicy = localStorage.getItem('FarmInstractorPolicy');
 
         

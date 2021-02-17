@@ -76,18 +76,19 @@
                     for (var i in ctrlthis.klalitsBefore) {
 
                         ctrlthis.klalitsBefore[i].ResultXML = null;
-                        ctrlthis.klalitsBefore[i].UserName = ctrlthis.klalitsBefore[i].UserName.replace(' ', ',');
-                        //
+                        ctrlthis.klalitsBefore[i].FirstName = ctrlthis.klalitsBefore[i].FirstName;
+                        ctrlthis.klalitsBefore[i].LastName = ctrlthis.klalitsBefore[i].LastName;
+                        
 
                     }
 
                     ctrlthis.setPostToKlalit(0, ctrlthis);
 
                 } else {
-                    //
+                    //https://www.giddyup.co.il/#/farmmanager/?fromSend=fromSend
                     //http://localhost:51517/#/farmmanager/?fromSend=fromSend
                     var payWind = window.open("https://www.giddyup.co.il/#/farmmanager/?fromSend=fromSend", "Upload Chapter content", "width=700,height=350,top=200,left=500");
-
+                   
 
                 }
 
@@ -111,7 +112,9 @@
 
             $http.post(sharedValues.apiUrl + 'farms/setKlalitHistoris/', ctrlthis.klalitsBefore[index]).then(function (response) {
 
-                ctrlthis.returnUserName = response.data.UserName;
+                ctrlthis.returnFirstName = response.data.FirstName;
+                ctrlthis.returnLastName = response.data.LastName;
+
                 ctrlthis.returnDate = response.data.DateLesson;
                 ctrlthis.returnStatus = response.data.Result;
                 ctrlthis.currentElement = index + 1;
@@ -120,7 +123,10 @@
                     ctrlthis.setPostToKlalit(index + 1, ctrlthis);
                 else {
                     ctrlthis.endMessage = true;
-                    ctrlthis.getKlalitHistoriPage();
+
+                    window.opener.$("#btnSearch").click();
+                    //window.opener.$scope.getKlalitHistoriPage();
+                    //ctrlthis;
                 }
 
 
@@ -132,7 +138,9 @@
 
             //  this.klalits.find(x => x.ResultNumber == -1).IsDo = this.checkAllc;
 
-            this.klalits.filter(x => x.ResultNumber == -1)
+           
+
+            this.klalits.filter(x => x.ResultNumber != 1)
                 .forEach(x => x.IsDo = this.checkAllc);
         }
 
@@ -140,7 +148,7 @@
 
         function _getKlalitHistoriPage(type, klalitId) {
 
-          
+           
             var startDate = moment(this.dateFromClalit).format('YYYY-MM-DD');
             var endDate = moment(this.dateToClalit).format('YYYY-MM-DD');
 
@@ -158,6 +166,8 @@
                     if (res[0] && res[0].Id == -1) {
                       
                         this.klalitsBefore = this.klalitsBefore.slice(0, res[0].CounterSend);// סתם משתמש בשדה הזה לבדוק עוד כמה נותר לו
+
+
                         window.klalitsBefore = this.klalitsBefore;
 
                         if (this.klalitsBefore.length == 0) {
@@ -170,11 +180,12 @@
 
                     }
 
-                    return;
+                    
 
                 }.bind(this));
 
-               
+
+                return;
 
             }
 
@@ -190,7 +201,7 @@
            // if (type == 4) 
 
             farmsService.getKlalitHistoris(this.farmmanager.FarmId, startDate, endDate, type, klalitId, null).then(function (res) {
-               
+              
                 if (type == 2 && res[0].Id < 0) {
 
                     if (res[0].Id == -1) alert("אין הגדרות למדריכים");
@@ -231,6 +242,7 @@
                 }
 
                 else {
+
                     this.klalits = res;
                     for (var i in this.klalits) {
 
@@ -309,8 +321,9 @@
 
             if (type == 2) {
 
-                this.farmsService.setMangerFarm(this.farmmanager).then(function (farm) {
-
+                this.farmsService.setMangerFarm(this.farmmanager).then(function (farmmanager) {
+                  
+                    this.farmmanager = farmmanager;
                     if (!isNoAlert) alert('נשמר בהצלחה');
                 }.bind(this));
 

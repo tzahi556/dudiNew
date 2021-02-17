@@ -21,8 +21,11 @@ namespace FarmsApi.DataModels
         public string ResultNumber { get; set; }
 
         public string ClaimNumber { get; set; }
-        public string UserName { get; set; }
-      
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+
         public string Taz { get; set; }
       
         public int? Instructor_Id { get; set; }

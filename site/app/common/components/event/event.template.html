@@ -16,6 +16,12 @@
         color: white;
         font-weight: bold;
     }
+
+    .myStyleattendedDontCharge {
+       
+        color: red;
+        font-weight: bold;
+    }
 </style>
 
 
@@ -101,8 +107,12 @@
                 <tr ng-repeat-end class="status-row">
                     <td>
                         <div class="form-group">
-                            <select ng-disabled="!$ctrl.getStatusofStudent(studentId,1)" class="form-control" ng-change="$ctrl.changeStudentstatus(studentId)" ng-model="$ctrl.statuses[studentId]" ng-options="status.id as status.name for status in $ctrl.getStatusofStudent(studentId,2)">
+                            <select ng-disabled="!$ctrl.getStatusofStudent(studentId,1)" class="form-control" ng-change="$ctrl.changeStudentstatus(studentId)" ng-model="$ctrl.statuses[studentId]" 
+                                 > 
                                 <option value="">סטטוס</option>
+
+                                <option ng-class="{myStyleattendedDontCharge: x.id == 'attendedDontCharge'}"  ng-repeat="x in $ctrl.getStatusofStudent(studentId,2)" value="{{x.id}}">{{x.name}}</option>
+
                             </select>
                         </div>
                     </td>

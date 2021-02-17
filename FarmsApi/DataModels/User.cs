@@ -98,8 +98,8 @@ namespace FarmsApi.DataModels
         [NotMapped]
         public double? Total { get; set; }
 
-
-
+        public int? MainHorseId { get; set; }
+        
     }
 
 

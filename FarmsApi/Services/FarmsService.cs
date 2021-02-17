@@ -111,7 +111,7 @@ namespace FarmsApi.Services
 
         }
 
-        public static bool SetMangerFarm(FarmManagers farmmanger)
+        public static FarmManagers SetMangerFarm(FarmManagers farmmanger)
         {
 
             var CurrentUser = UsersService.GetCurrentUser();
@@ -134,12 +134,14 @@ namespace FarmsApi.Services
 
                 Context.SaveChanges();
 
+                return Context.FarmManagers.Where(x => x.FarmId == CurrentUser.Farm_Id).FirstOrDefault();
+
             }
 
 
 
 
-            return true;
+            //return true;
 
         }
 
@@ -280,8 +282,8 @@ namespace FarmsApi.Services
 
 
 
-                string FirstName = item.UserName.Split(',')[0];
-                string LastName = item.UserName.Split(',')[1];
+                string FirstName = item.FirstName;
+                string LastName = item.LastName;
                 string DateStart = item.DateLesson.ToString("ddMMyyyy");
 
                 KlalitAPI.SupplierRequest kp = new KlalitAPI.SupplierRequest();
@@ -297,8 +299,8 @@ namespace FarmsApi.Services
 	                                    <SupplierID>" + fm.SupplierID + @"</SupplierID>
 	                                    <ClinicID>0</ClinicID>
 	                                    <InsuredID>" + item.Taz + @"</InsuredID>
-	                                    <InsuredFirstName>" + FirstName + @"</InsuredFirstName>
-	                                    <InsuredLastName>" + LastName + @"</InsuredLastName>
+	                                    <InsuredFirstName>" + FirstName.Trim() + @"</InsuredFirstName>
+	                                    <InsuredLastName>" + LastName.Trim() + @"</InsuredLastName>
 	                                    <SectionCode>" + fm.SectionCode + @"</SectionCode>
 	                                    <CareCode>" + fm.CareCode + @"</CareCode>
 	                                    <CareDate>" + DateStart + @"</CareDate>
@@ -324,7 +326,8 @@ namespace FarmsApi.Services
                     kh = new KlalitHistoris();
                     kh.Id = 0;
                     kh.UserId = item.UserId;
-                    kh.UserName = khv.UserName;
+                    kh.FirstName = khv.FirstName;
+                    kh.LastName = khv.LastName;
                     kh.FarmId = item.FarmId;
                     kh.DateSend = DateTime.Now;
                     kh.DateLesson = item.DateLesson;
@@ -382,8 +385,8 @@ namespace FarmsApi.Services
                     if (fs == null) continue;
 
 
-                    string FirstName = item.UserName.Split(',')[0];
-                    string LastName = item.UserName.Split(',')[1];
+                    string FirstName = item.FirstName;
+                    string LastName = item.LastName;
                     string DateStart = item.DateLesson.ToString("ddMMyyyy");
 
                     KlalitAPI.SupplierRequest kp = new KlalitAPI.SupplierRequest();
@@ -396,8 +399,8 @@ namespace FarmsApi.Services
 	                                    <SupplierID>" + fm.SupplierID + @"</SupplierID>
 	                                    <ClinicID>0</ClinicID>
 	                                    <InsuredID>" + item.Taz + @"</InsuredID>
-	                                    <InsuredFirstName>" + FirstName + @"</InsuredFirstName>
-	                                    <InsuredLastName>" + LastName + @"</InsuredLastName>
+	                                    <InsuredFirstName>" + FirstName.Trim() + @"</InsuredFirstName>
+	                                    <InsuredLastName>" + LastName.Trim() + @"</InsuredLastName>
 	                                    <SectionCode>" + fm.SectionCode + @"</SectionCode>
 	                                    <CareCode>" + fm.CareCode + @"</CareCode>
 	                                    <CareDate>" + DateStart + @"</CareDate>

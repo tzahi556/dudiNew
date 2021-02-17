@@ -18,7 +18,21 @@
         this.getSetSchedularTask = _getSetSchedularTask.bind(this);
         this.getSetMonthlyReports = _getSetMonthlyReports.bind(this);
 
+        this.Shibutz = _Shibutz.bind(this);
+
+
         this.HMOs = sharedValues.HMOs;
+
+
+
+        function _Shibutz(date, isDelete) {
+
+            var deferred = $q.defer();
+            $http.get(sharedValues.apiUrl + 'lessons/Shibutz/', { params: { startDate: date, isDelete: isDelete} }).then(function (res) {
+                deferred.resolve(res.data);
+            });
+            return deferred.promise;
+        }
 
 
         function _getSetMonthlyReports(userId, date, text, type) {

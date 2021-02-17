@@ -33,6 +33,12 @@
     background-repeat: no-repeat;
 }
 
+.approve-arrive {
+    background-image: url(../images/approve-arrive.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+}
+
 .returnred-icon {
     background-image: url(../images/returnred.png);
     background-position: top left;

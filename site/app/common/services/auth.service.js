@@ -27,7 +27,7 @@
                     var response = response.data;
                     localStorage.setItem('authorizationData', angular.toJson({ token: response.access_token, userName: loginData.userName }));
                     usersService.getUser().then(function (res) {
-                      
+                        
                         localStorage.setItem('currentRole', res.Role);
                         localStorage.setItem('currentSubRole', res.SubRole);
                         deferred.resolve(response);
@@ -49,6 +49,7 @@
             localStorage.removeItem('authorizationData');
             localStorage.removeItem('currentRole');
             localStorage.removeItem('currentSubRole');
+            localStorage.removeItem('isSystemEnter');
         };
     }
 })();

@@ -157,6 +157,9 @@
 
         this.setLessonArray = _setLessonArray.bind(this);
 
+        this.SavePaidLessons = _SavePaidLessons.bind(this);
+
+        
         this.show4 = _show4.bind(this);
         this.isDateMoreToday = _isDateMoreToday.bind(this);
 
@@ -164,6 +167,11 @@
         this.IsInstructorBlock = ($rootScope.role == "instructor") ? true : false;    // $rootScope.IsInstructorBlock;
 
         this.role = $rootScope.role;
+
+        this.isSystemEnter = localStorage.getItem('isSystemEnter');
+
+        
+      
         this.newPrice = 0;
 
         this.IsHiyuvInHashlama = 0;
@@ -688,6 +696,7 @@
             if (doc_type == 'MasKabala') return 'חשבונית מס קבלה';
             if (doc_type == 'Mas') return 'חשבונית מס';
             if (doc_type == 'Zikuy') return 'חשבונית זיכוי';
+            if (doc_type == 'Iska') return 'חשבונית עסקה';
 
         }
 
@@ -1639,7 +1648,7 @@
 
                 if (this.lessons[i].statuses[ststIndex].IsComplete < 7) {
 
-
+                    
                     var res = this.setPaid(this.lessons[i]);
                     this.lessons[i].paid = res[0];
                     this.lessons[i].lessprice = eval(res[1]);
@@ -2511,6 +2520,9 @@
 
                 if (!payments[i].canceled) {
 
+
+                    if (payments[i].doc_type == "Iska") continue;
+
                     // קורס מדריכם מחנה רכיבה ופנסיון מקבל הגדרה אחרת רק לפי חשבוניות מס
                     if (payments[i].doc_type == "Mas") {
                         if ((this.user.Style == "course" || this.user.Style == "camp" || this.user.Style == "horseHolder")) {
@@ -2830,11 +2842,7 @@
             var TempSum = newPayment.InvoiceSum;
 
 
-
-
-
-
-            if (!newPayment.noEazi && (newPayment.isMasKabala || newPayment.isKabala || newPayment.isKabalaTroma || newPayment.isMas || newPayment.isZikuy)) {
+            if (!newPayment.noEazi && (newPayment.isMasKabala || newPayment.isKabala || newPayment.isKabalaTroma || newPayment.isMas || newPayment.isZikuy || newPayment.isIska)) {
                 newPayment.parents = [];
                 this.payments.map(function (payment) {
 
@@ -3021,6 +3029,22 @@
 
         }
 
+        function _SavePaidLessons() {
+
+            //**************
+            this.lessonStatusesToUpdate = this.lessonStatusesToUpdate || [];
+            for (var i in this.lessons) {
+                var found = this.lessonStatusesToUpdate.filter(x => x.lessonId == this.lessons[i].id);
+                if (found.length > 0) {
+                    found[0].IsPaid = ((this.lessons[i].paid) ? 1 : 0);
+                } else {
+                    this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: this.lessons[i].id, status: this.lessons[i].statuses[0].Status, details: this.lessons[i].statuses[0].Details, isComplete: this.lessons[i].statuses[0].IsComplete, officedetails: this.lessons[i].statuses[0].OfficeDetails, IsPaid: ((this.lessons[i].paid) ? 1 : 0) });
+                }
+            }
+
+            this.submit();
+        }
+
         function _createNewPayment(newPayment) {
 
             //**************
@@ -3051,11 +3075,14 @@
 
             this.payments.map(function (payment) {
 
+              
                 if (payment.SelectedForInvoiceTemp) {
                     if ((payment.doc_type == "Kabala" && newPayment.doc_type == "Mas") || (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala")) {
-                        payment.ParentInvoiceNum = newPayment.InvoiceNum;
-                        payment.ParentInvoicePdf = newPayment.InvoicePdf;
-                        payment.SelectedForInvoice = true;
+                       
+
+                        newPayment.ParentInvoiceNum = payment.InvoiceNum;
+                        newPayment.ParentInvoicePdf = payment.InvoicePdf;
+                        newPayment.SelectedForInvoice = true;
                     }
                     //if (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") {
 
@@ -3210,6 +3237,7 @@
             if (pay.isKabala || pay.isKabalaTroma) return "Kabala";
             if (pay.isMas) return "Mas";
             if (pay.isZikuy) return "Zikuy";
+            if (pay.isIska) return "Iska";
             return "";
 
         }
@@ -3388,7 +3416,7 @@
 
              
 
-
+               
 
                 usersService.updateUserMultiTables(this.user, this.payments, this.files, this.commitments, this.expenses, this.userhorses, [], this.makav, this.getChecsObjList(), this.getAshraiObjList()).then(function (user) {
 
@@ -3398,6 +3426,7 @@
                         return;
                     }
 
+                  
                     lessonsService.updateStudentLessonsStatuses(this.lessonStatusesToUpdate,this.user.Id).then(function (lessons) {
                        
                         this.lessons = lessons;

@@ -79,11 +79,11 @@
 
                     </div>
                     <div class="form-group">
-                        <label>שם אם</label>
+                        <label>הורה 1</label>
                         <input type="text" name="parentName" ng-disabled="true" class="form-control" ng-model="$ctrl.user.ParentName2" />
                     </div>
                     <div class="form-group">
-                        <label>שם אב</label>
+                        <label>הורה 2</label>
                         <input type="text" name="parentName" ng-disabled="true" class="form-control" ng-model="$ctrl.user.ParentName" />
                     </div>
                     <div class="form-group">
@@ -238,13 +238,13 @@
 
 
                     <!--<div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                        <label>שם אם</label>
-                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName2" />
-                    </div>
-                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
-                        <label>שם אב</label>
-                        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName" />
-                    </div>-->
+        <label>שם אם</label>
+        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName2" />
+    </div>
+    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+        <label>שם אב</label>
+        <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName" />
+    </div>-->
                     <div class="form-group">
                         <label>כתובת</label>
                         <input type="text" name="address" class="form-control" ng-model="$ctrl.user.Address" />
@@ -253,12 +253,12 @@
                     <div class="row" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
 
                         <div class="col-md-6">
-                            <label>שם אם</label>
+                            <label>הורה 1</label>
                             <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName2" />
                         </div>
                         <div class="col-md-6">
 
-                            <label>שם אב</label>
+                            <label>הורה 2</label>
                             <input type="text" name="parentName" class="form-control" ng-model="$ctrl.user.ParentName" />
 
                         </div>
@@ -332,6 +332,14 @@
                         </select>
                     </div>
 
+                    <div class="form-group" ng-if="['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1">
+                        <label>סוס קבוע</label>
+
+                        
+                        <select class="form-control" ng-options="horse.Id as horse.Name for horse in $ctrl.horses |filter:{Ownage:'school'}  |filter:{Active:'!notActive'} |filter:{Farm_Id:$ctrl.user.Farm_Id}" ng-model="$ctrl.user.MainHorseId">
+                            <option value="">בחר סוס</option>
+                        </select>
+                    </div>
 
 
 
@@ -610,11 +618,12 @@
                         <button class="btn btn-success" ng-if="!$ctrl.showNewPayment" ng-click="$ctrl.showNewPayment=true;$ctrl.disablBtn=false">הוספת תשלום</button>
                         <form ng-if="$ctrl.showNewPayment" name="paymentForm">
                             <div class="form-group" style="background:{{($ctrl.newPayment.noEazi)?'red':''}}">
-                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isMas=false;$ctrl.newPayment.isZikuy=false;" ng-model="$ctrl.newPayment.isMasKabala" /> חשבונית מס קבלה</label>
-                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isZikuy=false;$ctrl.newPayment.lessons='';" ng-model="$ctrl.newPayment.isMas" /> חשבונית מס</label>
-                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isMas=false;$ctrl.newPayment.isZikuy=false;" ng-model="$ctrl.newPayment.isKabala" /> קבלה</label>
-                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isMas=false;$ctrl.newPayment.isZikuy=false;" ng-model="$ctrl.newPayment.isKabalaTroma" /> קבלה על תרומה</label>
-                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isMas=false;$ctrl.newPayment.isKabala=false" ng-model="$ctrl.newPayment.isZikuy" /> חשבונית זיכוי</label>
+                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isMas=false;$ctrl.newPayment.isZikuy=false;$ctrl.newPayment.isIska=false;" ng-model="$ctrl.newPayment.isMasKabala" /> חשבונית מס קבלה</label>
+                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isZikuy=false;$ctrl.newPayment.lessons='';$ctrl.newPayment.isIska=false;" ng-model="$ctrl.newPayment.isMas" /> חשבונית מס</label>
+                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isMas=false;$ctrl.newPayment.isZikuy=false;$ctrl.newPayment.isIska=false;" ng-model="$ctrl.newPayment.isKabala" /> קבלה</label>
+                                <label ng-if="$ctrl.user.Farm_Id!=46"><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isMas=false;$ctrl.newPayment.isZikuy=false;$ctrl.newPayment.isIska=false;" ng-model="$ctrl.newPayment.isKabalaTroma" /> קבלה על תרומה</label>
+                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isMas=false;$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isIska=false;" ng-model="$ctrl.newPayment.isZikuy" /> חשבונית זיכוי</label>
+                                <label><input type="checkbox" ng-click="$ctrl.newPayment.isMasKabala=false;$ctrl.newPayment.isKabalaTroma=false;$ctrl.newPayment.isMas=false;$ctrl.newPayment.isKabala=false;$ctrl.newPayment.isZikuy=false;$ctrl.newPayment.lessons='';" ng-model="$ctrl.newPayment.isIska" /> חשבונית עסקה</label>
 
                                 <label style="float:left"><input type="checkbox" ng-click="" ng-model="$ctrl.newPayment.noEazi" /> ללא חיבור לאיזיקאונט</label>
 
@@ -623,11 +632,11 @@
                                 <input class="form-control" type="date" ng-model="$ctrl.newPayment.Date" required />
                             </div>
                             <div class="form-group">
-                                <input class="form-control" ng-if="$ctrl.user.PayType == 'lessonCost' && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1" ng-disabled="$ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy" placeholder="כמות שיעורים" min="0" ng-change="$ctrl.countTotal()"
+                                <input class="form-control" ng-if="$ctrl.user.PayType == 'lessonCost' && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1" ng-disabled="$ctrl.newPayment.isIska || $ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy" placeholder="כמות שיעורים" min="0" ng-change="$ctrl.countTotal()"
                                        type="number" ng-model="$ctrl.newPayment.lessons" />
                             </div>
 
-                            <table width="100%" ng-if="$ctrl.user.PayType != 'lessonCost' && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1" ng-hide="$ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy">
+                            <table width="100%" ng-if="$ctrl.user.PayType != 'lessonCost' && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1" ng-hide="$ctrl.newPayment.isIska || $ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy">
                                 <tr>
                                     <td>
                                         מחודש
@@ -1200,7 +1209,8 @@
                                     <button class="btn btn-primary btn-xs" ng-click="showDetails=!showDetails;">{{showDetails ? 'הצג הערות משרד' : 'הצג הערות מדריך'}} </button>
                                     <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printLessons()"> הדפסה </button>
                                     <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-click="$ctrl.printExcel()"> Excel </button>
-
+                                    <button ng-if="$ctrl.isSystemEnter" style="float:left;margin-right:3px" class=" btn btn-warning btn-xs" ng-click="$ctrl.SavePaidLessons()"> שמירת תאריכי תשלום </button>
+                                    
                                 </td>
                             </tr>
                             <tr>

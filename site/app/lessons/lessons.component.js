@@ -65,6 +65,10 @@
 
         this.printLessons = _printLessons.bind(this);
         this.printExcel = _printExcel.bind(this);
+        this.Shibutz = _Shibutz.bind(this);
+
+
+        
         this.searchDate = new Date();
         this.lessToDrop = "";
 
@@ -87,6 +91,20 @@
         this.viewCalenderType = "agendaDay";
         this.setExex = _setExex.bind(this);
 
+
+
+       // this.horses = this.horses.filter(x => x.Ownage == "school");
+
+        function _Shibutz(isDelete) {
+
+
+
+            this.lessonsService.Shibutz(this.startDate, isDelete).then(function (res) {
+
+                this.reloadLessons();
+              
+            }.bind(this));
+        }
        
         function _printExcel() {
 
