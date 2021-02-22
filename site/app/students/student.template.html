@@ -19,7 +19,7 @@
     <div class="col-md-3">
         <comments studentid="$ctrl.selectedStudent" close-callback="$ctrl.commentClose"></comments>
 
-        <reportMonth studentid="$ctrl.selectedStudentForReport"></reportMonth>
+        <reportMonth class="reportMonthTag"  studentid="$ctrl.selectedStudentForReport"></reportMonth>
         <!-- student data -->
         <form name="studentForm" ng-submit="$ctrl.submit()" novalidate>
             <div class="panel panel-default">
@@ -37,6 +37,8 @@
                 <div class="panel-body" ng-show="$ctrl.IsInstructorBlock">
                     <div class="form-group">
                         <label>מספר לקוח</label>
+                       
+
                         <input type="text" name="idNumber" ng-disabled="true" class="form-control" ng-model="$ctrl.user.ClientNumber" />
                     </div>
                     <div class="form-group">
@@ -219,7 +221,7 @@
                             </div>
                             <div class="col-md-6">
 
-                                <label>   חוזה חתום <input type="checkbox" ng-model="$ctrl.user.IsHozeHatum" /></label>
+                                <label>חוזה חתום<input type="checkbox" ng-model="$ctrl.user.IsHozeHatum" /></label>
 
                             </div>
 
@@ -227,6 +229,7 @@
                     </div>
 
                     <div class="form-group">
+                        
                         <label>מספר לקוח</label>
                         <input type="text" name="idNumber" class="form-control" ng-model="$ctrl.user.ClientNumber" />
                     </div>
@@ -743,7 +746,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="form-group" ng-if="(!$ctrl.newPayment.isMasKabala && !$ctrl.newPayment.isKabala  && !$ctrl.newPayment.isKabalaTroma && !$ctrl.newPayment.isMas && !$ctrl.newPayment.isZikuy) || $ctrl.newPayment.noEazi">
+                            <div class="form-group" ng-if="(!$ctrl.newPayment.isMasKabala && !$ctrl.newPayment.isKabala  && !$ctrl.newPayment.isKabalaTroma && !$ctrl.newPayment.isMas && !$ctrl.newPayment.isZikuy && !$ctrl.newPayment.isIska) || $ctrl.newPayment.noEazi">
                                 <input class="form-control" placeholder="מספר מסמך" type="text" ng-model="$ctrl.newPayment.InvoiceNum" required />
                             </div>
                             <!--<div class="form-group">
@@ -1296,11 +1299,20 @@
                     <div class="panel-footer">
                         <input type="file" filename="$ctrl.newFile" filename-callback="$ctrl.uploadFile" />
                     </div>
+
+                    <div class="clearfix"></div>
                 </div>
 
                 <!--details text editor-->
                 <div class="panel panel-default">
                     <div class="panel-heading">
+
+                        <div style="float:left">
+
+                            <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printIntekAndMonthlyReport(1)"> הדפסת כל הדוחות</button>
+
+
+                        </div>
                         הערות (דו"ח חודשי)
                     </div>
                     <table class="table">
@@ -1332,10 +1344,16 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
+                        <div style="float:left;">
+
+                            <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-click="$ctrl.printIntekAndMonthlyReport(2)"> הדפסת אינטק</button>
+                           
+
+                        </div>
                         אינטק
                     </div>
                     <div class="panel-body">
-                        <textarea class="form-control" rows="1" ng-model="$ctrl.user.Intek"></textarea>
+                        <textarea class="form-control" rows="1" id="inptIntek" ng-model="$ctrl.user.Intek"></textarea>
 
 
                     </div>

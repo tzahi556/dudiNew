@@ -660,7 +660,7 @@ namespace FarmsApi.Services
                 if (CurrentUserFarmId == 0)
                 {
                     string[] keys = Role.Split(',');
-                    var UsersForFarm = Context.Users.Where(u => keys.Any(key=> u.Role.Contains(key))).OrderBy(x => x.FirstName).ToList();
+                    var UsersForFarm = Context.Users.Where(u => keys.Any(key => u.Role.Contains(key))).OrderBy(x => x.FirstName).ToList();
                     UsersForFarm = FilterDeleted(UsersForFarm, IncludeDeleted);
                     return UsersForFarm;
 
@@ -669,7 +669,7 @@ namespace FarmsApi.Services
 
                 var Users = Context.Users.Where(u => u.Farm_Id == CurrentUserFarmId).OrderBy(x => x.FirstName).ToList();
 
-               
+
 
                 Users = FilterByUser(Users);
                 Users = FilterRole(Users, Role);
@@ -694,7 +694,7 @@ namespace FarmsApi.Services
                 return res;
 
 
-             
+
             }
         }
 
@@ -1966,19 +1966,25 @@ namespace FarmsApi.Services
             {
                 var CurrentUser = GetCurrentUser();
 
+                try
+                {
+                    SqlParameter ResourceId = new SqlParameter("ResourceId", insructorId);
+                    SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
+                    SqlParameter dowPara = new SqlParameter("dow", dow);
+                    SqlParameter datePara = new SqlParameter("date", date);
 
-                SqlParameter ResourceId = new SqlParameter("ResourceId", insructorId);
-                SqlParameter Farm_IdPara = new SqlParameter("Farm_Id", CurrentUser.Farm_Id);
-                SqlParameter dowPara = new SqlParameter("dow", dow);
-                SqlParameter datePara = new SqlParameter("date", date);
 
+                    var query = Context.Database.SqlQuery<TransferResult>
+                    ("GetTransferData @ResourceId,@Farm_Id,@dow,@date",
+                    ResourceId, Farm_IdPara, dowPara, datePara);
+                    var res = query.ToList();
+                    return res;
+                }
+                catch
+                {
 
-                var query = Context.Database.SqlQuery<TransferResult>
-                ("GetTransferData @ResourceId,@Farm_Id,@dow,@date",
-                ResourceId, Farm_IdPara, dowPara, datePara);
-                var res = query.ToList();
-                return res;
-
+                    return null;
+                }
 
 
             }

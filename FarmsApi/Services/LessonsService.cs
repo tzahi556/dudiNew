@@ -284,7 +284,7 @@ namespace FarmsApi.Services
                                 StudentLesson.IsComplete = Status["isComplete"].Value<int>();
 
 
-                                // InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס מהכרטיס  " + StudentLesson.IsComplete, StudentLesson);
+                               // InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס מהכרטיס  " + StudentLesson.IsComplete, StudentLesson);
                             }
 
                             if (Status["officedetails"] != null)
@@ -537,13 +537,13 @@ namespace FarmsApi.Services
 
                     }
 
+                    // צחי הוריד בינתיים
+                    //if ((StatusData[0] == "" || StatusData[0] == null || StatusData[0] == "completion") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
+                    //{
+                    //    StatusData[0] = "completion";
+                    //    StatusData[2] = "5";
 
-                    if ((StatusData[0] == "" || StatusData[0] == null || StatusData[0] == "completion") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
-                    {
-                        StatusData[0] = "completion";
-                        StatusData[2] = "5";
-
-                    }
+                    //}
 
 
                     if ((StatusData[0] == "notAttended") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
@@ -588,7 +588,7 @@ namespace FarmsApi.Services
 
                     };
                     Context.StudentLessons.Add(sl);
-                    InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס  " + StatusData[2], sl);
+                   // InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס  " + StatusData[2], sl);
 
 
                 }
@@ -623,7 +623,7 @@ namespace FarmsApi.Services
 
                     if (!exists)
                     {
-                        InsertIntoLog(item.Lesson_Id, 4, context, "הורדת תלמיד מקבוצה", item);
+                       // InsertIntoLog(item.Lesson_Id, 4, context, "הורדת תלמיד מקבוצה", item);
 
                         context.StudentLessons.Remove(item);
                     }
@@ -639,7 +639,7 @@ namespace FarmsApi.Services
 
                         var slin = new StudentLessons() { Lesson_Id = l.Id, User_Id = itemStudId, Status = "", Details = "", IsComplete = 0, HorseId = null, OfficeDetails = "" };
                         context.StudentLessons.Add(slin);
-                        InsertIntoLog(l.Id, 3, context, "הוספת תלמיד לקבוצה", slin);
+                      //  InsertIntoLog(l.Id, 3, context, "הוספת תלמיד לקבוצה", slin);
                     }
 
                 }
@@ -664,7 +664,7 @@ namespace FarmsApi.Services
                 var Status = Lesson["statuses"].SingleOrDefault(s => s["StudentId"].Value<int>() == StudentId);
                 if (Status != null)
                 {
-                    return new string[] { Status["Status"].Value<string>(), Status["Details"] != null ? Status["Details"].Value<string>() : null, Status["IsComplete"] != null ? Status["IsComplete"].Value<string>() : null, Status["HorseId"] != null ? Status["HorseId"].Value<string>() : null, Status["HorseId"] != null ? Status["OfficeDetails"].Value<string>() : null };
+                    return new string[] { Status["Status"].Value<string>(), Status["Details"] != null ? Status["Details"].Value<string>() : null, Status["IsComplete"] != null ? Status["IsComplete"].Value<string>() : null, Status["HorseId"] != null ? Status["HorseId"].Value<string>() : null, Status["OfficeDetails"] != null ? Status["OfficeDetails"].Value<string>() : null };
                 }
             }
             return new string[] { null, null, null, null, null };
@@ -680,7 +680,7 @@ namespace FarmsApi.Services
             Context.Lessons.Add(newLesson);
             Context.SaveChanges();
             Lesson["id"] = newLesson.Id;
-            // InsertIntoLog(newLesson.Id, 1, Context, "שיעור חדש", null);
+          //  InsertIntoLog(newLesson.Id, 1, Context, "שיעור חדש", null);
             Context.SaveChanges();
 
 
@@ -690,24 +690,24 @@ namespace FarmsApi.Services
 
         private static void InsertIntoLog(int LessonId, int Type, Context context, string Details, StudentLessons sl = null)
         {
-            //var Lesson = context.Lessons.Where(x => x.Id == LessonId).FirstOrDefault();
+            var Lesson = context.Lessons.Where(x => x.Id == LessonId).FirstOrDefault();
 
-            //LogsLessons lg = new LogsLessons();
-            //lg.Type = Type;
-            //lg.TimeStamp = DateTime.Now;
-            //lg.LessonDate = Lesson.Start;
-            //lg.LessonId = LessonId;
-            //lg.Instructor_Id = Lesson.Instructor_Id;
-            //lg.Details = Details;
-            //if (sl != null)
-            //{
-            //    lg.StudentId = sl.User_Id;
-            //    lg.Status = sl.Status;
-            //}
+            LogsLessons lg = new LogsLessons();
+            lg.Type = Type;
+            lg.TimeStamp = DateTime.Now;
+            lg.LessonDate = Lesson.Start;
+            lg.LessonId = LessonId;
+            lg.Instructor_Id = Lesson.Instructor_Id;
+            lg.Details = Details;
+            if (sl != null)
+            {
+                lg.StudentId = sl.User_Id;
+                lg.Status = sl.Status;
+            }
 
-            //lg.UserId = UsersService.GetCurrentUser().Id;
+            lg.UserId = UsersService.GetCurrentUser().Id;
 
-            //context.LogsLessons.Add(lg);
+            context.LogsLessons.Add(lg);
 
         }
 
@@ -803,7 +803,7 @@ namespace FarmsApi.Services
                         // Delete Lesson
                         Context.Lessons.Remove(Lesson);
 
-                        // InsertIntoLog(Lesson.Id, 5, Context, "מחיקת שיעור", null);
+                       // InsertIntoLog(Lesson.Id, 5, Context, "מחיקת שיעור", null);
                         Context.SaveChanges();
                     }
                 }
@@ -1201,7 +1201,7 @@ namespace FarmsApi.Services
         public static MonthlyReports GetSetMonthlyReports(int id, string date, string text, int type)
         {
             var Res = new MonthlyReports();
-            if (text == "null") text = "";
+            if (text ==null) text = "";
             DateTime FirstDate = date != null ? DateTime.Parse(date) : DateTime.Now.Date;
             using (var Context = new Context())
             {

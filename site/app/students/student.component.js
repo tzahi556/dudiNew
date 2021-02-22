@@ -142,7 +142,8 @@
         this.printLessons = _printLessons.bind(this);
         this.printExcel = _printExcel.bind(this);
         this.printExcelExpensive = _printExcelExpensive.bind(this);
-
+        this.printIntekAndMonthlyReport = _printIntekAndMonthlyReport.bind(this);
+        
 
         this.getPrint = _getPrint.bind(this);
         this.changeExpense = _changeExpense.bind(this);
@@ -186,6 +187,117 @@
 
 
         this.SelectedExpHorseId = "";
+
+
+        function _printIntekAndMonthlyReport(type) {
+
+            if (type == 2) { 
+                    var innerContents = "<div style='font-size:18px;font-weight:bold;text-decoration:underline'>אינטק עבור התלמיד: " + this.user.FirstName + ' ' + this.user.LastName + "</div><div style='font-size:16px;'>" + this.user.Intek + "</div>";
+                    var popupWinindow = window.open('', '_blank', 'width=600,height=700,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no');
+                    popupWinindow.document.open();
+                    popupWinindow.document.write('<html><head>'
+                    + '<link rel="stylesheet" type="text/css" href="https://www.giddyup.co.il/node_modules/bootstrap-rtl/dist/css/bootstrap-rtl.min.css" />'
+                    + '<link rel="stylesheet" type="text/css" href="https://www.giddyup.co.il/node_modules/bootstrap/dist/css/bootstrap.css" /> '
+                    + '<style>th{text-align:right !important }</style> </head > <body onload="window.print()">' + innerContents + '</html>'
+                    );
+                    popupWinindow.document.close();
+            }
+
+
+            if (type == 1) {
+                var MultipleTables = "";
+                var StudentName = this.user.FirstName + " " + this.user.LastName;
+                var instructorId = this.lessons[this.lessons.length - 1].resourceId;
+                if (this.user.MainInstructorId) {
+
+                    instructorId = this.user.MainInstructorId;
+                }
+
+                var InstructorName = this.getInstructorName(instructorId);
+
+
+                var innerContents = "<div style='font-size:18px;font-weight:bold;text-decoration:underline'>דוח רב חודשי</div>";
+                innerContents += "<div style='font-size:18px;font-weight:bold;text-decoration:underline'>שם תלמיד: " + StudentName + " , ת.ז: " + this.user.IdNumber + "</div>";
+                innerContents += "<div style='font-size:18px;font-weight:bold;text-decoration:underline'>שם מדריך: " + InstructorName + "</div>";
+
+                for (var i in this.monthlyReportHeader) {
+
+                   
+                    var Header = this.monthlyReportHeader[i];
+                    var reportdate = Header.Date;
+                    var date = moment(reportdate).format('MM/YYYY');
+                    var DataofReport = this.filterReportMontlyComments(reportdate);
+                    var MonthTitle = "<div style='border:solid 1px gray;padding:5px'><div style='font-size:18px;font-weight:bold;'> חודש - " + date + "</div>";
+                    var Table = `
+
+                      <table class='table' >
+                 <thead>
+                    <tr>
+                        <th>תאריך</th>
+                        <th>טקסט</th>
+                        <th>משוב</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+           
+                    for (var i in DataofReport) {
+
+                        Table += "<tr><td>" + moment(DataofReport[i].Date).format('DD/MM/YYYY') + "</td><td>" + DataofReport[i].Details + "</td><td>" + DataofReport[i].Mashov + "</td></tr>";
+                    }
+
+                    Table += "</tbody></table>";
+                    var MonthsIKUM = "<div style='font-size:18px;font-weight:bold;'> סיכום חודשי </div>";
+                    var dateSearch = moment(reportdate).format('YYYY-MM-DD');
+
+                    //************************** Sync Request
+                    var url = sharedValues.apiUrl + 'lessons/getSetMonthlyReports/' + this.user.Id + '/' + dateSearch.toString() + '/null/1';
+                    var request = new XMLHttpRequest();
+                    request.open('GET', url, false);  // `false` makes the request synchronous
+                    request.send(null);
+
+                    if (request.status === 200) {
+
+                        if (request.responseText) {
+                            var SikumObj = JSON.parse(request.responseText);
+                            if (SikumObj.Summery)
+                                MonthsIKUM += "<div style='font-size:16px;'> " + SikumObj.Summery.replace(/break/g, '</br>') + " </div>";
+                            else
+                                MonthsIKUM += "<div style='font-size:16px;'> אין סיכום חודשי  </div>";
+                        } else {
+
+                            MonthsIKUM += "<div style='font-size:16px;'> אין סיכום חודשי  </div>";
+                        }
+                        
+                        //console.log(request.responseText);
+                    }
+
+                    //**************************
+
+                    MultipleTables += MonthTitle + Table + MonthsIKUM + "</div></br>";
+
+                 
+                }
+               
+                var innerContents = innerContents + MultipleTables;
+                var popupWinindow = window.open('', '_blank', 'width=600,height=700,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no');
+                popupWinindow.document.open();
+                popupWinindow.document.write('<html><head>'
+                    + '<link rel="stylesheet" type="text/css" href="https://www.giddyup.co.il/node_modules/bootstrap-rtl/dist/css/bootstrap-rtl.min.css" />'
+                    + '<link rel="stylesheet" type="text/css" href="https://www.giddyup.co.il/node_modules/bootstrap/dist/css/bootstrap.css" /> '
+                    + '<style>th{text-align:right !important }</style> </head > <body onload="window.print()">' + innerContents + '</html>'
+                );
+                popupWinindow.document.close();
+
+            }
+
+
+
+
+
+        }
+
+
+
 
 
         function _gethorsesList() {
@@ -458,7 +570,6 @@
 
 
         }
-
 
         function _printExcelExpensive(isShulam) {
 
@@ -1920,16 +2031,40 @@
                     this.IsHiyuvInHashlama = this.farm.IsHiyuvInHashlama;
                     ////אם לחייב אז תוריד את דרוש שיעור השלמה הרגיל
 
+                   
+                    if (this.IsHiyuvInHashlama == 1) {
+                        var index = this.lessonStatuses.findIndex(x => x.id == "completionReq");
+                        if (index != -1) {
 
-                    if (this.IsHiyuvInHashlama == 1 && this.lessonStatuses.length > 5) {
+                            this.lessonStatuses.splice(index, 1);
+                        }
+                    } else {
+                        var index = this.lessonStatuses.findIndex(x => x.id == "completionReqCharge");
+                        if (index != -1) {
 
-                        this.lessonStatuses.splice(4, 1);
+                            this.lessonStatuses.splice(index, 1);
+                        }
 
-                    } else if (this.lessonStatuses.length > 3) {
-
-                        this.lessonStatuses.splice(5, 1);
                     }
 
+
+
+
+
+                    //if (this.IsHiyuvInHashlama == 1 && this.lessonStatuses.length > 5) {
+
+                    //    this.lessonStatuses.splice(4, 1);
+
+                    //} else if (this.lessonStatuses.length > 3) {
+
+                    //    this.lessonStatuses.splice(5, 1);
+                    //}
+
+
+
+
+
+                    //********************************************************
 
                     this.newPayment.Date = new Date();
                     this.newPayment.Price = this.user.Cost;
@@ -2298,8 +2433,6 @@
                 lesson.statuses[0].Status = "completion";
                 lesson.statuses[0].IsComplete = isComplete;
             }
-
-
 
             if ((status == "completionReq" || status == "completionReqCharge") && isComplete == 0) {
 
@@ -3038,7 +3171,11 @@
                 if (found.length > 0) {
                     found[0].IsPaid = ((this.lessons[i].paid) ? 1 : 0);
                 } else {
-                    this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: this.lessons[i].id, status: this.lessons[i].statuses[0].Status, details: this.lessons[i].statuses[0].Details, isComplete: this.lessons[i].statuses[0].IsComplete, officedetails: this.lessons[i].statuses[0].OfficeDetails, IsPaid: ((this.lessons[i].paid) ? 1 : 0) });
+                    var IsComplete = this.lessons[i].statuses[0].IsComplete;
+                    var Status = this.lessons[i].statuses[0].Status;
+                    if (IsComplete > 2) Status = "completion";
+                    this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: this.lessons[i].id, status: Status, details: this.lessons[i].statuses[0].Details, isComplete: IsComplete, officedetails: this.lessons[i].statuses[0].OfficeDetails, IsPaid: ((this.lessons[i].paid) ? 1 : 0) });
+                  //  this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: this.lessons[i].id, status: this.lessons[i].statuses[0].Status, details: this.lessons[i].statuses[0].Details, isComplete: this.lessons[i].statuses[0].IsComplete, officedetails: this.lessons[i].statuses[0].OfficeDetails, IsPaid: ((this.lessons[i].paid) ? 1 : 0) });
                 }
             }
 
@@ -3054,7 +3191,10 @@
                 if (found.length > 0) {
                     found[0].IsPaid = ((this.lessons[i].paid) ? 1 : 0);
                 } else {
-                    this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: this.lessons[i].id, status: this.lessons[i].statuses[0].Status, details: this.lessons[i].statuses[0].Details, isComplete: this.lessons[i].statuses[0].IsComplete, officedetails: this.lessons[i].statuses[0].OfficeDetails, IsPaid: ((this.lessons[i].paid) ? 1 : 0) });
+                    var IsComplete = this.lessons[i].statuses[0].IsComplete;
+                    var Status = this.lessons[i].statuses[0].Status;
+                    if (IsComplete > 2) Status = "completion";
+                    this.lessonStatusesToUpdate.push({ studentId: this.user.Id, lessonId: this.lessons[i].id, status: Status, details: this.lessons[i].statuses[0].Details, isComplete: IsComplete, officedetails: this.lessons[i].statuses[0].OfficeDetails, IsPaid: ((this.lessons[i].paid) ? 1 : 0) });
                 }
             }
 
@@ -3077,13 +3217,24 @@
 
               
                 if (payment.SelectedForInvoiceTemp) {
-                    if ((payment.doc_type == "Kabala" && newPayment.doc_type == "Mas") || (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala")) {
+                    if ((payment.doc_type == "Kabala" && newPayment.doc_type == "Mas") ||
+                        (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") ||
+                        (payment.doc_type == "Iska" && newPayment.doc_type == "MasKabala")
+
+                    ) {
                        
 
                         newPayment.ParentInvoiceNum = payment.InvoiceNum;
                         newPayment.ParentInvoicePdf = payment.InvoicePdf;
                         newPayment.SelectedForInvoice = true;
                     }
+
+
+
+
+
+
+
                     //if (payment.doc_type == "Mas" && newPayment.doc_type == "Kabala") {
 
                     //    payment.ParentInvoiceNum = newPayment.InvoiceNum;
@@ -3328,7 +3479,12 @@
 
                 return true;
             }
-            else if ((this.newPayment.isZikuy) && !pay.ZikuyNumber && (pay.doc_type != 'Zikuy' && !pay.canceled)) {
+            else if ((this.newPayment.isZikuy) && !pay.ZikuyNumber && (pay.doc_type != 'Zikuy' && pay.doc_type != 'Iska' && !pay.canceled)) {
+
+                return true;
+            }
+
+            else if (this.showNewPayment && (this.newPayment.isMasKabala) &&  (pay.doc_type == 'Iska')) {
 
                 return true;
             }

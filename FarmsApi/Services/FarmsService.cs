@@ -280,7 +280,42 @@ namespace FarmsApi.Services
                 FarmInstructors fs = fi.Where(y => y.UserId == item.Instructor_Id).FirstOrDefault();
 
 
+                if (fs == null)
+                {
+                    if (item.KlalitHistorisId == null)
+                    {
+                        khv = new KlalitHistoris();
+                        khv.Id = 0;
+                        khv.UserId = item.UserId;
+                        khv.FirstName = khv.FirstName;
+                        khv.LastName = khv.LastName;
+                        khv.FarmId = item.FarmId;
+                        khv.DateSend = DateTime.Now;
+                        khv.DateLesson = item.DateLesson;
+                        khv.ClaimNumber = "";
+                        khv.ResultXML = "";
+                        khv.ResultNumber = "2";
+                        khv.Result = "לא נמצא מדריך המוגדר בכללית המתאים לבקשה";
 
+
+                        khv.CounterSend = 1;
+                        khv.Instructor_Id = item.Instructor_Id;
+                        Context.KlalitHistoris.Add(khv);
+
+                    }
+                    else
+                    {
+                        khv.DateSend = DateTime.Now;
+                        khv.ResultXML = "";
+                        khv.ResultNumber = "2";
+                        khv.Result = "לא נמצא מדריך המוגדר בכללית המתאים לבקשה";
+                        khv.CounterSend += 1;
+                        Context.Entry(khv).State = System.Data.Entity.EntityState.Modified;
+                    }
+                    Context.SaveChanges();
+                    return khv;
+
+                }
 
                 string FirstName = item.FirstName;
                 string LastName = item.LastName;

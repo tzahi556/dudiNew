@@ -36,10 +36,10 @@
 
 
         function _getSetMonthlyReports(userId, date, text, type) {
-           
-            if (!text) text = null;
+            debugger
+            if (!text) text = "";
             var deferred = $q.defer();
-            $http.get(sharedValues.apiUrl + 'lessons/getSetMonthlyReports/' + userId + '/' + date + '/' + text + '/' + type).then(function (res) {
+            $http.get(sharedValues.apiUrl + 'lessons/getSetMonthlyReports/', { params: { id: userId, date: date, text: text, type: type } }).then(function (res) {
                 deferred.resolve(res.data);
             });
             return deferred.promise;

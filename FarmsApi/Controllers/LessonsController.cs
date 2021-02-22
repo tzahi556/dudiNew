@@ -80,7 +80,7 @@ namespace FarmsApi.Services
         }
 
 
-        [Route("getSetMonthlyReports/{id}/{date}/{text}/{type}")]
+        [Route("getSetMonthlyReports")]
         [HttpGet]
         public IHttpActionResult GetSetMonthlyReports(int id, string date, string text,int type)
         {
