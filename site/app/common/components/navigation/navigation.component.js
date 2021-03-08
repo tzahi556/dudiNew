@@ -13,9 +13,11 @@
     function NavigationController($scope, $rootScope) {
         this.init = _init.bind(this);
 
+
         $rootScope.$on('$stateChangeSuccess', this.init);
 
         function _init() {
+          
             var role = localStorage.getItem('currentRole');
             this.role = role;
 

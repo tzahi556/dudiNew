@@ -335,15 +335,7 @@
 
             $.get('app/reports/ReportHMO.html?sss=' + new Date(), function (text) {
 
-                // var CurrentDate = self.fromDate;
-                //if (!CurrentDate) CurrentDate = new Date();
-                //var daysInMonth = moment(CurrentDate).daysInMonth();
-
-                //var Month = CurrentDate.getMonth() + 1;
-                //var Year = CurrentDate.getFullYear();
-                //if (Month < 10) Month = "0" + Month;
-
-
+              
 
                 text = text.replace("@FromDate", moment(self.fromDate).format('DD/MM/YYYY')).replace("@ToDate", moment(self.toDate).format('DD/MM/YYYY'));
                 text = text.replace("@NameHava", localStorage.getItem('FarmName'));
@@ -482,7 +474,7 @@
 
                 // מביא סך הכל תלמידים
                 if (type == 99) {
-                    debugger
+                  
                     var Counter = 0;
                     var DateExist = [];
                     var res = data.filter(x => IsStatusOk(x.Status, x.IsComplete, x.IsHiyuvInHashlama));
@@ -1094,8 +1086,6 @@
 
 
         }
-
-
 
         function _getRound(number) {
 

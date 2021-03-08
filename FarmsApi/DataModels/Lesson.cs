@@ -12,6 +12,8 @@ namespace FarmsApi.DataModels
         public int Instructor_Id { get; set; }
         public string Details { get; set; }
 
+        public bool IsTiyul { get; set; }
+
 
     }
 }

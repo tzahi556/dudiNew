@@ -2,20 +2,22 @@
   
     var app = angular.module('app');
 
-    app.component('closetoken', {
-        templateUrl: 'app/common/components/closetoken/closetoken.template.html',///closeToken.html',
-        controller: ClosetokenController,
+    app.component('userp', {
+        templateUrl: 'app/common/components/userp/userp.template.html',///closeToken.html',
+        controller: UserpayController,
         bindings: {
             users: '<'
         }
     });
 
-    function ClosetokenController(usersService, lessonsService, $scope, sharedValues, $http) {
+    function UserpayController(usersService, lessonsService, $scope, sharedValues, $http) {
       
         var self = this;
         this.usersService = usersService;
         debugger
-        var UserId = getUrlParameter("UserId");
+
+
+        var UserId = getUrlParameter("aaa");
         this.usersService.getUser(UserId).then(function (user) {
            
             this.user = user;

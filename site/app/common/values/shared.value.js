@@ -67,6 +67,7 @@
             { id: 'treatmentMusic', name: 'תראפיה במוזיקה' },
             { id: 'treatmentPsychoDrama', name: 'פסיכודרמה' },
             { id: 'treatmentMovement', name: 'טיפול בתנועה' },
+            { id: 'tiyul', name: '*** טיול ***' },
         ],
         HMOs: [
             { id: 'maccabiGold', name: 'מכבי זהב', reportName: 'מכבי', prePaid: true, maxLessons: 30, reportColor: '#42ecf5;' },

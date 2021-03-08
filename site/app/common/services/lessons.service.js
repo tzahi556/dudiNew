@@ -18,12 +18,28 @@
         this.getSetSchedularTask = _getSetSchedularTask.bind(this);
         this.getSetMonthlyReports = _getSetMonthlyReports.bind(this);
 
+        this.updateTiyulLists = _updateTiyulLists.bind(this);
+
         this.Shibutz = _Shibutz.bind(this);
 
 
         this.HMOs = sharedValues.HMOs;
 
+       
 
+        
+
+        function _updateTiyulLists(lessonid,tiyullists) {
+
+
+
+
+            var deferred = $q.defer();
+            $http.post(sharedValues.apiUrl + 'lessons/updateTiyulLists/' + lessonid , tiyullists).then(function (res) {
+                deferred.resolve(res.data);
+            });
+            return deferred.promise;
+        }
 
         function _Shibutz(date, isDelete) {
 
@@ -36,7 +52,7 @@
 
 
         function _getSetMonthlyReports(userId, date, text, type) {
-            debugger
+            
             if (!text) text = "";
             var deferred = $q.defer();
             $http.get(sharedValues.apiUrl + 'lessons/getSetMonthlyReports/', { params: { id: userId, date: date, text: text, type: type } }).then(function (res) {
@@ -181,7 +197,7 @@
         function _updateLesson(lesson, changeChildren, lessonsQty) {
          
            
-            debugger
+            
             changeChildren = changeChildren || false;
             var deferred = $q.defer();
             $http.post(sharedValues.apiUrl + 'lessons/updateLesson/' + changeChildren + "/" + lessonsQty, lesson).then(function (res) {

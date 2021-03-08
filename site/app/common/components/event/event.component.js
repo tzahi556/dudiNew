@@ -15,6 +15,7 @@
     });
 
     function EventController($scope, $rootScope, lessonsService, sharedValues, usersService, horsesService) {
+        this.lessonsService = lessonsService;
         this.usersService = usersService;
         this.horsesService = horsesService;
         this.scope = $scope;
@@ -51,21 +52,66 @@
         this.onlyMultiple = 0;
         this.modalAppendClick = _modalAppendClick.bind(this);
         this.getStudentAge = _getStudentAge.bind(this);
+        this.addTiyulRiders = _addTiyulRiders.bind(this);
         this.IsInstructorBlock = $rootScope.IsInstructorBlock;
-
-
+        this.GetPayLink = _GetPayLink.bind(this);
+        
         this.FarmId = localStorage.getItem('FarmId');
+
         this.scope.$on('event.show', this.onShow);
     }
 
+    function _GetPayLink() {
+
+
+
+        this.TiyulLinkSend = "asdfsdfsdfsdf afadfasdf";
+
+
+
+    }
+
+    function _addTiyulRiders() {
+
+        this.tiyullists = [];
+
+        for (var i = 0; i < this.TiyulCounts; i++) {
+
+            var tiyulnew = { NameofRidder: "", HorseId: "", lessonId: this.event.id };
+            this.tiyullists.push(tiyulnew);
+        }
+
+        var student = this.students.filter(x => x.Id == this.event.students[0])[0];
+        if (student) {
+
+            this.TiyulCost = student.Cost * this.TiyulCounts;
+        }
+
+
+
+    }
 
     function _changeStudentstatus(studentId) {
 
 
         var CurrentStatus = this.statuses[studentId];
 
-       
-        if (['attended', null].indexOf(CurrentStatus) == -1) { 
+        var IsComplete = this.event.statuses.filter(x => x.StudentId == studentId)[0].IsComplete;
+
+        if (IsComplete > 2 && ['attended', 'notAttended', 'notAttendedCharge', ""].indexOf(CurrentStatus) == -1) {
+
+            alert("בתיאום שיעור השלמה ניתן להוסיף רק הגיע,לא הגיע,לא הגיע לחייב");
+
+            if (IsComplete == 4) this.statuses[studentId] = "attended";
+            if (IsComplete == 6) this.statuses[studentId] = "notAttendedCharge";
+            if (IsComplete == 5) this.statuses[studentId] = "";
+            if (IsComplete == 3) this.statuses[studentId] = "notAttended";
+
+        }
+
+
+
+        if (['attended', null].indexOf(CurrentStatus) == -1) {
 
             this.horsesarray[studentId] = 0;
 
@@ -228,9 +274,9 @@
         if (type == 2) {
 
             if (role == "instructor" && (currentStatus == "attended" || currentStatus == "notAttended" || !currentStatus)) {
-               
-              
-                return this.sharedValues.lessonStatuses.filter(x=>!x.hide);
+
+
+                return this.sharedValues.lessonStatuses.filter(x => !x.hide);
 
             } else {
                 return this.sharedValues.lessonStatuses;
@@ -257,12 +303,50 @@
     }
 
     function _onShow(event, selectedLesson, studentTemplate) {
+        this.tiyullists = [];
 
-        // alert(this.FarmId );
+
+        this.TiyulCost = "";
+        this.TiyulCounts = "";
+        this.TiyulTel = "";
+        this.TiyulMail = "";
+        this.TiyulMazmin = "";
+
+        
+
+        var FarmStyle = localStorage.getItem('FarmStyle');
+        if (FarmStyle == 1) {
+
+            selectedLesson.IsTiyul = true;
+
+        }
+        if (selectedLesson.IsTiyul) {
+
+
+            
+            this.lessonsService.updateTiyulLists(selectedLesson.id,null).then(function (tiyuls) {
+               
+                
+                this.tiyullists = tiyuls;
+
+
+                this.TiyulCost = tiyuls[0].TiyulCost;
+                this.TiyulCounts = tiyuls[0].TiyulCounts;
+                this.TiyulTel = tiyuls[0].TiyulTel;
+                this.TiyulMail=tiyuls[0].TiyulMail;
+                this.TiyulMazmin = tiyuls[0].TiyulMazmin;
+                this.TiyulCostSend = tiyuls[0].TiyulCostSend;
+
+
+                
+            }.bind(this));
+
+
+        }
         // this.FarmId = localStorage.getItem('FarmId');
 
-
-        // debugger
+        // this.IsTiyul = selectedLesson.IsTiyul;
+        // 
         this.isEventHaveChild = false;
         if (selectedLesson.students.length > 0) this.isEventHaveChild = true;
 
@@ -279,8 +363,9 @@
 
         var role = localStorage.getItem('currentRole');
         var IsHiyuvInHashlama = localStorage.getItem('IsHiyuvInHashlama');
+     
 
-      //  debugger
+        //  
         //this.IsHiyuvInHashlama = this.farm.IsHiyuvInHashlama;
 
         ////אם לחייב אז תוריד את דרוש שיעור השלמה הרגיל
@@ -293,7 +378,7 @@
         //    this.sharedValues.lessonStatuses.splice(5, 1);
 
         //}
-       
+
         if (IsHiyuvInHashlama == 1) {
             var index = this.sharedValues.lessonStatuses.findIndex(x => x.id == "completionReq");
             if (index != -1) {
@@ -338,7 +423,7 @@
 
 
 
-
+       
 
 
 
@@ -448,78 +533,68 @@
         return matches > 0;
     }
 
-    function _close() {
-        // alert(this.event.statuses[0].Status + "  ------ " + this.event.statuses[0].IsComplete);
+    function _close(isClose) {
+        
+        // סגירה בלבד
+        if (isClose) {
+            this.event = null;
+            return; 
+        }
 
-        // כל זה בשביל לעדכן את הסטטוס בעת שינוי של הגעה
-        //for (var i in this.changeLessonsStudent) {
+        if (this.event.IsTiyul) {
+           
+         
+            if (this.tiyullists.length > 0) {
 
-        //    var currentUserId = this.changeLessonsStudent[i].StudentId;
-        //    var ChangeStatus = this.changeLessonsStudent[i].ChangeStatus;
-        //    var SourceStatus = this.changeLessonsStudent[i].SourceStatus;
-        //    if (SourceStatus != ChangeStatus) {
-        //        this.usersService.getUser(currentUserId).then(function (user) {
-        //            this.user = user;
+                this.tiyullists[0].TiyulCost = this.TiyulCost;
+                this.tiyullists[0].TiyulCounts = this.TiyulCounts;
+                this.tiyullists[0].TiyulTel = this.TiyulTel;
+                this.tiyullists[0].TiyulMail = this.TiyulMail;
+                this.tiyullists[0].TiyulMazmin = this.TiyulMazmin;
+                this.tiyullists[0].TiyulCostSend = this.TiyulCostSend;
 
-        //            //רק אם מדובר בשיעור
-        //            if (this.user.Meta.PayType == 'lessonCost') {
-        //                if ((SourceStatus == null || SourceStatus == "notAttended") && ChangeStatus == "attended") {
-        //                    this.user.AccountStatus -= user.Meta.Cost;
-        //                }
+            }
 
-        //                if (SourceStatus == "attended") {
-        //                    this.user.AccountStatus += user.Meta.Cost;
-        //                }
-        //            }
+            
 
-        //            this.usersService.updateUser(this.user).then(function (user) {
+            this.lessonsService.updateTiyulLists(this.event.id, this.tiyullists).then(function (tiyuls) {
+               
+                this.event.lessprice = this.TiyulCost;
+                this.copyStatuses(true);
+                this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
+                this.event = null;
 
-
-        //                this.copyStatuses(true);
-        //                this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
-        //                this.event = null;
-
-
-
-        //            }.bind(this));
-
-
-        //        }.bind(this));
-
-
-        //    }
-        //    else
-        //    {
-        //        this.copyStatuses(true);
-        //        this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
-        //        this.event = null;
-
-
-        //    }
+            }.bind(this));
 
 
 
-        //}
 
-        //if (this.changeLessonsStudent.length == 0) {
-        //    this.copyStatuses(true);
-        //    this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
-        //    this.event = null;
-        //}
+        } else {
+            this.copyStatuses(true);
+            this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
+            this.event = null;
 
 
+        }
 
-        this.copyStatuses(true);
-        this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
-        this.event = null;
 
+      
 
 
     }
 
     function _addStudentToEvent(student) {
 
+        if (!student) {
 
+            //this.event.students.push(studentId);
+
+            this.TiyulCounts = "";
+            this.tiyullists = [];
+            this.TiyulCost = "";
+
+            return;
+        }
         var studentId = student.Id;
         this.studentFilter = null;
         if (!angular.isArray(this.event.students)) {

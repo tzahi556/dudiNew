@@ -12,19 +12,20 @@ namespace FarmsApi.Services
     // כאשר מפעילים באמת צריך לדסבל את הטריגר שקולט מחיר וסוג שיעור TRG_InsertPriceLesson
     public class UploadFromAccess
     {
-        public int FarmId = 79; //71 רנצו מניס
+        public int FarmId = 109; //71 רנצו מניס
                                 //67 חוות גרין פילדס חווה אמת
                                 // טסט 59
                                 //73 חניאל
                                 // 79 סוסים בכפר
+                                // הרועים109 
         public DataSet ds = new DataSet();
 
         public Context Context = new Context();
 
-        public string MailPrefix = "susimbkfar";
+        public string MailPrefix = "haroim";
         // "greenfields";
 
-        public string Hava = "susimbkfar";
+        public string Hava = "haroim";
         //"greenfields";
         //rancho
         //haniel
@@ -32,7 +33,7 @@ namespace FarmsApi.Services
         //3 חוות גרין פילדס חווה אמת
         //6 חוות רנצו
         // טסט 59
-        public string HavaMacabi = "1";
+        public string HavaMacabi = "54";
         //מכבי בחווה גרין פילדס 2
         //מכבי בחווה רנצו 54
         //מכבי בחווה חניאל 2
@@ -52,7 +53,7 @@ namespace FarmsApi.Services
         public UploadFromAccess()
         {
             String connection = @"Provider=Microsoft.Jet.OLEDB.4.0;" +
-                                @"Data source=C:\Users\tzahi\Desktop\ORD\SusimBkfar.mdb;Jet OLEDB:Database Password=diana;";
+                                @"Data source=C:\Users\Tzahi\Desktop\Amir.mdb;Jet OLEDB:Database Password=diana;";
 
 
 
@@ -71,26 +72,26 @@ namespace FarmsApi.Services
 
 
             //מקורי
-            string sqlLessons = @"  
-                                SELECT FarmDairy.*
-                                FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
-                                Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
-                                and FarmDairy.DayofRide  >= #2019-01-01 00:00:00#
-                                Order by FarmDairy.DayofRide
-                  ";
+            //string sqlLessons = @"  
+            //                    SELECT FarmDairy.*
+            //                    FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+            //                    Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
+            //                    and FarmDairy.DayofRide  >= #2020-01-01 00:00:00#
+            //                    Order by FarmDairy.DayofRide
+            //      ";
 
 
             ////מקורי עם מסמכים
-            //string sqlLessons = @"  
-            //                    SELECT FarmDairy.*,Documents.*,Riders.PayArrangement
-            //                    FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
-            //                    LEFT JOIN Documents ON Documents.DocumentId = FarmDairy.invoice
+            string sqlLessons = @"  
+                                SELECT FarmDairy.*,Documents.*,Riders.PayArrangement
+                                FROM (FarmDairy INNER JOIN Riders ON Riders.RiderId = FarmDairy.RiderId)
+                                LEFT JOIN Documents ON Documents.DocumentId = FarmDairy.invoice
 
-            //                    Where  (Riders.Active=True Or Riders.LastUpdate > #2019-01-01 00:00:00#)
-            //                    and FarmDairy.DayofRide  >= #2019-01-01 00:00:00# 
-            //                    and Riders.RiderId =1511
-            //                    Order by FarmDairy.DayofRide
-            //      ";
+                                Where  (Riders.Active=True Or Riders.LastUpdate > #2020-01-01 00:00:00#)
+                                and FarmDairy.DayofRide  >= #2020-01-01 00:00:00# 
+                            
+                                Order by FarmDairy.DayofRide
+                  ";
 
 
 
@@ -143,11 +144,11 @@ namespace FarmsApi.Services
 
             string sqlHorses = @" SELECT * from Horses Where Active=True";
 
-            string sqlKesher = @" SELECT * from CustCorrespondence where CustCorrespondence.DateofRecord >= #2019-01-01 00:00:00#";
+            string sqlKesher = @" SELECT * from CustCorrespondence where CustCorrespondence.DateofRecord >= #2020-01-01 00:00:00#";
 
-            string sqlDocuments = @" SELECT * from Documents Where IDate >= #2019-01-01 00:00:00#";
+            string sqlDocuments = @" SELECT * from Documents Where IDate >= #2020-01-01 00:00:00#";
 
-            string sqlCustMonthlyPay = @" SELECT * from CustMonthlyPay Where FromYear >= 2019";
+            string sqlCustMonthlyPay = @" SELECT * from CustMonthlyPay Where FromYear >= 2020";
 
 
             using (OleDbConnection conn = new OleDbConnection(connection))
@@ -200,10 +201,10 @@ namespace FarmsApi.Services
         {
 
        //     BuildEntityIdOnly();
-          //    BuildUserRiders();
-            // BuildUserInstructors();
+             // BuildUserRiders();
+             // BuildUserInstructors();
             //  BuildLessons();
-              BuildStudentLessons();
+             BuildStudentLessons();
             // BuildCommitmentsLessons();
             //   BuildPayments();
 
@@ -1171,7 +1172,7 @@ namespace FarmsApi.Services
                 {
                     FirstName = GetRightName(item["FirstName"].ToString());
                     LastName = GetRightName(item["FamilyName"].ToString().Replace("_", ""));
-                    Active = (item["Active"].ToString() == "True") ? "active" : "notActive";
+                    Active = (item["Active"].ToString() == "True") ? "active" : "active";
 
 
                     Deleted = (Active == "active") ? false : true;
@@ -1916,11 +1917,29 @@ namespace FarmsApi.Services
                 if (style == "treatment" && finance == "3") return "meuhedet";
                 if (style == "treatment" && finance == "10") return "klalitDikla";
             }
+
+            if (FarmId == 109)
+            {
+               
+                if (style == "treatment" && finance == "105") return "klalit";
+                if (style == "treatment" && finance == "54") return "maccabiSheli";
+
+            }
+
+
+
             return "";
         }
 
         private string GetStyleHava(string finance)
         {
+            if (FarmId == 109)
+            {
+
+                if (finance == "105" || finance == "54") return "treatment";
+
+            }
+
             // גולדן פילד
             if (FarmId == 67)
             {

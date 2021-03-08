@@ -320,11 +320,17 @@
 
 
                 }
-
+               
                 // מעדכן איידי לכל אירוע בשביל הגרירה
                 if (event.id) {
+                    
                     $(element).attr("main_id", event.id);
+                    //if (event.statuses.length == 0)
+                    //  var addTiyulButton=`<a  ng-click="" ng-href="alert()"> הוספ/י טיול </a>`;
+                    //  $(element).append(addTiyulButton);
                 }
+              
+               
 
                 //if (event.title == "ניתן להכניס חד פעמי") {
                 //    $(element).css("color", "white").css("background", "gray").css("border-color", "Silver");

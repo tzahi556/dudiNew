@@ -63,6 +63,15 @@
                 </select>
             </div>
 
+
+            <div class="form-group">
+                <label>סגנון חווה</label>
+                <select class="form-control" ng-model="$ctrl.farm.Style">
+                    <option value="0">בית ספר תלמידים</option>
+                    <option value="1">טיולים בלבד</option>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label>מס/קבלה אחרון</label>
                 <input type="number" disabled class="form-control" ng-model="$ctrl.farm.Meta.LastInvoiceId" />
@@ -94,7 +103,7 @@
                             <td><input class="table-control" type="text" ng-model="$ctrl.newfarmTag.tag_name"></td>
                             <td><input class="table-control" type="number" ng-model="$ctrl.newfarmTag.tag_id"></td>
                             <td>
-                                <button ng-click="$ctrl.addNewTag()" type="button"  class="btn btn-xs btn-success">הוספה</button>
+                                <button ng-click="$ctrl.addNewTag()" type="button" class="btn btn-xs btn-success">הוספה</button>
                             </td>
 
                         </tr>

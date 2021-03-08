@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using FarmsApi.DataModels;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Web.Http;
 
 namespace FarmsApi.Services
@@ -84,6 +86,11 @@ namespace FarmsApi.Services
         [HttpGet]
         public IHttpActionResult GetSetMonthlyReports(int id, string date, string text,int type)
         {
+            if (type == 3)
+            {
+                return Ok(LessonsService.GetSetMonthlyReportsList(id));
+
+            }
             return Ok(LessonsService.GetSetMonthlyReports(id, date, text, type));
         }
 
@@ -96,8 +103,19 @@ namespace FarmsApi.Services
 
 
 
+      
+        [Route("updateTiyulLists/{lessonid}")]
+        [HttpPost]
+        public IHttpActionResult UpdateTiyulLists(int? lessonid, List<Tiyuls> Tiyuls)
+        {
+            
+            return Ok(LessonsService.UpdateTiyulLists(lessonid, Tiyuls));
 
-        
+        }
+
+
+
+
 
     }
 }

@@ -89,6 +89,15 @@
             }
         });
 
+        $stateProvider.state('userp', {
+            url: '/userp',
+            views: {
+                'main': {
+                    template: '<userp></userp>',
+                }
+            }
+        });
+
         $stateProvider.state('closetoken', {
             url: '/closetoken',
             views: {
@@ -97,7 +106,6 @@
                 }
             }
         });
-
       
 
         $stateProvider.state('farms', {

@@ -103,6 +103,7 @@ namespace FarmsApi.Services
                             resourceId = Lesson.Instructor_Id,
                             lessprice = Lesson.Price,
                             IsPaid = Lesson.IsPaid,
+                            IsTiyul = Lesson.IsTiyul,
                             lessonpaytype = Lesson.LessonPayType,
                             details = Lesson.Details,
                             students = students.Select(s => s.StudentId).ToArray(),
@@ -167,26 +168,61 @@ namespace FarmsApi.Services
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = @" 
-                            Select t3.*,u.FirstName + ' ' + u.LastName as FullName,ui.FirstName + ' ' + ui.LastName as InstructorName from (
+                                  Select t3.*,u.FirstName + ' ' + u.LastName as FullName,t4.InstructorName ,
+                                 t4.MainDetails
 
-                            Select t1.Id,completionReq = t1.CounterStatus - coalesce(t2.CounterStatus, 0) from (
-                            Select st.User_Id as Id,Count(Status) as CounterStatus from StudentLessons st 
-                            where (st.Status in('completionReq','completionReqCharge'))
-                            Group by st.User_Id
-                            ) t1
+                                 from (
 
-                            left join (
-                            Select st.User_Id as Id,Count(Status) as CounterStatus from StudentLessons st 
-                            where (st.Status = 'completion')
-                            Group by st.User_Id
-                            )t2	 on t2.Id=t1.Id
-                            )t3	
-                            inner join Users u on t3.Id = u.Id and u.Deleted=0 and u.Active='active' 
-                            inner join ( Select *,ROW_NUMBER() OVER(Partition by User_Id ORDER BY Lesson_Id desc) as RowNum from StudentLessons where Status in('completionReq','completionReqCharge')) t4 on t4.User_Id=t3.Id and t4.RowNum = 1
-                            inner join Lessons l on l.Id = t4.Lesson_Id
-                            inner join Users ui on ui.Id = l.Instructor_Id
+                                     Select t1.Id,completionReq = t1.CounterStatus - coalesce(t2.CounterStatus, 0) 
+                	from (
+                		Select st.User_Id as Id,Count(Status) as CounterStatus from StudentLessons st 
+                		where (st.Status in('completionReq','completionReqCharge'))
+                		Group by st.User_Id
+                	) t1
 
-                            where    (t3.completionReq > 0) and('" + CurrentUser.Role.ToString() + "'!='instructor' or " + CurrentUser.Id.ToString() + "=l.Instructor_Id ) and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")  order by Instructor_Id";
+                	left join (
+                		Select st.User_Id as Id,Count(Status) as CounterStatus from StudentLessons st 
+                		where (st.Status = 'completion')
+                		Group by st.User_Id
+                	)t2	 on t2.Id=t1.Id
+                                     )t3	
+                                     inner join Users u on t3.Id = u.Id and u.Deleted=0 and u.Active='active' 
+                                     inner join (
+                            Select sl.*,l.Details as MainDetails,l.Instructor_Id,ui.FirstName + ' ' + ui.LastName as InstructorName,ROW_NUMBER() OVER(Partition by User_Id ORDER BY l.Start ) as RowNum 
+                            	from StudentLessons sl 
+                			inner join Lessons l on sl.Lesson_Id =l.Id
+                			inner join Users ui on ui.Id = l.Instructor_Id
+                			where Status in('completionReq','completionReqCharge') and sl.IsComplete = 1
+                          	   ) 
+                t4 on t4.User_Id=t3.Id and t4.RowNum = 1
+                                     where    (t3.completionReq > 0) and('" + CurrentUser.Role.ToString() + "'!='instructor' or " + CurrentUser.Id.ToString() + "=t4.Instructor_Id ) and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")  order by Instructor_Id";
+
+
+
+                //cmd.CommandText = @" 
+                //        Select t3.*,MainDetails='',u.FirstName + ' ' + u.LastName as FullName,ui.FirstName + ' ' + ui.LastName as InstructorName from (
+
+                //        Select t1.Id,completionReq = t1.CounterStatus - coalesce(t2.CounterStatus, 0) from (
+                //        Select st.User_Id as Id,Count(Status) as CounterStatus from StudentLessons st 
+                //        where (st.Status in('completionReq','completionReqCharge'))
+                //        Group by st.User_Id
+                //        ) t1
+
+                //        left join (
+                //        Select st.User_Id as Id,Count(Status) as CounterStatus from StudentLessons st 
+                //        where (st.Status = 'completion')
+                //        Group by st.User_Id
+                //        )t2	 on t2.Id=t1.Id
+                //        )t3	
+                //        inner join Users u on t3.Id = u.Id and u.Deleted=0 and u.Active='active' 
+                //        inner join ( Select *,ROW_NUMBER() OVER(Partition by User_Id ORDER BY Lesson_Id desc) as RowNum from StudentLessons where Status in('completionReq','completionReqCharge')) t4 on t4.User_Id=t3.Id and t4.RowNum = 1
+                //        inner join Lessons l on l.Id = t4.Lesson_Id
+                //        inner join Users ui on ui.Id = l.Instructor_Id
+
+                //        where    (t3.completionReq > 0) and('" + CurrentUser.Role.ToString() + "'!='instructor' or " + CurrentUser.Id.ToString() + "=l.Instructor_Id ) and (u.Farm_Id=" + CurrentUser.Farm_Id + " Or 0=" + CurrentUser.Farm_Id + ")  order by Instructor_Id";
+
+
+
 
 
                 using (var reader = cmd.ExecuteReader())
@@ -202,7 +238,8 @@ namespace FarmsApi.Services
                         Id = row["Id"],
                         FullName = row["FullName"],
                         completionReq = row["completionReq"],
-                        InstructorName = row["InstructorName"]
+                        InstructorName = row["InstructorName"],
+                        MainDetails = row["MainDetails"]
 
                     }));
 
@@ -284,7 +321,7 @@ namespace FarmsApi.Services
                                 StudentLesson.IsComplete = Status["isComplete"].Value<int>();
 
 
-                               // InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס מהכרטיס  " + StudentLesson.IsComplete, StudentLesson);
+                                // InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס מהכרטיס  " + StudentLesson.IsComplete, StudentLesson);
                             }
 
                             if (Status["officedetails"] != null)
@@ -523,8 +560,12 @@ namespace FarmsApi.Services
 
 
                             cmd.CommandText = "   UPDATE StudentLessons SET IsComplete = 2 "
-                                              + "  WHERE Lesson_Id = (SELECT top 1 Lesson_Id FROM StudentLessons WHERE Lesson_Id < " + LessonId + "  and User_Id = " + StudentId
-                                              + "  and Status in('completionReq','completionReqCharge') and IsComplete = 1 order by Lesson_Id desc) and User_Id = " + StudentId;
+                                              + "  WHERE Lesson_Id = (SELECT top 1 Lesson_Id FROM StudentLessons sl inner join Lessons l on sl.Lesson_Id = l.Id  WHERE  User_Id = " + StudentId
+                                              + "  and Status in('completionReq','completionReqCharge') and IsComplete = 1 order by l.Start) and User_Id = " + StudentId;
+
+                            //cmd.CommandText = "   UPDATE StudentLessons SET IsComplete = 2 "
+                            //            + "  WHERE Lesson_Id = (SELECT top 1 Lesson_Id FROM StudentLessons WHERE Lesson_Id < " + LessonId + "  and User_Id = " + StudentId
+                            //            + "  and Status in('completionReq','completionReqCharge') and IsComplete = 1 order by Lesson_Id desc) and User_Id = " + StudentId;
 
 
 
@@ -538,12 +579,12 @@ namespace FarmsApi.Services
                     }
 
                     // צחי הוריד בינתיים
-                    //if ((StatusData[0] == "" || StatusData[0] == null || StatusData[0] == "completion") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
-                    //{
-                    //    StatusData[0] = "completion";
-                    //    StatusData[2] = "5";
+                    if ((StatusData[0] == "") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
+                    {
+                        StatusData[0] = "completion";
+                        StatusData[2] = "5";
 
-                    //}
+                    }
 
 
                     if ((StatusData[0] == "notAttended") && (StatusData[2] == "3" || StatusData[2] == "4" || StatusData[2] == "5" || StatusData[2] == "6"))
@@ -588,7 +629,7 @@ namespace FarmsApi.Services
 
                     };
                     Context.StudentLessons.Add(sl);
-                   // InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס  " + StatusData[2], sl);
+                    // InsertIntoLog(LessonId, 2, Context, " עדכון סטטוס  " + StatusData[2], sl);
 
 
                 }
@@ -623,7 +664,7 @@ namespace FarmsApi.Services
 
                     if (!exists)
                     {
-                       // InsertIntoLog(item.Lesson_Id, 4, context, "הורדת תלמיד מקבוצה", item);
+                        // InsertIntoLog(item.Lesson_Id, 4, context, "הורדת תלמיד מקבוצה", item);
 
                         context.StudentLessons.Remove(item);
                     }
@@ -639,7 +680,7 @@ namespace FarmsApi.Services
 
                         var slin = new StudentLessons() { Lesson_Id = l.Id, User_Id = itemStudId, Status = "", Details = "", IsComplete = 0, HorseId = null, OfficeDetails = "" };
                         context.StudentLessons.Add(slin);
-                      //  InsertIntoLog(l.Id, 3, context, "הוספת תלמיד לקבוצה", slin);
+                        //  InsertIntoLog(l.Id, 3, context, "הוספת תלמיד לקבוצה", slin);
                     }
 
                 }
@@ -680,7 +721,7 @@ namespace FarmsApi.Services
             Context.Lessons.Add(newLesson);
             Context.SaveChanges();
             Lesson["id"] = newLesson.Id;
-          //  InsertIntoLog(newLesson.Id, 1, Context, "שיעור חדש", null);
+            //  InsertIntoLog(newLesson.Id, 1, Context, "שיעור חדש", null);
             Context.SaveChanges();
 
 
@@ -724,6 +765,7 @@ namespace FarmsApi.Services
             newLesson.End = Lesson["end"].Value<DateTime>();
             newLesson.Instructor_Id = Lesson["resourceId"] != null ? Lesson["resourceId"].Value<int>() : 0;
             newLesson.Details = Lesson["details"] != null ? Lesson["details"].Value<string>() : "";
+            newLesson.IsTiyul = Lesson["IsTiyul"] != null ? Lesson["IsTiyul"].Value<bool>() : false;
 
             //var oldDetails = newLesson.Details;
 
@@ -803,7 +845,7 @@ namespace FarmsApi.Services
                         // Delete Lesson
                         Context.Lessons.Remove(Lesson);
 
-                       // InsertIntoLog(Lesson.Id, 5, Context, "מחיקת שיעור", null);
+                        // InsertIntoLog(Lesson.Id, 5, Context, "מחיקת שיעור", null);
                         Context.SaveChanges();
                     }
                 }
@@ -1198,10 +1240,19 @@ namespace FarmsApi.Services
 
         }
 
+        public static List<MonthlyReports> GetSetMonthlyReportsList(int id)
+        {
+            using (var Context = new Context())
+            {
+                return Context.MonthlyReports.Where(x => x.UserId == id).OrderByDescending(y => y.Date).ToList();
+
+            }
+
+        }
         public static MonthlyReports GetSetMonthlyReports(int id, string date, string text, int type)
         {
             var Res = new MonthlyReports();
-            if (text ==null) text = "";
+            if (text == null) text = "";
             DateTime FirstDate = date != null ? DateTime.Parse(date) : DateTime.Now.Date;
             using (var Context = new Context())
             {
@@ -1483,6 +1534,89 @@ namespace FarmsApi.Services
             else return "castrated";
 
 
+        }
+
+
+        public static List<Tiyuls> UpdateTiyulLists(int? lessonid, List<Tiyuls> objList)
+        {
+            using (var Context = new Context())
+            {
+
+                if (lessonid != null && objList==null)
+                {
+
+
+                    return Context.Tiyuls.Where(x => x.LessonId == lessonid).ToList();
+
+
+                }
+
+
+                foreach (Tiyuls item in objList)
+                {
+
+
+
+                    if (item.Id == 0)
+                    {
+
+                        Context.Tiyuls.Add(item);
+
+                    }
+                    else
+                    {
+
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Modified;
+
+                    }
+
+                }
+
+
+                //if (objList.Count>0)
+                //{
+                //    int LessId = objList[0].LessonId;
+
+                //    StudentLessons sl = Context.StudentLessons.Where(x => x.Lesson_Id == LessId).FirstOrDefault();
+
+                //    if (sl != null)
+                //    {
+                //        sl.Price = Double.Parse(objList[0].TiyulCost);
+                //        Context.Entry(sl).State = System.Data.Entity.EntityState.Modified;
+
+                //    }
+
+                //}
+
+
+
+
+
+                try
+                {
+
+                    var result = Context.Tiyuls.Where(x=>x.LessonId==lessonid).ToList();
+                    IEnumerable<Tiyuls> differenceQuery = result.Except(objList);
+
+                    foreach (Tiyuls item in differenceQuery)
+                    {
+                        Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
+                    }
+
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
+                Context.SaveChanges();
+
+                return Context.Tiyuls.Where(x => x.LessonId == lessonid).ToList();
+
+            }
         }
     }
 

@@ -18,12 +18,16 @@ namespace FarmsApi.Services
             //    var ddd = Context.AvailableHours.Toli;
             //    Context.Lessons.Where(l => l.ParentId == LessonId).ToList();
             //}
-              string sdsd = UsersService.CreateLoopLessons();
+            //  string sdsd = UsersService.CreateLoopLessons();
+
+
 
 
             // return Ok(UsersService.getAvailablehours(5));
 
-
+            UploadFromAccess uac = new UploadFromAccess();
+            uac.UpdateUsersLessons();
+            return "sdsdsdsd";
 
             //
 
@@ -31,8 +35,8 @@ namespace FarmsApi.Services
 
             //   string sdsd = UsersService.CreateLoopLessons();
 
-          //  string sdsd = UsersService.CreateLoopLessons();
-            return "צחיאל";
+            //  string sdsd = UsersService.CreateLoopLessons();
+           // return "צחיאל";
         }
 
 

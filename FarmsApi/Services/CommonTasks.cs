@@ -434,8 +434,8 @@ namespace FarmsApi.Services
 
                             uc.checks_auto = false;
                             Context.Payments.Add(p);
-                            //  Context.SaveChanges();
-                            PaymentUser.SelectedForInvoice = true;
+                            // Context.SaveChanges();
+                            //PaymentUser.SelectedForInvoice = true;
                             Context.Entry(PaymentUser).State = System.Data.Entity.EntityState.Modified;
 
 

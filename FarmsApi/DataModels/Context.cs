@@ -60,6 +60,8 @@ namespace FarmsApi.DataModels
 
         public DbSet<InsertedLessonsTemps> InsertedLessonsTemps { get; set; }
 
+        public DbSet<Tiyuls> Tiyuls { get; set; }
+
 
         public Context() : base("Farms") { }
 

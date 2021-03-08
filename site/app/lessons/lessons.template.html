@@ -7,12 +7,12 @@
         <input class='form-control addedCalender' style='width:150px;' ng-model="$ctrl.searchDate" ng-change='$ctrl.customDate()' placeholder='לפי תאריך' type='date' />
 
         <!--<div id="addminusrowheight">
-            <button type="button" class="close">+</button>
-            <button type="button" class="close">-</button>
-        </div>-->
+        <button type="button" class="close">+</button>
+        <button type="button" class="close">-</button>
+    </div>-->
 
         <div id="addminusrowheight" class="fc-button-group">
-            <button  style="float:left;margin-right:3px" class=" btn btn-danger btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'instructor' && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.Shibutz(true)"> ביטול שיבוץ </button>
+            <button style="float:left;margin-right:3px" class=" btn btn-danger btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'instructor' && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.Shibutz(true)"> ביטול שיבוץ </button>
             <button style="float:left;margin-right:3px" class=" btn btn-primary btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'instructor' && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.Shibutz(false)"> 'שיבוץ סוסים אוטו </button>
             <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.printLessons()"> הדפסה </button>
             <button style="float:left;margin-right:3px" class=" btn btn-success btn-xs" ng-show="$ctrl.viewCalenderType=='agendaDay'   && $ctrl.role != 'farmAdminHorse' && $ctrl.role != 'stableman' && $ctrl.role != 'worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'" ng-click="$ctrl.printExcel()"> אקסל </button>
@@ -48,7 +48,11 @@
                 <span class="red-circle ng-binding" style="background-color:darkorange;font-size:15px;">{{$ctrl.lessonsCompletelength}} </span>&nbsp;ממתינים לשיעור השלמה
             </div>
             <div ng-show="showDiv" class="dvContainer" style="height:550px;overflow:auto">
-
+                <!--<a class="" href="" bsTooltip title="Tooltip on bottom">
+        Tooltip on bottom
+    </a>-->
+               
+                
                 <div ng-repeat="lesinst in $ctrl.lessonsComplete |filter:{isInstructor:'1'} | orderBy:['FullName']" style="width:250px">
                     <div class="fc-draggable dvDragElement" style="background-color:goldenrod" ng-click="open = !open">
                         <img ng-show="open" src="../../images/table-arrow-down.png" />
@@ -56,13 +60,19 @@
                         {{lesinst.InstructorName}}
 
                     </div>
-                    <div class="fc-draggable dvDragElement" ng-show="open"
+                   
+
+                    <div title="{{les.MainDetails}}"
+                         data-toggle="tooltip"
+                         data-placement="left" class="fc-draggable dvDragElement" ng-show="open"
                          ondragstart="dragStart(event)"
                          ondragover="allowDrop(event)"
                          draggable="true" id="{{les.Id}}" ng-repeat="les in $ctrl.lessonsComplete |filter:{isInstructor:'0',InstructorName:lesinst.InstructorName} |orderBy:['FullName','completionReq']">{{les.FullName}}({{les.completionReq}})</div>
                 </div>
             </div>
         </div>
+
+       
 
         <div style="float:left" ng-show="!$ctrl.IsInstructorBlock && $ctrl.role!='farmAdminHorse'   && $ctrl.role!='stableman'  && $ctrl.role!='worker' && $ctrl.subrole!='stableman'  && $ctrl.subrole!='worker'">
 
@@ -134,13 +144,16 @@
         }
 
         function drop(event) {
-            debugger
+         
             // $(".hadPeami").show();
             angular.element(document.getElementById('mainController')).scope().makeDrop(event, currentStudentId);
             currentStudentId = "";
 
         }
-
+        //$(function () {
+        //   // $('[data-toggle="tooltip"]').tooltip();
+        //    $('[data-toggle="popover"]').popover();
+        //})
 
 
     </script>

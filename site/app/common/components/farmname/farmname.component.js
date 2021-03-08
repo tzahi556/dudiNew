@@ -27,6 +27,7 @@
                     localStorage.setItem('authorizationData', angular.toJson(authData));
                     localStorage.setItem('FarmInstractorPolicy', data.Meta.IsInstractorPolicy);
                     localStorage.setItem('IsHiyuvInHashlama', data.IsHiyuvInHashlama);
+                    localStorage.setItem('FarmStyle', data.Style);
                     localStorage.setItem('FarmId', res.Farm_Id);
 
                 });

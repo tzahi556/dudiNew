@@ -136,3 +136,22 @@
     width: 100%;
 }
 
+
+.tiyulBody {
+    
+   
+    
+}
+
+.tiyulBody::before {
+    content: "";
+    background-image: url(../../../../../images/ridder.png);
+    background-size: cover;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    opacity: 0.2;
+}
+

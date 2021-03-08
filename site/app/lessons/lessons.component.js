@@ -15,7 +15,7 @@
     });
 
     function LessonsController($scope, $rootScope, $q, lessonsService, notificationsService, $filter) {
-
+       
         this.lessonsService = lessonsService;
         $rootScope.createNewfromdd = _eventCreate.bind(this);
         this.scope = $scope;
@@ -667,7 +667,7 @@
         }
 
         function _eventCreate(start, end, jsEvent, view, resource) {
-
+           
             if ($rootScope.students && $rootScope.students.length > 0) {
 
 
@@ -711,7 +711,7 @@
             $rootScope.statuses = [];
             $rootScope.students = [];
 
-
+            //($jsEvent.target).append("sdsdsdsdsd");
 
             this.createNotifications(event, 'create');
 
@@ -940,7 +940,7 @@
         }
 
         function _eventClose(event, lessonsQty) {
-
+            debugger
             if (event && event.isFromChangePhone) {
                 this.eventChange(event);
 
@@ -948,7 +948,10 @@
             //
             else if (event) {
                 this.updateLesson(event);
+                
+
                 this.createChildEvent(event, lessonsQty);
+                
             }
             else {
                 this.reloadLessons();
@@ -1130,11 +1133,32 @@
         }
 
         function _updateLesson(event) {
-
+             
             this.lessonsService.updateLesson(event).then(function (res) {
+
+
+                if (event.IsTiyul) {
+
+
+
+              
+                    var lessonStatusesToUpdate = [];
+
+                    lessonStatusesToUpdate.push({ studentId: event.students[0], lessonId: event.id, lessprice: eval(event.lessprice) });
+
+                    lessonsService.updateStudentLessonsStatuses(lessonStatusesToUpdate, event.students[0]).then(function (lessons) {
+                        
+                        //this.lessons = lessons;
+                        //this.initLessons();
+
+                    }.bind(this));
+                }
+
 
                 this.reloadLessons();
                 this.reloadLessonsComplete();
+
+
             }.bind(this));
         }
 

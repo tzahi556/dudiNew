@@ -18,7 +18,6 @@
     }
 
     .myStyleattendedDontCharge {
-       
         color: red;
         font-weight: bold;
     }
@@ -32,129 +31,318 @@
     <comments studentid="$ctrl.selectedStudent" close-callback="$ctrl.commentClose"></comments>
     <newstudent studentid="$ctrl.createStudent" farmId="$ctrl.f" close-callback="$ctrl.createStudentClose"></newstudent>
     <matrotal studentidmatrot="$ctrl.selectedStudentmatrot" mode="$ctrl.mode"></matrotal>
-    <div class="event">
+    <div class="event" style="padding:0px !important;margin:0px !important">
 
         <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
+        <div class="panel panel-default" style="margin: 0px !important;max-width:{{($ctrl.event.IsTiyul)?'400px':'1000px'}}">
+            <div class="panel-heading">
+                {{(!$ctrl.event.IsTiyul)?' שיעור רכיבה':' כרטיס טיול'}}
 
-        <div ng-show="!$ctrl.IsInstructorBlock">
-            <!--ng-show="$ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin' "-->
-
-            <div class="tranferStudent">
-                <input class="form-control" type="date" ng-model="$ctrl.tranferDate" ng-change="$ctrl.puplateInstructor()" />
-            </div>
-            <div class="tranferStudent">
-                <select class="form-control" style="width:100%" ng-change="$ctrl.puplateTimesInstructor()"
-                        ng-model="$ctrl.SelectedinstructordId" ng-options="instructor.Id as instructor.Result for instructor in $ctrl.instructorsWorks">
-                    <option value="">-- בחר מדריך --</option>
-                </select>
-            </div>
-            <div class="clearfix"></div>
-            <div class="tranferStudentButton">
-                <select class="form-control"
-                        ng-model="$ctrl.SelectedinstructordTime">
-                    <option value="0">-------בחר שעה---------</option>
-                    <option ng-class="{myStyle: x.IsTafus == '1'}" ng-disabled="x.IsTafus" ng-repeat="x in $ctrl.instructorsWorksTimes" value="{{x.Id}}">{{x.Result}}</option>
-
-                </select>
-            </div>
-            <div class="tranferStudentButton">
-                <button class="btn btn-success" ng-disabled="$ctrl.SelectedinstructordTime==0 || $ctrl.SelectedinstructordId==undefined || !$ctrl.SelectedinstructordId" ng-click="$ctrl.transferLesson()" href="">העבר</button>
+                <div style="float:left" ng-if="($ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin') && !$ctrl.event.IsTiyul && (!$ctrl.event.students  || $ctrl.event.students.length==0)  ">
+                    <button style="float:left;margin-right:3px" class=" btn btn-warning btn-xs" ng-click="$ctrl.event.IsTiyul=true"> העברה לכרטיס טיול </button>
+                </div>
             </div>
 
 
-            <div class="form-group">
-                <div class="clearfix"></div>
-                <hr />
-            </div>
-            <label>הוספת תלמיד</label>
-            <input class="form-control" type="text" ng-model="$ctrl.studentFilter" />
-            <div class="student-list">
-                <ul ng-show="$ctrl.studentFilter != '' && $ctrl.studentFilter ">
-                    <li ng-click="$ctrl.addStudentToEvent(student)" ng-if="student.Active == 'active'" ng-repeat="student in $ctrl.students | filterStudents: $ctrl.studentFilter ">{{student.FirstName}} {{student.LastName}} <span ng-if="student.Active == 'notActive'">(לא פעיל)</span></li>
-                </ul>
-            </div>
-            <!--<select class="form-control" ng-change="$ctrl.addStudentToEvent()" ng-options="student.Id as student.FirstName + ' ' + student.LastName for student in $ctrl.students | filterDeletedStudents" ng-model="$ctrl.selectedStudent">
-                <option value="">בחר תלמיד</option>
-            </select>-->
-        </div>
+            <div style="padding:2px" ng-if="!$ctrl.event.IsTiyul">
 
-        <div class="form-group">
-            <label>הערות משרד (כללי)</label>
-            <textarea class="form-control" ng-model="$ctrl.event.details"></textarea>
-        </div>
+                <div ng-show="!$ctrl.IsInstructorBlock">
+                    <!--ng-show="$ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin' "-->
 
-        <div class="form-group">
-            <label> תלמידים  </label>
-            <a class="btn btn-primary btn-xs" style="float:left" ng-show="!$ctrl.IsInstructorBlock" ng-click="$ctrl.createNewStudent(1)" href="">תלמיד חדש</a>
-            <a class="btn btn-success btn-xs" style="float:left;margin-left:2px" ng-show="$ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin' " ng-click="showDetails=!showDetails;$ctrl.changeToOffice(1)">{{showDetails ? 'הצג הערות מדריך':   'הצג הערות משרד'}} </a>
-            <table class="table small-padding">
-                <tr ng-repeat-start="studentId in $ctrl.event.students track by $index">
-                    <td colspan="3">
-                        <a href="" ui-sref="student({id:studentId})">{{$ctrl.studentDataById(studentId).FirstName}} {{$ctrl.studentDataById(studentId).LastName}}</a>
-                        <b>{{$ctrl.getStudentAge(studentId)}}</b>
-                        <a href="tel:{{$ctrl.studentDataById(studentId).PhoneNumber}}">{{$ctrl.studentDataById(studentId).PhoneNumber}}</a>
 
-                        <a class="pull-left close" ng-show="!$ctrl.IsInstructorBlock" ng-click="$ctrl.removeStudentFromEvent(studentId)" href="">&times;</a>
 
-                        <select ng-show="!$ctrl.IsInstructorBlock" class="pull-left " style="margin-left:15px;" ng-change="$ctrl.changeHorseValidation(studentId)"
-                                ng-model="$ctrl.horsesarray[studentId]" ng-options="hors.Id as hors.Name for hors in $ctrl.horses">
-                            <option value="">-- בחר סוס --</option>
+
+                    <div class="tranferStudent">
+                        <input class="form-control" type="date" ng-model="$ctrl.tranferDate" ng-change="$ctrl.puplateInstructor()" />
+                    </div>
+                    <div class="tranferStudent">
+                        <select class="form-control" style="width:100%" ng-change="$ctrl.puplateTimesInstructor()"
+                                ng-model="$ctrl.SelectedinstructordId" ng-options="instructor.Id as instructor.Result for instructor in $ctrl.instructorsWorks">
+                            <option value="">-- בחר מדריך --</option>
                         </select>
 
-                    </td>
 
-                </tr>
-                <tr ng-repeat-end class="status-row">
-                    <td>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="tranferStudentButton">
+                        <select class="form-control"
+                                ng-model="$ctrl.SelectedinstructordTime">
+                            <option value="0">-------בחר שעה---------</option>
+                            <option ng-class="{myStyle: x.IsTafus == '1'}" ng-disabled="x.IsTafus" ng-repeat="x in $ctrl.instructorsWorksTimes" value="{{x.Id}}">{{x.Result}}</option>
+
+                        </select>
+                    </div>
+                    <div class="tranferStudentButton">
+                        <button class="btn btn-success" ng-disabled="$ctrl.SelectedinstructordTime==0 || $ctrl.SelectedinstructordId==undefined || !$ctrl.SelectedinstructordId" ng-click="$ctrl.transferLesson()" href="">העבר</button>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="clearfix"></div>
+                        <hr />
+                    </div>
+                    <label>הוספת תלמיד</label>
+                    <input class="form-control" type="text" ng-model="$ctrl.studentFilter" />
+                    <div class="student-list">
+                        <ul ng-show="$ctrl.studentFilter != '' && $ctrl.studentFilter ">
+                            <li ng-click="$ctrl.addStudentToEvent(student)" ng-if="student.Active == 'active'" ng-repeat="student in $ctrl.students | filterStudents: $ctrl.studentFilter ">{{student.FirstName}} {{student.LastName}} <span ng-if="student.Active == 'notActive'">(לא פעיל)</span></li>
+                        </ul>
+                    </div>
+                    <!--<select class="form-control" ng-change="$ctrl.addStudentToEvent()" ng-options="student.Id as student.FirstName + ' ' + student.LastName for student in $ctrl.students | filterDeletedStudents" ng-model="$ctrl.selectedStudent">
+                        <option value="">בחר תלמיד</option>
+                    </select>-->
+                </div>
+
+                <div class="form-group">
+                    <label>הערות משרד (כללי)</label>
+                    <textarea class="form-control" ng-model="$ctrl.event.details"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label> תלמידים  </label>
+                    <a class="btn btn-primary btn-xs" style="float:left" ng-show="!$ctrl.IsInstructorBlock" ng-click="$ctrl.createNewStudent(1)" href="">תלמיד חדש</a>
+                    <a class="btn btn-success btn-xs" style="float:left;margin-left:2px" ng-show="$ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin' " ng-click="showDetails=!showDetails;$ctrl.changeToOffice(1)">{{showDetails ? 'הצג הערות מדריך':   'הצג הערות משרד'}} </a>
+                    <table class="table small-padding">
+                        <tr ng-repeat-start="studentId in $ctrl.event.students track by $index">
+                            <td colspan="3">
+                                <a href="" ui-sref="student({id:studentId})">{{$ctrl.studentDataById(studentId).FirstName}} {{$ctrl.studentDataById(studentId).LastName}}</a>
+                                <b>{{$ctrl.getStudentAge(studentId)}}</b>
+                                <a href="tel:{{$ctrl.studentDataById(studentId).PhoneNumber}}">{{$ctrl.studentDataById(studentId).PhoneNumber}}</a>
+
+                                <a class="pull-left close" ng-show="!$ctrl.IsInstructorBlock" ng-click="$ctrl.removeStudentFromEvent(studentId)" href="">&times;</a>
+
+                                <select ng-show="!$ctrl.IsInstructorBlock" class="pull-left " style="margin-left:15px;" ng-change="$ctrl.changeHorseValidation(studentId)"
+                                        ng-model="$ctrl.horsesarray[studentId]" ng-options="hors.Id as hors.Name for hors in $ctrl.horses">
+                                    <option value="">-- בחר סוס --</option>
+                                </select>
+
+                            </td>
+
+                        </tr>
+                        <tr ng-repeat-end class="status-row">
+                            <td>
+                                <div class="form-group">
+                                    <select ng-disabled="!$ctrl.getStatusofStudent(studentId,1)" class="form-control" ng-change="$ctrl.changeStudentstatus(studentId)" ng-model="$ctrl.statuses[studentId]">
+                                        <option value="">סטטוס</option>
+
+                                        <option ng-class="{myStyleattendedDontCharge: x.id == 'attendedDontCharge'}" ng-repeat="x in $ctrl.getStatusofStudent(studentId,2)" value="{{x.id}}">{{x.name}}</option>
+
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+
+
+                                    <textarea rows="1" class="form-control" ng-show="!showDetails" placeholder="הערות מדריך" ng-model="$ctrl.statusDetails[studentId]"></textarea>
+                                    <!--<input type="text" class="form-control" placeholder="הערות סטטוס" ng-model="$ctrl.statusDetails[studentId]">-->
+                                    <textarea rows="1" class="form-control" ng-show="showDetails" ng-model="$ctrl.statusOfficeDetails[studentId]" placeholder="הערות משרד"></textarea>  <!--ng-change="$ctrl.setLessonsDetails(lesson)"-->
+
+
+                                </div>
+                            </td>
+                            <td valign="bottom" style="padding-top:9px;">
+
+
+                                <!--הסתרה בעת חווה 79 סוסים בכפר-->
+                                <a class="btn btn-success btn-xs" ng-show="!showDetails && $ctrl.FarmId!=79" ng-click="$ctrl.openComments(studentId)" href="">...</a>
+                                <a class="btn btn-success btn-xs" ng-show="showDetails" style="visibility:hidden" href="">...</a>
+
+                                <a class="btn btn-primary btn-xs" title="משוב לשיעור" ng-show="!showDetails" ng-click="$ctrl.openMatrotal(studentId,1)" href="">...</a>
+                                <a class="btn btn-info btn-xs" title="מטרות הטיפול" ng-show="!showDetails" ng-click="$ctrl.openMatrotal(studentId,2)" href="">...</a>
+
+                            </td>
+
+
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="form-group" ng-show="!$ctrl.IsInstructorBlock">
+                    <label>כמות יצירת שיעורים נוספים</label>
+                    <input class="form-control" type="number" ng-model="$ctrl.lessonsQty" /><!--ng-disabled="$ctrl.event.prevId != 0"-->
+                </div>
+
+                <a class="btn btn-success" ng-click="$ctrl.close()" href="">שמור</a>
+                <a class="btn btn-default" ng-click="$ctrl.delete()" ng-show="!$ctrl.IsInstructorBlock" href="">מחק</a>
+                <div class="checkbox-inline" ng-show="!$ctrl.IsInstructorBlock"><label><input type="checkbox" ng-model="$ctrl.affectChildren">כולל אירועים עתידיים</label></div>
+
+            </div>
+
+            <div style="padding:2px; " class="col-md-12 tiyulBody" ng-if="$ctrl.event.IsTiyul">
+
+                <form name="eventForm" ng-submit="$ctrl.submit()" novalidate>
+
+                    <!--background-image:url(../../../../../images/ridder.png);-->
+                    <!--<div class="clearfix"></div>-->
+                    <!--<div class="col-md-8">-->
+                    <div class="col-md-6">
+                        <label> שם מזמין הטיול</label>
                         <div class="form-group">
-                            <select ng-disabled="!$ctrl.getStatusofStudent(studentId,1)" class="form-control" ng-change="$ctrl.changeStudentstatus(studentId)" ng-model="$ctrl.statuses[studentId]" 
-                                 > 
-                                <option value="">סטטוס</option>
+                            <input type="text" class="form-control" ng-model="$ctrl.TiyulMazmin" required />
+                        </div>
+                    </div>
 
-                                <option ng-class="{myStyleattendedDontCharge: x.id == 'attendedDontCharge'}"  ng-repeat="x in $ctrl.getStatusofStudent(studentId,2)" value="{{x.id}}">{{x.name}}</option>
+                    <div class="col-md-6">
+                        <label>סגנון טיול</label>
+                        <div class="form-group">
+                            <select class="form-control" ng-change="$ctrl.addStudentToEvent(student)"
+                                    ng-options="student.Id as (student.FirstName + ' ' + student.LastName) for student in $ctrl.students | filter:{Style:'tiyul',Active:'active'}"
+                                    ng-model="$ctrl.event.students[0]" required>
+                                <option value="">בחרי סגנון</option>
+
 
                             </select>
+
+                            <a href="" ui-sref="student({id:$ctrl.event.students[0]})">{{$ctrl.studentDataById($ctrl.event.students[0]).FirstName}} {{$ctrl.studentDataById($ctrl.event.students[0]).LastName}}</a>
                         </div>
-                    </td>
-                    <td>
+
+
+                        <!--<select ng-show="!$ctrl.IsInstructorBlock" class="pull-left " style="margin-left:15px;" ng-change="$ctrl.changeHorseValidation(studentId)"
+                ng-model="$ctrl.horsesarray[studentId]" ng-options="hors.Id as hors.Name for hors in $ctrl.horses">
+            <option value="">-- בחר סוס --</option>
+        </select>-->
+
+
+
+
+                    </div>
+
+
+
+
+                    <div class="col-md-6">
+                        <label>טלפון</label>
                         <div class="form-group">
-                           
+                            <input class="form-control" type="text" ng-model="$ctrl.TiyulTel" />
+                        </div>
+                    </div>
 
-                            <textarea rows="1" class="form-control" ng-show="!showDetails" placeholder="הערות מדריך" ng-model="$ctrl.statusDetails[studentId]"></textarea>
-                            <!--<input type="text" class="form-control" placeholder="הערות סטטוס" ng-model="$ctrl.statusDetails[studentId]">-->
-                            <textarea rows="1" class="form-control" ng-show="showDetails" ng-model="$ctrl.statusOfficeDetails[studentId]" placeholder="הערות משרד"></textarea>  <!--ng-change="$ctrl.setLessonsDetails(lesson)"-->
-
+                    <div class="col-md-6">
+                        <label>מייל</label>
+                        <div class="form-group">
+                            <input class="form-control" type="text" ng-model="$ctrl.TiyulMail" />
 
                         </div>
-                    </td>
-                    <td valign="bottom" style="padding-top:9px;">
+                    </div>
 
 
-                        <!--הסתרה בעת חווה 79 סוסים בכפר-->
-                        <a class="btn btn-success btn-xs" ng-show="!showDetails && $ctrl.FarmId!=79" ng-click="$ctrl.openComments(studentId)" href="">...</a>
-                        <a class="btn btn-success btn-xs" ng-show="showDetails" style="visibility:hidden" href="">...</a>
-
-                        <a class="btn btn-primary btn-xs" title="משוב לשיעור" ng-show="!showDetails" ng-click="$ctrl.openMatrotal(studentId,1)" href="">...</a>
-                        <a class="btn btn-info btn-xs" title="מטרות הטיפול" ng-show="!showDetails" ng-click="$ctrl.openMatrotal(studentId,2)" href="">...</a>
-
-                    </td>
 
 
-                </tr>
-            </table>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>  כמות משתתפים  </label>
+                            <input class="form-control" required type="number" ng-model="$ctrl.TiyulCounts" ng-change="$ctrl.addTiyulRiders()" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label> מחיר  </label>
+                            <input class="form-control" type="text" ng-model="$ctrl.TiyulCost" required />
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <style>
+                            /* table, tr td {
+                                border: 1px solid red
+                            }*/
+
+                            .tiyul tbody {
+                                display: block;
+                                height: 120px;
+                                overflow: auto;
+                            }
+
+                                .tiyul thead, .tiyul tbody tr {
+                                    display: table;
+                                    width: 100%;
+                                    table-layout: fixed; /* even columns width , fix width of table too*/
+                                }
+
+                            .tiyul thead {
+                                width: calc( 100% - 1em ) /* scrollbar is average 1em/16px width, remove it from thead width */
+                            }
+
+                            .tiyul {
+                                width: 400px;
+                            }
+                        </style>
+
+                        <table class="table tableFixHead tiyul">
+                            <thead>
+                                <tr>
+
+                                    <th>שם משתתף</th>
+                                    <th>סוס</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="tiyullist in $ctrl.tiyullists">
+
+
+                                    <td><input class="" type="text" style="height:20px" ng-model="tiyullist.NameofRidder"></td>
+                                    <td>
+                                        <div class="form-group">
+                                            <select class="" ng-options="horse.Id as horse.Name for horse in $ctrl.horses |filter:{Active:'!notActive'} " ng-model="tiyullist.HorseId">
+                                                <option value="">בחר סוס</option>
+                                            </select>
+                                        </div>
+
+
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-9" >
+                        <input  class="form-control" type="text" ng-model="$ctrl.TiyulCostSend" placeholder="סכום לתשלום" />
+                    </div>
+                    <div class="col-md-2" >
+
+                        <button ng-disabled="!$ctrl.TiyulCostSend || eventForm.$invalid" class="btn btn-link" ng-click="showDiv = !showDiv;$ctrl.GetPayLink()">צור קישור</button>
+
+                    </div>
+
+
+                        <div class="col-md-12" ng-show="showDiv" >
+                            <input class="form-control" type="text" ng-model="$ctrl.TiyulLinkSend" />
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>הערות משרד (כללי)</label>
+                                <textarea class="form-control" ng-model="$ctrl.event.details"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8 ">
+                            <button class="btn btn-success" ng-disabled="eventForm.$invalid" ng-click="$ctrl.close()" href="">שמור</button>
+                            <a class="btn btn-danger" ng-click="$ctrl.delete()" href="">מחק</a>
+                            <button type="button" class="btn btn-default" ng-click="$ctrl.close(true)">סגור</button>
+                        </div>
+                        <div class="col-md-4 ">
+                            <div class="form-group">
+                                <select class="form-control" ng-model="$ctrl.statuses[$ctrl.event.students[0]]">
+                                    <option value="">סטטוס</option>
+                                    <option value="attended">הגיע</option>
+                                    <option value="notAttended">לא הגיע</option>
+                                </select>
+                            </div>
+                        </div>
+
+                </form>
+            </div>
+
+
         </div>
-
-        <div class="form-group" ng-show="!$ctrl.IsInstructorBlock">
-            <label>כמות יצירת שיעורים נוספים</label>
-            <input class="form-control" type="number" ng-model="$ctrl.lessonsQty" /><!--ng-disabled="$ctrl.event.prevId != 0"-->
-        </div>
-
-        <a class="btn btn-success" ng-click="$ctrl.close()" href="">שמור</a>
-        <a class="btn btn-default" ng-click="$ctrl.delete()" ng-show="!$ctrl.IsInstructorBlock" href="">מחק</a>
-        <div class="checkbox-inline" ng-show="!$ctrl.IsInstructorBlock"><label><input type="checkbox" ng-model="$ctrl.affectChildren">כולל אירועים עתידיים</label></div>
     </div>
-</div>
 
+</div>
 <div class="modal fade" id="modalAppend" style="z-index:50000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -163,7 +351,7 @@
                 <h4 class="modal-title" id="myModalLabel">האם לשנות גם אירועים עתידיים?</h4>
             </div>
             <div class="modal-body">
-                
+
                 <button type="button" class="btn btn-primary" ng-click="$ctrl.modalAppendClick(false)" data-dismiss="modal" id="dvAppendHad">הוסף תלמיד באופן חד פעמי</button>
                 <button type="button" class="btn btn-primary" ng-click="$ctrl.modalAppendClick(true)" data-dismiss="modal" id="dvAppendTz">הוסף תלמיד לצמיתות </button>
             </div>

@@ -11,6 +11,11 @@ namespace FarmsApi.DataModels
 
         public int? IsHiyuvInHashlama { get; set; }
 
+        public int? Style { get; set; }
+
+
+        
+
         [NotMapped]
         public string UserName { get; set; }
         [NotMapped]
