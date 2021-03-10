@@ -119,6 +119,8 @@
         this.getCurrentFiles = _getCurrentFiles.bind(this);
         this.removeHorsesFiles = _removeHorsesFiles.bind(this);
         this.getFarmName = _getFarmName.bind(this);
+
+        this.getTzefiLeda = _getTzefiLeda.bind(this);
         
 
         this.role = localStorage.getItem('currentRole');
@@ -156,9 +158,26 @@
 
         this.getTotalHozim = _getTotalHozim.bind(this);
 
+        function _getTzefiLeda() {
+          
+            var res = "";
+            var LastPreg = this.pregnancies[this.pregnancies.length - 1];
+            if (LastPreg && !LastPreg.Finished) {
+
+                var ObjArray = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === LastPreg.Id);
+
+                if (ObjArray.length > 0) {
+
+                    res = "צפי משוער לידה - " + moment(ObjArray[0].Date).add('month',11).format('DD/MM/YYYY');
+
+                }
+            }
 
 
+            return res;
+        }
 
+        
 
         function _removeHorsesFiles(Name) {
 
@@ -230,7 +249,7 @@
 
         function _getCurrentPreg(pregId) {
 
-            debugger
+            
             var CurrentId = (pregId) ? pregId : this.pregnancies[this.pregnancies.length - 1].Id;
             var ObjArray = this.pregnanciesstates.filter(x => x.HorsePregnanciesId === CurrentId);
 
@@ -297,7 +316,7 @@
           
             this.horse.Owner = (this.currentUserFarmId != this.horse.Farm_Id) ? this.getFarmName(this.horse.Farm_Id) : this.horse.Owner;
 
-            //debugger
+            //
             //var dsdsd = this.treatments;
             this.diffHorseFarm = (this.currentUserFarmId != this.horse.Farm_Id && this.horse.Id!=0) ? true : false;
 
@@ -372,7 +391,7 @@
         function _addInsemination() {
             this.inseminations = this.inseminations || [];
 
-            // debugger
+            // 
             //if (!this.newInsemination.HalivaDate && !this.newInsemination.InseminationDate) {
             //    alert("חובה לבחור תאריך חליבה או הזרעה");
             //    return;
@@ -611,7 +630,7 @@
                         return 0;
                 });
                 var lastShoeing = this.shoeings[this.shoeings.length - 1];
-                debugger
+                
                 shoeingDate = moment(lastShoeing.Date).add(((this.horse.ShoeingTimeZone) ? (this.horse.ShoeingTimeZone * 7) : sharedValues.shoeing.interval), 'days');
             }
             else if (this.isFuture(first)) {
@@ -716,7 +735,7 @@
 
 
 
-
+            debugger
             horsesService.getHorse(pregnancy.Surrogate.Id, 1).then(function (horse) {
 
                 var startDate = this.getStatesByFind(pregnancy.Id, -1).Date;
@@ -914,7 +933,7 @@
 
             this.pregnancies = this.pregnancies || [];
 
-            //debugger
+            //
             var pregnancyHozimCount = this.pregnancies.filter(x => x.HozimId.toString() === this.newPregnancy.HozimId);
             var HozimCount = this.hozims.filter(x => x.Id.toString() === this.newPregnancy.HozimId)[0];
 
@@ -929,7 +948,7 @@
             this.stopPregnancy();
             pregnancyStates = this.getStates(this.newPregnancy);
             var startDate = this.newPregnancy.Date;
-
+            this.newPregnancy.Date = moment(this.newPregnancy.Date).format('YYYY/MM/DD');
 
             //  alert(this.newPregnancy.HozimId);
 
@@ -1035,8 +1054,8 @@
 
         function _removeHozims(hozim) {
 
-
-
+            debugger
+            
             var pregnancy = this.pregnancies.filter(x => x.HozimId && x.HozimId.toString() === hozim.Id.toString())[0];
             if (pregnancy) {
 
@@ -1079,9 +1098,9 @@
 
             for (var i in this.hozims) {
 
-                // if (this.hozims.length>0)debugger
+                // if (this.hozims.length>0)
                 this.hozims[i].TypeName = this.hozimTypes.filter(x => x.id == this.hozims[i].Type)[0].name;
-                this.hozims[i].FatherName = this.horses.filter(x => x.Id == this.hozims[i].FatherHorseId)[0].Name;
+                this.hozims[i].FatherName = (this.hozims[i].FatherHorseId == -1) ? this.hozims[i].OuterHorse: this.horses.filter(x => x.Id == this.hozims[i].FatherHorseId)[0].Name;
                 this.hozims[i].Date = moment(this.hozims[i].Date);
 
             }

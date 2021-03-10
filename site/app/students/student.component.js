@@ -2853,8 +2853,6 @@
 
         this.winPayClose = function () {
 
-            // alert(getUrlParameter("http://ynet.co.il?sdsd=1&Shir=3", "Shir"));
-
 
             if (this.newPayment.payment_type == 'ashrai') {
                 this.newPayment.payment_type = 'validate';
@@ -2891,19 +2889,12 @@
                 }.bind(this));
             }
 
-
-
-
             if (this.newPayment.payment_type == 'token') {
                 //  alert("כרטיס אשראי נרשם בהצלחה! מעתה תוכל לחייב בטוקן");
                 window.location.reload();
 
 
             }
-
-
-
-
 
             this.disablBtn = false;
         }

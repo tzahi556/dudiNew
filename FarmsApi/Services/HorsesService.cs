@@ -666,7 +666,7 @@ namespace FarmsApi.Services
                         Horse hsSusa = Context.Horses.Where(x => x.Id == item.HorseId).FirstOrDefault();
                         Horse hsSus = Context.Horses.Where(x => x.Id == item.FatherHorseId).FirstOrDefault();
 
-                        if (item.CostFather > 0)
+                        if (hsSus != null && item.CostFather > 0)
                         {
                             string name = " חוזה חווה " + "סוס מרביע -" + hsSus.Name;
                             int? ExpensesId = AddToExpensesTable(item.CostHava, 0, item.HorseId, f.Name, name, item.Date);
@@ -674,7 +674,7 @@ namespace FarmsApi.Services
                         }
 
 
-                        if (item.CostFather > 0)
+                        if (hsSus != null && item.CostFather > 0)
                         {
                             string name = " חוזה בעל הסוס " + "סוס מרביע -" + hsSus.Name;
                             int? ExpensesId = AddToExpensesTable(item.CostFather, 0, item.HorseId, f.Name, name, item.Date);
@@ -682,19 +682,21 @@ namespace FarmsApi.Services
                         }
 
 
-
-                        HorseInseminations hi = new HorseInseminations();
-                        hi.HorseId = hsSus.Id;
-                        hi.HalivaDate = item.Date;
-                        hi.PregnanciesHorseId = hsSusa.Id;
-                        hi.Cost = item.CostFather;
                         Context.HorseHozims.Add(item);
-
                         Context.SaveChanges();
 
-                        hi.HozimId = item.Id;
-                        Context.HorseInseminations.Add(hi);
+                        if (hsSus != null)
+                        {
+                            HorseInseminations hi = new HorseInseminations();
+                            hi.HorseId = hsSus.Id;
+                            hi.HalivaDate = item.Date;
+                            hi.PregnanciesHorseId = hsSusa.Id;
+                            hi.Cost = item.CostFather;
 
+
+                            hi.HozimId = item.Id;
+                            Context.HorseInseminations.Add(hi);
+                        }
 
 
                         if (item.UserId != null)
@@ -738,7 +740,9 @@ namespace FarmsApi.Services
                             }
 
                             SchedularTasks Schedular = new SchedularTasks();
-                            Schedular.Title = (item.Type == 1) ? "חליבה" : ((item.Type == 2) ? "זירמה קפואה" : "הקפצה") + " לסוס " + hsSus.Name;
+
+                            var SusName = (hsSus == null) ? item.OuterHorse : hsSus.Name;
+                            Schedular.Title = (item.Type == 1) ? "חליבה" : ((item.Type == 2) ? "זירמה קפואה" : "הקפצה") + " לסוס " + SusName;
                             Schedular.ResourceId = (int)item.UserId;
                             Schedular.LessonId = CurrentLesson.Id;
 
@@ -1442,19 +1446,23 @@ namespace FarmsApi.Services
                                 if (hs == null)
                                 {
                                     HorseInseminations LastInseminationsTemp = Context.HorseInseminations.Where(h => h.HozimId == hp.HozimId).FirstOrDefault();
-                                    LastInseminationsTemp.PregnancId = item.HorsePregnanciesId;
-                                    Context.Entry(LastInseminationsTemp).State = System.Data.Entity.EntityState.Modified;
+                                    // למקרה שמדובר בסוס חיצוני
+                                    if (LastInseminationsTemp != null)
+                                    {
+                                        LastInseminationsTemp.PregnancId = item.HorsePregnanciesId;
+                                        Context.Entry(LastInseminationsTemp).State = System.Data.Entity.EntityState.Modified;
 
-                                    HorseInseminations LastInseminations = new HorseInseminations();
-                                    LastInseminations.PregnancId = item.HorsePregnanciesId;
-                                    LastInseminations.HorseId = LastInseminationsTemp.HorseId;
-                                    LastInseminations.PregnancId = item.HorsePregnanciesId;
-                                    LastInseminations.PregnanciesHorseId = LastInseminationsTemp.PregnanciesHorseId;
-                                    LastInseminations.InseminationDate = item.Date;
-                                    LastInseminations.HozimId = hp.HozimId;
+                                        HorseInseminations LastInseminations = new HorseInseminations();
+                                        LastInseminations.PregnancId = item.HorsePregnanciesId;
+                                        LastInseminations.HorseId = LastInseminationsTemp.HorseId;
+                                        LastInseminations.PregnancId = item.HorsePregnanciesId;
+                                        LastInseminations.PregnanciesHorseId = LastInseminationsTemp.PregnanciesHorseId;
+                                        LastInseminations.InseminationDate = item.Date;
+                                        LastInseminations.HozimId = hp.HozimId;
 
 
-                                    Context.HorseInseminations.Add(LastInseminations);
+                                        Context.HorseInseminations.Add(LastInseminations);
+                                    }
                                 }
 
                             }
@@ -2060,7 +2068,7 @@ namespace FarmsApi.Services
 
             Lesson Less = context.Lessons.Where(p => p.Id == lessonId).FirstOrDefault();
             Horse h = context.Horses.Where(x => x.Id == horseId).FirstOrDefault();
-          
+
 
 
             //חיסון אחרון
@@ -2196,7 +2204,7 @@ namespace FarmsApi.Services
                     var query = Context.Database.SqlQuery<HorsePirzulLists>
                     ("GetHorseListForDashboard @Type,@LessonId", TypePara, LessonIdPara);
                     var Objects = query.ToList();
-                   
+
 
                     //var ReturnData = Context.HorsePirzulLists.Where(u => u.LessonId == LessonId || u.MefarzelLessonId == LessonId).ToList();
                     //foreach (var item in ReturnData)
@@ -2342,7 +2350,7 @@ namespace FarmsApi.Services
                     {
                         int HorsesCount = 30 + HorsePirzulLists.Count * 15;
                         Less.End = Less.Start.AddMinutes(HorsesCount);
-                        if(Less.End.Date > Less.Start.Date)
+                        if (Less.End.Date > Less.Start.Date)
                         {
                             Less.End = new DateTime(Less.Start.Year, Less.Start.Month, Less.Start.Day, 23, 59, 59);
 
@@ -2432,7 +2440,7 @@ namespace FarmsApi.Services
 
                 if (HorseVaccinationLists == null)
                 {
-                  //  return Context.HorseVaccinationLists.Where(u => u.LessonId == LessonId).ToList();
+                    //  return Context.HorseVaccinationLists.Where(u => u.LessonId == LessonId).ToList();
 
 
                     SqlParameter TypePara = new SqlParameter("Type", 2);
@@ -2440,7 +2448,7 @@ namespace FarmsApi.Services
                     var query = Context.Database.SqlQuery<HorseVaccinationLists>
                     ("GetHorseListForDashboard @Type,@LessonId", TypePara, LessonIdPara);
                     var Objects = query.ToList();
-                   
+
 
                     return Objects;
                 }
@@ -2449,7 +2457,7 @@ namespace FarmsApi.Services
 
                     Lesson l = Context.Lessons.Where(x => x.Id == LessonId).FirstOrDefault();
 
-                     string CurrentVact = "";
+                    string CurrentVact = "";
 
 
                     foreach (HorseVaccinationLists item in HorseVaccinationLists)
@@ -2510,7 +2518,7 @@ namespace FarmsApi.Services
                         if (!item.IsDo && item.PrevIsDo)
                         {
 
-                          
+
 
                             DeleteAllVaccinations(Context, item.VaccinationId);
 
@@ -2537,7 +2545,7 @@ namespace FarmsApi.Services
                         IEnumerable<HorseVaccinationLists> differenceQuery = result.Except(HorseVaccinationLists);
                         foreach (HorseVaccinationLists item in differenceQuery)
                         {
-                         
+
                             Context.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                             DeleteAllVaccinations(Context, item.VaccinationId);
                             CreateVaccinationsNotifacions(Context, item.HorseId, LessonId, item.Vaccination, CurrentFarm, item, true);
@@ -2560,11 +2568,11 @@ namespace FarmsApi.Services
                     CreateFutureLessonsVaccination(HorseVaccinationLists, DeletedHorseVaccinationLists, Context, CurrentFarm);
 
                     // מציאת השיעור
-                  //  var Less = Context.Lessons.Where(p => p.Id == LessonId).FirstOrDefault();
+                    //  var Less = Context.Lessons.Where(p => p.Id == LessonId).FirstOrDefault();
                     if (HorseVaccinationLists.Count > 0)
                     {
                         //***************************************************************************************
-                       // string LessDetails = "פירזול " + HorsePirzulLists[0].GroupName + "</br>" + GetHorseList(HorsePirzulLists.Where(x => x.IsDo).ToList(), context);
+                        // string LessDetails = "פירזול " + HorsePirzulLists[0].GroupName + "</br>" + GetHorseList(HorsePirzulLists.Where(x => x.IsDo).ToList(), context);
                         int HorsesCount = 30 + (HorseVaccinationLists).Count * 15;
                         //***************************************************************************************
                         l.End = l.Start.AddMinutes(HorsesCount);
@@ -2581,7 +2589,7 @@ namespace FarmsApi.Services
                     }
 
 
-                 
+
 
                     var HorseVaccinationListsAfterChange = Context.HorseVaccinationLists.Where(u => u.LessonId == LessonId).ToList();
 
@@ -2589,7 +2597,7 @@ namespace FarmsApi.Services
                     {
 
                         Context.Lessons.Remove(l);
-                       
+
                         Context.SaveChanges();
                         return HorseVaccinationListsAfterChange;
                     }
@@ -2643,24 +2651,24 @@ namespace FarmsApi.Services
 
 
             //create new
-         
+
 
             if (HorseVaccinationLists.Count == 0 || !HorseVaccinationLists.Any(x => x.IsDo)) return;
 
             string Vaccination = HorseVaccinationLists[0].Vaccination;
 
-            string LessDetails = " חיסוני סוסים - " + GetHebrewVac(Vaccination) + "</br>" + GetHorseListVact(HorseVaccinationLists.Where(x=>x.IsDo).ToList(), context);
+            string LessDetails = " חיסוני סוסים - " + GetHebrewVac(Vaccination) + "</br>" + GetHorseListVact(HorseVaccinationLists.Where(x => x.IsDo).ToList(), context);
 
 
             int LessonId = HorseVaccinationLists[0].LessonId;
-          
+
             int HorseId = HorseVaccinationLists[0].HorseId;
             Horse h = context.Horses.Where(p => p.Id == HorseId).FirstOrDefault();
 
 
             var Less = context.Lessons.Where(p => p.Id == LessonId).FirstOrDefault();
 
-           
+
             //חיסון אחרון
             var LastVaccination = context.HorseVaccinations.Where(x => x.HorseId == h.Id && x.Type == Vaccination).ToList();
 
@@ -2705,7 +2713,7 @@ namespace FarmsApi.Services
 
 
             int NewLessonId = 0;
-            
+
 
             Lesson NewLesson = new Lesson();
             NewLesson.Id = 0;
@@ -2726,7 +2734,7 @@ namespace FarmsApi.Services
             NewLessonId = NewLesson.Id;
 
 
-          
+
 
 
             foreach (var item in HorseVaccinationLists)
@@ -2736,7 +2744,7 @@ namespace FarmsApi.Services
                     HorseVaccinationLists hp = new HorseVaccinationLists();
                     hp.LessonId = NewLessonId;
                     hp.IsDo = false;
-                  
+
                     hp.Cost = item.Cost;
                     hp.Vaccination = item.Vaccination;
                     hp.HorseId = item.HorseId;
@@ -2886,7 +2894,7 @@ namespace FarmsApi.Services
             //if (HorsePirzulListsCount>0 && AllDoList != null && ExistNextLesson==null)
             //{
 
-           
+
 
             int LessonId = HorsePirzulLists[0].LessonId;
             int? MefarzelLessonId = HorsePirzulLists[0].MefarzelLessonId;
@@ -2895,13 +2903,13 @@ namespace FarmsApi.Services
             Horse h = context.Horses.Where(p => p.Id == HorseId).FirstOrDefault();
             var Less = context.Lessons.Where(p => p.Id == LessonId).FirstOrDefault();
             var LessMefarzel = context.Lessons.Where(p => p.Id == MefarzelLessonId).FirstOrDefault();
-         
+
             //***************************************************************************************
             string LessDetails = "פירזול " + HorsePirzulLists[0].GroupName + "</br>" + GetHorseList(HorsePirzulLists.Where(x => x.IsDo).ToList(), context);
             int HorsesCount = 30 + (HorsePirzulLists.Where(x => x.IsDo).ToList()).Count * 15;
             //***************************************************************************************
 
-          
+
 
             int NewLessonId = 0;
             int? NewMefarzelLessonId = null;
@@ -3026,11 +3034,11 @@ namespace FarmsApi.Services
 
             for (int i = 0; i < AllHorses.Count; i++)
             {
-                combindedString += "<b>" + (i+1).ToString() + ") " +  AllHorses[i] + "</b></br>";
+                combindedString += "<b>" + (i + 1).ToString() + ") " + AllHorses[i] + "</b></br>";
             }
 
 
-           // string combindedString = string.Join("</br>", AllHorses);
+            // string combindedString = string.Join("</br>", AllHorses);
 
             return combindedString;
         }
@@ -3054,7 +3062,7 @@ namespace FarmsApi.Services
             }
 
 
-           // string combindedString = string.Join("</br>", AllHorses);
+            // string combindedString = string.Join("</br>", AllHorses);
 
             return combindedString;
         }
@@ -3290,7 +3298,19 @@ namespace FarmsApi.Services
 
                 if (isBuild)
                 {
+                    var HorsePregnanciesStatesList = Context.HorsePregnanciesStates.Where(x=>x.HorseId== hp.MotherId).ToList();
+
                     HorsePregnanciesStates hh = new HorsePregnanciesStates();
+                    hh.HorseId = hp.HorseId;
+                    hh.HorsePregnanciesId = hp.Id;
+                    hh.Date = HorsePregnanciesStatesList[0].Date;
+                    hh.StateId = "implantationfrom";
+                    hh.name = "הזרעה אם מקור";
+
+                    Context.HorsePregnanciesStates.Add(hh);
+
+
+                    hh = new HorsePregnanciesStates();
                     hh.HorseId = hp.HorseId;
                     hh.HorsePregnanciesId = hp.Id;
                     hh.Date = hp.Date;
@@ -3298,6 +3318,11 @@ namespace FarmsApi.Services
                     hh.name = "השתלה";
 
                     Context.HorsePregnanciesStates.Add(hh);
+
+
+                   
+                    
+                    
                     Context.SaveChanges();
 
                 }

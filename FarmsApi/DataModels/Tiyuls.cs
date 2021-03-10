@@ -23,6 +23,9 @@ namespace FarmsApi.DataModels
 
         public string TiyulCostSend { get; set; }
 
+        public DateTime? TiyulDate { get; set; }
+        
+
 
     }
 }

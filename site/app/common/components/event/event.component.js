@@ -62,10 +62,22 @@
     }
 
     function _GetPayLink() {
+       
 
+        this.close(2);
 
+        var Link = "http://localhost:51517/#/userp?aaaa=1&aaa=" + this.event.students[0] + "&bbb=" + this.event.id + "&ccc=" + this.TiyulCostSend;
+        this.TiyulLinkSend = Link;
+        //var copyText = document.getElementById("txtLink");
+        //copyText.select();
+        //copyText.setSelectionRange(0, 99999); 
+        //document.execCommand("copy");
 
-        this.TiyulLinkSend = "asdfsdfsdfsdf afadfasdf";
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(Link).select();
+        document.execCommand("copy");
+        $temp.remove();
 
 
 
@@ -77,7 +89,7 @@
 
         for (var i = 0; i < this.TiyulCounts; i++) {
 
-            var tiyulnew = { NameofRidder: "", HorseId: "", lessonId: this.event.id };
+            var tiyulnew = { NameofRidder: "", HorseId: "", lessonId: this.event.id,TiyulDate: this.event.start};
             this.tiyullists.push(tiyulnew);
         }
 
@@ -311,6 +323,7 @@
         this.TiyulTel = "";
         this.TiyulMail = "";
         this.TiyulMazmin = "";
+        this.TiyulCostSend = "";
 
         
 
@@ -536,7 +549,7 @@
     function _close(isClose) {
         
         // סגירה בלבד
-        if (isClose) {
+        if (isClose==1) {
             this.event = null;
             return; 
         }
@@ -562,7 +575,7 @@
                 this.event.lessprice = this.TiyulCost;
                 this.copyStatuses(true);
                 this.closeCallback(this.event, this.lessonsQty > 0 ? this.lessonsQty - 1 : 0);
-                this.event = null;
+                if (!isClose) this.event = null;
 
             }.bind(this));
 

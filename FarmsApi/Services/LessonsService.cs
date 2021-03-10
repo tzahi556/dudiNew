@@ -1542,6 +1542,10 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
+
+
+
+
                 if (lessonid != null && objList==null)
                 {
 
@@ -1555,7 +1559,7 @@ namespace FarmsApi.Services
                 foreach (Tiyuls item in objList)
                 {
 
-
+                    
 
                     if (item.Id == 0)
                     {

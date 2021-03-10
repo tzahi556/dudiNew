@@ -298,18 +298,20 @@
                         </table>
                     </div>
 
-                    <div class="col-md-9" >
+                    <div class="col-md-8" >
+
+
                         <input  class="form-control" type="text" ng-model="$ctrl.TiyulCostSend" placeholder="סכום לתשלום" />
                     </div>
                     <div class="col-md-2" >
 
-                        <button ng-disabled="!$ctrl.TiyulCostSend || eventForm.$invalid" class="btn btn-link" ng-click="showDiv = !showDiv;$ctrl.GetPayLink()">צור קישור</button>
+                        <button ng-disabled="!$ctrl.TiyulCostSend || eventForm.$invalid" class="btn btn-link" style="float:right" ng-click="showDiv = !showDiv;$ctrl.GetPayLink()">העתק קישור</button>
 
                     </div>
 
 
                         <div class="col-md-12" ng-show="showDiv" >
-                            <input class="form-control" type="text" ng-model="$ctrl.TiyulLinkSend" />
+                            <input class="form-control" ng-disabled="true" id="txtLink" type="text" ng-model="$ctrl.TiyulLinkSend" />
                         </div>
 
 
@@ -323,7 +325,7 @@
                         <div class="col-md-8 ">
                             <button class="btn btn-success" ng-disabled="eventForm.$invalid" ng-click="$ctrl.close()" href="">שמור</button>
                             <a class="btn btn-danger" ng-click="$ctrl.delete()" href="">מחק</a>
-                            <button type="button" class="btn btn-default" ng-click="$ctrl.close(true)">סגור</button>
+                            <button type="button" class="btn btn-default" ng-click="$ctrl.close(1)">סגור</button>
                         </div>
                         <div class="col-md-4 ">
                             <div class="form-group">
@@ -337,6 +339,7 @@
 
                 </form>
             </div>
+
 
 
         </div>

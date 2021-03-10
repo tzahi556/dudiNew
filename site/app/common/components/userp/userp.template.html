@@ -1,3 +1,150 @@
-﻿<div class="panel panel-default">
-   
+﻿<div style="padding:2px; " class="col-md-12 ">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            דף תשלום לקוחות
+
+        </div>
+        <div class="panel-body" ng-if="!$ctrl.IsOk">
+            <form name="eventForm" ng-submit="$ctrl.submit()" novalidate>
+
+                <!--background-image:url(../../../../../images/ridder.png);-->
+                <!--<div class="clearfix"></div>-->
+                <!--<div class="col-md-8">-->
+                <div class="col-md-6">
+                    <label> שם מזמין הטיול</label>
+                    <div class="form-group">
+                        <input type="text" class="form-control" ng-model="$ctrl.TiyulMazmin" ng-disabled="true" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label>סגנון טיול</label>
+                    <div class="form-group">
+                        <input class="form-control" type="text" ng-disabled="true" ng-model="$ctrl.TiyulType" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label>טלפון</label>
+                    <div class="form-group">
+                        <input class="form-control" type="text" ng-disabled="true" ng-model="$ctrl.TiyulTel" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label>מייל</label>
+                    <div class="form-group">
+                        <input class="form-control" type="text" ng-disabled="true" ng-model="$ctrl.TiyulMail" />
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>  כמות משתתפים  </label>
+                        <input class="form-control" ng-disabled="true" type="number" ng-model="$ctrl.TiyulCounts" ng-change="$ctrl.addTiyulRiders()" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label> מחיר  </label>
+                        <input class="form-control" type="text" ng-model="$ctrl.TiyulCost" ng-disabled="true" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>  סכום לתשלום </label>
+                        <input class="form-control" type="text" ng-model="$ctrl.TiyulCostSend" ng-disabled="true" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <br />
+                    <button class="btn btn-success btn-lg" ng-disabled="$ctrl.disablBtn" ng-click="$ctrl.addPayment()">לתשלום</button>
+                </div>
+
+                <!--<div class="col-md-8 ">
+                    <button class="btn btn-success" ng-disabled="eventForm.$invalid" ng-click="$ctrl.close()" href="">שמור</button>
+                    <a class="btn btn-danger" ng-click="$ctrl.delete()" href="">מחק</a>
+                    <button type="button" class="btn btn-default" ng-click="$ctrl.close(true)">סגור</button>
+                </div>-->
+
+
+            </form>
+        </div>
+
+        <div class="panel-body" ng-if="$ctrl.IsOk">
+
+            <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap" rel="stylesheet">
+
+            <style>
+
+                h1 {
+                    color: #88B04B;
+                    font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+                    font-weight: 900;
+                    font-size: 40px;
+                    margin-bottom: 10px;
+                }
+
+                p {
+                    color: #404F5E;
+                    font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+                    font-size: 20px;
+                    margin: 0;
+                }
+
+                i {
+                    color: #9ABC66;
+                    font-size: 100px;
+                    line-height: 200px;
+                    margin-left: -15px;
+                }
+
+                .card {
+                    background: white;
+                    padding: 60px;
+                    border-radius: 4px;
+                    box-shadow: 0 2px 3px #C8D0D8;
+                    display: inline-block;
+                    margin: 0 auto;
+                    width: 100%;
+                    text-align: center;
+                    border: solid 1px #9ABC66;
+                }
+
+                .spHava {
+                    color: #9ABC66;
+                    font-weight: bold;
+                    font-size: 20px;
+                    text-decoration: underline;
+                }
+            </style>
+
+            <div class="card">
+                <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
+                    <i class="checkmark">✓</i>
+                </div>
+                <h1>תשלום עבר בהצלחה!</h1>
+                <p>
+                    אנו מודים לך על השתתפותך בטיולים שלנו,<br /> מחכים לך לטיול הבא! <br />
+                    צוות  <span class="spHava">{{$ctrl.farm.Name}}</span>
+                    <br />
+                    <br />
+
+                    <a target="_blank" ng-href="{{$ctrl.newPayment.InvoicePdf}}"> להורדת חשבונית לחץ {{$ctrl.newPayment.InvoiceNum}}</a>
+
+
+
+                </p>
+            </div>
+
+            </html>
+
+        </div>
+
+
+    </div>
 </div>

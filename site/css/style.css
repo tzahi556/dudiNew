@@ -132,6 +132,17 @@
 }
 
 
+
+.expandable-collapsedone .firstTr:nth-child(n+2) {
+    display: none;
+}
+
+.expandable-collapsedone tbody:nth-child(n+3) {
+    display: none;
+}
+
+
+
 .table-control {
     width: 100%;
 }

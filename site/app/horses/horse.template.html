@@ -11,6 +11,12 @@
     .haliva {
         background: #ffff00 !important;
     }
+
+    .myStyle {
+        color: red;
+        font-weight: bold;
+        text-decoration:underline;
+    }
 </style>
 
 
@@ -760,8 +766,8 @@
                                 <td>{{hozim.TypeName}}</td>
                                 <td>
 
-
-                                    <a ui-sref="horse({id:hozim.FatherHorseId})">{{hozim.FatherName}}</a>
+                                    <label ng-if="hozim.FatherHorseId==-1" style="color:red">{{hozim.FatherName}}</label>
+                                    <a  ng-if="hozim.FatherHorseId!=-1" ui-sref="horse({id:hozim.FatherHorseId})">{{hozim.FatherName}}</a>
 
 
                                 </td>
@@ -791,12 +797,21 @@
                                     <option value="">בחר סוג</option>
                                 </select>
                             </div>
+
+
+
+
                             <div class="form-group col-md-3">
 
-                                <select class="form-control" ng-model="$ctrl.newHozim.FatherHorseId" required>
+                                <select class="form-control" ng-model="$ctrl.newHozim.FatherHorseId" ng-change="$ctrl.newHozim.OuterHorse=''" required>
                                     <option value="">בחר סוס אב</option>
+                                    <option value="-1" ng-class="{myStyle: true}" >סוס חיצוני</option>
                                     <option ng-repeat="horse in $ctrl.horses|filter:{Gender:'male',Adtive:'!notActive'}:true" value="{{horse.Id}}">{{horse.Name}}</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group col-md-3" >
+                                <input type="text" class="form-control" ng-disabled="$ctrl.newHozim.FatherHorseId!=-1"  ng-model="$ctrl.newHozim.OuterHorse" placeholder="סוס חיצוני" />
                             </div>
                             <div class="form-group col-md-3">
                                 <input type="text" class="form-control" ng-model="$ctrl.newHozim.Trial" placeholder="כמות נסיונות" />
@@ -820,12 +835,12 @@
                                     <option ng-repeat="instructor in $ctrl.instructors|filter:{IsMazkirut:'1'}|orderBy:'LastName'" value="{{instructor.Id}}">{{instructor.FirstName}} {{instructor.LastName}}</option>
                                 </select>
                                 <!--<select class="form-control" style=""
-                                        ng-model="$ctrl.newHozim.UserId" ng-options="instructor.Id as instructor.Result for instructor in $ctrl.instructorsWorks">
-                                    <option value="">-- בחר מדריך --</option>
-                                </select>-->
+                ng-model="$ctrl.newHozim.UserId" ng-options="instructor.Id as instructor.Result for instructor in $ctrl.instructorsWorks">
+            <option value="">-- בחר מדריך --</option>
+        </select>-->
                             </div>
 
-                            <div class="col-md-12">
+                            <div class="form-group col-md-3">
                                 <button type="submit" class="btn btn-success" ng-click="$ctrl.addHozims()" ng-disabled="hozimsForm.$invalid" ng-show="$ctrl.role!='worker' && $ctrl.subrole!='worker'">הוספת חוזה</button>
                             </div>
 
@@ -840,8 +855,14 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         הריונות
+
+                        <div style="float:left;color:green;font-size:20px;font-weight:bold;border:solid 1px gray;background:yellow;border-radius:4px">
+
+                            {{$ctrl.getTzefiLeda()}}
+
+                        </div>
                     </div>
-                    <table class="table">
+                    <table class="table" expandableonlyone>
                         <thead>
                             <tr>
                                 <th>מס' חוזה</th>
@@ -853,8 +874,8 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody ng-click="showDiv = !showDiv" ng-repeat="pregnancy in $ctrl.pregnancies track by $index">
-                            <tr style="cursor:pointer" ng-class="$ctrl.pregnancyStatus(pregnancy)">
+                        <tbody ng-click="showDiv = !showDiv" ng-repeat="pregnancy in $ctrl.pregnancies  | orderBy: '-Date' track by $index ">
+                            <tr class="firstTr" style="cursor:pointer" ng-class="$ctrl.pregnancyStatus(pregnancy)">
                                 <td>{{pregnancy.HozimId}}</td>
                                 <td>{{$ctrl.getStatesByFind(pregnancy.Id,0).Date | ildate: 'DD/MM/YYYY'}}</td>
                                 <td>{{$ctrl.getStatesByFind(pregnancy.Id,-1).Date | ildate: 'DD/MM/YYYY'}}: {{$ctrl.getStatesByFind(pregnancy.Id,-1).name}}</td>
