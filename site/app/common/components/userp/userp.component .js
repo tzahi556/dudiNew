@@ -12,7 +12,7 @@
 
     //http://localhost:51517/#/userp?aaaa=1&aaa=46165&bbb=11393478&ccc=333
     function UserpayController(usersService, lessonsService, farmsService, $scope, sharedValues, $http) {
-
+       
         var self = this;
         this.usersService = usersService;
         this.lessonsService = lessonsService;
@@ -34,6 +34,8 @@
         this.TiyulCostSend = "";
         this.IsOk = false;
 
+      
+
         this.lessonsService.updateTiyulLists(LessonId, null).then(function (tiyuls) {
 
            
@@ -46,17 +48,25 @@
             this.TiyulMail = tiyuls[0].TiyulMail;
             this.TiyulMazmin = tiyuls[0].TiyulMazmin;
             this.TiyulCostSend = tiyuls[0].TiyulCostSend;
+            this.LessonId = tiyuls[0].LessonId;
+            
 
             this.usersService.getUser(UserId).then(function (user) {
+              
                 this.user = user;
                 this.TiyulType = user.FirstName + " " + user.LastName;
 
                 this.farmsService.getFarm(user.Farm_Id).then(function (farm) {
+                    debugger
 
-
+                   
+                   
                     if (farm.Meta === null) return;
                     this.farm = farm;
                     this.newPayment = {};
+
+                   
+                    $("farm-name").text(this.farm.Name); 
                    
                     this.newPayment.doc_type = "MasKabala";
                     this.newPayment.isMasKabala = true;
@@ -90,6 +100,8 @@
             this.newPayment.customer_address = "";
             this.newPayment.UserId = this.user.Id;
 
+            this.newPayment.TiyulLessonId = this.LessonId;
+
 
 
             
@@ -103,7 +115,7 @@
 
 
 
-
+            debugger
             $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
 
 

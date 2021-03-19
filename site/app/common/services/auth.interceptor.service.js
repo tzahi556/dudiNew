@@ -24,7 +24,16 @@
 		function _responseError(rejection) {
 
 			if (rejection.status === 401) {
-				$location.path('/login/');
+
+				if (location.href.indexOf("userp") != -1) {
+					
+					var userplink = location.href.substring(location.href.indexOf("userp"));
+					location.href = '#/login/' + userplink;
+
+				} else { 
+					$location.path('/login/');
+				}
+				//$location.path('#/login/dfdfdf=hjhjh/');
 			}
 
 			return $q.reject(rejection);

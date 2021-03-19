@@ -15,6 +15,8 @@
     });
 
     function EventController($scope, $rootScope, lessonsService, sharedValues, usersService, horsesService) {
+
+       
         this.lessonsService = lessonsService;
         this.usersService = usersService;
         this.horsesService = horsesService;
@@ -66,7 +68,7 @@
 
         this.close(2);
 
-        var Link = "http://localhost:51517/#/userp?aaaa=1&aaa=" + this.event.students[0] + "&bbb=" + this.event.id + "&ccc=" + this.TiyulCostSend;
+        var Link = this.sharedValues.HostUrl + "userp?aaaa=1&aaa=" + this.event.students[0] + "&bbb=" + this.event.id + "&ccc=" + this.TiyulCostSend;
         this.TiyulLinkSend = Link;
         //var copyText = document.getElementById("txtLink");
         //copyText.select();
@@ -556,7 +558,7 @@
 
         if (this.event.IsTiyul) {
            
-         
+           debugger
             if (this.tiyullists.length > 0) {
 
                 this.tiyullists[0].TiyulCost = this.TiyulCost;
@@ -565,6 +567,8 @@
                 this.tiyullists[0].TiyulMail = this.TiyulMail;
                 this.tiyullists[0].TiyulMazmin = this.TiyulMazmin;
                 this.tiyullists[0].TiyulCostSend = this.TiyulCostSend;
+                this.tiyullists[0].TiyulStatus = this.statuses[this.event.students[0]]
+                
 
             }
 

@@ -1126,7 +1126,7 @@
 
 
 
-           
+
 
             this.user.AnotherEmail = $.trim(this.user.AnotherEmail);
 
@@ -1509,9 +1509,9 @@
         }
 
         function _monthlyReport() {
-            
+
             lessonsService.getSetMonthlyReports(this.user.Id, "", "", 3).then(function (res) {
-                
+
                 var LastDate = "";
                 this.monthlyReportData = [];
                 this.monthlyReportHeader = [];
@@ -1523,7 +1523,7 @@
                     if (startFormat != LastDate && monthlyLessons[i].statuses[0].Details) {
 
                         LastDate = moment(monthlyLessons[i].start).format('YYYYMM');
-                       
+
                         var SummeryObj = res.filter(x => moment(x.Date).format('YYYYMM') == startFormat);
                         var SummeryText = "";
                         if (SummeryObj.length > 0) {
@@ -1537,9 +1537,9 @@
 
 
                     if (monthlyLessons[i].statuses[0].Details || monthlyLessons[i].statuses[0].Mashov) {
-                     
+
                         // alert(monthlyLessons[i].statuses[0].Details);
-                        this.monthlyReportData.push({ Date: monthlyLessons[i].start, Details: monthlyLessons[i].statuses[0].Details, Mashov: (monthlyLessons[i].statuses[0].Mashov) ? monthlyLessons[i].statuses[0].Mashov:"" });
+                        this.monthlyReportData.push({ Date: monthlyLessons[i].start, Details: monthlyLessons[i].statuses[0].Details, Mashov: (monthlyLessons[i].statuses[0].Mashov) ? monthlyLessons[i].statuses[0].Mashov : "" });
 
 
                     }
@@ -2038,7 +2038,7 @@
                     this.newPayment.ua_uuid = this.farm.Meta.ua_uuid;
                     this.newPayment.api_email = this.farm.Meta.api_email;
                     this.newPayment.InvoiceDetailsArray = [];
-
+                    this.newPayment.TiyulLessonId = null;
                     if (this.user.Farm_Id != 46 && this.user.Farm_Id != 96) {
                         this.newPayment.isMasKabala = true;
                     } else {
@@ -2853,11 +2853,18 @@
 
         this.winPayClose = function () {
 
-
+           
             if (this.newPayment.payment_type == 'ashrai') {
                 this.newPayment.payment_type = 'validate';
                 this.newPayment.ksys_token = this.ksys_token;
                 $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', this.newPayment).then(function (response) {
+
+                 
+
+
+                    
+
+
 
                     if (response.data.success) {
 
@@ -2869,18 +2876,11 @@
                         this.newPayment.cc_deal_type = (response.data.cgp_num_of_payments == 1) ? "1" : "2";// סוג עסקה לבדוק
                         this.newPayment.cc_type = this.getccType(response.data.cgp_customer_cc_name);
                         this.newPayment.isSlika = true;
-                        //if (this.newPayment.isKabala) {
-
-
-
-
-                        //}
 
                         this.addPayment();
 
                     } else {
 
-                        // alert("תקלה בחיוב כרטיס אשראי");
                         this.newPayment.payment_type = 'ashrai';
                     }
 
@@ -3266,7 +3266,7 @@
                         newPayment.ParentInvoiceNum = payment.InvoiceNum;
                         newPayment.ParentInvoicePdf = payment.InvoicePdf;
 
-                      // payment.ZikuyNumber = newPayment.InvoiceNum;
+                        // payment.ZikuyNumber = newPayment.InvoiceNum;
                         payment.ZikuyNumber = "";
                         //
                         if (payment.ParentInvoiceNum) {

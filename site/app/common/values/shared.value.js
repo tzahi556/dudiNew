@@ -6,11 +6,14 @@
 
     var API_ADDRESS = window.location.href.indexOf('giddyup.co.il') != -1 ? '/api/' : 'http://localhost:54033/';
 
+    var HostUrl = window.location.href.indexOf('giddyup.co.il') != -1 ? 'https://www.giddyup.co.il/#/' : 'http://localhost:51517/#/';
+
     app.value('sharedValues', {
 
        
         DateModify:"20181105",
         apiUrl: API_ADDRESS,
+        HostUrl: HostUrl,
         roles: [
             { id: 'sysAdmin', name: 'מנהל מערכת', showInUsers: true, sysAdminOnly: true, homePage: 'farms' },
             { id: 'farmAdmin', name: ' מנהל חווה', showInUsers: true, sysAdminOnly: true, homePage: 'lessons' },

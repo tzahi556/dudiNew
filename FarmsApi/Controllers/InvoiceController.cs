@@ -28,7 +28,8 @@ namespace FarmsApi.Controllers
             lg.TimeStamp = DateTime.Now;
             lg.Request = Params.ToString();
             lg.StudentId = (int)Params.UserId;
-            lg.UserId = UsersService.GetCurrentUser().Id;
+            User CurrentUser = UsersService.GetCurrentUser(); 
+            lg.UserId = CurrentUser.Id;
 
             try
             {
@@ -46,14 +47,14 @@ namespace FarmsApi.Controllers
                 string SlikaUrlChargeToken = ConfigurationSettings.AppSettings["SlikaUrlChargeToken"].ToString();
 
 
-                var CurrentUserFarmId = UsersService.GetCurrentUser().Farm_Id;
+                var CurrentUserFarmId = CurrentUser.Farm_Id;
                 var UserIdByEmail = UsersService.GetUserIdByEmail((string)Params.customer_crn, CurrentUserFarmId);
 
                 // צחי הוסיף בכדי למנוע עדכון של ת"ז קיים לחווה מסויימת
-                if ((string)Params.UserId != UserIdByEmail.ToString() && UserIdByEmail != 0)
-                {
-                    return Ok("-1");
-                }
+                //if ((string)Params.UserId != UserIdByEmail.ToString() && UserIdByEmail != 0)
+                //{
+                //    return Ok("-1");
+                //}
 
 
 
@@ -312,7 +313,7 @@ namespace FarmsApi.Controllers
                                 cc_number = (string)Params.cc_number,
                                 cc_deal_type = (int)Params.cc_deal_type,
                                 cc_num_of_payments = (int)Params.cc_num_of_payments,
-                                cc_payment_num = (int)Params.cc_payment_num,
+                                cc_payment_num = (string)Params.cc_payment_num,
 
                             });
                             break;

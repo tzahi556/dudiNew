@@ -8,6 +8,7 @@
     });
 
     function FarmName(usersService, farmsService, $rootScope) {
+      
         var DEFAULT_NAME = 'מערכת ניהול חוות';
         var self = this;
         var authData = angular.fromJson(localStorage.getItem('authorizationData'));

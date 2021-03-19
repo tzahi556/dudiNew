@@ -1563,7 +1563,7 @@ namespace FarmsApi.Services
 
                     if (item.Id == 0)
                     {
-
+                        item.TiyulPaid = 0;
                         Context.Tiyuls.Add(item);
 
                     }

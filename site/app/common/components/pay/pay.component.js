@@ -43,6 +43,7 @@
         this.onShow = _onShow.bind(this);
         // this.getIfExpensiveInMas = _getIfExpensiveInMas.bind(this);
         this.disablBtn = false;
+        this.lesson;
 
         this.IsHiyuvInHashlama = 0;
 
@@ -50,9 +51,11 @@
         this.getLessonsDateNoPaid = _getLessonsDateNoPaid.bind(this);
         this.scope.$on('pay.show', this.onShow);
 
-        function _onShow(event, selectedStudent, selectedPayValue) {
+        function _onShow(event, selectedStudent, selectedPayValue,lesson) {
 
-          
+            this.lesson = lesson;
+
+            
             //  this.paySum = selectedPayValue;
             this.disablBtn = false;
             this.totalExpenses = 0;
@@ -320,6 +323,16 @@
                     this.newPayment.isMasKabala = false;
                     this.newPayment.isKabala = true;
                 }
+
+               
+                if (this.lesson.IsTiyul) {
+
+                    this.newPayment.InvoiceDetails = "  תשלום עבור טיול - " + this.user.FirstName + " " + this.user.LastName;
+                    this.newPayment.InvoiceSum = ((eval(this.unpaidLessons) < 0) ? eval(this.unpaidLessons) * -1 : eval(this.unpaidLessons));
+
+
+                }
+
 
                 this.IsHiyuvInHashlama = this.farm.IsHiyuvInHashlama;
                 this.newPayment.Date = new Date();
@@ -602,6 +615,8 @@
             this.newPayment.customer_email = this.user.AnotherEmail;
             this.newPayment.customer_address = this.user.Address;
             this.newPayment.UserId = this.user.Id;
+            debugger
+            this.newPayment.TiyulLessonId = (this.lesson.IsTiyul) ? this.lesson.id : null;
 
             // הגדרות בשביל מס' לקוח
             this.newPayment.customer_crn = this.user.IdNumber;
@@ -793,9 +808,10 @@
 
         function _submit() {
             this.studentid = null;
-           
+            
             usersService.updateUserMultiTables(this.user, this.payments, [], [], this.expenses,[],[],[],[],[]).then(function (user) {
-              
+
+
                 this.user = user;
                
                 this.closeCallback("", "");

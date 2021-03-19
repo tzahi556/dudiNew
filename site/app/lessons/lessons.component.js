@@ -1084,12 +1084,12 @@
             var elemId = jsEvent.target.id;
             if (elemId) {
 
-
+               
                 this.selectedPayValue = $("#" + elemId).text();
                 this.selectedStudent = elemId.replace("dvPaid_", "");//this.getLessonById(event.id);
 
 
-                this.scope.$broadcast('pay.show', this.selectedStudent, this.selectedPayValue);
+                this.scope.$broadcast('pay.show', this.selectedStudent, this.selectedPayValue,event);
             }
             else {
                 //for event

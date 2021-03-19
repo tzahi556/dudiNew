@@ -150,7 +150,7 @@ namespace FarmsApi.Services
 
 
 
-        
+
 
         [Authorize]
         [Route("getUser/{id?}")]

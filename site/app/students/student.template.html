@@ -634,303 +634,311 @@
                             <div class="form-group">
                                 <input class="form-control" type="date" ng-model="$ctrl.newPayment.Date" required />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" ng-if="$ctrl.user.Style != 'tiyul'">
                                 <input class="form-control" ng-if="$ctrl.user.PayType == 'lessonCost' && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1" ng-disabled="$ctrl.newPayment.isIska || $ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy" placeholder="כמות שיעורים" min="0" ng-change="$ctrl.countTotal()"
                                        type="number" ng-model="$ctrl.newPayment.lessons" />
                             </div>
+                            <div class="form-group" ng-if="$ctrl.user.Style == 'tiyul'">
+                                <select class="form-control" ng-options="lesson.id as ($ctrl.getDayOfWeek(lesson.start) + ' ' + (lesson.start | ildate: 'DD/MM/YYYY HH:mm') + ' - ' + $ctrl.getInstructorName(lesson.resourceId) ) for lesson in $ctrl.lessons |orderBy:'start' | dateRange:$ctrl.dateFrom:$ctrl.dateTo" ng-model="$ctrl.newPayment.TiyulLessonId" required>
 
-                            <table width="100%" ng-if="$ctrl.user.PayType != 'lessonCost' && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1" ng-hide="$ctrl.newPayment.isIska || $ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy">
-                                <tr>
-                                    <td>
-                                        מחודש
-                                    </td>
-                                    <td>
-                                        &nbsp;
-                                    </td>
-                                    <td>
-                                        עד חודש
+                                    <option value="" >--בחר טיול לתשלום--</option>
 
-                                    </td>
+                                </select>
+                            </div>
 
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-group">
-                                            <input class="form-control" placeholder="חודש" min="0" ng-change="$ctrl.countTotal()"
-                                                   type="date" ng-model="$ctrl.newPayment.month" />
+
+                                <table width="100%" ng-if="$ctrl.user.PayType != 'lessonCost' && ['farmAdminHorse','vetrinar','shoeing'].indexOf($ctrl.role)==-1" ng-hide="$ctrl.newPayment.isIska || $ctrl.newPayment.isMas || $ctrl.newPayment.isZikuy">
+                                    <tr>
+                                        <td>
+                                            מחודש
+                                        </td>
+                                        <td>
+                                            &nbsp;
+                                        </td>
+                                        <td>
+                                            עד חודש
+
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="form-control" placeholder="חודש" min="0" ng-change="$ctrl.countTotal()"
+                                                       type="date" ng-model="$ctrl.newPayment.month" />
+                                            </div>
+                                        </td>
+                                        <td>
+
+                                            &nbsp;
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="form-control" placeholder="חודש" min="0" ng-change="$ctrl.countTotal()"
+                                                       type="date" ng-model="$ctrl.newPayment.untilmonth" />
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+
+                                <div class="form-group">
+                                    <div class="col-md-12" style="border:solid 1px silver;border-radius:5px;padding:10px">
+
+
+                                        <div class="col-md-3">
+                                            <label style="color:brown">
+                                                שינוי פרטי חשבונית <br />
+                                                <span style="font-size:10px">(במידה ושדות אלו ריקים יילקחו הנתונים מהכרטיס)</span>
+                                            </label>
                                         </div>
-                                    </td>
-                                    <td>
 
-                                        &nbsp;
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <input class="form-control" placeholder="חודש" min="0" ng-change="$ctrl.countTotal()"
-                                                   type="date" ng-model="$ctrl.newPayment.untilmonth" />
+
+
+                                        <div class="col-md-3">
+                                            <input type="text" placeholder="שם פרטי" class="form-control" ng-model="$ctrl.TempFirstName" />
                                         </div>
 
-                                    </td>
+                                        <div class="col-md-3">
+                                            <input type="text" placeholder="שם משפחה" class="form-control" ng-model="$ctrl.TempLastName" />
+                                        </div>
 
-                                </tr>
-
-                            </table>
-
-                            <div class="form-group">
-                                <div class="col-md-12" style="border:solid 1px silver;border-radius:5px;padding:10px">
-
-
-                                    <div class="col-md-3">
-                                        <label style="color:brown">
-                                            שינוי פרטי חשבונית <br />
-                                            <span style="font-size:10px">(במידה ושדות אלו ריקים יילקחו הנתונים מהכרטיס)</span>
-                                        </label>
+                                        <div class="col-md-3">
+                                            <input type="text" placeholder="ת''ז\ח''פ" class="form-control" ng-model="$ctrl.TempIdNumber" />
+                                        </div>
                                     </div>
 
+                                    <div class="col-md-12" ng-hide="" style="border:solid 1px silver;border-radius:5px;padding:10px;margin-top:3px">
 
 
-                                    <div class="col-md-3">
-                                        <input type="text" placeholder="שם פרטי" class="form-control" ng-model="$ctrl.TempFirstName" />
+                                        <div class="col-md-3">
+                                            <label style="color:burlywood">
+                                                מילוי  אוטמטי <br />
+                                                <span style="font-size:10px">( מילוי סכומי הוצאות אחרות אוטמטי)</span>
+                                            </label>
+                                        </div>
+
+
+
+                                        <div class="col-md-3">
+                                            <input type="number" placeholder="סכום לחלוקה" class="form-control" ng-change="$ctrl.setAutoForexp()" ng-model="$ctrl.TempTotal" />
+                                        </div>
+
+
                                     </div>
-
-                                    <div class="col-md-3">
-                                        <input type="text" placeholder="שם משפחה" class="form-control" ng-model="$ctrl.TempLastName" />
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <input type="text" placeholder="ת''ז\ח''פ" class="form-control" ng-model="$ctrl.TempIdNumber" />
-                                    </div>
+                                    <label>בחירת הוצאות אחרות</label>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <td style="width: 10%">הוספה</td>
+                                                <td>פריט</td>
+                                                <td>עלות</td>
+                                                <td>לתשלום</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody ng-if="!$ctrl.newPayment.isZikuy">
+                                            <!--filter: {Paid:'!'} track by $index-->
+                                            <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc " ng-if="(expense.Price+expense.ZikuySum)!=expense.Sum  && (expense.Price + expense.ZikuySum)>0">
+                                                <td>
+                                                    <input type="checkbox" ng-init="expense.Checked=false" ng-click="$ctrl.countTotal()"
+                                                           ng-model="expense.Checked" />
+                                                </td>
+                                                <td>
+                                                    {{expense.Details}}
+                                                </td>
+                                                <td>{{expense.Price + expense.ZikuySum}}</td>
+                                                <td>{{expense.Price + expense.ZikuySum - expense.Sum}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-
-                                <div class="col-md-12" ng-hide="" style="border:solid 1px silver;border-radius:5px;padding:10px;margin-top:3px">
-
-
-                                    <div class="col-md-3">
-                                        <label style="color:burlywood">
-                                            מילוי  אוטמטי <br />
-                                            <span style="font-size:10px">( מילוי סכומי הוצאות אחרות אוטמטי)</span>
-                                        </label>
-                                    </div>
-
-
-
-                                    <div class="col-md-3">
-                                        <input type="number" placeholder="סכום לחלוקה" class="form-control" ng-change="$ctrl.setAutoForexp()" ng-model="$ctrl.TempTotal" />
-                                    </div>
-
-
+                                <div class="form-group" ng-if="(!$ctrl.newPayment.isMasKabala && !$ctrl.newPayment.isKabala  && !$ctrl.newPayment.isKabalaTroma && !$ctrl.newPayment.isMas && !$ctrl.newPayment.isZikuy && !$ctrl.newPayment.isIska) || $ctrl.newPayment.noEazi">
+                                    <input class="form-control" placeholder="מספר מסמך" type="text" ng-model="$ctrl.newPayment.InvoiceNum" required />
                                 </div>
-                                <label>בחירת הוצאות אחרות</label>
-                                <table class="table">
-                                    <thead>
+                                <!--<div class="form-group">
+            <input class="form-control" placeholder="פירוט עסקה" type="text" ng-model="$ctrl.newPayment.InvoiceDetails" />
+        </div>-->
+                                <!-- cash -->
+                                <div class="form-group" style="border:solid 1px gray;border-radius:5px;padding:10px">
+
+
+                                    <table class="table">
                                         <tr>
-                                            <td style="width: 10%">הוספה</td>
-                                            <td>פריט</td>
-                                            <td>עלות</td>
-                                            <td>לתשלום</td>
+                                            <th>#</th>
+                                            <th width="80%">שם הפריט</th>
+                                            <th>סכום</th>
+
                                         </tr>
-                                    </thead>
-                                    <tbody ng-if="!$ctrl.newPayment.isZikuy">
-                                        <!--filter: {Paid:'!'} track by $index-->
-                                        <tr ng-repeat="expense in $ctrl.expenses | orderByDateDesc " ng-if="(expense.Price+expense.ZikuySum)!=expense.Sum  && (expense.Price + expense.ZikuySum)>0">
+                                        <tr ng-repeat="total in $ctrl.newPayment.InvoiceDetailsArray">
                                             <td>
-                                                <input type="checkbox" ng-init="expense.Checked=false" ng-click="$ctrl.countTotal()"
-                                                       ng-model="expense.Checked" />
+                                                {{total.amount}}
                                             </td>
                                             <td>
-                                                {{expense.Details}}
+                                                <input class="form-control" placeholder="פירוט" type="text" ng-model="total.details" ng-change="$ctrl.changeInvoiceTotal()" />
+
                                             </td>
-                                            <td>{{expense.Price + expense.ZikuySum}}</td>
-                                            <td>{{expense.Price + expense.ZikuySum - expense.Sum}}</td>
+                                            <td>
+                                                <input class="form-control" placeholder="סכום הפריט" type="number" ng-model="total.price" required ng-change="$ctrl.changeInvoiceTotal()" />
+
+                                            </td>
+
                                         </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="form-group" ng-if="(!$ctrl.newPayment.isMasKabala && !$ctrl.newPayment.isKabala  && !$ctrl.newPayment.isKabalaTroma && !$ctrl.newPayment.isMas && !$ctrl.newPayment.isZikuy && !$ctrl.newPayment.isIska) || $ctrl.newPayment.noEazi">
-                                <input class="form-control" placeholder="מספר מסמך" type="text" ng-model="$ctrl.newPayment.InvoiceNum" required />
-                            </div>
-                            <!--<div class="form-group">
-                                <input class="form-control" placeholder="פירוט עסקה" type="text" ng-model="$ctrl.newPayment.InvoiceDetails" />
-                            </div>-->
-                            <!-- cash -->
-                            <div class="form-group" style="border:solid 1px gray;border-radius:5px;padding:10px">
+
+                                        <tr>
+                                            <td> <input ng-if="$ctrl.newPayment.InvoiceDetailsArray.length>0" type="checkbox" title="שליחת שורת סיכום בלבד" ng-model="$ctrl.IsSendOnlyTotal" /></td>
+                                            <td>
+
+                                                <input class="form-control" placeholder="פירוט" type="text" ng-model="$ctrl.newPayment.InvoiceDetails" ng-disabled="$ctrl.newPayment.InvoiceDetailsArray.length>0" required />
 
 
-                                <table class="table">
-                                    <tr>
-                                        <th>#</th>
-                                        <th width="80%">שם הפריט</th>
-                                        <th>סכום</th>
+                                            </td>
+                                            <td>
+                                                <!--צחי-->
+                                                <input class="form-control" placeholder="סכום החשבונית" type="number" ng-model="$ctrl.newPayment.InvoiceSum" ng-disabled="$ctrl.newPayment.InvoiceDetailsArray.length>0" required />
+                                            </td>
 
-                                    </tr>
-                                    <tr ng-repeat="total in $ctrl.newPayment.InvoiceDetailsArray">
-                                        <td>
-                                            {{total.amount}}
-                                        </td>
-                                        <td>
-                                            <input class="form-control" placeholder="פירוט" type="text" ng-model="total.details" ng-change="$ctrl.changeInvoiceTotal()" />
+                                        </tr>
 
-                                        </td>
-                                        <td>
-                                            <input class="form-control" placeholder="סכום הפריט" type="number" ng-model="total.price" required ng-change="$ctrl.changeInvoiceTotal()" />
-
-                                        </td>
-
-                                    </tr>
-
-                                    <tr>
-                                        <td> <input ng-if="$ctrl.newPayment.InvoiceDetailsArray.length>0" type="checkbox" title="שליחת שורת סיכום בלבד" ng-model="$ctrl.IsSendOnlyTotal" /></td>
-                                        <td>
-
-                                            <input class="form-control" placeholder="פירוט" type="text" ng-model="$ctrl.newPayment.InvoiceDetails" ng-disabled="$ctrl.newPayment.InvoiceDetailsArray.length>0" required />
+                                    </table>
 
 
-                                        </td>
-                                        <td>
-                                            <!--צחי-->
-                                            <input class="form-control" placeholder="סכום החשבונית" type="number" ng-model="$ctrl.newPayment.InvoiceSum" ng-disabled="$ctrl.newPayment.InvoiceDetailsArray.length>0" required />
-                                        </td>
+                                    <!--ng-change="$ctrl.countTotalByInvoiceSum()"-->
+                                </div>
+                                <!-- payment type -->
+                                <div class="form-group" ng-if="($ctrl.newPayment.isMasKabala || $ctrl.newPayment.isKabala || $ctrl.newPayment.isKabalaTroma) && !$ctrl.newPayment.isMas">
+                                    <select class="form-control" ng-model="$ctrl.newPayment.payment_type" required>
+                                        <option value="">צורת תשלום</option>
+                                        <option value="cash">מזומן</option>
+                                        <option value="check">צ׳ק</option>
+                                        <option value="ashrai" ng-if="$ctrl.newPayment.IsAshrai">סליקה כרטיס אשראי</option>
+                                        <option value="token" ng-if="$ctrl.newPayment.IsToken">חיוב בטוקן</option>
+                                        <option value="credit card">כרטיס אשראי</option>
+                                        <option value="bank transfer">בנק</option>
 
-                                    </tr>
+                                        <option value="PayPal">PayPal</option>
+                                        <option value="Pay">Pay</option>
+                                        <option value="Bit">Bit</option>
+                                        <option value="PayBox">PayBox</option>
 
-                                </table>
-
-
-                                <!--ng-change="$ctrl.countTotalByInvoiceSum()"-->
-                            </div>
-                            <!-- payment type -->
-                            <div class="form-group" ng-if="($ctrl.newPayment.isMasKabala || $ctrl.newPayment.isKabala || $ctrl.newPayment.isKabalaTroma) && !$ctrl.newPayment.isMas">
-                                <select class="form-control" ng-model="$ctrl.newPayment.payment_type" required>
-                                    <option value="">צורת תשלום</option>
-                                    <option value="cash">מזומן</option>
-                                    <option value="check">צ׳ק</option>
-                                    <option value="ashrai" ng-if="$ctrl.newPayment.IsAshrai">סליקה כרטיס אשראי</option>
-                                    <option value="token" ng-if="$ctrl.newPayment.IsToken">חיוב בטוקן</option>
-                                    <option value="credit card">כרטיס אשראי</option>
-                                    <option value="bank transfer">בנק</option>
-
-                                    <option value="PayPal">PayPal</option>
-                                    <option value="Pay">Pay</option>
-                                    <option value="Bit">Bit</option>
-                                    <option value="PayBox">PayBox</option>
-
-                                </select>
-                            </div>
-
-
-                            <div class="form-group" ng-if="$ctrl.farm.Meta.farmTags.length>0">
-                                <select class="form-control" style="background:yellow" ng-options="tag.tag_id as tag.tag_name for tag in $ctrl.farm.Meta.farmTags" ng-model="$ctrl.tag_id">
-                                    <option value="">בחר תגית</option>
-                                </select>
-                            </div>
-
-
-
-                            <!-- check -->
-
-                            <div ng-if="$ctrl.newPayment.payment_type=='check'" style="border:solid 1px gray;border-radius:10px;padding:10px;">
-
-                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
-                                    <label> האם חשבונית מס תצא אוטמטית בזמן הפירעון?</label> <input class="" type="checkbox" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_auto" />
+                                    </select>
                                 </div>
 
-                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
-                                    <input class="form-control" placeholder="שם בנק" type="text" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_bank_name" required />
-                                </div>
-                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
-                                    <input class="form-control" placeholder="מספר צ׳ק" type="text" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_number" required />
-                                </div>
-                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
-                                    <input class="form-control" placeholder="סכום צ׳ק" type="text" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_sum" required />
-                                </div>
-                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
-                                    <input class="form-control" placeholder="תאריך פרעון צ׳ק" type="date" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_date" required />
-                                </div>
 
-                                <div style="text-align:left">
-
-
-                                    <div style="float:right;font-weight:bold">צ'ק {{$ctrl.currentCheckindex + 1}}  מתוך  {{$ctrl.checksCount +1}} צ'קים</div>
-                                    <button ng-click="$ctrl.addCheck(3)" ng-if="$ctrl.currentCheckindex!=0" type="submit" class="btn btn-primary"> צ'ק קודם</button>
-                                    <button ng-click="$ctrl.addCheck(4)" ng-if="$ctrl.checksCount > $ctrl.currentCheckindex" type="submit" class="btn btn-primary">צ'ק הבא</button>
-                                    <!--<button ng-click="$ctrl.addCheck(2)" ng-if="$ctrl.currentCheckindex!=0" type="submit" class="btn btn-danger">בטל צ'ק</button>-->
-                                    <button ng-click="$ctrl.addCheck(1)" ng-disabled="paymentForm.$invalid ||  $ctrl.currentCheckindex < $ctrl.checksCount " type="submit" class="btn btn-success">הוספ\י צ'ק</button>
+                                <div class="form-group" ng-if="$ctrl.farm.Meta.farmTags.length>0">
+                                    <select class="form-control" style="background:yellow" ng-options="tag.tag_id as tag.tag_name for tag in $ctrl.farm.Meta.farmTags" ng-model="$ctrl.tag_id">
+                                        <option value="">בחר תגית</option>
+                                    </select>
                                 </div>
 
 
 
-                            </div>
-                            <br />
-                            <!-- bank transfer -->
-                            <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='bank transfer'">
-                                <input class="form-control" placeholder="שם בנק" type="text" ng-model="$ctrl.newPayment.bt_bank_name" />
-                            </div>
-                            <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='bank transfer'">
-                                <input class="form-control" placeholder="סניף" type="text" ng-model="$ctrl.newPayment.bt_bank_branch" />
-                            </div>
-                            <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='bank transfer'">
-                                <input class="form-control" placeholder="מס׳ חשבון" type="text" ng-model="$ctrl.newPayment.bt_bank_account" />
-                            </div>
-                            <!-- credit card -->
-                            <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
-                                <select class="form-control" id="ddlCard" ng-model="$ctrl.newPayment.cc_type" required>
-                                    <option value="">סוג הכרטיס</option>
-                                    <option value="1">Isracart</option>
-                                    <option value="2">Visa</option>
-                                    <option value="3">Dainers</option>
-                                    <option value="4">American express</option>
-                                    <option value="6">Leumi card</option>
-                                    <option value="99">Mastercard</option>
-                                    <option value="0">אחר</option>
-                                </select>
-                            </div>
-                            <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card' ">
-                                <select class="form-control" ng-model="$ctrl.newPayment.cc_deal_type" required>
-                                    <option value="">סוג התשלום</option>
-                                    <option value="1">רגיל</option>
-                                    <option value="2">תשלומים</option>
-                                    <option value="3">קרדיט</option>
-                                    <option value="4">חיוב נדחה</option>
-                                    <option value="5">אחר</option>
-                                </select>
-                            </div>
-                            <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
-                                <input class="form-control" placeholder="4 ספרות אחרונות" type="text" ng-model="$ctrl.newPayment.cc_number" required />
-                            </div>
+                                <!-- check -->
 
-                            <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
-                                <input class="form-control" placeholder="שם בעל הכרטיס" type="text" ng-model="$ctrl.newPayment.cc_customer_name" required />
-                            </div>
-                            <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
-                                <input class="form-control" placeholder="כמות תשלומים" type="number" ng-model="$ctrl.newPayment.cc_num_of_payments" required />
-                            </div>
-                            <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
-                                <input class="form-control" placeholder="מספר תשלום" type="number" ng-model="$ctrl.newPayment.cc_payment_num" required />
-                            </div>
-                            <!-- #payment type -->
-                            <!--<button ng-click="$ctrl.addPayment()" ng-disabled="paymentForm.$invalid || $ctrl.user.Meta.Cost==0" type="submit" class="btn btn-success">הוספה</button>-->
-                            <button ng-click="$ctrl.addPayment()" ng-disabled="$ctrl.disablBtn || (paymentForm.$invalid && $ctrl.getIfanyCheckValid())" type="submit" class="btn btn-success">הפקת מסמך</button>
-                            <button ng-click="$ctrl.cancelToken()" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default">איפוס טוקן</button>
-                            <button ng-click="$ctrl.show4($ctrl.user.cc_4_digits)" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default"> הצג 4 ספרות אחרונות</button>
+                                <div ng-if="$ctrl.newPayment.payment_type=='check'" style="border:solid 1px gray;border-radius:10px;padding:10px;">
+
+                                    <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
+                                        <label> האם חשבונית מס תצא אוטמטית בזמן הפירעון?</label> <input class="" type="checkbox" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_auto" />
+                                    </div>
+
+                                    <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
+                                        <input class="form-control" placeholder="שם בנק" type="text" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_bank_name" required />
+                                    </div>
+                                    <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
+                                        <input class="form-control" placeholder="מספר צ׳ק" type="text" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_number" required />
+                                    </div>
+                                    <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
+                                        <input class="form-control" placeholder="סכום צ׳ק" type="text" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_sum" required />
+                                    </div>
+                                    <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='check'">
+                                        <input class="form-control" placeholder="תאריך פרעון צ׳ק" type="date" ng-model="$ctrl.newPayment.Checks[$ctrl.currentCheckindex].checks_date" required />
+                                    </div>
+
+                                    <div style="text-align:left">
+
+
+                                        <div style="float:right;font-weight:bold">צ'ק {{$ctrl.currentCheckindex + 1}}  מתוך  {{$ctrl.checksCount +1}} צ'קים</div>
+                                        <button ng-click="$ctrl.addCheck(3)" ng-if="$ctrl.currentCheckindex!=0" type="submit" class="btn btn-primary"> צ'ק קודם</button>
+                                        <button ng-click="$ctrl.addCheck(4)" ng-if="$ctrl.checksCount > $ctrl.currentCheckindex" type="submit" class="btn btn-primary">צ'ק הבא</button>
+                                        <!--<button ng-click="$ctrl.addCheck(2)" ng-if="$ctrl.currentCheckindex!=0" type="submit" class="btn btn-danger">בטל צ'ק</button>-->
+                                        <button ng-click="$ctrl.addCheck(1)" ng-disabled="paymentForm.$invalid ||  $ctrl.currentCheckindex < $ctrl.checksCount " type="submit" class="btn btn-success">הוספ\י צ'ק</button>
+                                    </div>
 
 
 
-                            <div style="float:left" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token">
+                                </div>
+                                <br />
+                                <!-- bank transfer -->
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='bank transfer'">
+                                    <input class="form-control" placeholder="שם בנק" type="text" ng-model="$ctrl.newPayment.bt_bank_name" />
+                                </div>
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='bank transfer'">
+                                    <input class="form-control" placeholder="סניף" type="text" ng-model="$ctrl.newPayment.bt_bank_branch" />
+                                </div>
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='bank transfer'">
+                                    <input class="form-control" placeholder="מס׳ חשבון" type="text" ng-model="$ctrl.newPayment.bt_bank_account" />
+                                </div>
+                                <!-- credit card -->
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
+                                    <select class="form-control" id="ddlCard" ng-model="$ctrl.newPayment.cc_type" required>
+                                        <option value="">סוג הכרטיס</option>
+                                        <option value="1">Isracart</option>
+                                        <option value="2">Visa</option>
+                                        <option value="3">Dainers</option>
+                                        <option value="4">American express</option>
+                                        <option value="6">Leumi card</option>
+                                        <option value="99">Mastercard</option>
+                                        <option value="0">אחר</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card' ">
+                                    <select class="form-control" ng-model="$ctrl.newPayment.cc_deal_type" required>
+                                        <option value="">סוג התשלום</option>
+                                        <option value="1">רגיל</option>
+                                        <option value="2">תשלומים</option>
+                                        <option value="3">קרדיט</option>
+                                        <option value="4">חיוב נדחה</option>
+                                        <option value="5">אחר</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
+                                    <input class="form-control" placeholder="4 ספרות אחרונות" type="text" ng-model="$ctrl.newPayment.cc_number" required />
+                                </div>
+
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
+                                    <input class="form-control" placeholder="שם בעל הכרטיס" type="text" ng-model="$ctrl.newPayment.cc_customer_name" required />
+                                </div>
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
+                                    <input class="form-control" placeholder="כמות תשלומים" type="number" ng-model="$ctrl.newPayment.cc_num_of_payments" required />
+                                </div>
+                                <div class="form-group" ng-if="$ctrl.newPayment.payment_type=='credit card'">
+                                    <input class="form-control" placeholder="מספר תשלום" type="number" ng-model="$ctrl.newPayment.cc_payment_num" required />
+                                </div>
+                                <!-- #payment type -->
+                                <!--<button ng-click="$ctrl.addPayment()" ng-disabled="paymentForm.$invalid || $ctrl.user.Meta.Cost==0" type="submit" class="btn btn-success">הוספה</button>-->
+                                <button ng-click="$ctrl.addPayment()" ng-disabled="$ctrl.disablBtn || (paymentForm.$invalid && $ctrl.getIfanyCheckValid())" type="submit" class="btn btn-success">הפקת מסמך</button>
+                                <button ng-click="$ctrl.cancelToken()" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default">איפוס טוקן</button>
+                                <button ng-click="$ctrl.show4($ctrl.user.cc_4_digits)" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token" type="button" class="btn btn-default"> הצג 4 ספרות אחרונות</button>
 
 
-                                <label style="float:left;margin:1px">רבעוני</label><input class="" style="float:left;margin:5px" type="checkbox" ng-model="$ctrl.user.Rivoni" />
-                                <input style="float:left;width:100px" type="number" class="form-control" ng-model="$ctrl.user.DateForMonthlySeq" placeholder="מחזוריות" />
 
-                                <input style="float:left;width:100px" type="number" class="form-control" t.paymen ng-model="$ctrl.user.DateForMonthlySum" placeholder="סכום" />
-
-                                <input style="float:left;width:150px" type="date" class="form-control" ng-model="$ctrl.user.DateForMonthlyPay" placeholder="תאריך" />
-                                <label style="float:left;margin:5px">חיוב חודשי לפי תאריך:</label>
-
-                                <button type="button" ng-click="$ctrl.submit()" class="btn btn-success pull-left" ng-disabled="studentForm.$invalid ">שמור</button>
-                            </div>
+                                <div style="float:left" ng-if="$ctrl.newPayment.payment_type=='token' && $ctrl.user.cc_token">
 
 
-                            <span ng-if="$ctrl.user.Cost==0">עלות השיעור הינה 0, לא ניתן להוסיף תשלום</span>
+                                    <label style="float:left;margin:1px">רבעוני</label><input class="" style="float:left;margin:5px" type="checkbox" ng-model="$ctrl.user.Rivoni" />
+                                    <input style="float:left;width:100px" type="number" class="form-control" ng-model="$ctrl.user.DateForMonthlySeq" placeholder="מחזוריות" />
+
+                                    <input style="float:left;width:100px" type="number" class="form-control" t.paymen ng-model="$ctrl.user.DateForMonthlySum" placeholder="סכום" />
+
+                                    <input style="float:left;width:150px" type="date" class="form-control" ng-model="$ctrl.user.DateForMonthlyPay" placeholder="תאריך" />
+                                    <label style="float:left;margin:5px">חיוב חודשי לפי תאריך:</label>
+
+                                    <button type="button" ng-click="$ctrl.submit()" class="btn btn-success pull-left" ng-disabled="studentForm.$invalid ">שמור</button>
+                                </div>
+
+
+                                <span ng-if="$ctrl.user.Cost==0">עלות השיעור הינה 0, לא ניתן להוסיף תשלום</span>
                         </form>
                     </div>
                 </div>

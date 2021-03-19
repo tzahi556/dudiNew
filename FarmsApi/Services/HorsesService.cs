@@ -3234,8 +3234,21 @@ namespace FarmsApi.Services
         }
         public static List<HorsePregnancies> GetHorsePregnancies(int Id)
         {
+
+
             using (var Context = new Context())
-                return Context.HorsePregnancies.Where(u => u.HorseId == Id).ToList();
+            {
+                SqlParameter TypePara = new SqlParameter("Type",8);
+                SqlParameter HorseIdPara = new SqlParameter("HorseId", Id);
+                var query = Context.Database.SqlQuery<HorsePregnancies>
+                ("GetHorseObject  @Type,@HorseId", TypePara, HorseIdPara);
+                var Objects = query.ToList();
+                return Objects;
+
+            }
+
+            //using (var Context = new Context())
+            //    return Context.HorsePregnancies.Where(u => u.HorseId == Id).ToList();
         }
 
         public static List<HorsesMultipleFiles> GetHorsesMultipleFiles(int Id)
@@ -3291,6 +3304,7 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
                 var CurrentHorsefarmId = UsersService.GetCurrentUser().Farm_Id;
+                
 
 
                 Context.HorsePregnancies.Add(hp);

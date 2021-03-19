@@ -19,7 +19,7 @@
                     <input class="form-control" type="date" ng-model="$ctrl.newPayment.Date" required />
                 </div>
                 <div class="form-group">
-                    <input class="form-control" ng-if="$ctrl.user.PayType=='lessonCost'" placeholder="כמות שיעורים" min="0" ng-change="$ctrl.countTotal()"
+                    <input class="form-control" ng-if="$ctrl.user.PayType=='lessonCost' && !$ctrl.lesson.IsTiyul" placeholder="כמות שיעורים" min="0" ng-change="$ctrl.countTotal()"
                            type="number" ng-model="$ctrl.newPayment.lessons" />
                 </div>
                 <div class="form-group">

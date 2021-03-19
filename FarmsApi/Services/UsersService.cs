@@ -1146,6 +1146,17 @@ namespace FarmsApi.Services
 
                         Context.Payments.Add(item);
                         NewPayment = item;
+
+                        if (item.TiyulLessonId != null)
+                        {
+                            var Tiyul = Context.Tiyuls.Where(x => x.LessonId == item.TiyulLessonId && x.TiyulCounts!=null).FirstOrDefault();
+                            Tiyul.TiyulPaid += item.InvoiceSum;
+                            Context.Entry(Tiyul).State = System.Data.Entity.EntityState.Modified;
+
+
+                        }
+
+
                         //Context.SaveChanges();
                         //   NewId = item.Id;
 
@@ -1699,12 +1710,19 @@ namespace FarmsApi.Services
         {
             using (var Context = new Context())
             {
+               
+               
+                
                 var CurrentUserFarmId = GetCurrentUser().Farm_Id;
                 User.Farm_Id = CurrentUserFarmId != 0 ? CurrentUserFarmId : User.Farm_Id;
-                if (User.Role == "sysAdmin")
-                {
-                    User.Farm_Id = 0;
-                }
+                //if (User.Role == "sysAdmin")
+                //{
+                //    User.Farm_Id = 0;
+                //}
+
+
+
+
                 var UserIdByEmail = GetUserIdByEmail(User.Email, CurrentUserFarmId);
                 if (User.Id == 0 && UserIdByEmail == 0)
                 {
@@ -1783,7 +1801,7 @@ namespace FarmsApi.Services
             using (var Context = new Context())
             {
 
-                var User = Context.Users.SingleOrDefault(u => u.Email.ToLower() == Email.ToLower() && (CurrentUserFarmId == 0 || u.Farm_Id == CurrentUserFarmId));
+                var User = Context.Users.Where(u => u.Email.ToLower() == Email.ToLower() && (CurrentUserFarmId == 0 || u.Farm_Id == CurrentUserFarmId)).FirstOrDefault();
                 if (User != null)
                     return User.Id;
                 return 0;

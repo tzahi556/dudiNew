@@ -17,7 +17,26 @@
         $rootScope.$on('$stateChangeSuccess', this.init);
 
         function _init() {
-          
+
+            if (location.href.indexOf("userp") != -1) {
+
+                this.farms =  false;
+                this.accounting = false;
+                this.lessons =  false;
+                this.users = false;
+                this.instructors =  false;
+                this.students = false;
+                this.reports =  false;
+                this.horses =  false;
+
+                this.farmmanager =  false;
+               // this.files = role != null;
+                this.files = null;
+                this.username = null;
+                
+
+                return;
+            }
             var role = localStorage.getItem('currentRole');
             this.role = role;
 

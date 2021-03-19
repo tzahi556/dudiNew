@@ -1,15 +1,20 @@
 ﻿(function () {
-
+  
     var app = angular.module('app', ['ui.router', 'angular-loading-bar', 'ui.bootstrap']);
 
     app.config(function ($urlRouterProvider, $stateProvider) {
        
         $urlRouterProvider.otherwise(function ($inject) {
+           
             $state = $inject.get('$state');
             usersService = $inject.get('usersService');
             var roles = usersService.roles;
             var role = localStorage.getItem('currentRole');
+
+            
+
             if (role == null) {
+                
                 $state.go('login');
             }
             for (var i in roles) {
@@ -27,7 +32,7 @@
                     template: '<login return-url="$ctrl.returnUrl"></login>'
                 },
                 controller: function ($stateParams) {
-
+                    
                     this.returnUrl = $stateParams.returnUrl;
                    
                 }
@@ -106,7 +111,6 @@
                 }
             }
         });
-      
 
         $stateProvider.state('farms', {
             url: '/farms/',
@@ -579,7 +583,7 @@
     app.run(function ($rootScope, notificationsService, $http, sharedValues) {
 
      
-      
+       
         //document.addEventListener("dragstart", onOnline, false);
         //document.addEventListener("drop", onOffline, false);
 
@@ -624,7 +628,7 @@
         var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
         // צחי שינה כדי שיעבוד ללא הפיירבס 
-      if (!iOS) {
+        if (!iOS) {
      //  if (iOS) {
             // Initialize Firebase
             var config = {
@@ -678,14 +682,16 @@
         $rootScope.$on("$stateChangeError", console.log.bind(console));
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
 
+             
             if (fromState.name == 'horse' || fromState.name == 'student') {
                 $rootScope.$broadcast('submit');
             }
-
+            
             console.log('$stateChangeStart to ' + toState.to + '- fired when the transition begins. toState,toParams : \n', toState, toParams);
             $rootScope.$broadcast('commonOperations');
         });
         $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+           
             console.log('$stateChangeError - fired when an error occurs during transition.');
             console.log(arguments);
         });

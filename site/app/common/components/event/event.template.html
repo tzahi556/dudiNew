@@ -36,15 +36,16 @@
         <!--<div class="form-group" ng-if="!$ctrl.readOnly">-->
         <div class="panel panel-default" style="margin: 0px !important;max-width:{{($ctrl.event.IsTiyul)?'400px':'1000px'}}">
             <div class="panel-heading">
-                {{(!$ctrl.event.IsTiyul)?' שיעור רכיבה':' כרטיס טיול'}}
+                {{(!$ctrl.event.IsTiyul)?' שיעור רכיבה':' כרטיס טיול/חד פעמי '}}
+
 
                 <div style="float:left" ng-if="($ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin') && !$ctrl.event.IsTiyul && (!$ctrl.event.students  || $ctrl.event.students.length==0)  ">
-                    <button style="float:left;margin-right:3px" class=" btn btn-warning btn-xs" ng-click="$ctrl.event.IsTiyul=true"> העברה לכרטיס טיול </button>
+                    <button style="float:left;margin-right:3px" class=" btn btn-warning btn-xs" ng-click="$ctrl.event.IsTiyul=true"> העברה לכרטיס טיול/חד פעמי </button>
                 </div>
             </div>
 
 
-            <div style="padding:2px" ng-if="!$ctrl.event.IsTiyul">
+            <div style="padding:10px" ng-if="!$ctrl.event.IsTiyul">
 
                 <div ng-show="!$ctrl.IsInstructorBlock">
                     <!--ng-show="$ctrl.role=='farmAdmin' || $ctrl.role=='sysAdmin' "-->
@@ -169,7 +170,7 @@
 
             </div>
 
-            <div style="padding:2px; " class="col-md-12 tiyulBody" ng-if="$ctrl.event.IsTiyul">
+            <div style="padding:10px; " class="col-md-12 tiyulBody" ng-if="$ctrl.event.IsTiyul">
 
                 <form name="eventForm" ng-submit="$ctrl.submit()" novalidate>
 

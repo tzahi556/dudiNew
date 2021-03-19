@@ -5,7 +5,7 @@
     app.service('authenticationService', AuthenticationService);
 
     function AuthenticationService($http, $q, $location, sharedValues, usersService) {
-
+        
         this.login = _login;
         this.logOut = _logOut;
 
@@ -13,7 +13,6 @@
        
             var data = "grant_type=password&username=" + loginData.userName + "&password=" + loginData.password;
             var deferred = $q.defer();
-
 
 
           

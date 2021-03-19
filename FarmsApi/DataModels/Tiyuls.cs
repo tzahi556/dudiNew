@@ -19,6 +19,11 @@ namespace FarmsApi.DataModels
         public string TiyulMail { get; set; }
         public string TiyulCost { get; set; }
         public int? TiyulCounts { get; set; }
+
+        public double? TiyulPaid { get; set; }
+
+        public string TiyulStatus { get; set; }
+        
         public string TiyulMazmin { get; set; }
 
         public string TiyulCostSend { get; set; }

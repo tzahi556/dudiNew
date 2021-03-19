@@ -68,7 +68,7 @@
         }
 
         function _getUser(id, isForCartis) {
-          
+           
             if (!isForCartis) isForCartis = false;
 
            

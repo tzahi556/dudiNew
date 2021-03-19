@@ -200,6 +200,7 @@
 
                     var countCompletionReq = 0;
                     var CounterAttend = 0;
+                   
                     for (var i in event.statuses) {
 
                       
