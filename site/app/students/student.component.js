@@ -1511,7 +1511,7 @@
         function _monthlyReport() {
 
             lessonsService.getSetMonthlyReports(this.user.Id, "", "", 3).then(function (res) {
-
+               
                 var LastDate = "";
                 this.monthlyReportData = [];
                 this.monthlyReportHeader = [];
@@ -1520,8 +1520,14 @@
 
 
                     var startFormat = moment(monthlyLessons[i].start).format('YYYYMM');
-                    if (startFormat != LastDate && monthlyLessons[i].statuses[0].Details) {
 
+                    var isExist = this.monthlyReportHeader.filter(x => x.DateFormat == startFormat);
+
+                    if (isExist.length==0 && monthlyLessons[i].statuses[0].Details) {
+
+
+
+                      
                         LastDate = moment(monthlyLessons[i].start).format('YYYYMM');
 
                         var SummeryObj = res.filter(x => moment(x.Date).format('YYYYMM') == startFormat);
@@ -1530,7 +1536,7 @@
                             SummeryText = SummeryObj[0].Summery;
 
                         }
-                        this.monthlyReportHeader.push({ Summery: SummeryText, Date: monthlyLessons[i].start });
+                        this.monthlyReportHeader.push({ Summery: SummeryText, Date: monthlyLessons[i].start, DateFormat: startFormat });
 
 
                     }

@@ -62,6 +62,7 @@ namespace FarmsApi.Controllers
                 DocCreation doc = new DocCreation();
 
                 Params.payment = Params.InvoiceSum;
+
                 Params.payment_date = Params.Date.ToString("dd/MM/yyyy");
 
                 if ((string)Params.payment_type == "validate")

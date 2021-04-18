@@ -714,6 +714,7 @@
     });
 
     if (window.location.hostname.indexOf('giddyup') != -1 && window.location.protocol != 'https:') {
+       
         window.location.href = 'https://www.giddyup.co.il';
     }
 

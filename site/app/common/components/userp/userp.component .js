@@ -12,7 +12,12 @@
 
     //http://localhost:51517/#/userp?aaaa=1&aaa=46165&bbb=11393478&ccc=333
     function UserpayController(usersService, lessonsService, farmsService, $scope, sharedValues, $http) {
-       
+
+
+
+
+
+
         var self = this;
         this.usersService = usersService;
         this.lessonsService = lessonsService;
@@ -38,7 +43,7 @@
 
         this.lessonsService.updateTiyulLists(LessonId, null).then(function (tiyuls) {
 
-           
+             debugger
             this.tiyullists = tiyuls;
 
 
@@ -57,8 +62,7 @@
                 this.TiyulType = user.FirstName + " " + user.LastName;
 
                 this.farmsService.getFarm(user.Farm_Id).then(function (farm) {
-                    debugger
-
+                    
                    
                    
                     if (farm.Meta === null) return;
@@ -115,8 +119,8 @@
 
 
 
-            debugger
-            $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', newPayment).then(function (response) {
+            
+            $http.post(sharedValues.apiUrl + 'invoicesTest/sendInvoice/', newPayment).then(function (response) {
 
 
                 if (response.data == "-1") {
@@ -208,7 +212,7 @@
             if (this.newPayment.payment_type == 'ashrai') {
                 this.newPayment.payment_type = 'validate';
                 this.newPayment.ksys_token = this.ksys_token;
-                $http.post(sharedValues.apiUrl + 'invoices/sendInvoice/', this.newPayment).then(function (response) {
+                $http.post(sharedValues.apiUrl + 'invoicesTest/sendInvoice/', this.newPayment).then(function (response) {
 
                     if (response.data.success) {
                         

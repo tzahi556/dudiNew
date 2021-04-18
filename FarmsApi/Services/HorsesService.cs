@@ -3312,7 +3312,7 @@ namespace FarmsApi.Services
 
                 if (isBuild)
                 {
-                    var HorsePregnanciesStatesList = Context.HorsePregnanciesStates.Where(x=>x.HorseId== hp.MotherId).ToList();
+                    var HorsePregnanciesStatesList = Context.HorsePregnanciesStates.Where(x=>x.HorseId== hp.MotherId).OrderByDescending(y=>y.Date).ToList();
 
                     HorsePregnanciesStates hh = new HorsePregnanciesStates();
                     hh.HorseId = hp.HorseId;
