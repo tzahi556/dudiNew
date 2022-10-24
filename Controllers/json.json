@@ -1,0 +1,47 @@
+{
+  "BirthDate": "2020-07-04T21:00:00.000Z",
+  "PensionStartDate": "2020-07-04T21:00:00.000Z",
+  "Treatments": [],
+  "Pregnancies": [
+    {
+      "Date": "2020-07-12T15:22:32.913Z",
+      "Mother": {
+        "Id": 845,
+        "Name": "צחי"
+      },
+      "Finished": true,
+      "States": [
+        {
+          "Date": "2020-07-12T15:22:32.913Z",
+          "State": {
+            "id": "implantation",
+            "name": "השתלה",
+            "day": 0
+          }
+        }
+      ]
+    },
+    {
+      "Date": "2020-07-13T09:18:17.076Z",
+      "Mother": {
+        "Id": 845,
+        "Name": "צחי"
+      },
+      "Finished": false,
+      "States": [
+        {
+          "Date": "2020-07-13T09:18:17.076Z",
+          "State": {
+            "id": "implantation",
+            "name": "השתלה",
+            "day": 0
+          }
+        }
+      ]
+    }
+  ],
+  "Active": "active",
+  "Gender": "female",
+  "Files": [ "background_1.png", "_makabi_1.png", "report_1.xlsx" ],
+  "Vaccinations": []
+}
