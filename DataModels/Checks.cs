@@ -6,7 +6,7 @@ namespace FarmsApi.DataModels
 {
     public class Checks
     {
-
+        
         [Key, Column(Order = 0)]
         public int Id { get; set; }
         public int? UserId { get; set; }
